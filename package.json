@@ -1,0 +1,25 @@
+{
+  "name": "iij-bootcamp",
+  "version": "1.0.0",
+  "description": "IIJ で実施しているハンズオン資料集です",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "find . -H -type f -name '*.md' -and -not -iwholename '*/node_modules/*' -exec npx textlint {} +"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iij/bootcamp.git"
+  },
+  "author": "Internet Initiative Japan Inc.",
+  "license": "CC-BY-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/iij/bootcamp/issues"
+  },
+  "homepage": "https://github.com/iij/bootcamp#readme",
+  "dependencies": {
+    "textlint": "^11.3.1",
+    "textlint-rule-no-nfd": "^1.0.1"
+  }
+}
