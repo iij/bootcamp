@@ -11,14 +11,7 @@ prior_knowledge: docker, 継続的インテグレーション
 
 ## 事前準備
 
-- [vmの用意](https://gh.iiji.jp/pages/iij-bootcamp/iij-bootcamp/preparation/vagrant)
-
-vmを用意したら、`vagrant ssh`をして下記コマンドでjenkinsを起動してください。
-
-```bash
-vagrant ssh
-sudo systemctl start jenkins
-```
+TODO: dockerでjenkinsの環境を用意する
 
 起動後に [http://192.168.20.10:8080/](http://192.168.20.10:8080/) にアクセスすると初期パスワードの入力画面が開くので、以下の通りにパスワードを調べて入力してください。
 
