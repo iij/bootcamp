@@ -231,7 +231,7 @@ Vue の使い方がだいたい分かったところで、サーバーからデ�
 
 取得するデータは以下のURLにあるjsonです。
 
-[https://gh.iiji.jp/pages/iij-bootcamp/iij-bootcamp/test.json](https://gh.iiji.jp/pages/iij-bootcamp/iij-bootcamp/test.json)
+[https://iij.github.io/bootcamp//test.json](https://iij.github.io/bootcamp//test.json)
 
 ```html
 <div id="app">
@@ -262,7 +262,7 @@ Vue の使い方がだいたい分かったところで、サーバーからデ�
       loadData: function () {
         var self = this;
 
-        axios.get('https://gh.iiji.jp/pages/iij-bootcamp/iij-bootcamp/test.json')
+        axios.get('https://iij.github.io/bootcamp//test.json')
           .then(function (response) {
             console.log(response);
             self.peoples = response.data;
@@ -324,7 +324,7 @@ Vue の使い方がだいたい分かったところで、サーバーからデ�
       loadData: function () {
         var self = this;
 
-        axios.get('https://gh.iiji.jp/pages/iij-bootcamp/iij-bootcamp/test.json')
+        axios.get('https://iij.github.io/bootcamp//test.json')
           .then(function (response) {
             console.log(response);
             self.peoples = response.data;
