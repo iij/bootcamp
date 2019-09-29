@@ -1,3 +1,12 @@
+---
+footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+description: JavaScriptライブラリであるjQueryを通してHTMLのDOM操作などについて学びます。
+time: 1h
+prior_knowledge: JavaScript
+---
+
+<header-table/>
+
 # jQueryを触ってみよう
 
 ## 事前準備
@@ -621,3 +630,5 @@ jQuery は DOM Manipulator ライブラリであり、DOM 操作を中心に上�
 また、最近では IE6 〜 IE8 のような古いブラウザを考慮する必要がなくなったため、jQuery を使わずともネイティブの JavaScript メソッドや HTML5, CSS3 の時代に使えるようになった機能を用いることで、ブラウザごとの実装状況や不具合に悩まされずに JavaScript 開発ができるようになってきました。
 
 ブラウザ戦争の歴史や JavaScript の歴史を知ると、どういう JavaScript フレームワークがなぜ便利で、どのような場面で使うべきなのかというのを判断できるようになるかもしれません。そのような歴史や背景についても興味を持っていただけたら幸いです。
+
+<credit-footer/>
