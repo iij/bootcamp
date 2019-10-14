@@ -1,6 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
-description: JAVA Springフレームワークを使ったアプリ開発に関するハンズオンです
+description: Java Springフレームワークを使ったアプリ開発に関するハンズオンです
 time: 1h
 prior_knowledge: 特になし
 ---
