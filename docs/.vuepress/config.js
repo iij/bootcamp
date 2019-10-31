@@ -9,5 +9,10 @@ module.exports = {
     editLinks: true,
     editLinkText: 'Edit this page on GitHub'
   },
+  markdown: {
+    extendMarkdown: md => {
+      md.set({ linkify: true })
+    }
+  },
   plugins: ['@vuepress/register-components']
 }
