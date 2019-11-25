@@ -11,7 +11,9 @@ module.exports = {
   },
   markdown: {
     extendMarkdown: md => {
-      md.set({ linkify: true })
+      md.set({
+        linkify: true
+      })
     }
   },
   plugins: ['@vuepress/register-components']
