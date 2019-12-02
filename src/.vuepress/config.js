@@ -5,7 +5,7 @@ module.exports = {
     sidebar: 'auto',
     lastUpdated: 'Last Updated',
     repo: 'iij/bootcamp',
-    docsDir: 'docs',
+    docsDir: 'src',
     editLinks: true,
     editLinkText: 'Edit this page on GitHub'
   },
@@ -16,5 +16,7 @@ module.exports = {
       })
     }
   },
+  base: '/bootcamp/',
+  dest: 'docs',
   plugins: ['@vuepress/register-components']
 }

@@ -2,6 +2,6 @@ setup:
 	echo "node version: `node -v`"
 	npm i -g vuepress
 run:
-	vuepress dev docs
+	vuepress dev src
 build:
-	vuepress build docs
+	vuepress build src
