@@ -1,3 +1,0 @@
-# IIJ Bootcampとは
-
-TBD

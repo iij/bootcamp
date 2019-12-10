@@ -5,14 +5,18 @@ module.exports = {
     sidebar: 'auto',
     lastUpdated: 'Last Updated',
     repo: 'iij/bootcamp',
-    docsDir: 'docs',
+    docsDir: 'src',
     editLinks: true,
     editLinkText: 'Edit this page on GitHub'
   },
   markdown: {
     extendMarkdown: md => {
-      md.set({ linkify: true })
+      md.set({
+        linkify: true
+      })
     }
   },
+  base: '/bootcamp/',
+  dest: 'docs',
   plugins: ['@vuepress/register-components']
 }
