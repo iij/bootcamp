@@ -9,6 +9,6 @@ prior_knowledge: なし
 
 # Webサーバー Overview
 
-[資料はこちら](/webserver-overview.pdf)
+[資料はこちら](/bootcamp/webserver-overview.pdf)
 
 <credit-footer/>

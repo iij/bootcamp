@@ -9,6 +9,6 @@ prior_knowledge: なし
 
 # nginxを触ってみよう
 
-[資料はこちら](/NGINX.pdf)
+[資料はこちら](/bootcamp/NGINX.pdf)
 
 <credit-footer/>
