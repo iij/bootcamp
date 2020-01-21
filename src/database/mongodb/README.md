@@ -9,6 +9,6 @@ prior_knowledge: なし
 
 # MongoDBを触ってみよう
 
-[資料はこちら](/MongoDB.pdf)
+[資料はこちら](/bootcamp/MongoDB.pdf)
 
 <credit-footer/>
