@@ -102,7 +102,7 @@ TA や講師に遠慮なく声をかけてください。
 
 ```
 mkdir content
-vim content/index.html // メモ帳などでも可
+vim content/index.html // メモ帳などでも可。 vimから抜けるには ESCキーを押した後「:wq<Enter>」を入力してください。
 ```
 
 `index.html`の内容はなんでもいいですが、例えば以下のようにしてみましょう。
