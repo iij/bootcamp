@@ -129,7 +129,7 @@ $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=$PWD/content,
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
-エラーなく起動できたらブラウザを開き、[localhost:8080](http://localhost:8080) にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
+エラーなく起動できたらブラウザを開き、[localhost:8080](http://localhost:8080) （`localhost`または ssh 先の IP アドレス）にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
 
 ### HTML ファイルを書き換える
 
