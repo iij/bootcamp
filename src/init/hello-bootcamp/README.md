@@ -13,6 +13,11 @@ prior_knowledge: なし
 
 ## Docker のインストール (Check.1)
 
+各 OS やプラットフォームごとのインストール方法はここにドキュメントがあります。
+https://docs.docker.com/engine/install/
+
+この資料では Windows と macOS について、簡単に取り上げます。
+
 ### Windows
 
 windows の場合 [docker-for-windows](https://docs.docker.com/docker-for-windows/) を使うのがおすすめです。WSL や仮想環境に linux を立てることもできますが、ネットワークのトラブルなどが頻発するため現状あまりお勧めしません。
@@ -73,11 +78,12 @@ docker: Error response from daemon: Get https://registry-1.docker.io/v2/: net/ht
 See 'docker run --help'.
 ```
 
-以下のページを参考にしながら proxy を設定してみてください。
-(proxy の URL は社内独自のものなので、周りの誰かに確認してください。)
+「docker {OS 名} proxy」などで検索すると、以下のような記事が検索されると思うので、参考にしながら設定してみてください。
 
 - Windows: https://qiita.com/wryun0suke/items/1f4bbd2977ae41ee7a36
 - Mac: https://qiita.com/kobakou/items/214129924b9cd3e64d0f
+
+proxy の URL は環境によって異なるため、周りの誰かに確認してください。
 
 ### それでもダメな場合 or 違うエラーの場合
 
