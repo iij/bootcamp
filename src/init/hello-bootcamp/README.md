@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: ハンズオン事前準備
 time: 0.5h
 prior_knowledge: なし
