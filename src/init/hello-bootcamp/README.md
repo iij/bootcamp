@@ -91,7 +91,7 @@ TA や講師に遠慮なく声をかけてください。
 
 ## Nginx を立てて手元で HTML を書き換える
 
-次は docker の volume という機能を使い、コンテナの中のファイルを手元で編集できるようにしてみます。
+次は docker の [volume](https://docs.docker.com/storage/volumes/) という機能を使い、コンテナの中のファイルを手元で編集できるようにしてみます。
 これができると docker 環境で動かすファイルを手元のエディタで編集できるためとても便利です。
 
 ここでは Nginx という web サーバーを使い、簡単な HTML ファイルをホスティングしてみます。そしてその HTML ファイルを手元で書き換えてみましょう。
@@ -118,14 +118,14 @@ HTML ファイルが作成できたら、nginx の docker コンテナを以下�
 windows
 
 ```
-$ docker run --name test-nginx -p 8080:80 --volume %CD%¥content:/usr/share/nginx/html:ro -d nginx
+$ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%¥content,target=/usr/share/nginx/html,ro -d nginx
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
 mac/linux
 
 ```
-$ docker run --name test-nginx -p 8080:80 --volume $PWD/content:/usr/share/nginx/html:ro -d nginx
+$ docker run --name test-nginx -p 8080:80 --mount type=bind,source=$PWD/content,target=/usr/share/nginx/html,ro -d nginx
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
