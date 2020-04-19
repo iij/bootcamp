@@ -1,5 +1,2 @@
 node_modules/
-
-docs/server-app/java/.classpath
-docs/server-app/java/.project
-docs/server-app/java/.settings/
+docs/
