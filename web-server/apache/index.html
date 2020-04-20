@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>IIJ Bootcamp</title>
+    <meta name="generator" content="VuePress 1.4.1">
+    
+    <meta name="description" content="Apache webサーバーの紹介と、自力ビルドに挑戦します。">
+    <link rel="preload" href="/bootcamp/assets/css/0.styles.1fd701e8.css" as="style"><link rel="preload" href="/bootcamp/assets/js/app.810267af.js" as="script"><link rel="preload" href="/bootcamp/assets/js/2.633a5bed.js" as="script"><link rel="preload" href="/bootcamp/assets/js/31.db78ddee.js" as="script"><link rel="preload" href="/bootcamp/assets/js/6.28426bf1.js" as="script"><link rel="preload" href="/bootcamp/assets/js/5.c9cac7a4.js" as="script"><link rel="prefetch" href="/bootcamp/assets/js/10.7362cbae.js"><link rel="prefetch" href="/bootcamp/assets/js/11.1de78ef3.js"><link rel="prefetch" href="/bootcamp/assets/js/12.c1d42bde.js"><link rel="prefetch" href="/bootcamp/assets/js/13.2a32bbc1.js"><link rel="prefetch" href="/bootcamp/assets/js/14.7f15569d.js"><link rel="prefetch" href="/bootcamp/assets/js/15.a6cc7711.js"><link rel="prefetch" href="/bootcamp/assets/js/16.ed2e10b0.js"><link rel="prefetch" href="/bootcamp/assets/js/17.dec37983.js"><link rel="prefetch" href="/bootcamp/assets/js/18.19386bd0.js"><link rel="prefetch" href="/bootcamp/assets/js/19.501662ca.js"><link rel="prefetch" href="/bootcamp/assets/js/20.4afd036f.js"><link rel="prefetch" href="/bootcamp/assets/js/21.054db598.js"><link rel="prefetch" href="/bootcamp/assets/js/22.8aa3687e.js"><link rel="prefetch" href="/bootcamp/assets/js/23.97614bf7.js"><link rel="prefetch" href="/bootcamp/assets/js/24.1295f458.js"><link rel="prefetch" href="/bootcamp/assets/js/25.197d77bf.js"><link rel="prefetch" href="/bootcamp/assets/js/26.ed17b118.js"><link rel="prefetch" href="/bootcamp/assets/js/27.3a15cbfd.js"><link rel="prefetch" href="/bootcamp/assets/js/28.62ce5dc1.js"><link rel="prefetch" href="/bootcamp/assets/js/29.de212365.js"><link rel="prefetch" href="/bootcamp/assets/js/3.019babce.js"><link rel="prefetch" href="/bootcamp/assets/js/30.37f125f2.js"><link rel="prefetch" href="/bootcamp/assets/js/32.301265a5.js"><link rel="prefetch" href="/bootcamp/assets/js/33.ce4dc4ab.js"><link rel="prefetch" href="/bootcamp/assets/js/34.34c0b5d4.js"><link rel="prefetch" href="/bootcamp/assets/js/4.165bc76d.js"><link rel="prefetch" href="/bootcamp/assets/js/7.4101b1b7.js"><link rel="prefetch" href="/bootcamp/assets/js/8.f4581bc3.js"><link rel="prefetch" href="/bootcamp/assets/js/9.93158e3d.js">
+    <link rel="stylesheet" href="/bootcamp/assets/css/0.styles.1fd701e8.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/bootcamp/" class="home-link router-link-active"><!----> <span class="site-name">IIJ Bootcamp</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"> <a href="https://github.com/iij/bootcamp" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"> <a href="https://github.com/iij/bootcamp" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span></span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/bootcamp/web-server/apache/#事前準備" class="sidebar-link">事前準備</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bootcamp/web-server/apache/#事前準備手順" class="sidebar-link">事前準備手順</a></li></ul></li><li><a href="/bootcamp/web-server/apache/#資料" class="sidebar-link">資料</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/bootcamp/web-server/apache/#apache-を自力でビルドしてみよう" class="sidebar-link">Apache を自力でビルドしてみよう</a></li><li class="sidebar-sub-header"><a href="/bootcamp/web-server/apache/#apache-の設定ファイルを眺めてみる" class="sidebar-link">Apache の設定ファイルを眺めてみる</a></li><li class="sidebar-sub-header"><a href="/bootcamp/web-server/apache/#apache-の動作確認とパフォーマンス測定をする" class="sidebar-link">Apache の動作確認とパフォーマンス測定をする</a></li></ul></li><li><a href="/bootcamp/web-server/apache/#質問" class="sidebar-link">質問</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/bootcamp/web-server/apache/#追加課題" class="sidebar-link">追加課題</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><table><tr><td>このハンズオンでやること</td><td>Apache webサーバーの紹介と、自力ビルドに挑戦します。</td></tr> <tr><td>想定時間</td><td>1h</td></tr> <tr><td>前提知識・用語</td><td>特になし</td></tr></table> <h1 id="web-server-apache-編"><a href="#web-server-apache-編" class="header-anchor">#</a> Web Server: Apache 編</h1> <p>このハンズオンの狙い</p> <ul><li>Docker に慣れる</li> <li>Apache を自力でビルドしてみる</li> <li>Apache の設定ファイルを眺めてみる</li> <li>Apache の動作確認とパフォーマンス測定をする</li></ul> <h2 id="事前準備"><a href="#事前準備" class="header-anchor">#</a> 事前準備</h2> <ul><li>Docker を使用できる</li></ul> <h3 id="事前準備手順"><a href="#事前準備手順" class="header-anchor">#</a> 事前準備手順</h3> <ol><li><p>ubuntu イメージを使えるようにする</p> <div class="language-Shell extra-class"><pre class="language-shell"><code>docker pull ubuntu
+docker images
+
+REPOSITORY                     TAG                 IMAGE ID            CREATED             SIZE
+ubuntu                         latest              4c108a37151f        <span class="token number">4</span> weeks ago         <span class="token number">64</span>.2MB
+</code></pre></div></li></ol> <h2 id="資料"><a href="#資料" class="header-anchor">#</a> 資料</h2> <h3 id="apache-を自力でビルドしてみよう"><a href="#apache-を自力でビルドしてみよう" class="header-anchor">#</a> Apache を自力でビルドしてみよう</h3> <ul><li><a href="http://httpd.apache.org/docs/2.4/install.html" target="_blank" rel="noopener noreferrer">インストールドキュメント<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul> <p>このドキュメントとメッセージを読みながら進めてみます。</p> <p>ubuntu 使用を前提にしていますが、CentOS や FreeBSD など、他のメジャーな OS ならそれほどはまらないはずです。
+ただし、他の OS を使う場合は、その OS のパッケージシステム (yum, pkg など) にある程度慣れている必要があるかもしれません。
+必要そうなパッケージ名はググれば見つけられます。</p> <ol><li><p>インストールのプランを立てる</p> <ul><li><p>通常どおりインストールすると /usr/bin や /usr/local/bin, /usr/local/apache2 などに配置される</p></li> <li><p>今回は別の場所に入れてみましょう</p> <div class="language-Text extra-class"><pre class="language-text"><code>/opt/{bin,lib,share...}  自分でビルドした必要なプログラム
+/opt/apache2             自分でビルドした Apache
+</code></pre></div></li> <li><p>素の ubuntu イメージで作業して、インストールしたパッケージなどはあとで Dockerfile などにまとめます</p></li> <li><p>インストール先の /opt は、ホスト側ディレクトリに残るようにします</p></li></ul></li> <li><p>Docker コンテナを立ち上げる</p> <ul><li>docker run -it --rm --name apache-test -v ~/opt:/opt ubuntu /bin/bash
+<ul><li>Windows 環境では winpty docker run -it 〜</li></ul></li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>docker run -it --rm --name apache-test -v ~/opt:/opt ubuntu /bin/bash
+root@efa7173e38f5:/<span class="token comment"># cd</span>
+root@efa7173e38f5:~<span class="token comment">#</span>
+</code></pre></div></li> <li><p>Apache httpd をダウンロードして展開</p> <ul><li>ダウンロードサイトは自社のを使うことにします</li> <li><a href="http://ftp.iij.ad.jp/pub/network/apache/httpd/" target="_blank" rel="noopener noreferrer">ftp.iij.ad.jp apache httpd<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>httpd-2.4.39.tar.bz2 または httpd-2.4.39.tar.gz をダウンロードする
+<ul><li>tar コマンドでエラーが出る場合は、bzip2 コマンドなどをインストールして解凍しましょう (bzip2 -d httpd-2.4.39.tar.bz2)</li></ul></li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~<span class="token comment"># wget http://ftp.iij.ad.jp/pub/network/apache/httpd/httpd-2.4.39.tar.bz2</span>
+bash: wget: <span class="token builtin class-name">command</span> not found
+root@efa7173e38f5:~<span class="token comment"># curl</span>
+bash: curl: <span class="token builtin class-name">command</span> not found
+root@efa7173e38f5:~<span class="token comment"># apt update</span>
+<span class="token punctuation">..</span>. <span class="token punctuation">(</span>省略<span class="token punctuation">)</span> <span class="token punctuation">..</span>.
+root@efa7173e38f5:~<span class="token comment"># apt install wget</span>
+<span class="token punctuation">..</span>. <span class="token punctuation">(</span>省略<span class="token punctuation">)</span> <span class="token punctuation">..</span>.
+root@efa7173e38f5:~<span class="token comment"># wget http://ftp.iij.ad.jp/pub/network/apache/httpd/httpd-2.4.39.tar.bz2</span>
+<span class="token punctuation">..</span>. <span class="token punctuation">(</span>省略<span class="token punctuation">)</span> <span class="token punctuation">..</span>.
+root@efa7173e38f5:~<span class="token comment"># tar xvf httpd-2.4.39.tar.bz2</span>
+root@efa7173e38f5:~<span class="token comment"># cd httpd-2.4.39</span>
+root@efa7173e38f5:~/httpd-2.4.39<span class="token comment">#</span>
+</code></pre></div></li> <li><p>configure</p> <ul><li>./configure --help を一度読んでみるといいと思います</li> <li>インストールプランに従って、prefix を設定してみます</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># ./configure --prefix=/opt/apache2</span>
+<span class="token punctuation">..</span>.
+checking <span class="token keyword">for</span> APR<span class="token punctuation">..</span>. no
+configure: error: APR not found.  Please <span class="token builtin class-name">read</span> the documentation.
+</code></pre></div></li> <li><p>APR をダウンロードしてインストール</p> <ul><li><a href="http://ftp.iij.ad.jp/pub/network/apache/apr/" target="_blank" rel="noopener noreferrer">ftp.iij.ad.jp apr<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>apr-1.7.0.tar.bz2 をダウンロードする</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># cd ..</span>
+root@efa7173e38f5:~<span class="token comment"># wget http://ftp.iij.ad.jp/pub/network/apache/apr/apr-1.7.0.tar.bz2</span>
+root@efa7173e38f5:~<span class="token comment"># tar xvf apr-1.7.0.tar.bz2</span>
+root@efa7173e38f5:~<span class="token comment"># cd apr-1.7.0</span>
+root@efa7173e38f5:~/apr-1.7.0<span class="token comment"># ./configure --prefix=/opt</span>
+<span class="token punctuation">..</span>.
+configure: error: <span class="token keyword">in</span> <span class="token variable"><span class="token variable">`</span>/root/apr-1.7.0':
+configure: error: no acceptable C compiler found <span class="token keyword">in</span> <span class="token environment constant">$PATH</span>
+See <span class="token variable">`</span></span>config.log' <span class="token keyword">for</span> <span class="token function">more</span> details
+</code></pre></div></li> <li><p>コンパイラなど、ビルドに必要なプログラムをインストール</p> <ul><li>ubuntu のパッケージを調べたところ、build-essential というパッケージで必要な一式が入るもよう
+<ul><li>CentOS や FreeBSD ではパッケージ名が違います</li> <li>gcc などの C コンパイラと周辺ツールをインストールしてください</li></ul></li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code><span class="token function">apt</span> <span class="token function">install</span> build-essential
+</code></pre></div></li> <li><p>再び configure</p> <ul><li>ビルドに使うコマンドがインストールできたら、PATH を通します</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/apr-1.7.0<span class="token comment"># ./configure --prefix=/opt</span>
+<span class="token punctuation">..</span>.
+root@efa7173e38f5:~/apr-1.7.0<span class="token comment"># make</span>
+<span class="token punctuation">..</span>.
+root@efa7173e38f5:~/apr-1.7.0<span class="token comment"># make install</span>
+<span class="token punctuation">..</span>.
+root@efa7173e38f5:~/apr-1.7.0<span class="token comment"># ls -l /opt/bin</span>
+total <span class="token number">8</span>
+-rwxr-xr-x <span class="token number">1</span> root root <span class="token number">6945</span> Jul <span class="token number">18</span> <span class="token number">15</span>:37 apr-1-config
+root@efa7173e38f5:~/apr-1.7.0<span class="token comment"># export PATH=/opt/bin:$PATH</span>
+</code></pre></div></li> <li><p>httpd ディレクトリに戻って、再び configure</p> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># ./configure --prefix=/opt/apache2</span>
+<span class="token punctuation">..</span>.
+checking <span class="token keyword">for</span> APR-util<span class="token punctuation">..</span>. no
+configure: error: APR-util not found.  Please <span class="token builtin class-name">read</span> the documentation.
+</code></pre></div></li> <li><p>APR-util をダウンロードしてインストール</p> <ul><li><a href="http://ftp.iij.ad.jp/pub/network/apache/apr/" target="_blank" rel="noopener noreferrer">ftp.iij.ad.jp apr<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>apr-util-1.6.1.tar.bz2 をダウンロードする</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~<span class="token comment"># wget http://ftp.iij.ad.jp/pub/network/apache/apr/apr-util-1.6.1.tar.bz2</span>
+root@efa7173e38f5:~<span class="token comment"># tar xvf apr-util-1.6.1.tar.bz2</span>
+root@efa7173e38f5:~<span class="token comment"># cd apr-util-1.6.1</span>
+root@efa7173e38f5:~/apr-util-1.6.1<span class="token comment"># ./configure --prefix=/opt</span>
+<span class="token punctuation">..</span>.
+checking <span class="token keyword">for</span> APR<span class="token punctuation">..</span>. no
+configure: error: APR could not be located. Please use the --with-apr option.
+root@efa7173e38f5:~/apr-util-1.6.1<span class="token comment"># ./configure --prefix=/opt --with-apr=/opt/bin/apr-1-config</span>
+<span class="token punctuation">..</span>.
+root@efa7173e38f5:~/apr-util-1.6.1<span class="token comment"># make</span>
+<span class="token punctuation">..</span>.
+xml/apr_xml.c:35:10: fatal error: expat.h: No such <span class="token function">file</span> or directory
+ <span class="token comment">#include &lt;expat.h&gt;</span>
+          ^~~~~~~~~
+compilation terminated.
+/root/apr-util-1.6.1/build/rules.mk:206: recipe <span class="token keyword">for</span> target <span class="token string">'xml/apr_xml.lo'</span> failed
+make<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: *** <span class="token punctuation">[</span>xml/apr_xml.lo<span class="token punctuation">]</span> Error <span class="token number">1</span>
+make<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>: Leaving directory <span class="token string">'/root/apr-util-1.6.1'</span>
+/root/apr-util-1.6.1/build/rules.mk:118: recipe <span class="token keyword">for</span> target <span class="token string">'all-recursive'</span> failed
+make: *** <span class="token punctuation">[</span>all-recursive<span class="token punctuation">]</span> Error <span class="token number">1</span>
+</code></pre></div></li> <li><p>expat ライブラリをインストール</p> <ul><li>どれを自力で入れて、どれをパッケージで入れるかは悩ましいところ</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code><span class="token function">apt</span> search expat
+<span class="token function">apt</span> <span class="token function">install</span> libexpat1-dev
+</code></pre></div></li> <li><p>APR-util のビルドに戻る</p> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/apr-util-1.6.1<span class="token comment"># make</span>
+root@efa7173e38f5:~/apr-util-1.6.1<span class="token comment"># make install</span>
+root@efa7173e38f5:~/apr-util-1.6.1<span class="token comment"># ls -l /opt/bin/</span>
+total <span class="token number">16</span>
+-rwxr-xr-x <span class="token number">1</span> root root <span class="token number">6945</span> Jul <span class="token number">18</span> <span class="token number">15</span>:37 apr-1-config
+-rwxr-xr-x <span class="token number">1</span> root root <span class="token number">6121</span> Jul <span class="token number">18</span> <span class="token number">15</span>:51 apu-1-config
+</code></pre></div></li> <li><p>httpd のビルドに戻る</p> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># ./configure --prefix=/opt/apache2</span>
+<span class="token punctuation">..</span>.
+checking <span class="token keyword">for</span> pcre-config<span class="token punctuation">..</span>. <span class="token boolean">false</span>
+configure: error: pcre-config <span class="token keyword">for</span> libpcre not found. PCRE is required and available from http://pcre.org/
+</code></pre></div></li> <li><p>PCRE ライブラリをインストール</p> <ul><li>ライブラリ(のバージョン)が複数ある場合、私はまずは新しいのから試すようにしています</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code><span class="token function">apt</span> search pcre
+<span class="token function">apt</span> <span class="token function">install</span> libpcre3-dev
+</code></pre></div></li> <li><p>httpd のビルドに戻る</p> <ul><li>make distclean は、ビルドの中間ファイルやゴミなどを消す</li></ul> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># make distclean</span>
+root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># ./configure --prefix=/opt/apache2</span>
+<span class="token punctuation">..</span>.
+configure: summary of build options:
+
+Server Version: <span class="token number">2.4</span>.39
+Install prefix: /opt/apache2
+C compiler:     gcc
+CFLAGS:          -g -O2 -pthread
+CPPFLAGS:        -DLINUX -D_REENTRANT -D_GNU_SOURCE
+LDFLAGS:
+LIBS:
+C preprocessor: gcc -E
+
+root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># make</span>
+<span class="token punctuation">..</span>.
+root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># make install</span>
+<span class="token punctuation">..</span>.
+root@efa7173e38f5:~/httpd-2.4.39<span class="token comment"># ls -l /opt/apache2</span>
+total <span class="token number">0</span>
+drwxr-xr-x  <span class="token number">18</span> root root  <span class="token number">576</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 bin
+drwxr-xr-x  <span class="token number">11</span> root root  <span class="token number">352</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 build
+drwxr-xr-x   <span class="token number">6</span> root root  <span class="token number">192</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 cgi-bin
+drwxr-xr-x   <span class="token number">7</span> root root  <span class="token number">224</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 conf
+drwxr-xr-x  <span class="token number">22</span> root root  <span class="token number">704</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 error
+drwxr-xr-x   <span class="token number">3</span> root root   <span class="token number">96</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 htdocs
+drwxr-xr-x <span class="token number">179</span> root root <span class="token number">5728</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 icons
+drwxr-xr-x  <span class="token number">65</span> root root <span class="token number">2080</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 include
+drwxr-xr-x   <span class="token number">2</span> root root   <span class="token number">64</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 logs
+drwxr-xr-x   <span class="token number">4</span> root root  <span class="token number">128</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 <span class="token function">man</span>
+drwxr-xr-x <span class="token number">205</span> root root <span class="token number">6560</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 manual
+drwxr-xr-x  <span class="token number">89</span> root root <span class="token number">2848</span> Jul <span class="token number">18</span> <span class="token number">16</span>:10 modules
+</code></pre></div><ul><li>この段階で「XML_なんとか ライブラリが見つからない」旨のエラーメッセージが出た場合
+<ul><li>apr-util の configure &amp; make install をやり直す</li> <li>再度 httpd を configure &amp; make install する</li></ul></li></ul></li></ol> <h3 id="apache-の設定ファイルを眺めてみる"><a href="#apache-の設定ファイルを眺めてみる" class="header-anchor">#</a> Apache の設定ファイルを眺めてみる</h3> <p>~/opt/apache2/conf/httpd.conf を読んでみよう。</p> <ul><li><p>ping や ip しようとしたらコマンドがなかったのでインストール</p> <div class="language-Shell extra-class"><pre class="language-shell"><code><span class="token function">cat</span> /etc/hosts
+<span class="token function">apt</span> <span class="token function">install</span> iproute2 iputils-ping
+<span class="token function">ip</span> addr
+</code></pre></div></li> <li><p>サーバを起動するためには、最低限 ServerName を設定する必要がある</p> <ul><li>コメントを読んで、とりあえず IP アドレスを設定する</li></ul> <div class="language-Text extra-class"><pre class="language-text"><code>ServerName 172.17.0.2:80
+</code></pre></div><ul><li>/etc/hosts にサーバ名を各方法でも大丈夫です</li></ul> <div class="language-Text extra-class"><pre class="language-text"><code>root@efa7173e38f5:~# cat /etc/hosts
+127.0.0.1   localhost
+::1 localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.17.0.2  efa7173e38f5  www.example.com
+</code></pre></div></li></ul> <h3 id="apache-の動作確認とパフォーマンス測定をする"><a href="#apache-の動作確認とパフォーマンス測定をする" class="header-anchor">#</a> Apache の動作確認とパフォーマンス測定をする</h3> <ul><li><p>httpd を起動する</p> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~<span class="token comment"># /opt/apache2/bin/apachectl -k start</span>
+root@efa7173e38f5:~<span class="token comment"># ps auxww | fgrep httpd</span>
+root     <span class="token number">48683</span>  <span class="token number">0.0</span>  <span class="token number">0.1</span>  <span class="token number">73548</span>  <span class="token number">3644</span> ?        Ss   <span class="token number">10</span>:20   <span class="token number">0</span>:00 /opt/apache2/bin/httpd -k start
+daemon   <span class="token number">48684</span>  <span class="token number">0.0</span>  <span class="token number">0.1</span> <span class="token number">1280024</span> <span class="token number">3696</span> ?        Sl   <span class="token number">10</span>:20   <span class="token number">0</span>:00 /opt/apache2/bin/httpd -k start
+daemon   <span class="token number">48685</span>  <span class="token number">0.0</span>  <span class="token number">0.1</span> <span class="token number">1280024</span> <span class="token number">3696</span> ?        Sl   <span class="token number">10</span>:20   <span class="token number">0</span>:00 /opt/apache2/bin/httpd -k start
+daemon   <span class="token number">48688</span>  <span class="token number">0.0</span>  <span class="token number">0.1</span> <span class="token number">1280024</span> <span class="token number">3696</span> ?        Sl   <span class="token number">10</span>:20   <span class="token number">0</span>:00 /opt/apache2/bin/httpd -k start
+root     <span class="token number">48769</span>  <span class="token number">0.0</span>  <span class="token number">0.0</span>  <span class="token number">11460</span>  <span class="token number">1100</span> pts/0    S+   <span class="token number">10</span>:20   <span class="token number">0</span>:00 <span class="token function">grep</span> -F --color<span class="token operator">=</span>auto httpd
+root@efa7173e38f5:~<span class="token comment"># wget http://172.17.0.2/index.html</span>
+--2019-07-18 <span class="token number">10</span>:31:56--  http://172.17.0.2/index.html
+Connecting to <span class="token number">172.17</span>.0.2:80<span class="token punctuation">..</span>. connected.
+HTTP request sent, awaiting response<span class="token punctuation">..</span>. <span class="token number">200</span> OK
+Length: <span class="token number">45</span> <span class="token punctuation">[</span>text/html<span class="token punctuation">]</span>
+Saving to: <span class="token string">'index.html'</span>
+
+index.html          <span class="token number">100</span>%<span class="token punctuation">[</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">==</span><span class="token operator">=</span><span class="token operator">&gt;</span><span class="token punctuation">]</span>      <span class="token number">45</span>  --.-KB/s    <span class="token keyword">in</span> 0s
+
+<span class="token number">2019</span>-07-18 <span class="token number">10</span>:31:56 <span class="token punctuation">(</span><span class="token number">1.00</span> MB/s<span class="token punctuation">)</span> - <span class="token string">'index.html'</span> saved <span class="token punctuation">[</span><span class="token number">45</span>/45<span class="token punctuation">]</span>
+
+root@efa7173e38f5:~<span class="token comment"># cat index.html</span>
+<span class="token operator">&lt;</span>html<span class="token operator">&gt;</span><span class="token operator">&lt;</span>body<span class="token operator">&gt;</span><span class="token operator">&lt;</span>h<span class="token operator"><span class="token file-descriptor important">1</span>&gt;</span>It works<span class="token operator">!</span><span class="token operator">&lt;</span>/h<span class="token operator"><span class="token file-descriptor important">1</span>&gt;</span><span class="token operator">&lt;</span>/body<span class="token operator">&gt;</span><span class="token operator">&lt;</span>/html<span class="token operator">&gt;</span>
+</code></pre></div></li> <li><p>ベンチマークを取ってみる</p> <div class="language-Shell extra-class"><pre class="language-shell"><code>root@efa7173e38f5:~<span class="token comment"># ab -n 1000 -c 1000 http://172.17.0.2/index.html</span>
+This is ApacheBench, Version <span class="token number">2.3</span> <span class="token operator">&lt;</span><span class="token variable">$Revision</span><span class="token builtin class-name">:</span> <span class="token number">1843412</span> $<span class="token operator">&gt;</span>
+Copyright <span class="token number">1996</span> Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking <span class="token number">172.17</span>.0.2 <span class="token punctuation">(</span>be patient<span class="token punctuation">)</span>
+Completed <span class="token number">100</span> requests
+Completed <span class="token number">200</span> requests
+Completed <span class="token number">300</span> requests
+Completed <span class="token number">400</span> requests
+Completed <span class="token number">500</span> requests
+Completed <span class="token number">600</span> requests
+Completed <span class="token number">700</span> requests
+Completed <span class="token number">800</span> requests
+Completed <span class="token number">900</span> requests
+Completed <span class="token number">1000</span> requests
+Finished <span class="token number">1000</span> requests
+
+
+Server Software:        Apache/2.4.39
+Server Hostname:        <span class="token number">172.17</span>.0.2
+Server Port:            <span class="token number">80</span>
+
+Document Path:          /index.html
+Document Length:        <span class="token number">45</span> bytes
+
+Concurrency Level:      <span class="token number">1000</span>
+Time taken <span class="token keyword">for</span> tests:   <span class="token number">2.818</span> seconds
+Complete requests:      <span class="token number">1000</span>
+Failed requests:        <span class="token number">0</span>
+Total transferred:      <span class="token number">289000</span> bytes
+HTML transferred:       <span class="token number">45000</span> bytes
+Requests per second:    <span class="token number">354.87</span> <span class="token punctuation">[</span><span class="token comment">#/sec] (mean)</span>
+Time per request:       <span class="token number">2817.911</span> <span class="token punctuation">[</span>ms<span class="token punctuation">]</span> <span class="token punctuation">(</span>mean<span class="token punctuation">)</span>
+Time per request:       <span class="token number">2.818</span> <span class="token punctuation">[</span>ms<span class="token punctuation">]</span> <span class="token punctuation">(</span>mean, across all concurrent requests<span class="token punctuation">)</span>
+Transfer rate:          <span class="token number">100.15</span> <span class="token punctuation">[</span>Kbytes/sec<span class="token punctuation">]</span> received
+
+Connection Times <span class="token punctuation">(</span>ms<span class="token punctuation">)</span>
+              min  mean<span class="token punctuation">[</span>+/-sd<span class="token punctuation">]</span> median   max
+Connect:        <span class="token number">0</span>   <span class="token number">71</span>  <span class="token number">30.1</span>     <span class="token number">66</span>     <span class="token number">151</span>
+Processing:    <span class="token number">20</span>  <span class="token number">211</span> <span class="token number">187.8</span>    <span class="token number">148</span>    <span class="token number">2244</span>
+Waiting:        <span class="token number">5</span>  <span class="token number">172</span> <span class="token number">185.2</span>    <span class="token number">119</span>    <span class="token number">2243</span>
+Total:         <span class="token number">63</span>  <span class="token number">282</span> <span class="token number">185.5</span>    <span class="token number">233</span>    <span class="token number">2307</span>
+
+Percentage of the requests served within a certain <span class="token function">time</span> <span class="token punctuation">(</span>ms<span class="token punctuation">)</span>
+  <span class="token number">50</span>%    <span class="token number">233</span>
+  <span class="token number">66</span>%    <span class="token number">263</span>
+  <span class="token number">75</span>%    <span class="token number">306</span>
+  <span class="token number">80</span>%    <span class="token number">311</span>
+  <span class="token number">90</span>%    <span class="token number">500</span>
+  <span class="token number">95</span>%    <span class="token number">672</span>
+  <span class="token number">98</span>%    <span class="token number">979</span>
+  <span class="token number">99</span>%    <span class="token number">986</span>
+ <span class="token number">100</span>%   <span class="token number">2307</span> <span class="token punctuation">(</span>longest request<span class="token punctuation">)</span>
+</code></pre></div></li></ul> <h2 id="質問"><a href="#質問" class="header-anchor">#</a> 質問</h2> <ul><li>ビルドが一度ですんなりいかなかったのはなぜでしょう？</li></ul> <h2 id="追加課題"><a href="#追加課題" class="header-anchor">#</a> 追加課題</h2> <ul><li>httpd.conf に設定を入れてみる
+<ul><li>NameVirtualHost を設定してみる (/etc/hosts にホスト名を追加、別のディレクトリにコンテンツを配置)</li></ul></li> <li>定番モジュール mod_rewrite などを設定する
+<ul><li>ホスト部、パス部などを書き換える</li></ul></li> <li>/opt/apache2/htdocs 以下に大きめのファイルを置いて、パフォーマンス測定する</li> <li>追加したモジュールをすべてインストールした Docker image を作成する
+<ul><li>httpd, apr, apr-util のソースを、/root 以下にコピーする</li></ul></li> <li>http/2 を使えるようにしてみる
+<ul><li><a href="https://httpd.apache.org/docs/2.4/en/howto/http2.html" target="_blank" rel="noopener noreferrer">HTTP/2 guide<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>Docker 設定で母艦からアクセスできるようにして、Chrome などで見てみる</li> <li>Chrome 開発者ツールで確認する</li></ul></li></ul> <div><hr> <span>CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.</span></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/iij/bootcamp/edit/master/src/web-server/apache/README.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">4/20/2020, 2:48:53 AM</span></div></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/bootcamp/assets/js/app.810267af.js" defer></script><script src="/bootcamp/assets/js/2.633a5bed.js" defer></script><script src="/bootcamp/assets/js/31.db78ddee.js" defer></script><script src="/bootcamp/assets/js/6.28426bf1.js" defer></script><script src="/bootcamp/assets/js/5.c9cac7a4.js" defer></script>
+  </body>
+</html>
