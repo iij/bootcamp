@@ -20,6 +20,7 @@
   "homepage": "https://github.com/iij/bootcamp#readme",
   "dependencies": {
     "textlint": "^11.3.1",
-    "textlint-rule-no-nfd": "^1.0.1"
+    "textlint-rule-no-nfd": "^1.0.1",
+    "textlint-rule-preset-ja-engineering-paper": "^1.0.0"
   }
 }
