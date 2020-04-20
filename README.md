@@ -14,8 +14,6 @@ TBD
 ## TODO
 
 - 2019年度に実施したハンズオンの資料を追加する
-- vuepressでコンパイルした内容をgithub pagesで公開する
-- CIによるgithub pagesの自動更新
 
 ## Contribution
 
