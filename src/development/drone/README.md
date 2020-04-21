@@ -456,7 +456,7 @@ droneはCIのためのツールですが、CDのためのツールでもあり�
 さてこのハンズオン資料はMarkdownで記載されており、GitHubでホスティングされています。
 この講義資料であるmarkdownをHTMLに変換し、GitHub Pagesで自動的にページを公開するように設定してみてください。
 
-https://github.com/iij/iij-bootcamp をforkしてはじめましょう。
+https://github.com/iij/bootcamp をforkしてはじめましょう。
 
 [公式のマニュアル](http://plugins.drone.io/drone-plugins/drone-gh-pages/)を参照してください。
 
