@@ -16,4 +16,4 @@ footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
 | **webサーバー構築** | [webサーバー界隈 Overview](/web-server/overview/) | [Apacheでwebサーバーを立てよう](/web-server/apache/) | [Nginxでwebサーバーを立てよう](/web-server/nginx/) | [動的アプリのホスティング](/web-server/hosting/) | Let's encryptでSSL対応！<br>(資料未公開) |
 | **データベース** | [mysqlを触ってみる](/database/mysql/) | [MongoDBを触ってみよう](/database/mongodb/) | [Database: Redis 編](/database/redis/) |
 | **docker** | [dockerを触ってみる](/docker/docker/) | [開発環境をdockerで構築](/docker/docker-compose/) | kubernetesで爆速アプリ構築<br>(資料未公開) |
-| **その他開発** | [Gitの使い方](/development/git/)+[GitHubを使った開発手法](/development/github/) | [jenkinsを触ってみる](/development/jenkins/) | 社内droneでCIテスト・デプロイを回す<br>(資料未公開) |
+| **その他開発** | [Gitの使い方](/development/git/)+[GitHubを使った開発手法](/development/github/) | [jenkinsを触ってみる](/development/jenkins/) | [社内droneでCIテスト・デプロイを回す](/development/drone/) |
