@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "find . -H -type f -name '*.md' -and -not -iwholename '*/node_modules/*' -exec npx textlint {} +"
+    "test": "find -H . -type f -name '*.md' -and -not -iwholename '*/node_modules/*' -exec npx textlint {} +"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/iij/bootcamp#readme",
   "dependencies": {
     "textlint": "^11.3.1",
-    "textlint-rule-no-nfd": "^1.0.1",
-    "textlint-rule-preset-ja-engineering-paper": "^1.0.0"
+    "textlint-rule-preset-ja-engineering-paper": "^1.0.0",
+    "textlint-rule-preset-ja-technical-writing": "^3.1.3"
   }
 }
