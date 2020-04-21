@@ -1,5 +1,8 @@
 {
     "rules": {
-        "no-nfd": true
+        "preset-ja-technical-writing": {
+            "no-exclamation-question-mark": false,
+            "ja-no-weak-phrase": false
+        }
     }
 }
