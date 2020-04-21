@@ -1,6 +1,5 @@
 {
     "rules": {
-        "no-nfd": true,
         "preset-ja-engineering-paper": {
             "unify-kuten-and-touten": false,
             "prh": {
@@ -10,6 +9,10 @@
                     "node_modules/prh/prh-rules/languages/ja/typo.yml"
                 ]
             }
+        },
+        "preset-ja-technical-writing": {
+            "no-exclamation-question-mark": false,
+            "ja-no-weak-phrase": false
         }
     }
 }
