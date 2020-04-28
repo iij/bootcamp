@@ -22,18 +22,20 @@ docker pull jenkins/jenkins:lts
 
 ![what_jenkins](./images/what_jenkins.png)
 
-「ジョブ」と呼ばれる単位で設定を作成し、それを手動で実行したりシステムから自動連携して実行することで、デプロイやテストを実行できるツールです。
-ジョブの実行時は設定したシェルスクリプトを実行できるため、非常に柔軟なタスクの構築が可能です。
+Jenkins ではソフトウェアのテストやビルドに必要や様々なタスクを「ビルド手順」としてまとめ、パラメータや実行トリガなどを加えた「ジョブ」を作成します。
+そのジョブを手動で実行したり Git の commit に反応するようにしたり、システムから自動連携して実行することで、デプロイやテストの実行をサポートしてくれるツールです。
+ジョブのビルド手順はシェルスクリプトを直接指定できるほか、Java のビルドに使う Maven など様々なプラグインを導入し拡張することで、非常に柔軟なタスクを実行可能になっています。
+またマスタとスレーブ構成を構築し、大規模にスケールさせることも可能です。
 
-プラグインで機能を拡張できるほか、マスタとスレーブ構成にして大規模にスケールさせることも可能です。
+欠点としては、昨今の drone.io や GitHub Actions といったツールが Docker コンテナを使ってタスクの実行環境をカプセル化しているのに対し、Jenkins では実行環境はすべてのタスクで共通です。
+これはつまり、あるジョブで Ruby を実行したければ Jenkins が動作しているホストに Ruby をインストールする必要があります。そうするとジョブによって異なる Ruby のバージョンを使うのが非常に難しくなります。
 
-昨今の drone.io や GitHub Actions といったツールが、Docker コンテナを使ってタスクの実行環境をカプセル化しているのに対し、Jenkins では実行環境はすべてのタスクで共通です。
-これはつまり、あるジョブで Ruby を実行したければ Jenkins が動作しているホストに Ruby をインストールする必要があります。そうするとタスクによって異なる Ruby のバージョンを使うのが非常に難しくなります。
+昨今では Docker コンテナを前提とした開発環境やテストツールが増えていることもあり、ビルドやテストには Docker コンテナを使った CI ツールを使うことが大半です。
+しかし柔軟にタスクを構築可能な Jenkins はうまく管理すれば非常にシンプルで強力なツールになるため、現在でも活躍の機会は多々あります。
 
-そうした管理の煩雑さから、昨今では Docker コンテナを使った CI ツールを使うことが大半です。
-しかし単にシェルスクリプトを書けば何でも実行してくれる Jenkins は、うまく管理してやれば非常にシンプルで強力なツールになるため、現在でも活躍の機会は多々あります。
-
-このハンズオンでは扱いませんが、現在の Jenkins では「Pipeline」というジョブを定義することで、drone などと同じように JOB の実行内容をファイルで定義できます。また Docker プラグインを利用することで、Docker を使ったジョブの実行も可能です。
+:::tips
+このハンズオンでは扱いませんが、現在の Jenkins では「Pipeline」というジョブを定義することで、drone.io などと同じようにジョブの実行内容をファイルで定義できます。また Docker プラグインを利用することで、Docker を使ったジョブの実行も可能です。
+:::
 
 ### 補足: CI（継続的インテグレーション）
 
@@ -41,15 +43,15 @@ CI とは、プログラムの開発中にテストやデプロイを頻繁に�
 たとえば丸々一ヵ月開発してからはじめてデプロイ・テストをするよりも、変更の度に何回も軽めのテストを実施するほうが早期に問題を発見・修正できます。
 （もちろん最終的な結合試験も必要不可欠です）
 
-Jenkins のような CI ツールはそのような開発スタイルをサポートするためのツールで、GitHub の commit などをトリガにしてテストやデプロイを実施して結果を知らせてくれるツールの総称です。
+そうした開発をサポートするため、GitHub の commit などをトリガにしてテストやデプロイを実施して結果を知らせてくれるツールを総称して CI ツールと呼びます。 Jenkins もその一つです。
 
 最近の主要な CI ツールとしては
 
-- Jenkins
-- Circle CI
-- Travis CI
-- drone.io
-- GitHub Actions
+- Jenkins (https://www.jenkins.io/)
+- Circle CI (https://circleci.com/ja/)
+- Travis CI (https://travis-ci.org/)
+- drone.io (https://drone.io/)
+- GitHub Actions (https://github.co.jp/features/actions)
 
 などが上げられます。
 
@@ -60,9 +62,18 @@ Jenkins を試しに触るため、docker を使って手元に構築してみ�
 
 docker の使える環境で以下のコマンドを実行して、Jenkins を実行してください。
 
+windows
+
 ```bash
 mkdir jenkins
 docker run -p 8080:8080 -p 50000:50000 --mount type=bind,source=%CD%¥jenkins,target=/var/jenkins_home,ro jenkins/jenkins:lts
+```
+
+linux, mac
+
+```bash
+mkdir jenkins
+docker run -p 8080:8080 -p 50000:50000 --mount type=bind,source=${PWD}/jenkins,target=/var/jenkins_home,ro jenkins/jenkins:lts
 ```
 
 途中で以下のように初期パスワードが表示されるため、コピー&ペーストしておきましょう。
@@ -156,7 +167,7 @@ Webhook などの HTTP リクエストからジョブを実行するトリガを
 認証トークンを設定できるので適当な文字列設定して保存します。保存後、設定画面に書かれているように`localhost:8080/job/test-project/build`にリクエストしてみましょう。先ほど取得した API token を使用するため、ここで入力した JOB ごとの認証トークンは使用しません。
 
 ```bash
-curl -X POST --user 'admin:<API token>' 'http://localhost:8080/job/test-project/build?token=test-token'
+curl -X POST --user 'admin:<API token>' 'http://localhost:8080/job/test-project/build'
 ```
 
 上記を実行するとジョブが実行されます。
