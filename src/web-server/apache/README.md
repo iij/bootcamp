@@ -290,7 +290,7 @@ Installing collected packages: mod-wsgi
 Successfully installed mod-wsgi-4.7.1
 ```
 
-インストールすると以下のディレクトリに共有ライブラリが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
+インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
 
 ```sh
 ls /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
