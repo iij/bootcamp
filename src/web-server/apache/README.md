@@ -9,25 +9,32 @@ footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 以下のように`docker pull`をしておいてください。
 
 ```bash
-docker pull python:buster
+docker pull python:3.8.2-buster
 ```
 
 ## Apacheとは
 
-Apacheはnginxと並んで2台勢力を誇っているWebサーバソフトウェアのひとつです。
+「Apache HTTP Server」はnginxと並んで2台勢力を誇っているWebサーバソフトウェアのひとつです。
+CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
+
 Webサーバソフトウェアとは、HTTPリクエストを受けて何らかのレスポンスを返すソフトウェアのことで、たとえばHTMLファイルなどをブラウザに返すなどの役割を持っています。
 Webを扱ううえでほぼ必ず必要になる、現代に欠かせないソフトウェアです。
 
 ### Webサーバソフトウェアのユースケース
 
-ApacheやnginxのユースケースはHTMLなど静的ファイルの配信だけではありません。Webアプリケーションを構成する動的サイトの構築にも利用します。
+ApacheやnginxのユースケースはHTMLなど静的ファイルの配信だけではなく、動的なWebアプリケーションの構築にも利用します。その際に利用するのがmoduleという仕組みです。
 
-Apacheやnginxはmodule（プラグイン）というしくみで、さまざまなソフトウェアと連携させることができます。moduleを使うことで、PHPやPython、Javaなどで構成した動的サイトをApacheから直接動作させることでWebアプリケーションを構成します。
+Apacheやnginxはmoduleというしくみで、さまざまなソフトウェアと連携させたり機能を拡張できます。moduleを使うことで、PHPやPython、JavaなどのWebアプリケーションをApacheから直接呼び出すことができます。
 
-また直接組み込むのではなく、ユーザからのリクエストを受け取ってそのままWebアプリケーションに転送する役割を持たせることも多く行われます。
-これはWebアプリケーションを構築するさまざまな言語（Go, Java, Ruby, Python, etc...）で実装されたWebサーバは基本的に管理的な実装になっており、不具合があったり脆弱性に弱かったりするためです。
+PythonやJavaなどのWebアプリケーションをmoduleから動作させる大きな利点として、プロセス管理をApacheに任せられることがあります。
+Pythonなどの言語は基本的にシングルプロセスで動作するため、同時に多くのリクエストを捌く必要のあるWebアプリケーションとして動作させるには、何らかの方法でマルチプロセス化する必要があります。
+一方Apacheには多くのリクエストを捌くためpre-forkなどのマルチプロセスを管理する仕組みが備わっています。ApacheのmoduleからWebアプリを実行することで、Apacheによるプロセス管理の恩恵に預かることができます。
 
-ApacheやnginxといったWebサーバ専用ソフトウェアは長年バグ修正や脆弱性対応が行われ、高い信頼性を持っているためです。Webサーバは脆弱性をつく攻撃を多く受けるため、前段に信頼性の高いこれらのソフトウェアを起き、後ろにあるWebアプリケーションを保護する役割を持ちます。
+一方[Unicorn(ruby)](https://yhbt.net/unicorn/)や[Gunicorn(Python)](https://gunicorn.org/)といったツールでマルチプロセス対応をしたり、Go言語など初めから並列処理を前提にした言語の場合はApacheでプロセス管理を行う必要はありません。
+
+ただしその場合もユーザーからのHTTPリクエストをWebアプリケーションが直接受けるのではなく、必ずApacheやNginxで受けてからリクエストをプロキシします。
+これはApacheやnginxといったWebサーバ専用ソフトウェアは長年バグ修正や脆弱性対応が行われ、高い信頼性を持っているためです。
+Webサーバは脆弱性をつく攻撃を多く受けるため、前段に信頼性の高いこれらのソフトウェアを起き、後ろにあるWebアプリケーションを保護する役割を持ちます。
 
 そのほかにもroutingやlogging、アクセス管理などWebサーバに求められる機能を提供してくれるのがWebサーバソフトウェアです。
 
@@ -36,52 +43,51 @@ ApacheやnginxといったWebサーバ専用ソフトウェアは長年バグ修
 Apacheは「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。
 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられます。
 
-(最近ではnginxやIISが逆転しつつあるようです => [February 2020 Web Server Survey](https://news.netcraft.com/archives/2020/02/20/february-2020-web-server-survey.html))
+以前は大量のリクエストを受けた際にプロセスをforkできず、リクエストを捌き切れなくなる（いわゆるC10K問題）ことが問題視されました。
+その際nginxをはじめとして新しいWebサーバーソフトウェアが登場しましたが、Apache自体もworkerやevent MPMといった新しい仕組みを導入し、動作も安定していることからいまだに高いシェアを占めています。
 
-信頼性が高く動作も高速で、運用ノウハウも非常に多く手に入れることができます。
-そしてmoduleと呼ばれるプラグインの仕組みによってさまざまなソフトウェアと連携できます。
-
-もともとはリクエストごとにプロセスが1つ必要だったため、リクエストが増えた際にプロセスの上限にあたってしまうC10K問題が問題視されましたが、2.4からは`worker`や`evnet`といったプロセス数に依存しない並列処理が可能な機能が実装されています。
+参考: [February 2020 Web Server Survey](https://news.netcraft.com/archives/2020/02/20/february-2020-web-server-survey.html))
 
 ## Apacheをインストールして立ち上げる
 
-なにはともあれ動かしてみましょう。今回はubuntuをdockerで立ち上げてその中にApacheをインストールしてみます。
+なにはともあれ動かしてみましょう。今回はdebianをdockerで立ち上げてその中にApacheをインストールしてみます。
 
 まずは以下のようにdockerコンテナの中に入ります。
 
 ```bash
-docker run --rm -itd --name test-ubuntu -p 8080:80 -p 8081:81 python:buster /bin/bash
-docker exec -it test-ubuntu /bin/bash
+docker run --rm -itd --name test-debian -p 8080:80 -p 8081:81 python:3.8.2-buster /bin/bash
+docker exec -it test-debian /bin/bash
 ```
 
 入れたら`apt install`を使ってApacheをインストールしてみましょう。
 
 ```bash
-root@0094fde0c301:/# apt update
-Get:1 http://security.ubuntu.com/ubuntu focal-security InRelease [107 kB]
-Get:2 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [4673 B]
-Get:3 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [60.9 kB]
-Get:4 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [8273 B]
-~~~略~~~
+apt update
 
-root@0094fde0c301:/# apt install -y apache2 apache2-dev vim
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-~~~略~~~
-Updating certificates in /etc/ssl/certs...
-0 added, 0 removed; done.
-Running hooks in /etc/ca-certificates/update.d...
-done.
-root@0094fde0c301:/#
+#Get:1 http://security.ubuntu.com/ubuntu focal-security InRelease [107 kB]
+#Get:2 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [4673 B]
+#Get:3 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [60.9 kB]
+#Get:4 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [8273 B]
+#~~~略~~~
+
+apt install -y apache2 apache2-dev vim
+
+#Reading package lists... Done
+#Building dependency tree
+#Reading state information... Done
+#~~~略~~~
+#Updating certificates in /etc/ssl/certs...
+#0 added, 0 removed; done.
+#Running hooks in /etc/ca-certificates/update.d...
+#done.
 ```
 
 途中でtimezoneなどを聞かれたら`Asia`や`Tokyo`を選んでください。以下のようにバージョンを表示できれば成功です。
 
 ```shell
-root@eafdc5e6de33:/# apache2 -v
-Server version: Apache/2.4.38 (Debian)
-Server built:   2019-10-15T19:53:42
+apache2 -v
+#Server version: Apache/2.4.38 (Debian)
+#Server built:   2019-10-15T19:53:42
 ```
 
 以下のようにApacheを起動してください。
@@ -149,7 +155,7 @@ echo 'This is site 81!' > /var/www/html/site-81/index.html
 - virtual host設定の追加
 
 の2つです。listen portの追加は`/etc/apache2/ports.conf`に書きましょう。
-以下のように`Listen 81`の記述を追加します。
+以下のように`Listen 80` の下に `Listen 81`の記述を追加します。
 
 ```apache
 # If you just change the port or add more ports here, you will likely also
@@ -190,6 +196,13 @@ VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行き
 
 設定ファイルを作成したら`a2dissite`、`a2ensite`コマンドを使って設定を有効化しましょう。
 
+:::tip
+`a2dissite`や`a2ensite`といったコマンドは実はapache本体の機能ではありません。`a2ensite`は`/etc/apache2/sites-available`以下のファイルのsimlinkを`/etc/apache2/sites-enable`以下に追加するだけのコマンドです。
+実際のApacheは`/etc/apache2/sites-enable`以下のコンフィグファイルをloadしているため、コマンドによってサイトが有効化されたように見えるのです。
+
+CentOSなど他のディストリビューションでは、これらのコマンドが存在しないことが多いので注意してください。
+:::
+
 ```sh
 a2dissite 000-default
 a2ensite site-80
@@ -217,6 +230,9 @@ Basic認証用のmoduleが既にインストールされているはずなので
 
 ```sh
 a2enmod auth_basic
+ls -l /etc/apache2/mods-enabled/auth_basic.load #確認
+
+#lrwxrwxrwx 1 root root 33 May 10 23:22 /etc/apache2/mods-enabled/auth_basic.load -> ../mods-available/auth_basic.load
 ```
 
 まずはパスワードが記載された`.htpasswd`ファイルを作成します。
@@ -251,8 +267,8 @@ htpasswd -c /etc/apache2/auth/.htpasswd admin
 このdocker imageには既にpythonがインストールされています。
 
 ```sh
-# python --version
-Python 3.8.2
+python --version
+#Python 3.8.2
 ```
 
 Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
@@ -278,16 +294,17 @@ def application(environ, start_response):
 次にwsgiを動かすためのApache moduleをインストールします。
 
 ```sh
-# pip install mod-wsgi
-Collecting mod-wsgi
-  Using cached mod_wsgi-4.7.1.tar.gz (498 kB)
-Building wheels for collected packages: mod-wsgi
-  Building wheel for mod-wsgi (setup.py) ... done
-  Created wheel for mod-wsgi: filename=mod_wsgi-4.7.1-cp38-cp38-linux_x86_64.whl size=809821 sha256=570b19e67813e819f04ee00006b5c556339e37a03dea4af0021837b098588c0d
-  Stored in directory: /root/.cache/pip/wheels/e9/82/71/1b42d6274a24af477453cecc993213fc8abd15433d80b01e93
-Successfully built mod-wsgi
-Installing collected packages: mod-wsgi
-Successfully installed mod-wsgi-4.7.1
+pip install mod-wsgi
+
+#Collecting mod-wsgi
+#  Using cached mod_wsgi-4.7.1.tar.gz (498 kB)
+#Building wheels for collected packages: mod-wsgi
+#  Building wheel for mod-wsgi (setup.py) ... done
+#  Created wheel for mod-wsgi: filename=mod_wsgi-4.7.1-cp38-cp38-linux_x86_64.whl size=809821 sha256=570b19e67813e819f04ee00006b5c556339e37a03dea4af0021837b098588c0d
+#  Stored in directory: /root/.cache/pip/wheels/e9/82/71/1b42d6274a24af477453cecc993213fc8abd15433d80b01e93
+#Successfully built mod-wsgi
+#Installing collected packages: mod-wsgi
+#Successfully installed mod-wsgi-4.7.1
 ```
 
 インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
