@@ -344,3 +344,79 @@ service apache2 restart
 `http://localhost:8080/app` にアクセスしてみてください。`Hello! This is python application!` が表示されるでしょうか。
 
 うまくいったら`app.py`を適当に変更して、Pythonが動的に実行されているのを確認してください。
+
+## パフォーマンス測定（任意課題）
+
+ApacheにはApache Benchというパフォーマンス測定ツールがついています。これを使ってMPMの違いがどのようにパフォーマンスに影響するか確認してみましょう。
+
+Apache Benchは`ab`コマンドで使用できます。試しに先ほどのPythonアプリケーションのパフォーマンスを測定してみましょう。
+
+```sh
+ab -n 1000 -c 100 localhost:80/app
+```
+
+これは`localhost:80/app`に対して合計10000リクエストを同時に100ずつ実行するコマンドです。
+実行結果には成功したリクエスト数や処理時間など、分析に使える情報が書かれています。
+
+同時に1000リクエストを投げても、この時点では捌けていると思います。
+
+```sh
+ab -n 1000 -c 1000 localhost:80/app
+```
+
+これだけでは面白くないので、pythonアプリにわざとディレイを入れてみましょう。
+
+`vim /var/www/html/site-80/app.py`
+
+```python
+import time
+
+def application(environ, start_response):
+    time.sleep(3)
+
+    status = '200 OK'
+    output = b'Hello! Thisa is python application!'
+
+    response_headers = [('Content-type', 'text/plain'),
+                        ('Content-Length', str(len(output)))]
+    start_response(status, response_headers)
+    return [output]
+```
+
+保存したらもう一度
+
+```sh
+ab -n 1000 -c 1000 localhost:80/app
+```
+
+を試してみましょう。理論上は3秒で全部のリクエストが成功するはずですがどうでしょうか。
+さらにもっと数を増やすとどうでしょうか。
+
+他にも色んなことを試してみてください。
+
+- psコマンドでApacheのプロセスを確認して、リクエスト中に何が起こってるのか確認しましょう。
+  - apache の再起動直後とパフォーマンス測定後の変化を見てみましょう
+- `/var/log/apache2/error.log` を確認してみましょう
+- MPM(Multi-Processing-Module)をpreforkやworkerに変えるとどうなるでしょうか
+- MPMの設定を変えてパフォーマンスチューニングをしてみましょう
+
+### 補足: MPMの変更
+
+現在のMPMの確認
+
+```sh
+apachectl -V | grep MPM
+
+#Server MPM:     event
+```
+
+MPMをpreforkに変更する。
+
+```sh
+a2dismod mpm_event
+a2enmod mpm_prefork
+service apache2 restart
+apachectl -V | grep MPM
+
+#Server MPM:     prefork
+```
