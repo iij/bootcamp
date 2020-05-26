@@ -12,10 +12,10 @@ prior_knowledge: OpenSSH, YAML
 この講義ではハンズオン形式でAnsibleについて学びます。
 ハンズオン用の教材は[こちら](https://github.com/iij/ansible-exercise)になります。
 
-### 事前準備
+### 下準備
 
 この講義を受けるにはいくつかの環境準備が必要です。
-教材のREADMEに従い、講義当日までに環境を整えておいて下さい。
+教材のREADMEに従い、講義当日までに環境を整えてください。
 
 ### ネットワーク構成
 
@@ -154,7 +154,7 @@ Ansibleに関わるファイルやディレクトリのみを抜粋していま�
     └── proxy.yml  # Proxy配下でハンズオンを実施するためのファイル
 ```
 
-さらに詳しく知りたい人はAnsibleの[ベストプラクティス](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)をご覧下さい。
+さらに詳しく知りたい人はAnsibleの[ベストプラクティス](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)をご覧ください。
 
 ### ファイル編集
 
@@ -293,7 +293,7 @@ server {
 ```
 
 Nginxの設定について説明することは主題から外れるので、この講義では行いません。
-興味のある方はNginxの[公式ドキュメント](http://nginx.org/en/docs/http/configuring_https_servers.html)をご覧下さい。
+興味のある方はNginxの[公式ドキュメント](http://nginx.org/en/docs/http/configuring_https_servers.html)をご覧ください。
 
 #### playbooks/rp.yml
 
@@ -343,7 +343,7 @@ ansible-playbook site.yml
 `failed=0`と表示されれば実行は成功です。
 
 ブラウザで<https://localhost:8443>にアクセスして確認します。
-自己証明書を使っているためブラウザから注意文言が表示されますが、スキップして下さい。
+自己証明書を使っているためブラウザから注意文言が表示されますが、スキップしてください。
 すると、先程と同じ画面が表示されます。
 
 ここで、もう一つ注目してほしい部分があります。
@@ -385,7 +385,7 @@ nginx_version: 1.18.0
 Ansibleには変数の優先度が設定されており、同じ名前の変数は優先度の高い方が有効になります。
 これを利用することでロールの完全性を担保しつつ、タスクの内容を編集することが出来ます。
 
-具体的な優先度は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable)をご覧下さい。
+具体的な優先度は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable)をご覧ください。
 
 ファイルの準備が出来たらAnsibleを実行します。
 先程と同じ様に`ansible-playbook -C site.yml`を実行しても良いのですが、
@@ -405,7 +405,7 @@ Ansibleにはタグという機能があり、タスクやロールなどに任�
 実は先程の`playbooks/rp.yml`にタグが設定してありました。
 
 タグは増やしすぎても管理が大変になるので、ある程度のまとまりやよく使うタスクにのみ付与するのがいいでしょう。
-タグの詳細については[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)をご覧下さい。
+タグの詳細については[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)をご覧ください。
 
 `failed=0`という表示が確認できたら`-C(--check)`のオプションを外し、上記コマンドを実行しましょう。
 
@@ -423,7 +423,7 @@ ansible rp1 -m command -a 'nginx -V'
 #### inventories/hosts
 
 まずはAnsibleの管理対象にアプリケーション増設用のサーバ(app2)を追加します。
-教材の`inventories/host`を下記の様に追記して下さい。
+教材の`inventories/host`を下記の様に追記してください。
 
 ```diff
 [app]
@@ -437,7 +437,7 @@ Ansibleには管理対象のホストをグルーピングし、設定したグ�
 こうすることで、柔軟かつ効率的にサーバを管理することが出来ます。
 この講義ではそれぞれ1台しかありませんが、データベースサーバやリバースプロキシサーバもグループに分けられています。
 
-Ansibleのグループやホストについての詳細は[公式ドキュメント](hhttps://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)をご覧下さい。
+Ansibleのグループやホストについての詳細は[公式ドキュメント](hhttps://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)をご覧ください。
 
 #### inventories/group_vars/all.yml
 
@@ -459,7 +459,7 @@ Nginxはロードバランサ(負荷分散装置)としての機能も備えて�
 こうすることで今まで`app1`サーバにしかいかなかった通信が`app2`にも行くようになり、負荷を分散することが出来ます。
 
 Nginxの機能について詳しく説明することは主題から外れてしまいますので、この講義では行いません。
-更に詳しく知りたい人はNginxの[公式ドキュメント](http://nginx.org/en/docs/http/load_balancing.html)をご覧下さい。
+更に詳しく知りたい人はNginxの[公式ドキュメント](http://nginx.org/en/docs/http/load_balancing.html)をご覧ください。
 
 #### 実行
 
@@ -494,7 +494,7 @@ Ansibleの実行ログの中に、`RUNNING HANDLER`という表記が確認で�
 これにより設定ファイルが変更された場合のみ、アプリケーションやデータベースなどのプロセスを再起動することが出来ます。
 影響範囲を限定することができる為、安全にホストに対して変更を加えることが出来ます。
 
-詳細は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change)をご覧下さい。
+詳細は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change)をご覧ください。
 
 ## 4. [応用課題] ACLの導入
 
