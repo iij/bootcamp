@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="151px" height="71px" viewBox="-0.5 -0.5 151 71" content="&lt;mxfile host=&quot;&quot; modified=&quot;2020-05-31T15:09:35.874Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;_zHGImonC_pgZ30vHhTK&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;L_JBZul8hPn8oqrB0iM2&quot; name=&quot;Page-1&quot;&gt;xVVLc5swEP41HNvhUWx8TPxIeminM85MnKMiFlAiECNkA/31lSzJIGPncejkwux+u1ppv28lvGhZdncc1cUvlgL1Qj/tvGjlhWGczOVXAb0GgmAeayTnJDXYAGzJXzCgb9A9SaFxEgVjVJDaBTGrKsDCwRDnrHXTMkbdXWuUwwTYYkSn6CNJRaHRJJwP+D2QvLA7B7OFjpTIJptOmgKlrB1B0dqLlpwxoa2yWwJV5Fle9LrNlejpYBwq8ZEF/stzfl/h3/3u548H/Bi3s+Xrt1BXOSC6Nw2bw4reMiCrSLKlc9sWRMC2RlhFWqm3xApRUukF0kRNrRXISAdy09uMULpklPFjoShFkGRY4o3g7BVGkRlO4DmTkWlPps0DcAHdCDI93gErQfBeppjo3NBtBi42bjuIZwUpRrpZDJlxyU91B0alYUj9BMHxlOB15CWBd7MxxiI5GqGyTWhmjXVOxEQQzvZVqghe+e+L8iUaBL4rwmIqQnBJheh/qbD4wJhX6Y16L6SHKWoagh8KUrlkatLsO6AQ6IjYGSWU/aTs77HxVt0otOqtU8mWdkOicp9sPeUMy46eXefq/nlhZYcbQm0vV2Vu2J5jeH+kBeI5iDfyDMeQOi/sdGhGUxFfGAqLcaBIkIP7Ll+aFLPDH0ZkZ1dnMorPhk33bVaN39HzQvFZIf+skCZmUkhOF+pHabVKaK4fOHG3Cfz47BrogsOlOFF66Z5Id/jV6PThhx2t/wE=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <ellipse cx="10" cy="10" rx="10" ry="10" fill="#dae8fc" stroke="#6c8ebf" pointer-events="all"/>
+        <rect x="30" y="40" width="120" height="30" fill="#dae8fc" stroke="#6c8ebf" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 55px; margin-left: 31px;">
+                        <div style="box-sizing: border-box; font-size: 0; text-align: center; ">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; ">
+                                はじめてのgit
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="90" y="59" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    はじめてのgit
+                </text>
+            </switch>
+        </g>
+        <path d="M 30 55 L 10 55 L 10 26.37" fill="none" stroke="#6c8ebf" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 10 21.12 L 12.33 28.12 L 10 26.37 L 7.67 28.12 Z" fill="#6c8ebf" stroke="#6c8ebf" stroke-miterlimit="10" pointer-events="all"/>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://desk.draw.io/support/solutions/articles/16000042487" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Viewer does not support full SVG 1.1
+            </text>
+        </a>
+    </switch>
+</svg>
