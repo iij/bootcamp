@@ -119,7 +119,7 @@ $ git init
 
 ## 4. Gitの基本 変更の記録
 
-![gitで管理されるファイルの状態](./images/git_stage.svg)
+![gitで管理されるファイルの状態](./images/git_stage.drawio.svg)
 
 リポジトリの中にgitで変更を管理しないファイルを置いておくこともできます。
 gitで変更を管理することを`追跡(track)`と呼びます。
