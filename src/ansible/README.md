@@ -61,7 +61,7 @@ docker exec -it docker-compose_ansible_1 bash
 Mac/Linux
 
 ```sh
-docker-compose -f docker-compose/docker-compose.yml start
+docker-compose -f docker-compose/docker-compose.yml up -d
 docker exec -it docker-compose_ansible_1 bash
 ```
 
