@@ -9,23 +9,13 @@ prior_knowledge: 特になし
 
 # Java; springboot
 
-## 前提条件
+IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、次の事前準備へ進んでください。
 
-必須
+> git clone https://github.com/iij/bootcamp.git
 
-- Docker のインストールが完了していること
-- ２ GiB 以上のディスク空き容量があること
-- Java に HelloWorld する勇気
+## 事前準備
 
-推奨
-
-- メモリ 8GiB 以上のホストマシン
-- (プロキシ環境下で実施する場合) ホストマシンにプロキシの設定が入っていること
-- VSCode のインストール、および RemoteDevelopment の拡張機能が入っていること
-
-## 事前準備; prepare
-
-Docker イメージの pull と VSCode の設定を先に完了しておいてください。
+事前準備として、Docker の動作確認と IDE の設定などを行っておいてください。Java イメージや依存関係などのダウンロードを行うので、安定したネットワーク環境下で実行することをお勧めします。
 
 詳細 > [事前準備・環境構築編](./prepare.md)
 
