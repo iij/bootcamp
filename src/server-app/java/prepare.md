@@ -44,7 +44,7 @@ Java の開発にはメモリーが取られます。ホストマシンのリソ
 
 PROXY_HOST=proxy.example.com # set your proxy host
 PROXY_PORT=8080 # set your proxy port
-JAVA_OPTS=-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT $JAVA_OPTS
+JAVA_OPTS="-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT $JAVA_OPTS"
 ```
 
 :::
