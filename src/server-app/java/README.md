@@ -9,9 +9,19 @@ prior_knowledge: 特になし
 
 # Java; springboot
 
-IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、次の事前準備へ進んでください。
+IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、次へ進んでください。
 
 > git clone https://github.com/iij/bootcamp.git
+
+## はじめに
+
+この Bootcamp では Java を利用して Springboot の表面的な機能をさらっていくことを目標としています。
+
+具体的には、下記を達成できるようになることを期待しています。
+
+- "API サーバー"の概念を知る
+- 今後、Springboot のプロジェクトに参加した際のキャッチアップの短縮
+- 簡単な テスト用の API モックサーバーの作成、メンテナンスができるようになる
 
 ## 事前準備
 
@@ -21,7 +31,7 @@ IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcam
 
 ## 難易度表記について
 
-この Bootcamp で解説する内容は膨大です。(予定)そのため、各項目に下記のような難易度表記をつけて読み飛ばしの参考にしてください。(初心者の人は出来る限り触ってみてください)
+この Bootcamp で解説する各項目に、下記のような難易度表記をつけてあります。読み飛ばしの参考にしてください。(初心者の人は出来る限り触ってみてください)
 
 |    表記    |       ターゲット層       |                                 例                                  |
 | :--------: | :----------------------: | :-----------------------------------------------------------------: |
@@ -31,15 +41,9 @@ IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcam
 |    ★★★     | MVC フレームワーク経験者 |          何かしらの MVC フレームワークで HelloWorld 出来る          |
 |    ★★★★    |           熟練           |                          まさかり飛ばす人                           |
 
-## java Bootcamp
+## java について
 
-### TL; DR
-
-> Java（ジャヴァ）は、クラスベースのオブジェクト指向の、実装の依存関係をできるだけ少なくするように設計された汎用プログラミング言語である。これは、アプリケーション開発者が一度書いたらどこでも実行できるようにすること(WORA:write once, run anywhere)[1]を目的としている。つまり、コンパイルされた Java コードは、再コンパイルを必要とせずに Java をサポートするすべてのプラットフォーム上で実行できる
-
-引用: Wikipedia「Java」 2020-05-26 19:00 より
-
-### 本編
+Springboot を動かすために、この Bootcamp では言語として Java/管理ツールとして Gradle を利用します。しかし Bootcamp の場でそれぞれについて深く解説する時間は取れないため、Bootcamp を進める上で最低限知っておくべき知識について下記に記載しておきました。
 
 詳細 > [bootcamp/java](./java.md)
 
@@ -51,7 +55,7 @@ SprinbBoot は今や Java 界隈最大手の Web フレームワークです。�
 
 それでは始めましょう。
 
-### 初回起動
+### 初回起動チェック
 
 [事前準備・環境構築編](./prepare.md) を終えた状態になっていることを確認します。ホストマシンのブラウザから[localhost:8080](http://localhost:8080)にアクセスすると下記のエラー画面が出る状態になっていることを確認してください。
 
@@ -61,6 +65,18 @@ SprinbBoot は今や Java 界隈最大手の Web フレームワークです。�
 
 - [ ] [事前準備・環境構築編](./prepare.md) を一読し、完了した。
 - [ ] [localhost:8080](http://localhost:8080)にアクセスして Whitelabel Error Page が表示される。
+
+:::tip
+
+Springboot のプロジェクトは簡単に作成することができます。
+
+Springboot には"Spring Initializr"というツールが用意されており。Springboot を始めるための雛形を GUI で作成することができます。(CLI で作成もできます)
+
+[Spring Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.0.BUILD-SNAPSHOT&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web)
+
+今回提供している/app 配下の Java プロジェクトは上記から作成した雛形に`com.example.demo.controller.DemoController.java`を追加しただけのプロジェクトです。
+
+:::
 
 ### DI について
 
@@ -180,7 +196,7 @@ public class StudentController {
     /**
      * 登録されている生徒エンティティを全て返却する
      *
-     * TODO 適切なアノテーションを付与してGET /studentでHTTPを受け取れるようにする ← DONE
+     * TODO 適切なアノテーションを付与してGET /studentでHTTPを受け取れるようにする
      * TODO 適切な返却の型を指定する
      * TODO 内部ロジックを書く
      */
@@ -198,6 +214,11 @@ public class StudentController {
 curl localhost:3000
 > hi
 ```
+
+チェックポイント
+
+- [ ] 空のクラスに`RestController`アノテーションを付与して、コントローラーとして起動することができた
+- [ ] API のエンドポイントのパスの設定方法を理解した
 
 ##### オブジェクトを返却する
 
@@ -300,7 +321,9 @@ curl localhost:8080/student
 > {"studentId":"studentId","name":"hello","score":100}
 ```
 
+:::tip
 すでに別のフレームワークを経験したことのある人であれば「Serializer は？」と感じる人もいるかもしれません。しかし SpringBoot では Serializer を意識する必要はないように作られています。もちろん自分でシリアライズ・デシリアライズを指定/実装することもできます。
+:::
 
 最後に retrieveStudents は「登録されている全ての生徒 Entity を返却」する関数なので、List を返却するように変更しておきましょう。
 
@@ -319,11 +342,17 @@ curl localhost:8080/student
     // snip
 ```
 
+チェックポイント
+
+- [ ] Java の POJO に触れた
+- [ ] API のエンドポイントからオブジェクトを返却する方法を理解した
+- [ ] GET /students のエンドポイントのインターフェースが決定した
+
 ##### パスパラメータから情報を受け取ろう
 
 次は/student/{生徒 ID}の API を作ってみましょう。
 
-URL のパスからパラメータをもらってくる場合、パスに変数名を埋め込みその変数を関数の引数で指定することでパスから値を引き抜いてくることができます。
+URL のパスからパラメータをもらってくる場合、パスに変数名を埋め込みその変数を関数の引数で指定することでパスから値を引き抜いてくることができます。そのパスの変数のことをパスパラメータを呼びます。
 
 下記の通り実装して動作することを確認しましょう。
 
@@ -386,6 +415,11 @@ curl localhost:8080/student/hello
     }
     // snip
 ```
+
+チェックポイント
+
+- [ ] API のエンドポイントからパラメータを引き抜いてくる方法を理解した
+- [ ] GET /student/{生徒 ID} のエンドポイントのインターフェースが決定した
 
 ##### POST リクエストを受け取ってみよう
 
@@ -450,9 +484,14 @@ curl -X POST localhost:8080/student -H 'Content-type: application/json' -d '{"na
 > {"studentId":"studentId","name":"hello POST","score":50}
 ```
 
+チェックポイント
+
+- [ ] API のエンドポイントで POST リクエストを受け取る方法を理解した
+- [ ] POST /student のエンドポイントのインターフェースが決定した
+
 ##### 業務処理を作ろう
 
-コントローラー部分を作成したので、実際に生徒 entity を管理するクラスを実装していきましょう。今回はあくまでも SpringBoot の Bootcamp なので RDS や KVS などに永続化することはせず、ヒープメモリに保存するだけに留めておきます。
+コントローラー部分を作成したので、実際に生徒 entity を管理するクラスを実装していきましょう。今回はあくまでも SpringBoot の Bootcamp なので、RDS や KVS などに永続化することはせずヒープメモリに保存するだけに留めておきます。
 
 下記の java ファイルを作成して、仮の実装をしましょう。
 
@@ -534,6 +573,11 @@ public class StudentService {
 
 ここまでできたら、再度 bootRun して動作を確認しましょう。
 
+チェックポイント
+
+- [ ] DI コンポーネントの作成の方法を理解した
+- [ ] DI コンポーネントの利用方法を理解した
+
 ### 演習：生徒管理の API を実装してみましょう！
 
 ここまでで
@@ -548,9 +592,6 @@ public class StudentService {
 
 また、サンプルとして実装を終えたコードを用意しておきます。必要な方は実装を確認してみてください。
 
-#### ヒント
-
-- StudentController#updateStudent
-  - GET メソッドのエンドポイントを作成する場合は GetMapping、POST メソッドのエンドポイントを作成する場合は PostMapping。であれば PUT メソッドのエンドポイントを作成する場合は……？
+TODO : Github のリポジトリを紐つける
 
 <credit-footer/>
