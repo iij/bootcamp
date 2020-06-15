@@ -23,8 +23,7 @@ jobs:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx textlint -f checkstyle "src/**/*.md" \
-            | reviewdog -reporter=github-pr-review \
+            | reviewdog -reporter=github-pr-check \
                         -f=checkstyle \
                         -name="textlint" \
-                        -reporter="github-pr-review" \
                         -level="${INPUT_LEVEL:-'error'}"
