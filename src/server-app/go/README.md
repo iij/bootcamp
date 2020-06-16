@@ -62,6 +62,14 @@ Googleが開発しているプログラミング言語。 \
 * ...
   * 参考: [標準パッケージ一覧](https://golang.org/pkg/)
 
+### どこで使われているの?
+* [Kubernetes](https://github.com/kubernetes/kubernetes)
+* [Docker](https://github.com/docker/docker-ce)
+* [ghq](https://github.com/x-motemen/ghq)
+* [peco](https://github.com/peco/peco)
+
+コンテナ関連(Kubernetes 関連)やCLIツールでの採用が多い印象
+
 ## 1. Hello, 世界
 [The Go Playground](https://play.golang.org/p/7vin2BK8_A6) \
 チュートリアルリポジトリの`1_hello_world`ディレクトリにサンプルコードが入っています。
@@ -89,7 +97,7 @@ Hello, 世界
 [The Go Playground](https://play.golang.org)はGoのプログラムを手軽に実行できる環境で、Go公式に用意されています。 \
 後述しますが、一部のパッケージが動かないようにされていますが、簡単なコードを試しに動かすためには便利です。
 
-念の為ですが、外部サイトになるため、業務で扱うプロダクトコードをここで実行してはいけません。
+念の為ですが、外部サイトになるため、業務で扱うプロダクトコードのセンシティブな情報をここで入力してはいけません。
 
 #### 1-1-1. package文
 ```go
@@ -127,7 +135,7 @@ import "fmt"
 ```go
   fmt.Println("Hello, 世界")
 ```
-具体的には、ここで`fmt`パッケージで定義されている`Println`関数を呼ぶために、`import`文で`fmt`パッケージを読み込んでいます。
+具体的には、ここで`fmt`パッケージで定義されている[`Println`](https://golang.org/pkg/fmt/#Println)関数を呼ぶために、`import`文で`fmt`パッケージを読み込んでいます。
 
 #### 1-1-3. func
 ```go
@@ -272,7 +280,11 @@ func main() {
 		Handler: mux,
 	}
 
-	server.ListenAndServe()
+	err := server.ListenAndServe()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -303,6 +315,8 @@ $ go run main.go
 $ curl http://localhost:8080
 hello, world!
 ```
+
+HTTPサーバを起動している方のプロセスを終了するためにはCtrl-Cなどで終了を伝えましょう。
 
 ### 3-2. 解説
 #### 3-2-1. 構造体と独自型とメソッド
@@ -335,7 +349,7 @@ a.Hoge()
 ```
 このようにすることで、オブジェクト指向言語におけるクラスとメソッドのようなことができます。 \
 
-メソッドは型に対して定義することができるので以下のようなことも可能です。 \
+例えば以下のようなコードも書けます。 \
 [The Go Playground](https://play.golang.org/p/nb76TxzaYMb)
 
 ```go
@@ -379,13 +393,14 @@ URLは`スキーマ名://ホスト名:ポート番号/パス名`という構造�
 		Handler: mux,
 	}
 
-	server.ListenAndServe()
+	err := server.ListenAndServe()
 ```
 
 `http.Server`はHTTPサーバそのものを表す型です。 \
 `Addr`フィールドにHTTP通信を待ち受けるアドレスを設定し、`Handler`フィールドに先程説明した`ServeMux`を設定します。
 
-そしてその`http.Server`型の値のメソッドである`server.ListenAndServe()`関数で実際にサーバを起動してHTTP通信を待ち受け始めます。
+そしてその`http.Server`型の値のメソッドである`server.ListenAndServe()`関数で実際にサーバを起動してHTTP通信を待ち受け始めます。 \
+注意すべきはこの`server.ListenAndServe()`は即時では終了せず、明示的にプロセスに終了方法を伝えるまでは実行し続けることです。 \
 
 ##### 3-2-2-3. ハンドラ
 ```go
@@ -401,6 +416,62 @@ HTTP通信が飛んでくると`helloHandler()`という関数がそのリクエ
 参考: [ResponseWriter](https://golang.org/pkg/net/http/#ResponseWriter)
 
 `fmt.Fprintln()`関数は第二引数の値を第一引数の`Write()`メソッドを使って書き込む、という関数で、今回はその挙動を利用してレスポンスを返しています。
+
+#### 3-2-3. (おまけ)エラー処理
+```go
+	err := server.ListenAndServe()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+```
+
+Goには他の言語にあるような強力な例外機構は存在しません(`panic()`/`recover()`という組み込み関数は存在する)。 \
+これはGoがエラー処理の方法として、例外ではなく明示的なエラー値の返却という戦略を推奨しているからです。
+
+Goは例えば以下のように複数の値を返す関数が記述できます。(タプル型が存在する訳ではなく、このような文法です)
+
+```go
+// SplitFrac は文字列で表された分数(ex. "1/2")の分母と分子をint型で返す
+func SplitFrac(freq string) (int, int)
+```
+
+これを利用して、何かエラーが発生するかもしれない関数では返り値の最後に`error`型(標準で用意されたインターフェイス型)を返します。
+
+例えば先の関数の例だと、分数の形をしていない文字列を引数に入れると処理に失敗する、と想定できます。 \
+その場合は以下のような関数にします。
+
+```go
+// SplitFrac は文字列で表された分数(ex. "1/2")の分母と分子をint型で返す
+// パースに失敗したらerrorを返す
+func SplitFrac(freq string) (int, int, error)
+```
+
+そしてこの関数を利用するときには以下のようにエラーを受け取り適切に処理します。
+
+```go
+denom, num, err := SplitFrac("1/2")
+if err != nil {
+	// エラーを標準出力へ出力し、
+	fmt.Println(err)
+	// exit code 1 で終了する
+	os.Exit(1)
+}
+```
+
+またif文には以下のような宣言と条件文を同時に記述する記法が用意されており、
+
+```go
+	// <---    変数errの宣言     --->  <-条件文->
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+```
+
+このように記述することも可能である。 \
+このように記述すると`err`変数は`if`文のスコープ内でしか参照できず、`}`より後ろでは参照できなくなる。 \
+この記法はコードの見た目をシンプルにできる一方、printデバッグするときに面倒になることが多いため、どちらを使うかをpros/consを比較して決めておくとよいでしょう。
 
 ## 4. RDBをGoから触る
 [The Go Playground](https://play.golang.org/p/B0_HD0U241F)(動きません)
@@ -608,7 +679,7 @@ func FindUserByID(id uint64) (*User, error) {
 
 * `db/setup.sql`
   * 少しMySQLとは文法が異なりますが、ここは主題ではないので触れません
-```go
+```sql
 DROP TABLE users;
 
 CREATE TABLE users (
