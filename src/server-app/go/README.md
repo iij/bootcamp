@@ -375,7 +375,7 @@ func (age Age) BirthYear() int {
 
 URLは`スキーマ名://ホスト名:ポート番号/パス名`という構造をしています。(他にもURLで表される項目はありますが、今回は使用しないため省略します。) \
 `http://localhost:8080/hello`というURLであれば、
-  *スキーマ名: http
+  * スキーマ名: http
   * ホスト名: localhost
   * ポート番号: 8080
   * パス名: /hello
