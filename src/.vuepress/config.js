@@ -1,6 +1,6 @@
 module.exports = {
   title: 'IIJ Bootcamp',
-  description: 'IIJ で実施している主に新人向けのハンズオン資料集です。',
+  description: 'IIJ で実施している新人向けのハンズオン資料集です。',
   themeConfig: {
     sidebar: 'auto',
     lastUpdated: 'Last Updated',
