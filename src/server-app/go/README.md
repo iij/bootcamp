@@ -400,7 +400,7 @@ URLは`スキーマ名://ホスト名:ポート番号/パス名`という構造�
 `Addr`フィールドにHTTP通信を待ち受けるアドレスを設定し、`Handler`フィールドに先程説明した`ServeMux`を設定します。
 
 そしてその`http.Server`型の値のメソッドである`server.ListenAndServe()`関数で実際にサーバを起動してHTTP通信を待ち受け始めます。 \
-注意すべきはこの`server.ListenAndServe()`は即時では終了せず、明示的にプロセスに終了方法を伝えるまで実行し続けることです。 \
+注意すべきはこの`server.ListenAndServe()`が即時では終了せず、明示的にプロセスに終了方法を伝えるまで実行し続けることです。 \
 
 ##### 3-2-2-3. ハンドラ
 ```go
@@ -412,7 +412,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 HTTP通信が飛んでくると`helloHandler()`という関数がそのリクエストを受けて処理をします。 \
 引数の`http.Request`型の値に実際のリクエストの内容が入っているので、それを利用して処理をすることも可能です。 \
 引数の`http.ResponseWriter`は`Write()`というメソッドを持っている型で、クライアントに送信したいメッセージを作って、`Write()`が叩かれれば、メッセージが送信されます。 \
-もう少し踏み込むと、Goではインターフェイス型と呼ばれるメソッド定義のみを持つ型が存在し、`http.ResponseWriter`型は`Write()`や`Header()`などのメソッドを持つインターフェイス型です。 \
+もう少し踏み込むと、Goではインタフェース型と呼ばれるメソッド定義のみを持つ型が存在し、`http.ResponseWriter`型は`Write()`や`Header()`などのメソッドを持つインタフェース型です。 \
 参考: [ResponseWriter](https://golang.org/pkg/net/http/#ResponseWriter)
 
 `fmt.Fprintln()`関数は第二引数の値を第一引数の`Write()`メソッドを使って書き込む、という関数で、今回はその挙動を利用してレスポンスを返しています。
@@ -615,8 +615,8 @@ func renderError(w http.ResponseWriter, err error, code int) {
 
 // interface{}型というのは、メソッドが一つも定義されていないメソッドを意味します。
 // つまり任意の型はinterface{}型を満たします。
-// Goではインターフェイスは明示的に書かずともインターフェイス型で定義されたメソッドを全て定義した型は、
-// そのインターフェイスを満たしている、と判断されます。
+// Goではインタフェースは明示的に書かずともインタフェース型で定義されたメソッドを全て定義した型は、
+// そのインタフェースを満たしている、と判断されます。
 // このような値を引数にとることで、静的型付言語でありながら、任意の型を引数に取る関数を簡単に作ることができます。
 func renderResponse(w http.ResponseWriter, data interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json")
