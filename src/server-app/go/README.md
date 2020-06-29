@@ -312,7 +312,7 @@ $ go run main.go
 もう一方のターミナルから以下を実行します。
 
 ```bash
-$ curl http://localhost:8080
+$ curl http://localhost:8080/hello
 hello, world!
 ```
 
