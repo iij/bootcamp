@@ -529,6 +529,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"test/model"
 )
 
 func UserRead(w http.ResponseWriter, r *http.Request) {
