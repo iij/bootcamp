@@ -447,6 +447,8 @@ TAを自分の`first_repo`に招待してGitHub Flowを体験しよう。
 
 [コラボレーターを個人リポジトリに招待する
 ](https://help.github.com/ja/github/setting-up-and-managing-your-github-user-account/inviting-collaborators-to-a-personal-repository)
+
+[コラボレーターを個人リポジトリに招待する(GitHub Enterprise版)](https://help.github.com/ja/enterprise/2.20/user/github/setting-up-and-managing-your-github-user-account/inviting-collaborators-to-a-personal-repository)
 :::
 
 1. ローカルブランチを作成する
