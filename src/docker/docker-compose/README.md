@@ -18,8 +18,8 @@ prior_knowledge: docker
 
 ### Linux
 * 以下の手順に従って、`docker-compose` コマンドをインストールしてください。
-   * proxy 下の環境で試す場合は ```sudo``` ではなく ```sudo -E``` として環境変数を引き継ぐか、 curl の ```--proxy``` オプションを利用する必要があるかもしれません。
- 
+   * プロキシ 下の環境で試す場合は ```sudo``` ではなく ```sudo -E``` として環境変数を引き継ぐか、 curl の ```--proxy``` オプションを利用する必要があるかもしれません。
+
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
@@ -149,7 +149,7 @@ $ docker-compose up
 
 初回実行時は必要な image の取得や Dockerfile.backend を利用した docker build などが実行されるため、時間がかかります。
 
-また、もし proxy 環境下で 正常に go get が成功しない場合は 以下のように build-arg で proxy設定を適用して ```docker-compose build``` してから試してみてください
+また、もし プロキシ 環境下で 正常に go get が成功しない場合は 以下のように ```docker-compose build``` してから試してみてください。
 
 ```bash
 $ docker-compose build --build-arg https_proxy=http://<proxy>:<port>
@@ -219,7 +219,9 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 #### Webアプリケーションの動作確認方法
 では、実際にWebアプリケーションが動作しているか確認するために以下のコマンドを入力してください。
 
-最初にデータを追加し、次に追加されたデータを取り出しています。`/get` にアクセスした際に、最初に登録したデータが取り出せていれば成功です。
+ここでは、まずデータを追加し、次に追加されたデータを取り出しています。
+
+`/get` にアクセスして、最初に登録したデータが取り出せていれば成功です。
 
 ```bash
 $ curl -X POST -d "title=iijbootcamp&body=IIJBootCamp is fun!!" http://localhost:8080/add
