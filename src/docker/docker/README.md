@@ -243,7 +243,7 @@ $ curl http://localhost:8888
 $ curl --noproxy localhost http://localhost:8888
 ```
 
-**curlコマンドによってHTMLが取得できることを確認してください***
+**curlコマンドによってHTMLが取得できることを確認してください**
 
 ## 5. Docker イメージの共有方法
 
