@@ -11,6 +11,7 @@
         },
         "preset-ja-technical-writing": {
             "no-exclamation-question-mark": false,
+            "arabic-kanji-numbers": false,
             "ja-no-weak-phrase": false
         }
     }
