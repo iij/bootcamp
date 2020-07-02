@@ -27,7 +27,7 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 
 ### 導入できたら
-* 下記コマンドを実際に入力し、コマンドが実行できるかどうか確認してください。
+* 下記コマンドを実際に入力し、コマンドが実行できるか確認してください。
 
 ```bash
 $ docker-compose --version
