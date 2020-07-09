@@ -2,8 +2,6 @@
 
 IIJ Bootcamp の Java；Springboot を始める上でいくつか環境の整備をしておいてください。
 
-[[toc]]
-
 ## 環境整備
 
 ### 最低動作設定
@@ -37,14 +35,17 @@ Java の開発にはメモリーが取られます。ホストマシンのリソ
 ## 動作確認
 
 ::: details 　プロキシ環境下の追加設定
-プロキシの中にいる人は`gradlew`にプロキシの設定を入れてあげてください。
+プロキシの中にいる人は`gradlew`ファイルの先頭部分にプロキシの設定を入れてあげてください。
 
 ```bash
 #!/usr/bin/env sh
 
+# 追記BEGIN
 PROXY_HOST=proxy.example.com # set your proxy host
 PROXY_PORT=8080 # set your proxy port
 JAVA_OPTS="-Dhttp.proxyHost=$PROXY_HOST -Dhttp.proxyPort=$PROXY_PORT -Dhttps.proxyHost=$PROXY_HOST -Dhttps.proxyPort=$PROXY_PORT $JAVA_OPTS"
+# 追記END
+
 ```
 
 :::
@@ -85,11 +86,15 @@ VSCode が開き、コンテナ内部へアクセスできたことを確認し�
 
 ### Java 開発環境構築
 
-最後に Java IDE としての設定を行います。まず拡張機能の`Java Extention Pack`をインストールしておいてください。
+#### 拡張機能のインストール
+
+VSCode に Java IDE としての設定を行います。まず拡張機能の`Java Extention Pack`をインストールしておいてください。
 
 `Java Extention Pack`によって、プロジェクトの依存関係を解消しコードの補完が効くようになります。
 
-拡張機能のインストールが終わり、画面のリロードを終えたら Java が動作するか確認しましょう。
+拡張機能のインストールが終わったら、画面のリロードを行っておいてください。
+
+### 初回起動
 
 コマンドパレットに`toggle integrated terminal`と入力し、ターミナルを開きます。ターミナルが開いたら下記のコマンドを叩いてください。
 
@@ -132,5 +137,5 @@ VSCode が開き、コンテナ内部へアクセスできたことを確認し�
 ::: warning
 bootRun を実行することで、環境によっては"想像を絶する重さ"になると思います。理由としては`Java Extention Pack`が Java の依存関係を解消しようと裏で動いていることが原因です。
 
-IDLE が表示されているまま、動くまで少々お待ちください。。。
+IDLE が表示されているまま、動くまで少々お待ちください。。。初回だけなので。。。
 :::
