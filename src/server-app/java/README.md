@@ -9,7 +9,7 @@ prior_knowledge: 特になし
 
 # Java; springboot
 
-IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、次へ進んでください。
+IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、事前準備まで終わらせておいてください。
 
 > git clone https://github.com/iij/bootcamp.git
 
@@ -425,7 +425,7 @@ curl localhost:8080/student/hello
 
 ここまで作成した API は二つとも読み取り、GET メソッドでの実装でした。ここで POST リクエストを利用してデータを書き込む API を用意してあげましょう。
 
-POST リクエストを受け取るには、今まで使ってきた `GetMapping` の代わりに `PostMapping` を利用しましょう。また POST メソッドでのデータの受け渡しはリクエストボディで行うのが RFC での既定なので、データをリクエストボディで受け取れるようにしましょう。
+POST リクエストを受け取るには、今まで使ってきた `GetMapping` の代わりに `PostMapping` を利用しましょう。また POST メソッドでのデータの受け渡しはリクエストボディで行うのが通例なので、データをリクエストボディで受け取れるようにしましょう。
 
 ```java
 package com.example.demo.controller;
