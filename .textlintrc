@@ -5,13 +5,13 @@
             "prh": {
                 "rulePaths": [
                     "node_modules/prh/prh-rules/media/WEB+DB_PRESS.yml",
-                    "node_modules/prh/prh-rules/media/techbooster.yml",
                     "node_modules/prh/prh-rules/languages/ja/typo.yml"
                 ]
             }
         },
         "preset-ja-technical-writing": {
             "no-exclamation-question-mark": false,
+            "arabic-kanji-numbers": false,
             "ja-no-weak-phrase": false
         }
     }
