@@ -20,15 +20,13 @@ IIJ Bootcamp の Java；Springboot を始める上でいくつか環境の整備
 
 Docker コンテナの内部のファイルシステムを VSCode 越しに利用することができるようになる拡張機能です。開発環境を Docker コンテナの中で閉じることができるようになります。
 
-#### Java Extention Pack(VSCode 拡張)
+#### Java Extention Pack(VSCode 拡張機能)
 
 Microsoft 社が提供する Java の開発を行う上で必要な機能がまとめられた拡張機能パックです。動作させるには JDK が必要になるため、`Remote - Containers`の拡張機能でコンテナ内部に入ったタイミングでインストールしておいてください。
 
-### 推奨設定
+### あまりにも重すぎる場合
 
-#### 8GiB 以上のメモリー
-
-Java の開発にはメモリーが取られます。ホストマシンのリソースに余裕のある方は、Docker の利用できるメモリー量を 4GiB 程度に一時的に増やしておくことをお勧めします。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
+Java の開発にはメモリーを大量に消費します。あまりにも開発が重い等あれば、Docker の利用可能なメモリを一時的に 4GiB 程度まで増やしてみてください。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
 
 ![メモリ設定](./images/docker-preferences-memory.png)
 
@@ -135,7 +133,9 @@ VSCode に Java IDE としての設定を行います。まず拡張機能の`Ja
 上記のようなエラーページが表示されていれば、環境のセットアップ完了です。
 
 ::: warning
+
 bootRun を実行することで、環境によっては"想像を絶する重さ"になると思います。理由としては`Java Extention Pack`が Java の依存関係を解消しようと裏で動いていることが原因です。
 
 IDLE が表示されているまま、動くまで少々お待ちください。。。初回だけなので。。。
+
 :::
