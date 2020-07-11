@@ -5,15 +5,54 @@
 
 [IIJ](https://www.iij.ad.jp/) では「IIJ Bootcamp」と題して主に新人向けのハンズオン勉強会を実施しており、これはその資料集です。
 
-ハンズオンは「実際に触ってみる」ことを目的として、各分野で実際に業務を行なっている技術者が1h~2h枠で実施できる形にまとめています。
+IIJ Bootcampでは、各技術が誕生した経緯・歴史、他の技術と比較といった知識を得るためのきっかけとして、様々な言語・フレームワーク・ツールに触れて実際に動かすハンズオン研修を行っています。
+研修ではハンズオンだけではなく、「overview」として技術ジャンルの全体像や歴史などを紹介する回も設けています。
 
-## 資料構成
+## ディレクトリ構成
 
-TBD
-
-## TODO
-
-- 2019年度に実施したハンズオンの資料を追加する
+```sh
+.
+├── src # 資料となるmarkdownファイルを置く
+│   ├── database # データベースカテゴリの資料
+│   │   ├── mongodb # MongoDBハンズオン用ディレクトリ
+│   │   │   └── README.md # MongoDBハンズオン資料
+│   │   ├── mysql
+│   │   │   └── README.md
+│   │   └── redis
+│   │       ├── README.md
+│   ├── development # その他開発カテゴリ
+│   │   ├── drone
+│   │   │   ├── README.md
+│   │   │   └── images # 資料用画像ファイル
+│   │   │       ├── drone_branch_protection.png
+│   │   │       ├── drone_first_test.png
+│   │   │       ├── drone_pull_request_base.png
+│   │   ├── git
+│   │   ├── github
+│   │   └── jenkins
+│   ├── docker # dockerカテゴリ
+│   │   ├── docker
+│   │   └── docker-compose
+│   ├── frontend # フロントエンドカテゴリ
+│   │   ├── angular
+│   │   ├── jquery
+│   │   ├── overview
+│   │   ├── react
+│   │   └── vue
+│   ├── init # 事前準備
+│   │   └── hello-bootcamp
+│   ├── server-app # サーバーアプリケーションカテゴリ
+│   │   ├── go
+│   │   ├── java
+│   │   ├── node
+│   │   ├── overview
+│   │   └── rails
+│   └── web-server # webサーバーカテゴリ
+│       ├── apache
+│       ├── hosting
+│       ├── nginx
+│       └── overview
+```
 
 ## Contribution
 
