@@ -1,6 +1,6 @@
-# 事前準備
+# 下準備
 
-IIJ Bootcamp の Java；Springboot を始める上でいくつか環境の整備をしておいてください。
+IIJ Bootcamp の Java；Springboot を始めるうえでいくつか環境の整備をしておいてください。
 
 ## 環境整備
 
@@ -18,7 +18,7 @@ IIJ Bootcamp の Java；Springboot を始める上でいくつか環境の整備
 
 #### Remote - Containers(VSCode 拡張機能)
 
-Docker コンテナの内部のファイルシステムを VSCode 越しに利用することができるようになる拡張機能です。開発環境を Docker コンテナの中で閉じることができるようになります。
+Docker コンテナの内部のファイルシステムを VSCode 越しに利用できるようになる拡張機能です。開発環境を Docker コンテナの中で閉じることができます。
 
 #### Java Extention Pack(VSCode 拡張機能)
 
@@ -26,7 +26,7 @@ Microsoft 社が提供する Java の開発を行う上で必要な機能がま�
 
 ### あまりにも重すぎる場合
 
-Java の開発にはメモリーを大量に消費します。あまりにも開発が重い等あれば、Docker の利用可能なメモリを一時的に 4GiB 程度まで増やしてみてください。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
+Java の開発にはメモリーを大量に消費します。あまりにも開発が重い等あれば、Docker の利用可能なメモリーを一時的に 4GiB 程度まで増やしてみてください。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
 
 ![メモリ設定](./images/docker-preferences-memory.png)
 
@@ -136,6 +136,6 @@ VSCode に Java IDE としての設定を行います。まず拡張機能の`Ja
 
 bootRun を実行することで、環境によっては"想像を絶する重さ"になると思います。理由としては`Java Extention Pack`が Java の依存関係を解消しようと裏で動いていることが原因です。
 
-IDLE が表示されているまま、動くまで少々お待ちください。。。初回だけなので。。。
+IDLE が表示されているまま、動くまで少々お待ちください……初回だけなので……
 
 :::

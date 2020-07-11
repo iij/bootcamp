@@ -9,7 +9,7 @@ prior_knowledge: 特になし
 
 # Java; springboot
 
-IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、事前準備まで終わらせておいてください。
+IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下準備まで終わらせておいてください。
 
 > git clone https://github.com/iij/bootcamp.git
 
@@ -19,27 +19,27 @@ IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcam
 
 具体的には、下記を達成できるようになることを期待しています。
 
-- "API サーバー"の概念を知る
+- "API サーバ"の概念を知る
 - 今後、Springboot のプロジェクトに参加した際のキャッチアップの短縮
-- 簡単な テスト用の API モックサーバーの作成、メンテナンスができるようになる
+- 簡単な テスト用の API モックサーバの作成、メンテナンスができるようになる
 
-## 事前準備
+## 下準備
 
-事前準備として、Docker の動作確認と IDE の設定などを行っておいてください。Java イメージや依存関係などのダウンロードを行うので、安定したネットワーク環境下で実行することをお勧めします。
+下準備として、Docker の動作確認と IDE の設定などを行っておいてください。Java イメージや依存関係などのダウンロードを行うので、安定したネットワーク環境下で実行することをお勧めします。
 
-詳細 > [事前準備・環境構築編](./prepare.md)
+詳細 > [下準備・環境構築編](./prepare.md)
 
 ## java について
 
-Springboot を動かすために、この Bootcamp では言語として Java/管理ツールとして Gradle を利用します。しかし Bootcamp の場でそれぞれについて深く解説する時間は取れないため、Bootcamp を進める上で最低限知っておくべき知識について下記に記載しておきました。
+この Bootcamp では Java と Gradle を利用します。しかし Bootcamp の場でそれぞれについて深く解説する時間は取れないため、Bootcamp を進めるうえで最低限知っておくべき知識について下記に記載しておきました。
 
 詳細 > [bootcamp/java](./java.md)
 
 ## Springboot Bootcamp
 
-SprinbBoot は今や Java 界隈最大手の Web フレームワークです。小規模なブログから大規模な EC サイトまでこのフレームワークだけで開発、デプロイをすることができます。
+SprinbBoot はいまや Java 界隈最大手の Web フレームワークです。小規模なブログから大規模な EC サイトまでこのフレームワークだけで開発、デプロイできます。
 
-このフレームワークを開発する上で、基本的な Java の知識や MVC や DI といった設計の知識も必要になってきます。残念ながらこの Bootcamp で全ての要素に触れることはできませんが、最初の入り口に立つところまでを案内します。今回はブラウザで閲覧できる UI の機能を持たず、 API(Application Programming Interface)の機能だけを持つ API サーバーを構築していきます。
+このフレームワークを開発するうえで、基本的な Java の知識や MVC や DI といった設計の知識も必要になってきます。残念ながらこの Bootcamp ですべての要素に触れることはできませんが、最初の入り口に立つところまでを案内します。今回はブラウザで閲覧できる UI の機能を持たず、 API(Application Programming Interface)の機能だけを持つ API サーバを構築していきます。
 
 それでは始めましょう。
 
@@ -56,21 +56,21 @@ SprinbBoot は今や Java 界隈最大手の Web フレームワークです。�
 
 :::tip
 
-Springboot のプロジェクトは簡単に作成することができます。
+Springboot のプロジェクトは簡単に作成できます。
 
-Springboot には"Spring Initializr"というツールが用意されており。Springboot を始めるための雛形を GUI で作成することができます。(CLI で作成もできます)
+Springboot には"Spring Initializr"というツールが用意されており。Springboot を始めるためのひな形を GUI で作成できます。(CLI で作成もできます)
 
 [Spring Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.0.BUILD-SNAPSHOT&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web)
 
-今回提供している/app 配下の Java プロジェクトは上記から作成した雛形に`com.example.demo.controller.DemoController.java`を追加しただけのプロジェクトです。
+今回提供している/app 配下の Java プロジェクトは上記から作成したひな形に`com.example.demo.controller.DemoController.java`を追加しただけのプロジェクトです。
 
 :::
 
 ### DI について
 
-SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、Springboot でコントローラーを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
+SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、Springboot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
 
-が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちら > [DI #とは](./deepDI.md)
+が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちらを参照してみてください。 > [DI #とは](./deepDI.md)
 
 チェックポイント
 
@@ -78,7 +78,7 @@ SpringBoot を使いこなすためには DI について触れなくてはい�
 
 ### 本編
 
-#### コントローラーを作成してみましょう
+#### コントローラを作成してみましょう
 
 まず始めに簡単な Helloworld を行うコントローラーを作成し、Springboot がどのように動作しているのかを見てみましょう。
 それではさっそくコードを書いていきます。
@@ -116,7 +116,7 @@ public class DemoApplication {
 }
 ```
 
-ここまで書いたら、再びアプリを再起動してあげましょう！
+ここまで書いたら、再びアプリケーションを再起動してあげましょう！
 
 ```bash
 ./gradlew bootRun
@@ -127,24 +127,28 @@ curl localhost:8080
 
 さて、この 10 行に満たないコードを書いている間に何が起きたのかを簡単に解説します。
 
-`bootRun` コマンドにより SprinbBoot が起動します。すると、Springboot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインターフェースとして登録されます。
+`bootRun` コマンドにより SprinbBoot が起動します。すると、Springboot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインタフェースとして登録されます。
 
-その結果この SpringBoot が動いている 8080 番ポート宛の HTTP リクエストと `DemoApplication.HelloController#helloWorld` が紐づけられることになり、GET / のリクエストのレスポンスが"hello world"になったわけです。
+その結果、この SpringBoot が動いている 8080 番ポート宛の HTTP リクエストと `DemoApplication.HelloController#helloWorld` が紐づけられることになり、GET / のリクエストのレスポンスが"hello world"になったわけです。
 
 チェックポイント
 
 - [ ] SpringBoot で HelloWorld ができた
-- [ ] RestController アノテーションをクラスに付けることでコントローラーが作れることを理解した
+- [ ] RestController アノテーションをクラスに付けることでコントローラが作れることを理解した
 
 ##### 蛇足 : SpringBoot の DI コンテナと探索
 
-SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出し、適当な方法でインスタンス化します。(「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))そしてそのインスタンスたちを SpringBoot の管理下(=DI コンテナ)に置くようにしています。
+SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、SpringBoot は起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出し、適当な方法でインスタンス化します。
 
-この時、DI コンテナ内に含まれるインスタンスたちの中で「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインターフェース=MVC のコントローラーとして働くことになります。
+(「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))
+
+そして Springboot はそのインスタンスたちを自身の管理下(=DI コンテナ)に置くようにします。
+
+この時、DI コンテナ内に含まれるインスタンスたちの中で「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェース=MVC のコントローラとして働くことになります。
 
 今回の例では、 `DemoApplication` クラスに SpringBootApplication アノテーションが付与されているので `DemoApplication` クラスのパッケージ `com.example.demo` 配下のクラスから特殊なアノテーションがついているクラスを探索します。
 
-先ほど作成した `HelloController` については、 `RestController` アノテーションが付与されていたため SpringBoot が `HelloController` をインスタンス化、DI コンテナに登録し/宛の GET のリクエストを受けると `HelloController#helloWorld` が発火されるようになっていた、というわけです。
+先ほど作成した `HelloController` については、 `RestController` アノテーションが付与されていたため SpringBoot が `HelloController` をインスタンス化、DI コンテナに登録し/宛の GET のリクエストを受けると `HelloController#helloWorld` が実行されるようになっていた、というわけです。
 
 #### 演習：生徒管理の API を作成しよう
 
@@ -194,7 +198,7 @@ public class StudentController {
 }
 ```
 
-再度 bootRun コマンドで起動し、正しく動作していることを確認しましょう
+再度 bootRun コマンドで起動し、正しく動作していることを確認しましょう。
 
 ```bash
 curl localhost:8080
@@ -203,14 +207,12 @@ curl localhost:8080
 
 チェックポイント
 
-- [ ] 空のクラスに`RestController`アノテーションを付与して、コントローラーとして起動することができた
+- [ ] 空のクラスに`RestController`アノテーションを付与して、コントローラとして起動できた
 - [ ] API のエンドポイントのパスの設定方法を理解した
 
 ##### オブジェクトを返却する
 
-今までコントローラーが返却していたのは文字列だけでしたが、場合によっては Json などのオブジェクトを返却したい事もあると思います。特に今回は生徒エンティティを返却するように言われているため、まずは生徒エンティティを作成しましょう。
-
-まず、生徒 Entity のクラスを作成しましょう。
+今までコントローラが返却していたのは文字列だけでしたが、場合によっては Json などのオブジェクトを返却したいこともあると思います。特に今回は生徒エンティティを返却するように言われているため、まずは生徒エンティティを作成しましょう。
 
 > src/main/java/com/example/demo/entity/StudentEntity.java
 
@@ -262,9 +264,9 @@ public class StudentEntity {
 }
 ```
 
-SpringBoot のコントローラーで Json を返却する場合、多くの場合は POJO(純粋な java オブジェクト)をそのまま返却するだけで良いです。
+SpringBoot のコントローラで Json を返却する場合、多くの場合は POJO(純粋な java オブジェクト)をそのまま返却するだけで良いです。
 
-試しに先程作った StudentEntity をインスタンス化して返却してみましょう。
+試しに先程作った `StudentEntity` をインスタンス化して返却してみましょう。
 
 ```java
 package com.example.demo.controller;
@@ -311,7 +313,7 @@ curl localhost:8080/student
 すでに別のフレームワークを経験したことのある人であれば「Serializer は？」と感じる人もいるかもしれません。しかし SpringBoot では Serializer を意識する必要はないように作られています。もちろん自分でシリアライズ・デシリアライズを指定/実装することもできます。
 :::
 
-最後に retrieveStudents は「登録されている全ての生徒 Entity を返却」する関数なので、List を返却するように変更しておきましょう。
+最後に retrieveStudents は「登録されているすべての生徒エンティティを返却」する関数ですので、List を返却するように変更しておきましょう。
 
 ```java
     // snip
@@ -332,13 +334,13 @@ curl localhost:8080/student
 
 - [ ] Java の POJO に触れた
 - [ ] API のエンドポイントからオブジェクトを返却する方法を理解した
-- [ ] GET /students のエンドポイントのインターフェースが決定した
+- [ ] GET /students のエンドポイントのインタフェースが決定した
 
 ##### パスパラメータから情報を受け取ろう
 
 次は/student/{生徒 ID}の API を作ってみましょう。
 
-URL のパスからパラメータをもらってくる場合、パスに変数名を埋め込みその変数を関数の引数で指定することでパスから値を引き抜いてくることができます。そのパスの変数のことをパスパラメータを呼びます。
+URL のパスからパラメータをもらってくる場合、パスに変数名を埋め込みその変数を関数の引数として指定することでパスから値を引き抜いてくることができます。そのパスの変数のことをパスパラメータを呼びます。
 
 下記の通り実装して動作することを確認しましょう。
 
@@ -381,7 +383,7 @@ curl localhost:8080/student/hello
 > hello
 ```
 
-ここまでできたら、先程と同様に適当な StudentEntity を返却するように修正しておきましょう。
+先程と同様に適当な生徒エンティティを返却するように修正しておきましょう。
 
 ```java
     // snip
@@ -405,13 +407,13 @@ curl localhost:8080/student/hello
 チェックポイント
 
 - [ ] API のエンドポイントからパラメータを引き抜いてくる方法を理解した
-- [ ] GET /student/{生徒 ID} のエンドポイントのインターフェースが決定した
+- [ ] GET /student/{生徒 ID} のエンドポイントのインタフェースが決定した
 
 ##### POST リクエストを受け取ってみよう
 
-ここまで作成した API は二つとも読み取り、GET メソッドでの実装でした。ここで POST リクエストを利用してデータを書き込む API を用意してあげましょう。
+ここまで作成した API は 2 つとも読み取り、GET メソッドでの実装でした。ここで POST リクエストを利用してデータを書き込む API を用意してあげましょう。
 
-POST リクエストを受け取るには、今まで使ってきた `GetMapping` の代わりに `PostMapping` を利用しましょう。また POST メソッドでのデータの受け渡しはリクエストボディで行うのが通例なので、データをリクエストボディで受け取れるようにしましょう。
+POST リクエストを受け取るには、今まで使ってきた `GetMapping` の代わりに `PostMapping` を利用しましょう。また POST メソッドでのデータの受け渡しはリクエストボディで行うのが通例ですので、データをリクエストボディで受け取れるようにしましょう。
 
 ```java
 package com.example.demo.controller;
@@ -473,11 +475,11 @@ curl -X POST localhost:8080/student -H 'Content-type: application/json' -d '{"na
 チェックポイント
 
 - [ ] API のエンドポイントで POST リクエストを受け取る方法を理解した
-- [ ] POST /student のエンドポイントのインターフェースが決定した
+- [ ] POST /student のエンドポイントのインタフェースが決定した
 
 ##### 業務処理を作ろう
 
-コントローラー部分を作成したので、実際に生徒 entity を管理するクラスを実装していきましょう。今回はあくまでも SpringBoot の Bootcamp なので、RDS や KVS などに永続化することはせずヒープメモリに保存するだけに留めておきます。
+コントローラ部分を作成したので、実際に生徒エンティティを管理するクラスを実装していきましょう。この Bootcamp では時間の都合上 RDS や KVS などを用いて永続化せず、ヒープメモリに保存するだけにします。
 
 下記の java ファイルを作成して、仮の実装をしましょう。
 
@@ -527,9 +529,9 @@ public class StudentService {
 }
 ```
 
-このクラスにおいて話しておかないといけないのは`@Component`についてです。`@Component`は SpringBoot を開発する上で一番利用するアノテーションで、このアノテーションが付与されたクラスは SpringBoot が起動時に自動的にインスタンス化し SpringBoot の管理下(=DI コンテナ)に配置されるようになります。
+`@Component`は SpringBoot を開発する中で頻繁に利用するアノテーションです。このアノテーションが付与されたクラスは SpringBoot が起動するタイミングで自動的にインスタンス化され SpringBoot の管理下(=DI コンテナ)に配置されます。
 
-そのため、今`StudentService`は SpringBoot の管理下におかれるようになっているため`StudentController`からアクセスできるようになりました。
+`StudentService`は SpringBoot の管理下におかれるようになっているため`StudentController`からアクセスできるようになりました。
 
 それではこの業務処理を行うクラスを`StudentController`に接続してあげましょう。
 
@@ -553,11 +555,11 @@ public class StudentService {
     }
 ```
 
-接続の仕方は簡単で、今回は`@Autowired`を利用しました。`@Autowired`が付与されたフィールドはには SpringBoot が適切なインスタンスを自身の DI コンテナから配置してくれるようになります。
+接続の方法は簡単で、今回は`@Autowired`を利用しました。`@Autowired`が付与されたフィールドには SpringBoot が適切なインスタンスを自身の DI コンテナから配置してくれます。
 
-このため、`StudentController`は`StudentService`をインスタンス化する方法を知る必要なく`StudentService`を利用することができるようになりました。
+このため、`StudentController`は`StudentService`をインスタンス化する方法を知る必要なく`StudentService`を利用できるようになりました。
 
-ここまでできたら、再度 bootRun して動作を確認しましょう。
+再度 bootRun して動作を確認しましょう。
 
 チェックポイント
 
@@ -566,7 +568,7 @@ public class StudentService {
 
 ### 演習：生徒管理の API を実装してみましょう！
 
-ここまでで
+ここまでのコンテンツで下記のことについて学びました。
 
 - Java の書き方
 - API のエンドポイントの実装の方法
@@ -574,7 +576,7 @@ public class StudentService {
 - DI コンポーネントの定義の方法
 - @Autowired による DI の実現方法
 
-を学びました。これらを利用して、残りの API を自分で実装してみましょう。
+これらを利用して、残りの API を自分で実装してみましょう。
 
 また、サンプルとして実装を終えたコードを用意しておきます。必要な方は実装を確認してみてください。
 
@@ -584,15 +586,7 @@ TODO : Github のリポジトリを紐つける
 
 <s>いかがでしたか？</s> 以上で Springboot のハンズオンは終了です。
 
-この Bootcamp では Springboot の表面をさらっていくことを目的としたため、おそらくまだ全容を掴むことは難しいと思います。
+この Bootcamp では Springboot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
 ただ、今後の Springboot 習得の足掛かりとなれば幸いです。
-
----
-
-最後に、個人的な思いを書いておきます。
-
-Springboot を含め、業務としてコーディングをすることは「ビジネスを推進するための手段」であり、「ビジネスそのものの目的」ではありません。
-
-プログラミングを始めたばかりの人は、コーディングすること自体が目的になりがちです。しかし、ある程度慣れてきて余裕が出てきたら……ぜひ自分の書いた成果物にどのような環境が用意されているのか、どのようにメンテナンスされているのか、そしてどのように使われているのか、眺めて知見を広げていってください。
 
 <credit-footer/>

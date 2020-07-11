@@ -61,18 +61,17 @@ public class SampleClass extends Object {
 
 Java にはパッケージという概念があり、いわゆる名前空間のような概念です。そのため。同名のクラスがあったとしてもパッケージが異なれば別のクラスと扱います。
 
-例えば`com.example.demo.SampleClass`と`com.example.demo.storage.SampleClass`はクラス名は別ですが、Java プロジェクト上では別のモジュールとしてクラスを import することが可能です。一方、自分で`io.sample.client`というパッケージを利用したりすると、`io.sample.client`のパッケージを持つ別のモジュールと名前が競合して正常に動作しなくなることもありますので注意してください。
+たとえば`com.example.demo.SampleClass`と`com.example.demo.storage.SampleClass`は同じクラス名を持ちますが、Java プロジェクト上では別のモジュールとしてクラスを import できます。
+一方で自分で`java.lang`というパッケージを作成すると、`java.lang`のパッケージを持つ別のモジュールと名前が競合して正常に動作しなくなります。
 
-故にパッケージ名は世界で固有であることが望ましく、例として
+故にパッケージ名は世界で固有であることが望ましく、例として下記のようなパッケージ名がよく使われます。
 
 - 自社ドメイン
 - 組織ドメイン(io.kubernetes)
 - 公開先のドメイン(com.github.ryusa)
 
-などがよく使われます。
-
 またパッケージとディレクトリ構造には関係性があり`.`で区切られている部分でディレクトリを作成することになっています。
-例えば`com.example.demo.bootcamp.SampleClass`というクラスの場合、SampleClass.java までのディレクトリ構造は下記のようになります。
+たとえば`com.example.demo.bootcamp.SampleClass`というクラスの場合、SampleClass.java までのディレクトリ構造は下記のようになります。
 
 <pre>
 .
@@ -95,7 +94,7 @@ Node.js でいうところの npm に対応するパッケージマネージャ�
 
 SpringInitilizr から Spring プロジェクトを利用する場合は Gradle そのものをインストールする必要はなく、`gradlew`が自動的に適切な Gralde をインストールして使えるようにしてくれます。
 
-`gradlew`にはデフォルトで含まれているタスクがいくつかあり、Bootcamp で利用する(および試しておいて欲しい)コマンドを下記に記載しておきます。
+`gradlew`にはデフォルトで含まれているタスクがいくつかあり、Bootcamp で利用する(および試しておいてほしい)コマンドを下記に記載しておきます。
 
 ```bash
 # gradlewで登録されているタスクをすべて表示する
