@@ -68,7 +68,7 @@ Springboot のプロジェクトは"Spring Initializr"というツールを使�
 
 SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、Springboot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
 
-が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちらを参照してみてください。 > [DI #とは](./deepDI.md)
+が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちらを参照してみてください。 > [DI #とは](./DI.md)
 
 チェックポイント
 
@@ -140,7 +140,7 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 
 (「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))
 
-そして Springboot はそのインスタンスたちを自身の管理下(=DI コンテナ)に置くようにします。
+そして Springboot はそのインスタンスたちを自身の管理下(=DI コンテナ)に置きます。
 
 この時、「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェース=MVC のコントローラとして働くことになります。
 
@@ -532,7 +532,7 @@ public class StudentService {
 
 `@Component`は SpringBoot を開発する中で頻繁に利用するアノテーションです。このアノテーションが付与されたクラスは SpringBoot が起動するタイミングでインスタンス化され SpringBoot の管理下(=DI コンテナ)に配置されます。
 
-`StudentService`は SpringBoot の管理下におかれるようになっているため`StudentController`からアクセスできるようになりました。
+`StudentService`は SpringBoot の管理下にいるため`StudentController`からアクセスできるようになりました。
 
 それではこの業務処理を行うクラスを`StudentController`に接続してあげましょう。
 
