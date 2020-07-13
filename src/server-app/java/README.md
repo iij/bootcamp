@@ -13,7 +13,7 @@ IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcam
 
 > git clone https://github.com/iij/bootcamp.git
 
-## はじめに
+## 始めに
 
 この Bootcamp では Java を利用して Springboot の表面的な機能をさらっていくことを目標としています。
 
@@ -56,13 +56,11 @@ SprinbBoot はいまや Java 界隈最大手の Web フレームワークです�
 
 :::tip
 
-Springboot のプロジェクトは簡単に作成できます。
-
-Springboot には"Spring Initializr"というツールが用意されており。Springboot を始めるためのひな形を GUI で作成できます。(CLI で作成もできます)
+Springboot のプロジェクトは"Spring Initializr"というツールを使ってひな型を作成できます。
 
 [Spring Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.0.BUILD-SNAPSHOT&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web)
 
-今回提供している/app 配下の Java プロジェクトは上記から作成したひな形に`com.example.demo.controller.DemoController.java`を追加しただけのプロジェクトです。
+今回提供している/app 配下の Java プロジェクトは上記から作成したひな型に`com.example.demo.controller.DemoController.java`を追加しただけのプロジェクトです。
 
 :::
 
@@ -80,7 +78,7 @@ SpringBoot を使いこなすためには DI について触れなくてはい�
 
 #### コントローラを作成してみましょう
 
-まず始めに簡単な Helloworld を行うコントローラーを作成し、Springboot がどのように動作しているのかを見てみましょう。
+まず始めに簡単な Helloworld を行うコントローラを作成し、Springboot がどのように動作しているのかを見てみましょう。
 それではさっそくコードを書いていきます。
 
 > src/main/java/com/example/demo/DemoApplication.java
@@ -144,11 +142,12 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 
 そして Springboot はそのインスタンスたちを自身の管理下(=DI コンテナ)に置くようにします。
 
-この時、DI コンテナ内に含まれるインスタンスたちの中で「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェース=MVC のコントローラとして働くことになります。
+この時、「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェース=MVC のコントローラとして働くことになります。
 
 今回の例では、 `DemoApplication` クラスに SpringBootApplication アノテーションが付与されているので `DemoApplication` クラスのパッケージ `com.example.demo` 配下のクラスから特殊なアノテーションがついているクラスを探索します。
 
-先ほど作成した `HelloController` については、 `RestController` アノテーションが付与されていたため SpringBoot が `HelloController` をインスタンス化、DI コンテナに登録し/宛の GET のリクエストを受けると `HelloController#helloWorld` が実行されるようになっていた、というわけです。
+先ほど作成した `HelloController` は、 `RestController` アノテーションが付与されていたため SpringBoot が `HelloController` をインスタンス化、DI コンテナに登録しました。
+そして / 宛の GET のリクエストを受けると `HelloController#helloWorld` が実行されるようになっていた、というわけです。
 
 #### 演習：生徒管理の API を作成しよう
 
@@ -165,7 +164,7 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 >
 > ※ 生徒エンティティには「生徒 ID」「生徒名」「成績(整数)」を含むものとする
 
-下記のクラスに `RestController` アノテーションを追加します。
+まず、下記のクラスに `RestController` アノテーションを追加します。
 また `StudentController#retrieveStudents` に GET /students のエンドポイントとの紐付けを作成してみます。
 
 > src/main/java/com/example/demo/controller/StudentController.java
@@ -310,7 +309,9 @@ curl localhost:8080/student
 ```
 
 :::tip
+
 すでに別のフレームワークを経験したことのある人であれば「Serializer は？」と感じる人もいるかもしれません。しかし SpringBoot では Serializer を意識する必要はないように作られています。もちろん自分でシリアライズ・デシリアライズを指定/実装することもできます。
+
 :::
 
 最後に retrieveStudents は「登録されているすべての生徒エンティティを返却」する関数ですので、List を返却するように変更しておきましょう。
@@ -529,7 +530,7 @@ public class StudentService {
 }
 ```
 
-`@Component`は SpringBoot を開発する中で頻繁に利用するアノテーションです。このアノテーションが付与されたクラスは SpringBoot が起動するタイミングで自動的にインスタンス化され SpringBoot の管理下(=DI コンテナ)に配置されます。
+`@Component`は SpringBoot を開発する中で頻繁に利用するアノテーションです。このアノテーションが付与されたクラスは SpringBoot が起動するタイミングでインスタンス化され SpringBoot の管理下(=DI コンテナ)に配置されます。
 
 `StudentService`は SpringBoot の管理下におかれるようになっているため`StudentController`からアクセスできるようになりました。
 
@@ -578,9 +579,9 @@ public class StudentService {
 
 これらを利用して、残りの API を自分で実装してみましょう。
 
-また、サンプルとして実装を終えたコードを用意しておきます。必要な方は実装を確認してみてください。
+また、サンプルとして実装を終えたコードを用意しておきます。
 
-TODO : Github のリポジトリを紐つける
+[https://github.com/RyuSA/student-app](https://github.com/RyuSA/student-app)
 
 ## 最後に
 

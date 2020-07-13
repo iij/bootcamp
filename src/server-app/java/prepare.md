@@ -18,15 +18,15 @@ IIJ Bootcamp の Java；Springboot を始めるうえでいくつか環境の整
 
 #### Remote - Containers(VSCode 拡張機能)
 
-Docker コンテナの内部のファイルシステムを VSCode 越しに利用できるようになる拡張機能です。開発環境を Docker コンテナの中で閉じることができます。
+Docker コンテナの内部のファイルシステムを VSCode 経由で利用できるようになる拡張機能です。開発環境を Docker コンテナの中で閉じることができます。
 
 #### Java Extention Pack(VSCode 拡張機能)
 
-Microsoft 社が提供する Java の開発を行う上で必要な機能がまとめられた拡張機能パックです。動作させるには JDK が必要になるため、`Remote - Containers`の拡張機能でコンテナ内部に入ったタイミングでインストールしておいてください。
+Microsoft 社が提供する Java の開発を行ううえで必要な機能がまとめられた拡張機能パックです。動作させるには JDK が必要になるため、`Remote - Containers`の拡張機能でコンテナ内部に入ったタイミングでインストールしておいてください。
 
 ### あまりにも重すぎる場合
 
-Java の開発にはメモリーを大量に消費します。あまりにも開発が重い等あれば、Docker の利用可能なメモリーを一時的に 4GiB 程度まで増やしてみてください。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
+Java の開発にはメモリを大量に消費します。あまりにも開発が重い等あれば、Docker の利用可能なメモリを一時的に 4GiB 程度まで増やしてみてください。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
 
 ![メモリ設定](./images/docker-preferences-memory.png)
 
