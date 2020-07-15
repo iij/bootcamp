@@ -54,14 +54,14 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. (最初に起動した Redis サーバは C-c で止められます)
+1. (最初に起動した Redis サーバは C-c とめられます)
 
 1. Python Clientから接続用のReidsサーバを起動する
 
     ```Shell
     docker run -d --rm --name test-server -p 6379:6379 redis:5
     ```
-1. さらに別のターミナルを開いて、python が使えるコンテナイメージを展開する
+1. さらに別のターミナルを開いて、Pythonが使えるコンテナイメージを展開する
 
     ```Shell
      docker run -it python:3.7.8-alpine3.12 ash
