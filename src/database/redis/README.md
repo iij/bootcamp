@@ -45,7 +45,7 @@ prior_knowledge: なし
 1. 別のターミナルを開いて、redis-cli でサーバに接続してみる
 
     ```Shell
-    
+    docker run -it --link test-server:redis --rm redis:5 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
     172.17.0.2:6379> ping
     PONG
     172.17.0.2:6379> exit
