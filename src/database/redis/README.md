@@ -27,9 +27,11 @@ prior_knowledge: なし
     ```Shell
     docker pull redis:5
     docker pull python:3.7
+    docker pull python:3.7.8-alpine3.12
     docker images
 
     REPOSITORY                     TAG                 IMAGE ID            CREATED             SIZE
+    docker.io/python               3.7.8-alpine3.12    6ca3e0b1ab69        2 weeks ago         73.1 MB
     python                         3.7                 4c0fd7901be8        29 hours ago        929MB
     redis                          5                   bb0ab8a99fe6        6 days ago          95MB
     ```
@@ -43,7 +45,7 @@ prior_knowledge: なし
 1. 別のターミナルを開いて、redis-cli でサーバに接続してみる
 
     ```Shell
-    docker run -it --link test-server:redis --rm redis:5 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+    
     172.17.0.2:6379> ping
     PONG
     172.17.0.2:6379> exit
@@ -52,25 +54,70 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. さらに別のターミナルを開いて、python のイメージを確認する
+1. (最初に起動した Redis サーバは C-c で止められます)
+
+1. Python Clientから接続用のReidsサーバを起動する
 
     ```Shell
-    docker run -it --rm python:3.7 bash
-    root@ed0836dc5ca3:/# pip install redis
+    docker run -d --rm --name test-server -p 6379:6379 redis:5
+    ```
+1. さらに別のターミナルを開いて、python が使えるコンテナイメージを展開する
+
+    ```Shell
+     docker run -it python:3.7.8-alpine3.12 ash
+    / # 
+    / # pip3 install redis
     Collecting redis
-      Downloading https://files.pythonhosted.org/packages/ac/a7/cff10cc5f1180834a3ed564d148fb4329c989cbb1f2e196fc9a10fa07072/redis-3.2.1-py2.py3-none-any.whl (65kB)
-         |████████████████████████████████| 71kB 2.2MB/s
+    Downloading redis-3.5.3-py2.py3-none-any.whl (72 kB)
+     |〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓         | 51 kB 3.0 MB/s eta 0     
+     |〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓     
+     |〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓
+     |〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓〓| 72 kB 747 kB/s 
     Installing collected packages: redis
-    Successfully installed redis-3.2.1
-    root@ed0836dc5ca3:/# which python
-    /usr/local/bin/python
-    root@ed0836dc5ca3:/# python
-    Python 3.7.4 (default, Jul  9 2019, 00:06:43)
-    [GCC 6.3.0 20170516] on linux
+    Successfully installed redis-3.5.3
+    / # python3
+    Python 3.7.8 (default, Jun 30 2020, 19:02:38) 
+    [GCC 9.3.0] on linux
     Type "help", "copyright", "credits" or "license" for more information.
-    >>>
-    root@ed0836dc5ca3:/# exit
-    exit
+    >>> import redis
+    >>> conn = redis.StrictRedis(host='172.17.0.1', port=6379)
+    
+    // 複数データセット: mset コマンド
+    >>> ret = conn.mset({'key1': 'value1', 'key2': 'value2'})
+    >>> print(ret)
+    True
+    
+    // 複数データゲット: mget コマンド
+    >>> values = conn.mget(['key1', 'key2'])
+    >>> print(values)
+   [b'value1', b'value2']
+    
+    // 複数データセット,ゲットを別手法でやってみる : mset,mget,scan コマンド
+    >>> keys = conn.scan(match='key*')
+    >>> values_1 = conn.mget(keys[1])
+    >>> print(values_1)
+    [b'value1', b'value2']
+    >>> ret = conn.mset({'key1': 'value1', 'key2': 'value2', 'id1': 'ichiro', 'id2': 'jiro'})  // データ追加して
+    >>> keys = conn.scan(match='key*')
+    >>> values_1 = conn.mget(keys[1])
+    >>> print(values_1)
+    [b'value1', b'value2']
+    
+    >>> keys = conn.scan(match='id*')
+    >>> all_id = conn.mget(keys[1])
+    >>> print(all_id)
+    [b'ichiro', b'jiro']
+    
+    // 複数データ削除: delete コマンド
+    >>> _, keys = conn.scan(match='key*')
+    >>> print(conn.mget(keys))
+    [b'value1', b'value2']
+    >>> ret = conn.delete(*keys)
+    >>> print(conn.mget(keys))
+    [None, None]
+    >>> print(all_id)
+    [b'ichiro', b'jiro']
+    >>>  
     ```
 
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
