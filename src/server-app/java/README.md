@@ -136,11 +136,11 @@ curl localhost:8080
 
 ##### 蛇足 : SpringBoot の DI コンテナと探索
 
-SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、SpringBoot は起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出し、適当な方法でインスタンス化します。
+SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、SpringBoot は起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出します。
+
+そして Springboot はそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
 
 (「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))
-
-そして Springboot はそのインスタンスたちを自身の管理下(=DI コンテナ)に置きます。
 
 この時、「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェースとして働くことになります。
 
@@ -265,7 +265,7 @@ public class StudentEntity {
 }
 ```
 
-SpringBoot のコントローラで Json を返却する場合、多くの場合は POJO(純粋な java オブジェクト)をそのまま返却するだけで良いです。
+`RestController`で Json を返却する場合、多くの場合は POJO(純粋な java オブジェクト)をそのまま返却するだけで良いです。
 
 試しに先程作った `StudentEntity` をインスタンス化して返却してみましょう。
 
