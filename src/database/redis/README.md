@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: Redisの概要を学び、Pythonを使って実際に使ってみます。
 time: 1h
 prior_knowledge: なし
@@ -261,12 +261,6 @@ docker pull jupyter/base-notebook
 docker run --rm --link test-server:redis -p 8888:8888 -v ~/app:/home/jovyan/work jupyter/base-notebook
 # メッセージを見て、ブラウザから localhost:8888 に接続する
 ```
-
-### Advanced: Dockerfile, docker-compose を使ってみよう
-
-- pip install redis をしなくてよいイメージを作成する
-- ~/app ディレクトリをマウントせず、コピーして実行してみる
-- Redis, Python コンテナが起動するように docker-compose 設定を作る
 
 ## 参考資料
 
