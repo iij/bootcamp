@@ -39,7 +39,7 @@ IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcam
 
 SprinbBoot はいまや Java 界隈最大手の Web フレームワークです。小規模なブログから大規模な EC サイトまでこのフレームワークだけで開発、デプロイできます。
 
-このフレームワークを開発するうえで、基本的な Java の知識や MVC や DI といった設計の知識も必要になってきます。残念ながらこの Bootcamp ですべての要素に触れることはできませんが、最初の入り口に立つところまでを案内します。今回はブラウザで閲覧できる UI の機能を持たず、 API(Application Programming Interface)の機能だけを持つ API サーバを構築していきます。
+このフレームワークを開発するうえで、基本的な Java の知識や DI といった設計の知識も必要になってきます。残念ながらこの Bootcamp ですべての要素に触れることはできませんが、最初の入り口に立つところまでを案内します。今回はブラウザで閲覧できる UI の機能を持たず、 API(Application Programming Interface)の機能だけを持つ API サーバを構築していきます。
 
 それでは始めましょう。
 
@@ -142,7 +142,7 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 
 そして Springboot はそのインスタンスたちを自身の管理下(=DI コンテナ)に置きます。
 
-この時、「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェース=MVC のコントローラとして働くことになります。
+この時、「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェースとして働くことになります。
 
 今回の例では、 `DemoApplication` クラスに SpringBootApplication アノテーションが付与されているので `DemoApplication` クラスのパッケージ `com.example.demo` 配下のクラスから特殊なアノテーションがついているクラスを探索します。
 
@@ -155,7 +155,7 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 
 生徒管理 API の作成の依頼
 
-> あなたは、あるプログラミングスクールでテストのスコアを管理するアプリケーションの製造を依頼されました。フロントエンドのアプリケーションは実装済みで、API サーバーが必要とのことです。そこで、あなたは下記の機能を持った API サーバーを製造することになりました。
+> あなたは、あるプログラミングスクールでテストのスコアを管理するアプリケーションの製造を依頼されました。フロントエンドのアプリケーションは実装済みで、[API](https://ja.wikipedia.org/wiki/アプリケーションプログラミングインタフェース) サーバが必要とのことです。そこで、あなたは下記の機能を持った API サーバを製造することになりました。
 >
 > - GET /students 保存済みの全生徒エンティティを返却する
 > - GET /students/{生徒 ID} 指定された生徒 ID を持つ生徒エンティティを返却する
@@ -163,6 +163,8 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 > - PUT /students{生徒 ID} 指定されたプロパティを持つ生徒エンティティを変更し、変更後の生徒エンティティを返却する
 >
 > ※ 生徒エンティティには「生徒 ID」「生徒名」「成績(整数)」を含むものとする
+>
+> ※ このように HTTP のメソッドをリソースの操作、URL をリソースの指定に使う API のことを RESTfulAPI を呼びます
 
 まず、下記のクラスに `RestController` アノテーションを追加します。
 また `StudentController#retrieveStudents` に GET /students のエンドポイントとの紐付けを作成してみます。
@@ -589,5 +591,15 @@ public class StudentService {
 
 この Bootcamp では Springboot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
 ただ、今後の Springboot 習得の足掛かりとなれば幸いです。
+
+### 追加の資料
+
+- [Spring Boot リファレンスドキュメント](https://spring.pleiades.io/spring-boot/docs/current/reference/html)
+
+  - 多くの Springboot 開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
+
+- [Springboot Guides](https://spring.pleiades.io/guides)
+
+  - Springboot の各種機能を試してみるチュートリアルが公開されています。Pub/Sub や MongoDB、Docker との連携など Springboot の拡張が多種公開されています。興味のある項目に触ってみてください。
 
 <credit-footer/>
