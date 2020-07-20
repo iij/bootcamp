@@ -2,12 +2,12 @@
 
 ## 0. この講義について
 
-### この講義の目的
+### 0.1 この講義の目的
 
 継続的インテグレーション(Continuous Integration)、継続的デリバリ(Continuous Delivery)について理解する。
 droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを自ら導入できるようにする。
 
-### ハンズオンの対象者
+### 0.2 ハンズオンの対象者
 
 これからプログラムを書く、またはテキストファイルによる設定ファイル、マニュアル、仕様書などを記述する可能性のある技術者を対象としています。
 
@@ -17,10 +17,35 @@ droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを�
   - 知らない場合は[Learn YAML in five minutes!](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)をご覧ください。
 - 「gitの使い方＋GitHubを使った開発手法」を受講しておくこと
 
-### 事前準備
+::: tip チェックポイント1 🏁
+Gitの使い方＋GitHubを使った開発手法を受講しましたか？
+:::
+
+### 0.3 事前準備
 
 - gitを利用できる環境を準備してください。
 - お好みのテキストエディタを準備してください。
+  - この講義では[VSCode](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)を推奨します。
+[Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Nodepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
+メモ帳、サクラエディタ、TeraPadは非推奨です。
+
+### 0.4. この資料のお約束
+
+:computer: は自分で操作する箇所を示しています。
+
+ <ほげほげ> で囲まれている部分は自分の設定値で置き換えてください。たとえば
+
+```
+git clone <リモートリポジトリのアドレス>
+```
+
+と記載されている箇所は
+
+```
+git clone git@github.com:iij/bootcamp.git
+```
+
+というように置き換えてください。
 
 ## 1. 継続的インテグレーション、継続的デリバリとは
 
@@ -58,11 +83,18 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 
 #### 2.1.1. droneの設定を有効化する
 
-https://github.com/iij/drone-exercise に用意しています。
-GitHub上でforkしてください。
+このハンズオンのためにCI/CDを行うためのサンプルリポジトリを https://github.com/iij/drone-exercise に用意しています。
+
+:computer: GitHub上でforkしてください。
+
+![droneで最初のテスト](./images/fork-repo.jpg)
+
+上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。
 
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
 これはWebhookという仕組みを用いて実現されていますが、droneを使う前にこの設定が必要です。
+
+:computer: droneにリポジトリを登録する。
 
 https://cloud.drone.io/ にログインしてください。
 リストから「自分のアカウント名/drone-exercise」を探して詳細ページを開きましょう。
@@ -73,7 +105,7 @@ https://cloud.drone.io/ にログインしてください。
 
 #### 2.1.2. droneでテストを実行する
 
-forkしたgitリポジトリをローカルにgit cloneしてください。
+:computer: forkしたgitリポジトリをローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
@@ -85,6 +117,10 @@ droneのページから「ACTIVITY FEED」を開くとテストの実行ログ�
 書かれたテストが置かれています。
 
 ![droneで最初のテスト](./images/drone_first_test.png)
+
+::: tip チェックポイント2 🏁
+「test」ではどういうメッセージが出力されたでしょうか？
+:::
 
 ## 3. droneの基本的な設定
 
@@ -152,7 +188,8 @@ UI上では各`Step`ごとに結果が分けて表示され、`name`で名前を
 ## 4. Pull Requestと組み合わせる
 
 droneを設定した状態でPull Requestを作成するとどうなるでしょうか。
-意図的にテストが失敗するようにコードを修正し、Pull Requestを作成してみましょう。
+
+:computer: 意図的にテストが失敗するようにコードを修正し、Pull Requestを作成してみましょう。
 
 ```
 git checkout -b feature/text-error
@@ -173,19 +210,20 @@ git commit -m "goodby"
 git push origin feature/text-error
 ```
 
-GitHub を開いてPull Requestを作成しましょう。
+:computer: GitHub を開いてPull Requestを作成しましょう。
 
 ![Pull Requestを作成しましょう](./images/drone_pull_request_button.png)
-
-forkしたプロジェクトはPull Requestを作成するとfork元へ向いてしまいます。
-自分のリポジトリへ向け直すのを忘れないでください。
-
-![Fork元を選択しないようにしましょう](./images/drone_pull_request_base.png)
 
 Pull Requestの中にdroneのテスト結果が表示されています。
 ひと目でテストが失敗していることがわかるでしょう。
 
 ![Pull Requestに表示されたdroneの結果](./images/drone_pull_request_result.png)
+
+::: tip チェックポイント3 🏁
+テストが失敗しましたか？
+:::
+
+### 4.1. テストが失敗したらマージできないようにしたい
 
 デフォルトでは`pr`と`push`の2つが登録されています。
 
@@ -195,6 +233,8 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 
 この状態でもMergeボタンを押すことは可能ですが、普通は押されたくないはずです。
 この挙動はGitHubの設定画面から変更できます。
+
+:computer: テストが通ったときだけマージできるように設定する
 
 - 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
 - 「Apply rule to」に「master」と記入し、
@@ -211,12 +251,16 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 
 ![マージできない状態](./images/drone_reject_merge.png)
 
-複数人で開発するときには便利な機能です。
+::: tip チェックポイント4 🏁
+マージボタンが押せなくなったのはなぜですか？
+:::
 
+
+複数人で開発するときには便利な機能です。
 
 このあとmasterブランチを利用しますのでBranch protection rulesは削除しておきましょう。
 
-- Branch protection rules の一覧ページで`master`と名前がついたルールの`delete`ボタンを押す
+:computer: Branch protection rules の一覧ページで`master`と名前がついたルールの`delete`ボタンを押す
 
 この後項目のためにmasterブランチに戻っておきましょう。
 
@@ -257,6 +301,8 @@ rubyを例に設定してみましょう。
 rubyのパッケージマネージャであるbundlerは`--path`オプションで保存場所を指定できます。
 一般的によく使われる`vendor/bundle`に保存するように、以下のように変更してください。
 
+:computer: パッケージの保存先を変更する
+
 ```
   - name: test
     image: ruby
@@ -282,6 +328,8 @@ rubyのパッケージマネージャであるbundlerは`--path`オプション�
 
 <変数名>で書かれた場所を適切な値で置き換えてください。
 :::
+
+:computer: パッケージをキャッシュするように変更する
 
 ```yaml
 steps:
@@ -312,7 +360,7 @@ steps:
         - vendor/bundle
 ```
 
-コミットして実行してみましょう。
+:computer: コミットして実行してみましょう。
 
 ```
 git add .drone.yml
@@ -333,7 +381,11 @@ git commit --allow-empty -m "Cacheの効果を確認する"
 git push origin master
 ```
 
-テスト実行が早くなっていることを確認しましょう。
+:computer: テスト実行が早くなっていることを確認しましょう。
+
+::: tip チェックポイント5 🏁
+テストが速くなったのはなぜですか？
+:::
 
 ## 6. さまざまな応用
 
@@ -344,7 +396,7 @@ droneは何でも動かすことができますから、テストをすること
 
 ここでは自然言語のチェックを行う [textlint](https://textlint.github.io/) を使った例を紹介します。
 
-stepsに以下の項目を追加してみましょう。
+:computer: stepsに以下の項目を追加してみましょう。
 
 ```yaml
   - name: textlint
@@ -362,6 +414,8 @@ textlintはフレームワークのみでこれ単体で動かすことはでき
 [textlint-rule-preset-ja-technical-writing](https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing)
 を利用します。試しに `README.md`をチェックしてみましょう。
 
+:computer: README.mdをTextlintでチェックする。
+
 ```
 git add .drone.yml
 git commit -m "textlintによるチェック"
@@ -371,6 +425,10 @@ git push origin master
 ![textlintのエラー](./images/drone_textlint_error.png)
 
 このようにチェックする対象はプログラムに限りませんので、マニュアルなどのドキュメントのチェックなどにも活用できます。
+
+::: tip チェックポイント6 🏁
+droneが利用できる事例としてふさわしいものはどれですか？
+:::
 
 ### 6.2 Services
 
@@ -385,12 +443,10 @@ git push origin master
 
 サンプルとしてRuby on Rails＋MySQLで構成されたアプリケーションを用意しました。
 
-https://github.com/iij/drone-exercise-rails をforkして、git cloneしてください。
+:computer: https://github.com/iij/drone-exercise-rails をforkして、git cloneしてください。
 
 Ruby on RailsはWebアプリケーションを作るためのRuby製フレームワークです。
 データの保存にMySQLなどのデータベースを利用できます。
-
-さらに興味があれば「Railsでwebアプリを作る」を受講してください。
 
 標準的なWebアプリケーションではデータベースなどの外部サービスにデータを保存し、それを読み取って加工して表示するという動作が多く、
 テストするときもデータベースが動いている必要があります。
@@ -412,14 +468,15 @@ steps:
       - bundle exec rails test # テストを実行する
 ```
 
-まずはこの状態でテストを実行し、結果を見てみましょう。
+:computer: まずはこの状態でテストを実行し、結果を見てみましょう。
+
 ちなみにテストは `test/models/user_test.rb` に書いてあります。
 
 この状態ではデータベースが動いていないのでテストが成功しません。
 テストしている間横でなにか動かしておきたいという場合には `Service` を使います。
 今回はMySQLを使いますが、[MySQLは公式でdockerイメージが提供されています](https://hub.docker.com/_/mysql)のでこれを利用します。
 
-以下の項目を`.drone.yml`に追加してください。
+:computer: 以下の項目を`.drone.yml`に追加してください。
 
 ```yaml
 services:
@@ -447,18 +504,9 @@ test:
 このファイルで接続先MySQLサーバーのホストを指定しているのですが、
 ここでは`.drone.yml`で指定した`db`がホスト名になっていて、この名前で接続できるようになります。
 
-## 7. [応用課題] デプロイする
-時間が余った人のための応用課題です。
-
-droneはCIのためのツールですが、CDのためのツールでもあります。
-テストのあとにデリバリをすることもできます。
-
-さてこのハンズオン資料はMarkdownで記載されており、GitHubでホスティングされています。
-この講義資料であるmarkdownをHTMLに変換し、GitHub Pagesで自動的にページを公開するように設定してみてください。
-
-https://github.com/iij/bootcamp をforkしてはじめましょう。
-
-[公式のマニュアル](http://plugins.drone.io/drone-plugins/drone-gh-pages/)を参照してください。
+::: tip チェックポイント7 🏁
+テスト実行中にデータベースはどこにいるでしょうか？
+:::
 
 ## 8. 参考情報
 
