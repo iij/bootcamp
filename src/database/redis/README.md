@@ -125,6 +125,20 @@ prior_knowledge: なし
 
 1. (最初に起動した Redis サーバは C-c で止められます)
 
+1. 参考: Redisを使ったGeospatial
+
+    ```Shell
+    test-server:6379> GEOADD sample-loc 139.700258 35.690921  "shinjuku-station"
+    (integer) 1
+    test-server:6379> GEOADD sample-loc 139.70121502876282 35.69271580036533  "shinjuku-alta"
+    (integer) 1
+    test-server:6379> GEOADD sample-loc 139.69163417816162 35.68947430993086 "tocho"
+    (integer) 1
+    test-server:6379> GEORADIUS sample-loc 139.700258 35.690921 500 m
+    1) "shinjuku-station"
+    2) "shinjuku-alta"
+    ```
+
 ## あらすじ
 
 - Redis ざっくり説明
