@@ -137,6 +137,8 @@ prior_knowledge: なし
     test-server:6379> GEORADIUS sample-loc 139.700258 35.690921 500 m
     1) "shinjuku-station"
     2) "shinjuku-alta"
+    test-server:6379> GEODIST sample-loc shinjuku-station tocho
+    "795.2182"
     ```
 
 ## あらすじ
