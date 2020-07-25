@@ -139,7 +139,7 @@ name: default
 
 steps:
   - name: test
-    image: ruby
+    image: ruby:2.6.2
     commands:
       - bundle install
       - rspec
@@ -305,7 +305,7 @@ rubyのパッケージマネージャであるbundlerは`--path`オプション�
 
 ```
   - name: test
-    image: ruby
+    image: ruby:2.6.2
     commands:
       - bundle install --path vendor/bundle
       - bundle exec rspec
@@ -343,7 +343,7 @@ steps:
       restore: true
 
   - name: test
-    image: ruby
+    image: ruby:2.6.2
     commands:
       - bundle install --path vendor/bundle
       - bundle exec rspec
