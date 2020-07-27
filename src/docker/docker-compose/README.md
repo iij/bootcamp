@@ -10,8 +10,15 @@ prior_knowledge: docker
 # 開発環境をDocker Composeで構築
 
 ## 事前準備
+* この講義では ```docker-compose``` コマンドを使います。
+* 環境ごとに インストール方法が異なるので、 以下の通り導入しておいてください。
 
-以下の手順に従って、`docker-compose` コマンドをインストールしてください。
+### Windows, macOS
+* [ハンズオン事前準備](https://iij.github.io/bootcamp/init/hello-bootcamp/) で Docker Desktop for Windowsや、Docker Desktop for Mac を導入済みであれば、すでにインストールされているはずです。
+
+### Linux
+* 以下の手順に従って、`docker-compose` コマンドをインストールしてください。
+   * プロキシ 下の環境で試す場合は ```sudo``` ではなく ```sudo -E``` として環境変数を引き継ぐか、 curl の ```--proxy``` オプションを利用する必要があるかもしれません。
 
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -19,11 +26,13 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 ```
 
-導入できたら、下記コマンドを実際に入力し、コマンドが実行できるかどうか確認してください。
+### 導入できたら
+* 下記コマンドを実際に入力し、コマンドが実行できるか確認してください。
 
 ```bash
 $ docker-compose --version
 ```
+
 
 ## 1. Docker Compose とは
 
@@ -120,6 +129,16 @@ services:
 
 次に、backend のアプリケーションを作成します。しかし前述した通り、ここではコードの解説などは割愛します。Go 言語のコードに興味があったら、ぜひ中身もご覧になってください。アプリケーションのソースコードは、本リポジトリに[main.go](/bootcamp/main.go)として同梱しています。`Dockerfile.backend` と同じ階層に`backend` ディレクトリを作成して、中に[main.go](/bootcamp/main.go)を配置してください。
 
+```bash
+.
+├── Dockerfile.backend
+├── backend
+│   └── main.go
+└── docker-compose.yml
+
+1 directory, 3 files
+```
+
 ### 2.4 docker-compose コマンド
 
 では、必要なものはすべて揃ったので、「docker-compose.yml」が存在するディレクトリで、以下のコマンドを入力してください。
@@ -127,6 +146,18 @@ services:
 ```bash
 $ docker-compose up
 ```
+
+初回実行時は必要な image の取得や Dockerfile.backend を利用した docker build などが実行されるため、時間がかかります。
+
+また、もし プロキシ 環境下で 正常に go get が成功しない場合は 以下のように ```docker-compose build``` してから試してみてください。
+
+```bash
+$ docker-compose build --build-arg https_proxy=http://<proxy>:<port>
+$ docker-compose up
+```
+
+
+
 
 以下が実際に実行した際の画面です。
 
@@ -171,7 +202,7 @@ iijbootcamp-database | 2019-02-15T02:55:28.229+0000 I CONTROL  [initandlisten] O
 
 `docker-compose up` コマンドは、docker-compose.yml ファイルに基づきコンテナを新規作成し、起動するコマンドです。`-d` オプションを利用することで、デーモンとして起動することも可能です。デーモンで起動している際は、ログが表示されなくなってしまうので、見たい場合は`docker-compose logs` コマンドで閲覧可能です。また、`-f` オプションを渡すことで、ログを流し続けることができます。  
 
-別のターミナル環境を開いて、同じディレクトリで以下のコマンドを入力してください。
+別のターミナル環境を開いて、「docker-compose.yml」が存在するディレクトリ で以下のコマンドを入力してください。
 
 ```bash
 $ docker-compose ps
@@ -183,16 +214,24 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 
 `docker-compose ps` コマンドでは、Docker Compose で管理してる各コンテナの状態を一覧で見ることができます。「State」が「Up」になっていれば立ち上がっている状態です。その他のカラムは`docker ps` の意味と同様です。
 
+
+:::
+#### Webアプリケーションの動作確認方法
 では、実際にWebアプリケーションが動作しているか確認するために以下のコマンドを入力してください。
+
+ここでは、まずデータを追加し、次に追加されたデータを取り出しています。
+
+`/get` にアクセスして、最初に登録したデータが取り出せていれば成功です。
 
 ```bash
 $ curl -X POST -d "title=iijbootcamp&body=IIJBootCamp is fun!!" http://localhost:8080/add
 Successfully added
+
 $ curl http://localhost:8080/get
 [{ID:ObjectIdHex("5c6642fc04b685000117c15b") Title:iijbootcamp Body:IIJBootCamp is fun!!}]
 ```
 
-最初にデータを追加し、次に追加されたデータを取り出しています。`/get` にアクセスした際に、最初に登録したデータが取り出せていれば成功です。
+:::
 
 また、`docker-compose start`、`docker-compose stop` で一括してコンテナの起動・停止を行えます。さらに起動中のコンテナの停止と削除を一括して行う場合は、`docker-compose down` が利用できます。では、先ほど起動したコンテナたちを停止してみましょう。
 
