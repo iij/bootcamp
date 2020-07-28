@@ -21,7 +21,7 @@ GoはWebサービスだけでなく、配布が楽という面もあり、部署
 // これは何も質問が無ければ通常のプログラミング言語で使われる表現は知っているものという前提で講師が話します、という宣言であって、"`if`とはどういう意味でしょうか"といった質問をいただければ喜んで答えますので安心してください(?)。
 
 ### 0.3. 事前準備
-[GoでWebアプリを作る(事前準備編)](./init)を参考に準備をおねがいします。
+[GoでWebアプリを作る(事前準備編)](./init.md)を参考に準備をおねがいします。
 本ハンズオンではdockerコンテナ内でファイルを編集し、コードをコンパイルし、実行する想定です。 \
 用意したdockerコンテナにはVim/Emacs/nanoといったエディタを用意しているため、好きなエディタを利用してください。 \
 // 筆者はVimmerであるため例はVimで書きます。 \
@@ -112,8 +112,8 @@ Googleが主導して開発しているプログラミング言語です。 \
 [The Go Playground](https://play.golang.org/p/7vin2BK8_A6) \
 チュートリアルリポジトリの`hello_world`ディレクトリにサンプルコードが入っています。
 
-## 2.1. Goの基本的なコードの書き方を知る
-### 2.1.1. 作業ディレクトリの作成
+### 2.1. Goの基本的なコードの書き方を知る
+#### 2.1.1. 作業ディレクトリの作成
 :computer: 以下のコマンドを実行して、作業ディレクトリを作成しましょう。
 
 ```shell
@@ -121,7 +121,7 @@ $ mkdir -p go_tutorial/hello_world
 $ cd go_tutorial/hello_world
 ```
 
-### 2.1.2. 実行ファイルの作成
+#### 2.1.2. ソースコードの記述
 :computer: 好きなエディタで以下のファイルを作成しましょう。
 
 * `go_tutorial/hello_world/main.go`
@@ -139,7 +139,7 @@ func main() {
 $ vim main.go
 ```
 
-### 2.1.3. コンパイルと実行
+#### 2.1.3. コンパイルと実行
 :computer: 以下のコマンドで書いたコードを実行しましょう。
 
 ```bash
@@ -153,7 +153,7 @@ Hello, 世界
 ```
 :::
 
-### 2.1.4. どこまでが言語仕様?(追加課題)
+#### 2.1.4. どこまでが言語仕様?(追加課題)
 余裕がある人は以下の課題をやってみましょう。
 
 実行ファイルには`main`という文字列が3箇所表れます。これらのうち、一言一句`main`という文字列でなければならないところはどこでしょうか。
@@ -172,8 +172,9 @@ Hello, 世界
 
 ### 2.2. 解説
 #### 2.2.0. The Go Playground
-[The Go Playground](https://play.golang.org)はGoのプログラムを手軽に実行できる環境で、Go公式によって用意されています。 \
-一部のパッケージが動かないようにされていますが、簡単なコードを試しに動かすためには便利です。
+[The Go Playground](https://play.golang.org)はGoのプログラムを手軽に実行できる環境で、Go公式によって用意されています。
+
+HTTPサーバなどは実行してもアクセスできないので意味はないですが、簡単なコードを試しに動かしたり、コード片を共有するときに非常に便利です。
 
 念の為ですが、センシティブな情報(実際の顧客情報やパスワードなど)をここで入力してはいけません。
 
@@ -241,8 +242,9 @@ Goでコンパイルされた実行可能ファイルは`main`パッケージで
 * 外部パッケージの関数を呼び出すためには事前に`import`文を用いてパッケージを読み込む必要があります
 
 ## 3. パッケージ/モジュール
-[The Go Playground](https://play.golang.org/p/74u0FTkyOvZ) \
-チュートリアルリポジトリの`calc`ディレクトリにサンプルコードが入っています。
+[The Go Playground](https://play.golang.org/p/gRneR3EcYRB)
+
+* チュートリアルリポジトリの`calc`ディレクトリにサンプルコードが入っています。
 
 ## 3.1 パッケージを分けて、モジュールを宣言する
 ### 3.1.1. 作業ディレクトリの作成
@@ -329,6 +331,15 @@ $ go run main.go
 ### 3.1.7. なんでパッケージを切るの?(追加課題)
 余裕がある人は以下の課題をやってみましょう。
 
+:computer: `calc`モジュールに引き算処理を追加するならばどのファイルに追加するのが良いか考えてみましょう。
+
+::: tip ヒント
+`go_tutorial/calc/add.go`に置くもよし、`go_tutorial/calc/` 内に別ファイルとして置くもよし。 \
+もちろんその他の置き方もあるでしょう。 \
+自分が自然だと思う方法で配置して、なぜそれを自分が自然と思えたか/その他を自然と思えなかったのかを考えてみましょう。
+:::
+
+:computer: `calc`モジュールにsin関数による計算処理を追加するならばどのファイルに追加するのが良いか考えてみましょう。
 
 ### 3.2. 解説
 #### 3.2.1. `go.mod`
@@ -450,11 +461,416 @@ func main() {
 
 ここでは更に`arithmetic.Add()`の返り値をそのまま`fmt.Println()`で標準出力に出力させています。
 
-## 3. net/httpはじめの一歩
-[The Go Playground](https://play.golang.org/p/5YXGZvJ73b_1)(動きません)
-* The Go Playgroundでは`net/http`など一部のパッケージを利用したコードが動かないようになっています
+## 4. 型定義とメソッド
+[The Go Playground](https://play.golang.org/p/Ne2xRnC0Ggl)
 
-* `main.go`
+* チュートリアルリポジトリの`pokemon`ディレクトリにサンプルコードが入っています
+
+### 4.1. ポケモンのダイマックスわざを出力したい
+#### 4.1.1. 作業ディレクトリの作成
+:computer: 以下のコマンドを実行して、作業ディレクトリを作成しましょう。
+
+```shell
+$ cd .. # go_tutorial/calc ディレクトリにいることを想定
+$ mkdir pokemon
+$ cd pokemon
+```
+
+#### 4.1.2. ソースコードの記述
+:computer: 好きなエディタで以下のファイルを作成しましょう。
+
+* `go_tutorial/pokemon/main.go`
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"os"
+)
+
+type Pokemon struct {
+	ID    int
+	Name  string
+	moves []Move
+}
+
+func (p Pokemon) Moves(isDynamax bool) ([]Move, error) {
+	if isDynamax {
+		dynamaxMoves := []Move{}
+
+		for _, move := range p.moves {
+			dynMove, err := move.dynamax()
+			if err != nil {
+				return nil, err
+			}
+
+			dynamaxMoves = append(dynamaxMoves, dynMove)
+		}
+
+		return dynamaxMoves, nil
+	}
+
+	return p.moves, nil
+}
+
+type Move struct {
+	Name string
+	Type string
+}
+
+func (m Move) dynamax() (Move, error) {
+	switch m.Type {
+	case "くさ":
+		return Move{
+			Name: "ダイソウゲン",
+			Type: m.Type,
+		}, nil
+	case "ほのお":
+		return Move{
+			Name: "ダイバーン",
+			Type: m.Type,
+		}, nil
+	case "みず":
+		return Move{
+			Name: "ダイストリーム",
+			Type: m.Type,
+		}, nil
+	default:
+		return Move{}, errors.New("unknown type")
+	}
+}
+
+var party = []Pokemon{
+	{ID: 3, Name: "フシギバナ", moves: []Move{{Name: "つるのむち", Type: "くさ"}}},
+	{ID: 6, Name: "リザードン", moves: []Move{{Name: "かえんほうしゃ", Type: "ほのお"}}},
+	{ID: 9, Name: "カメックス", moves: []Move{{Name: "みずでっぽう", Type: "みず"}}},
+}
+
+func main() {
+	venusaur := party[0]
+	fmt.Println("ポケモン:", venusaur.Name)
+
+	moves, err := venusaur.Moves(false)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println("通常わざ:", moves[0].Name)
+
+	dynMoves, err := venusaur.Moves(true)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println("ダイマックスわざ:", dynMoves[0].Name)
+}
+
+```
+
+#### 4.1.3. コンパイルと実行
+:computer: 以下のコマンドで書いたコードを実行しましょう。
+
+```bash
+$ go run main.go
+```
+
+::: tip チェックポイント1 🏁
+4.1.3. を実行して以下の出力が得られたらクリア
+```
+ポケモン: フシギバナ
+通常わざ: つるのむち
+ダイマックスわざ: ダイソウゲン
+```
+:::
+
+### 4.2. 解説
+#### 4.2.1. 型定義といくつかの型
+```go
+type Pokemon struct {
+	ID    int
+	Name  string
+	moves []Move
+}
+
+type Move struct {
+	Name string
+	Type string
+}
+```
+
+他の言語と同じようにGoには型を定義する機能があります。 \
+ここでは`Pokemon`(ポケモン)と`Move`(わざ)という型を定義しています。
+
+:::tip なんのために型を定義するのか
+型システムとは何であるかについては[TaPL](https://www.ohmsha.co.jp/book/9784274069116/)の1章を読むとよいでしょう。 \
+いくつかの観点がありますが、以下のようなものがあるでしょう。
+
+* その型が行なえる処理を制限できる
+* 関連するふるまいに名前を付けれる
+* 代入する値のある程度の正しさをプログラムを実行することなく(静的に)検証できる
+
+これらが真にメリットであると感じるためにはいくつかのプログラム言語を触るのがてっとり早いでしょう。
+:::
+
+型を定義するときにはその基となる型を指定する必要があります。 \
+ここでは`struct`型(構造体型)を基としています。
+
+もちろん別な型を基にすることも可能です。
+
+```go
+type URL string
+```
+
+このように`URL`という型を`string`型を基として定義しました。
+
+では`struct`型とは何でしょうか。
+
+`struct`型は関連するデータをまとめて保持するための型です。 \
+Cなどの言語でも同様な構造体型が存在します。
+
+その他にも`[]Move`のような`[]`を型名の前に付けることで定義されるスライス(可変長のリストみたいなもの)も使用しています。
+
+詳細な文法は置いておいて、実際今回はどのように使っているかだけに注目します。
+
+```go
+var party = []Pokemon{
+	{ID: 3, Name: "フシギバナ", moves: []Move{{Name: "つるのむち", Type: "くさ"}}},
+	{ID: 6, Name: "リザードン", moves: []Move{{Name: "かえんほうしゃ", Type: "ほのお"}}},
+	{ID: 9, Name: "カメックス", moves: []Move{{Name: "みずでっぽう", Type: "みず"}}},
+}
+```
+
+`[]Pokemon`型の変数`party`を宣言しています。 \
+ここでは`フシキバナ`、`リザードン`、`カメックス`の3匹のポケモンをパーティに加えています。
+
+```go
+	{ID: 3, Name: "フシギバナ", moves: []Move{{Name: "つるのむち", Type: "くさ"}}},
+```
+
+`フシギバナ`の定義を追っていきます。 \
+これは`Pokemon`型の値を書いています。
+
+* `ID`という`int`型のフィールドには`3`
+* `Name`という`string`型のフィールドには`フシギバナ`
+* `moves`という`[]Move`型のフィールドには`[]Move{{Name: "つるのむち", Type: "くさ"}}`
+  * これはさらに...
+
+という形で定義しています。
+つまりIDが`3`で名前が`フシギバナ`であるポケモンは`つるのむち`という`くさ`タイプのわざを覚えているということが表現されています。
+
+この`party`に保持された最初の要素を取得する部分を見ます。
+
+```go
+	venusaur := party[0]
+```
+
+// `venusaur`はフシギバナの英語名
+
+同様に`party[1]`でリザードンが取得できます。
+
+更に`venusaur`変数の`Name`フィールドを取得するには`venusaur.Name`とします。
+
+```go
+	fmt.Println("ポケモン:", venusaur.Name)
+```
+
+:::tip
+Goの`fmt.Println()`関数は`,`で区切られた値を半角スペースで繋いで表示します。
+:::
+
+#### 4.2.2 メソッド定義
+まずは! \
+ポケモン的前提知識について書きます。
+
+ポケモン最新作ソード&シールドではダイマックス(英語では`dynamax`)という要素が追加されました。 \
+これをすると戦闘中にいきなり巨大化し、わざもタイプに応じて強力なものに変化します。
+
+これをプログラムで表現したいというのが今回のサンプルです。
+
+ある型についてその型に関連する関数(メソッドと呼ぶ)を定義できます。
+
+```go
+func (p Pokemon) Moves(isDynamax bool) ([]Move, error) {
+	if isDynamax {
+		dynamaxMoves := []Move{}
+
+		for _, move := range p.moves {
+			dynMove, err := move.dynamax()
+			if err != nil {
+				return nil, err
+			}
+
+			dynamaxMoves = append(dynamaxMoves, dynMove)
+		}
+
+		return dynamaxMoves, nil
+	}
+
+	return p.moves, nil
+}
+
+func (m Move) dynamax() (Move, error) {
+	switch m.Type {
+	case "くさ":
+		return Move{
+			Name: "ダイソウゲン",
+			Type: m.Type,
+		}, nil
+	case "ほのお":
+		return Move{
+			Name: "ダイバーン",
+			Type: m.Type,
+		}, nil
+	case "みず":
+		return Move{
+			Name: "ダイストリーム",
+			Type: m.Type,
+		}, nil
+	default:
+		return Move{}, errors.New("unknown type")
+	}
+}
+```
+
+ここで`Pokemon`型には`Moves()`メソッドを、`Move`型には`dynamax()`メソッドを定義しました。 \
+定義方法はほとんど関数定義と同じですが、関数名の前にそのメソッドを定義する型を記述することに注意しましょう。 \
+ここで型名の前に変数名を書くことでメソッドの本体でその変数を利用できます。
+
+よく使う制御構文である`if`/`for`/`switch`についても使い方はなんとなく分かるでしょうか。
+
+`(Pokemon).Moves()`は`isDynamax`でダイマックス状態かどうかのbool値を引数に取り、`false`であればそのまま`moves`フィールドの値を返し、`true`なら`moves`の中身を全てダイマックスわざに変換したスライスを新たに作って返します。
+
+`(Move).dynamax()`は`Type`フィールドの値に応じて、対応するダイマックスわざを返します。
+
+```go
+		for _, move := range p.moves {
+			dynMove, err := move.dynamax()
+			if err != nil {
+				return nil, err
+			}
+
+			dynamaxMoves = append(dynamaxMoves, dynMove)
+		}
+```
+
+`for`は少し特徴的です。 \
+`range`の後に配列またはスライスを配置することで、その要素のインデックスを1つ目の変数に、その値を2つ目の変数に入れることができます。 \
+今回のようにインデックスを使わない場合には`_`と書くことで使わないことを明記します。
+
+:::tip
+```go
+for i, move := range p.moves {
+```
+
+と記述するとコンパイルエラーとなります。 \
+Goでは使ってない変数はバグの元なのでそもそもコンパイル時点排除するという言語仕様になっています。
+
+また、
+
+```go
+for move := range p.moves {
+```
+
+とすると想定とは違う挙動になります。 \
+`range`は変数定義は1つだけの場合はインデックスだけを代入します。
+:::
+
+メソッドを実際に呼び出している部分は以下です。
+
+```go
+	moves, err := venusaur.Moves(false)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+```
+
+#### 4.2.3. エラー処理
+```go
+	moves, err := venusaur.Moves(false)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+```
+
+や
+
+```go
+	dynMove, err := move.dynamax()
+	if err != nil {
+		return nil, err
+	}
+```
+
+といった部分で触れませんでしたが、この記述もGoの特徴的な記述です。
+
+Goにはほかの言語にあるような強力な例外機構は存在しません(`panic()`/`recover()`という組込み関数は存在します)。 \
+これはGoがエラー処理の方法として、例外ではなく明示的なエラー値の返却という戦略を採用しているからです。
+
+Goは今回のサンプルのように複数の値を返す関数が記述できます。
+
+```go
+func (m Move) dynamax() (Move, error) {
+	switch m.Type {
+		/* ... */
+	default:
+		return Move{}, errors.New("unknown type")
+	}
+}
+```
+
+これを利用して、何かエラーが発生するかもしれない関数では戻り値の最後に`error`型(標準で用意された型)を返します。
+
+この関数/メソッドを実行する側では、以下のように`error`型返り値の内容によって処理を分岐します。
+
+```go
+	dynMove, err := move.dynamax()
+	// errに何か値が入っていた場合は
+	if err != nil {
+		// そのままエラーを返す
+		return nil, err
+	}
+```
+
+```go
+	moves, err := venusaur.Moves(false)
+	// errに何か値が入っていた場合は
+	if err != nil {
+		// そのエラーを標準出力に表示して
+		fmt.Println(err)
+		// Exit code 1 でプログラムを終了する
+		os.Exit(1)
+	}
+```
+
+大抵は受けとったエラーをそのまま実行元に返して、`main()`関数のような最上位でログに出力したり、APIサーバであればクライアントにエラーコードとともにエラーレスポンスとして返したりします。
+
+私は例外機構を持つ言語の経験がほとんどないので比較については当日TAの人に伺いますね。
+
+## 5. net/httpはじめの一歩
+[The Go Playground](https://play.golang.org/p/5YXGZvJ73b_1)
+
+* 実行してもしばらく経って`timeout running program`というエラーが返ってきます
+* チュートリアルリポジトリの`http_hello`ディレクトリにサンプルコードが入っています
+
+### 4.1 HTTPサーバを実行してみる
+#### 4.1.1. 作業ディレクトリの作成
+:computer: 以下のコマンドを実行して、作業ディレクトリを作成しましょう。
+
+```shell
+$ cd .. # go_tutorial/calc ディレクトリにいることを想定
+$ mkdir http_hello
+$ cd http_hello
+```
+
+#### 4.1.2. ソースコードの記述
+:computer: 好きなエディタで以下のファイルを作成しましょう。
+
+* `go_tutorial/http_hello/main.go`
 ```go
 package main
 
@@ -486,34 +902,80 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-### 3-1. 動かし方
-ターミナルを2つ用意します。
-docker環境の方は2つ目のターミナルでコンテナ内に入るために、
+```shell
+$ vim main.go
+```
+
+#### 4.1.3. 別ターミナルの準備
+今回のコードはサーバアプリケーションなので素朴に`go run main.go`で実行してしまうとプロンプトが返ってこず、動作確認が面倒です。 \
+そのため今回はターミナルを2つ用意する方針で実行します。
+
+:computer: これまで使用していたターミナルとは別のターミナルを用意し、以下のコマンドを実行しましょう。
 
 ```bash
 $ docker exec -it go-tutor /bin/bash
 ```
 
-を実行する必要があります。
+:::tip
+`go-tutor`コンテナで`/bin/bash`を実行するコマンドです。
+:::
 
-片方で以下を実行します。
+#### 4.1.4. HTTPサーバの起動
+:computer: 以下のコマンドでHTTPサーバを起動しましょう。
 
 ```bash
 $ go run main.go
-## プロンプトが返ってこなくなる
 ```
 
-もう一方のターミナルから以下を実行します。
+::: tip チェックポイント3 🏁
+HTTPサーバを起動したのとは別のターミナル上で以下のコマンドを実行しましょう。 \
+出力が同じであればクリア!
 
-```bash
+```shell
 $ curl http://localhost:8080/hello
-hello, world!
+Hello, world!
 ```
+:::
 
 HTTPサーバを起動しているほうのプロセスを終了するためにはCtrl-Cなどで終了を伝えましょう。
 
-### 3-2. 解説
-#### 3-2-1. 構造体と独自型とメソッド
+### 4.2. 解説
+#### 4.2.1. 構造体と独自型とメソッド
+```go
+	mux := http.NewServeMux()
+	mux.HandleFunc("/hello", helloHandler)
+```
+
+や
+
+```go
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+
+	err := server.ListenAndServe()
+```
+
+に注目します。 \
+これは他のプログラム言語を書いたことがあればお馴染みのメソッド記法です。
+
+:::tip Goはオブジェクト指向言語なの?
+これについては公式で明確に(`Yes and no.`)回答されています。[Is Go an object-oriented language?](https://golang.org/doc/faq#Is_Go_an_object-oriented_language)を参照してください。 \
+この回答をよく読むと`Yes and no.`と回答しておきながら、何故そうであるのかについては直接語られていません。 \
+ただただGoにおける言語機能を他の言語と比較しているだけです。 \
+アラン・ケイによる定義から様々な派生的な定義が発生してしまっている(要出典)オブジェクト指向という言葉に触れてしまうと、その定義を明確にすることだけで精一杯になってしまいます。 \
+Goで何ができるのかだけを列挙することで、`Yes and no.`である理由については読者が自身の定義と関連付けて考えよ、ということだと私は解釈しています。 \
+実際、大半のプログラム言語のユーザとしては、それがオブジェクト指向言語であるかどうかやオブジェクト指向言語とは何であるかというのは重要な情報ではなく、その言語には何が出来るのかが重要なのです。 \
+ここではGoには型を定義するための機能があり、その型にメソッドが定義できるということのみが重要です。
+:::
+
+```go
+	mux := http.NewServeMux()  // <- これは`http`パッケージの`NewServeMux()`関数の実行
+	mux.HandleFunc("/hello", helloHandler) // <- これは`mux`変数の型である`ServeMux`型に定義された`HandleFunc()`メソッドの実行
+```
+
+
 Go は構造体型を持ちます。
 [The Go Playground](https://play.golang.org/p/ebEr372GDdp)
 
@@ -610,61 +1072,6 @@ HTTP通信が飛んでくると`helloHandler()`という関数がそのリクエ
 参考: [ResponseWriter](https://golang.org/pkg/net/http/#ResponseWriter)
 
 `fmt.Fprintln()`関数は第二引数の値を第一引数の`Write()`メソッドを使って書き込む、という関数で、今回はその挙動を利用してレスポンスを返しています。
-
-#### 3-2-3. (おまけ)エラー処理
-```go
-	err := server.ListenAndServe()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-```
-
-Goにはほかの言語にあるような強力な例外機構は存在しません(`panic()`/`recover()`という組込み関数は存在する)。 \
-これはGoがエラー処理の方法として、例外ではなく明示的なエラー値の返却という戦略を推奨しているからです。
-
-Goはたとえば以下のように複数の値を返す関数が記述できます。(タプル型が存在するわけではなく、このような文法です)
-
-```go
-// SplitFrac は文字列で表された分数(ex. "1/2")の分母と分子をint型で返す
-func SplitFrac(freq string) (int, int)
-```
-
-これを利用して、何かエラーが発生するかもしれない関数では戻り値の最後に`error`型(標準で用意されたインタフェース型)を返します。
-
-たとえば先の関数の例だと、分数の形をしていない文字列を引数に入れると処理に失敗する、と想定できます。 \
-その場合は以下のような関数にします。
-
-```go
-// SplitFrac は文字列で表された分数(ex. "1/2")の分母と分子をint型で返す
-// パースに失敗したらerrorを返す
-func SplitFrac(freq string) (int, int, error)
-```
-
-そしてこの関数を利用するときには以下のようにエラーを受け取り適切に処理します。
-
-```go
-denom, num, err := SplitFrac("1/2")
-if err != nil {
-	// エラーを標準出力へ出力し、
-	fmt.Println(err)
-	// exit code 1 で終了する
-	os.Exit(1)
-}
-```
-
-またif文には宣言と条件文を同時に記述する記法が用意されており、以下のように記述することも可能です。
-
-```go
-	// <---    変数errの宣言     --->  <-条件文->
-	if err := server.ListenAndServe(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-```
-
-このように記述すると`err`変数は`if`文のスコープ内でしか参照できず、`}`より後ろでは参照できなくなります。 \
-この記法はコードの見た目をシンプルにできる一方、printデバッグするときは面倒になることが多いため、どちらを使うかをpros/consを比較して決めておくとよいでしょう。
 
 ## 4. RDBをGoから触る
 [The Go Playground](https://play.golang.org/p/B0_HD0U241F)(動きません)
