@@ -191,7 +191,7 @@ public class StudentController {
      * TODO 適切な返却の型を指定する
      * TODO 内部ロジックを書く
      */
-    @GetMapping(path = "/student")
+    @GetMapping(path = "/students")
     public String retrieveStudents() {
         return "hi";
     }
@@ -202,7 +202,7 @@ public class StudentController {
 再度 bootRun コマンドで起動し、正しく動作していることを確認しましょう。
 
 ```bash
-curl localhost:8080
+curl localhost:8080/students
 > hi
 ```
 
@@ -306,7 +306,7 @@ public class StudentController {
 bootRun して動作していることを確認しましょう。
 
 ```bash
-curl localhost:8080/student
+curl localhost:8080/students
 > {"studentId":"studentId","name":"hello","score":100}
 ```
 
@@ -372,7 +372,7 @@ public class StudentController {
      * TODO 適切な返却の型を指定する
      * TODO 内部ロジックを書く
      */
-    @GetMapping(path = "/student/{studentId}")
+    @GetMapping(path = "/students/{studentId}")
     public String retrieveStudent(@PathVariable String studentId) {
         return studentId;
     }
@@ -382,7 +382,7 @@ public class StudentController {
 実装したら再度 bootRun して確認しましょう。
 
 ```bash
-curl localhost:8080/student/hello
+curl localhost:8080/students/hello
 > hello
 ```
 
@@ -396,7 +396,7 @@ curl localhost:8080/student/hello
      * TODO 適切な返却の型を指定する
      * TODO 内部ロジックを書く
      */
-    @GetMapping(path = "/student/{studentId}")
+    @GetMapping(path = "/students/{studentId}")
     public StudentEntity retrieveStudent(@PathVariable String studentId) {
         var studentEntity = new StudentEntity();
         studentEntity.setStudentId(studentId);
@@ -457,7 +457,7 @@ import org.springframework.web.bind.annotation.RequestBody;
      * TODO 適切な返却の型を指定する
      * TODO 内部ロジックを書く
      */
-    @PostMapping(path = "/student")
+    @PostMapping(path = "/students")
     public StudentEntity createStudent(@RequestBody PostRequestBody body) {
         var studentEntity = new StudentEntity();
         studentEntity.setStudentId("studentId");
@@ -471,7 +471,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 再度 bootRun して動作を確認しましょう。
 
 ```
-curl -X POST localhost:8080/student -H 'Content-type: application/json' -d '{"name": "hello POST", "score": 50}'
+curl -X POST localhost:8080/students -H 'Content-type: application/json' -d '{"name": "hello POST", "score": 50}'
 > {"studentId":"studentId","name":"hello POST","score":50}
 ```
 
@@ -552,7 +552,7 @@ public class StudentService {
      * TODO 適切な返却の型を指定する
      * TODO 内部ロジックを書く
      */
-    @GetMapping(path = "/student")
+    @GetMapping(path = "/students")
     public List<StudentEntity> retrieveStudents() {
         return studentService.findStudents();
     }
