@@ -1,6 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-description: Java Springフレームワークを使ったアプリ開発に関するハンズオンです
+description: SpringBootを使ったアプリ開発を試してみるハンズオンです
 time: 2h
 prior_knowledge: 特になし
 ---
@@ -12,16 +12,17 @@ prior_knowledge: 特になし
 IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下準備まで終わらせておいてください。
 
 > git clone https://github.com/iij/bootcamp.git
+>
 > cd src/server-app/java/
 
 ## 始めに
 
-この Bootcamp では Java を利用して Springboot の表面的な機能をさらっていくことを目標としています。
+この Bootcamp では Java を利用して SpringBoot の表面的な機能をさらっていくことを目標としています。
 
 具体的には、下記を達成できるようになることを期待しています。
 
 - "API サーバ"の概念を知る
-- 今後、Springboot のプロジェクトに参加した際のキャッチアップの短縮
+- 今後、SpringBoot のプロジェクトに参加した際のキャッチアップの短縮
 - 簡単な テスト用の API モックサーバの作成、メンテナンスができるようになる
 
 ## 下準備
@@ -36,7 +37,7 @@ IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcam
 
 詳細 > [bootcamp/java](./java.md)
 
-## Springboot Bootcamp
+## SpringBoot Bootcamp
 
 SprinbBoot はいまや Java 界隈最大手の Web フレームワークです。小規模なブログから大規模な EC サイトまでこのフレームワークだけで開発、デプロイできます。
 
@@ -57,7 +58,7 @@ SprinbBoot はいまや Java 界隈最大手の Web フレームワークです�
 
 :::tip
 
-Springboot のプロジェクトは"Spring Initializr"というツールを使ってひな型を作成できます。
+SpringBoot のプロジェクトは"Spring Initializr"というツールを使ってひな型を作成できます。
 
 [Spring Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.0.BUILD-SNAPSHOT&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web)
 
@@ -67,7 +68,7 @@ Springboot のプロジェクトは"Spring Initializr"というツールを使�
 
 ### DI について
 
-SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、Springboot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
+SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、SpringBoot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
 
 が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちらを参照してみてください。 > [DI #とは](./DI.md)
 
@@ -79,7 +80,7 @@ SpringBoot を使いこなすためには DI について触れなくてはい�
 
 #### コントローラを作成してみましょう
 
-まず始めに簡単な Helloworld を行うコントローラを作成し、Springboot がどのように動作しているのかを見てみましょう。
+まず始めに簡単な Helloworld を行うコントローラを作成し、SpringBoot がどのように動作しているのかを見てみましょう。
 それではさっそくコードを書いていきます。
 
 > src/main/java/com/example/demo/DemoApplication.java
@@ -126,7 +127,7 @@ curl localhost:8080
 
 さて、この 10 行に満たないコードを書いている間に何が起きたのかを簡単に解説します。
 
-`bootRun` コマンドにより SprinbBoot が起動します。すると、Springboot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインタフェースとして登録されます。
+`bootRun` コマンドにより SprinbBoot が起動します。すると、SpringBoot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインタフェースとして登録されます。
 
 その結果、この SpringBoot が動いている 8080 番ポート宛の HTTP リクエストと `DemoApplication.HelloController#helloWorld` が紐づけられることになり、GET / のリクエストのレスポンスが"hello world"になったわけです。
 
@@ -139,7 +140,7 @@ curl localhost:8080
 
 SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、SpringBoot は起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出します。
 
-そして Springboot はそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
+そして SpringBoot はそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
 
 (「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))
 
@@ -588,19 +589,19 @@ public class StudentService {
 
 ## 最後に
 
-<s>いかがでしたか？</s> 以上で Springboot のハンズオンは終了です。
+<s>いかがでしたか？</s> 以上で SpringBoot のハンズオンは終了です。
 
-この Bootcamp では Springboot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
-ただ、今後の Springboot 習得の足掛かりとなれば幸いです。
+この Bootcamp では SpringBoot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
+ただ、今後の SpringBoot 習得の足掛かりとなれば幸いです。
 
 ### 追加の資料
 
 - [Spring Boot リファレンスドキュメント](https://spring.pleiades.io/spring-boot/docs/current/reference/html)
 
-  - 多くの Springboot 開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
+  - 多くの SpringBoot 開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
 
-- [Springboot Guides](https://spring.pleiades.io/guides)
+- [SpringBoot Guides](https://spring.pleiades.io/guides)
 
-  - Springboot の各種機能を試してみるチュートリアルが公開されています。Pub/Sub や MongoDB、Docker との連携など Springboot の拡張が多種公開されています。興味のある項目に触ってみてください。
+  - SpringBoot の各種機能を試してみるチュートリアルが公開されています。Pub/Sub や MongoDB、Docker との連携など SpringBoot の拡張が多種公開されています。興味のある項目に触ってみてください。
 
 <credit-footer/>
