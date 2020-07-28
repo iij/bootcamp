@@ -12,6 +12,7 @@ prior_knowledge: 特になし
 IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下準備まで終わらせておいてください。
 
 > git clone https://github.com/iij/bootcamp.git
+> cd src/server-app/java/
 
 ## 始めに
 
