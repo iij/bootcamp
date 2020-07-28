@@ -1,6 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-description: Java Springフレームワークを使ったアプリ開発に関するハンズオンです
+description: SpringBootを使ったアプリ開発を試してみるハンズオンです
 time: 2h
 prior_knowledge: 特になし
 ---
@@ -12,31 +12,32 @@ prior_knowledge: 特になし
 IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下準備まで終わらせておいてください。
 
 > git clone https://github.com/iij/bootcamp.git
+>
 > cd src/server-app/java/
 
 ## 始めに
 
-この Bootcamp では Java を利用して Springboot の表面的な機能をさらっていくことを目標としています。
+この Bootcamp では Java を利用して SpringBoot の表面的な機能をさらっていくことを目標としています。
 
 具体的には、下記を達成できるようになることを期待しています。
 
 - "API サーバ"の概念を知る
-- 今後、Springboot のプロジェクトに参加した際のキャッチアップの短縮
+- 今後、SpringBoot のプロジェクトに参加した際のキャッチアップの短縮
 - 簡単な テスト用の API モックサーバの作成、メンテナンスができるようになる
 
-## 下準備
+### 下準備
 
 下準備として、Docker の動作確認と IDE の設定などを行っておいてください。Java イメージや依存関係などのダウンロードを行うので、安定したネットワーク環境下で実行することをお勧めします。
 
 詳細 > [下準備・環境構築編](./prepare.md)
 
-## java について
+### java について
 
 この Bootcamp では Java と Gradle を利用します。しかし Bootcamp の場でそれぞれについて深く解説する時間は取れないため、Bootcamp を進めるうえで最低限知っておくべき知識について下記に記載しておきました。
 
 詳細 > [bootcamp/java](./java.md)
 
-## Springboot Bootcamp
+## SpringBoot Bootcamp
 
 SprinbBoot はいまや Java 界隈最大手の Web フレームワークです。小規模なブログから大規模な EC サイトまでこのフレームワークだけで開発、デプロイできます。
 
@@ -52,12 +53,12 @@ SprinbBoot はいまや Java 界隈最大手の Web フレームワークです�
 
 チェックポイント
 
-- [ ] [事前準備・環境構築編](./prepare.md) を一読し、完了した。
-- [ ] [localhost:8080](http://localhost:8080)にアクセスして Whitelabel Error Page が表示される。
+- [事前準備・環境構築編](./prepare.md) を一読し、完了した。
+- [localhost:8080](http://localhost:8080)にアクセスして Whitelabel Error Page が表示される。
 
 :::tip
 
-Springboot のプロジェクトは"Spring Initializr"というツールを使ってひな型を作成できます。
+SpringBoot のプロジェクトは"Spring Initializr"というツールを使ってひな型を作成できます。
 
 [Spring Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.0.BUILD-SNAPSHOT&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web)
 
@@ -67,19 +68,19 @@ Springboot のプロジェクトは"Spring Initializr"というツールを使�
 
 ### DI について
 
-SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、Springboot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
+SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、SpringBoot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
 
 が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちらを参照してみてください。 > [DI #とは](./DI.md)
 
 チェックポイント
 
-- [ ] SpringBoot では DI という概念が重要であることを理解した。
+- SpringBoot では DI という概念が重要であることを理解した。
 
-### 本編
+## 本編
 
-#### コントローラを作成してみましょう
+### コントローラを作成してみましょう
 
-まず始めに簡単な Helloworld を行うコントローラを作成し、Springboot がどのように動作しているのかを見てみましょう。
+まず始めに簡単な Helloworld を行うコントローラを作成し、SpringBoot がどのように動作しているのかを見てみましょう。
 それではさっそくコードを書いていきます。
 
 > src/main/java/com/example/demo/DemoApplication.java
@@ -126,20 +127,20 @@ curl localhost:8080
 
 さて、この 10 行に満たないコードを書いている間に何が起きたのかを簡単に解説します。
 
-`bootRun` コマンドにより SprinbBoot が起動します。すると、Springboot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインタフェースとして登録されます。
+`bootRun` コマンドにより SprinbBoot が起動します。すると、SpringBoot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインタフェースとして登録されます。
 
 その結果、この SpringBoot が動いている 8080 番ポート宛の HTTP リクエストと `DemoApplication.HelloController#helloWorld` が紐づけられることになり、GET / のリクエストのレスポンスが"hello world"になったわけです。
 
 チェックポイント
 
-- [ ] SpringBoot で HelloWorld ができた
-- [ ] RestController アノテーションをクラスに付けることでコントローラが作れることを理解した
+- SpringBoot で HelloWorld ができた
+- RestController アノテーションをクラスに付けることでコントローラが作れることを理解した
 
-##### 蛇足 : SpringBoot の DI コンテナと探索
+#### 蛇足 : SpringBoot の DI コンテナと探索
 
 SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、SpringBoot は起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出します。
 
-そして Springboot はそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
+そして SpringBoot はそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
 
 (「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))
 
@@ -150,7 +151,7 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 先ほど作成した `HelloController` は、 `RestController` アノテーションが付与されていたため SpringBoot が `HelloController` をインスタンス化、DI コンテナに登録しました。
 そして / 宛の GET のリクエストを受けると `HelloController#helloWorld` が実行されるようになっていた、というわけです。
 
-#### 演習：生徒管理の API を作成しよう
+### 演習：生徒管理の API を作成しよう
 
 それでは、下記の機能を持つ REST API を作成してみましょう！
 
@@ -158,10 +159,14 @@ SpringBoot は `SpringBootApplication` アノテーションのついたクラ�
 
 > あなたは、あるプログラミングスクールでテストのスコアを管理するアプリケーションの製造を依頼されました。フロントエンドのアプリケーションは実装済みで、[API](https://ja.wikipedia.org/wiki/アプリケーションプログラミングインタフェース) サーバが必要とのことです。そこで、あなたは下記の機能を持った API サーバを製造することになりました。
 >
-> - GET /students 保存済みの全生徒エンティティを返却する
-> - GET /students/{生徒 ID} 指定された生徒 ID を持つ生徒エンティティを返却する
-> - POST /students 指定されたプロパティを持つ生徒エンティティを保存し、保存した生徒エンティティを返却する
-> - PUT /students{生徒 ID} 指定されたプロパティを持つ生徒エンティティを変更し、変更後の生徒エンティティを返却する
+> - GET
+>   - /students 保存済みの全生徒エンティティを返却する
+> - GET
+>   - /students/{生徒 ID} 指定された生徒 ID を持つ生徒エンティティを返却する
+> - POST
+>   - /students 指定されたプロパティを持つ生徒エンティティを保存し、保存した生徒エンティティを返却する
+> - PUT
+>   - /students{生徒 ID} 指定されたプロパティを持つ生徒エンティティを変更し、変更後の生徒エンティティを返却する
 >
 > ※ 生徒エンティティには「生徒 ID」「生徒名」「成績(整数)」を含むものとする
 >
@@ -209,10 +214,10 @@ curl localhost:8080/students
 
 チェックポイント
 
-- [ ] 空のクラスに`RestController`アノテーションを付与して、コントローラとして起動できた
-- [ ] API のエンドポイントのパスの設定方法を理解した
+- 空のクラスに`RestController`アノテーションを付与して、コントローラとして起動できた
+- API のエンドポイントのパスの設定方法を理解した
 
-##### オブジェクトを返却する
+#### オブジェクトを返却する
 
 今までコントローラが返却していたのは文字列だけでしたが、場合によっては Json などのオブジェクトを返却したいこともあると思います。特に今回は生徒エンティティを返却するように言われているため、まずは生徒エンティティを作成しましょう。
 
@@ -336,13 +341,13 @@ curl localhost:8080/students
 
 チェックポイント
 
-- [ ] Java の POJO に触れた
-- [ ] API のエンドポイントからオブジェクトを返却する方法を理解した
-- [ ] GET /students のエンドポイントのインタフェースが決定した
+- Java の POJO に触れた
+- API のエンドポイントからオブジェクトを返却する方法を理解した
+- GET /students のエンドポイントのインタフェースが決定した
 
-##### パスパラメータから情報を受け取ろう
+#### パスパラメータから情報を受け取ろう
 
-次は/student/{生徒 ID}の API を作ってみましょう。
+次は特定の生徒を取得する API を作ってみましょう。
 
 URL のパスからパラメータをもらってくる場合、パスに変数名を埋め込みその変数を関数の引数として指定することでパスから値を引き抜いてくることができます。そのパスの変数のことをパスパラメータを呼びます。
 
@@ -410,10 +415,10 @@ curl localhost:8080/students/hello
 
 チェックポイント
 
-- [ ] API のエンドポイントからパラメータを引き抜いてくる方法を理解した
-- [ ] GET /student/{生徒 ID} のエンドポイントのインタフェースが決定した
+- API のエンドポイントからパラメータを引き抜いてくる方法を理解した
+- GET /student/{生徒 ID} のエンドポイントのインタフェースが決定した
 
-##### POST リクエストを受け取ってみよう
+#### POST リクエストを受け取ってみよう
 
 ここまで作成した API は 2 つとも読み取り、GET メソッドでの実装でした。ここで POST リクエストを利用してデータを書き込む API を用意してあげましょう。
 
@@ -478,10 +483,10 @@ curl -X POST localhost:8080/students -H 'Content-type: application/json' -d '{"n
 
 チェックポイント
 
-- [ ] API のエンドポイントで POST リクエストを受け取る方法を理解した
-- [ ] POST /student のエンドポイントのインタフェースが決定した
+- API のエンドポイントで POST リクエストを受け取る方法を理解した
+- POST /student のエンドポイントのインタフェースが決定した
 
-##### 業務処理を作ろう
+#### 業務処理を作ろう
 
 コントローラ部分を作成したので、実際に生徒エンティティを管理するクラスを実装していきましょう。この Bootcamp では時間の都合上 RDS や KVS などを用いて永続化せず、ヒープメモリに保存するだけにします。
 
@@ -505,7 +510,6 @@ public class StudentService {
     private List<StudentEntity> savedStudents;
 
     public StudentService() {
-        // 本当にこれでいい……？(発展課題：Immutableに変更し、動作確認をしましょう)
         this.savedStudents = new ArrayList<StudentEntity>();
     }
 
@@ -567,10 +571,10 @@ public class StudentService {
 
 チェックポイント
 
-- [ ] DI コンポーネントの作成の方法を理解した
-- [ ] DI コンポーネントの利用方法を理解した
+- DI コンポーネントの作成の方法を理解した
+- DI コンポーネントの利用方法を理解した
 
-### 演習：生徒管理の API を実装してみましょう！
+## 演習：生徒管理の API を実装してみましょう！
 
 ここまでのコンテンツで下記のことについて学びました。
 
@@ -588,19 +592,19 @@ public class StudentService {
 
 ## 最後に
 
-<s>いかがでしたか？</s> 以上で Springboot のハンズオンは終了です。
+<s>いかがでしたか？</s> 以上で SpringBoot のハンズオンは終了です。
 
-この Bootcamp では Springboot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
-ただ、今後の Springboot 習得の足掛かりとなれば幸いです。
+この Bootcamp では SpringBoot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
+ただ、今後の SpringBoot 習得の足掛かりとなれば幸いです。
 
 ### 追加の資料
 
 - [Spring Boot リファレンスドキュメント](https://spring.pleiades.io/spring-boot/docs/current/reference/html)
 
-  - 多くの Springboot 開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
+  - 多くの SpringBoot 開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
 
-- [Springboot Guides](https://spring.pleiades.io/guides)
+- [SpringBoot Guides](https://spring.pleiades.io/guides)
 
-  - Springboot の各種機能を試してみるチュートリアルが公開されています。Pub/Sub や MongoDB、Docker との連携など Springboot の拡張が多種公開されています。興味のある項目に触ってみてください。
+  - SpringBoot の各種機能を試してみるチュートリアルが公開されています。Pub/Sub や MongoDB、Docker との連携など SpringBoot の拡張が多種公開されています。興味のある項目に触ってみてください。
 
 <credit-footer/>

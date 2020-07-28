@@ -22,13 +22,15 @@ Docker コンテナの内部のファイルシステムを VSCode 経由で利�
 
 #### Java Extention Pack(VSCode 拡張機能)
 
-Microsoft 社が提供する Java の開発を行ううえで必要な機能がまとめられた拡張機能パックです。動作させるには JDK が必要になるため、`Remote - Containers`の拡張機能でコンテナ内部に入ったタイミングでインストールしておいてください。
+Microsoft 社が提供する Java の開発を行ううえで必要な機能がまとめられた拡張機能パックです。動作させるには JDK(Java の開発に必要なバイナリ) が必要になるため、`Remote - Containers`の拡張機能でコンテナ内部に入ったタイミングでインストールしておいてください。
 
-### あまりにも重すぎる場合
+::: details あまりにも重すぎる場合
 
 Java の開発にはメモリを大量に消費します。あまりにも開発が重い等あれば、Docker の利用可能なメモリを一時的に 4GiB 程度まで増やしてみてください。(Docker for Windows / Docker for Mac を利用の方は、設定画面 > リソースで Docker が利用できるメモリ量を調整できます。)
 
 ![メモリ設定](./images/docker-preferences-memory.png)
+
+:::
 
 ## 動作確認
 
