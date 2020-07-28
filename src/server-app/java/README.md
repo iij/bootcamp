@@ -53,8 +53,8 @@ SprinbBoot はいまや Java 界隈最大手の Web フレームワークです�
 
 チェックポイント
 
-- [ ] [事前準備・環境構築編](./prepare.md) を一読し、完了した。
-- [ ] [localhost:8080](http://localhost:8080)にアクセスして Whitelabel Error Page が表示される。
+- [事前準備・環境構築編](./prepare.md) を一読し、完了した。
+- [localhost:8080](http://localhost:8080)にアクセスして Whitelabel Error Page が表示される。
 
 :::tip
 
@@ -74,7 +74,7 @@ SpringBoot を使いこなすためには DI について触れなくてはい�
 
 チェックポイント
 
-- [ ] SpringBoot では DI という概念が重要であることを理解した。
+- SpringBoot では DI という概念が重要であることを理解した。
 
 ### 本編
 
@@ -133,8 +133,8 @@ curl localhost:8080
 
 チェックポイント
 
-- [ ] SpringBoot で HelloWorld ができた
-- [ ] RestController アノテーションをクラスに付けることでコントローラが作れることを理解した
+- SpringBoot で HelloWorld ができた
+- RestController アノテーションをクラスに付けることでコントローラが作れることを理解した
 
 ##### 蛇足 : SpringBoot の DI コンテナと探索
 
@@ -210,8 +210,8 @@ curl localhost:8080/students
 
 チェックポイント
 
-- [ ] 空のクラスに`RestController`アノテーションを付与して、コントローラとして起動できた
-- [ ] API のエンドポイントのパスの設定方法を理解した
+- 空のクラスに`RestController`アノテーションを付与して、コントローラとして起動できた
+- API のエンドポイントのパスの設定方法を理解した
 
 ##### オブジェクトを返却する
 
@@ -337,9 +337,9 @@ curl localhost:8080/students
 
 チェックポイント
 
-- [ ] Java の POJO に触れた
-- [ ] API のエンドポイントからオブジェクトを返却する方法を理解した
-- [ ] GET /students のエンドポイントのインタフェースが決定した
+- Java の POJO に触れた
+- API のエンドポイントからオブジェクトを返却する方法を理解した
+- GET /students のエンドポイントのインタフェースが決定した
 
 ##### パスパラメータから情報を受け取ろう
 
@@ -411,8 +411,8 @@ curl localhost:8080/students/hello
 
 チェックポイント
 
-- [ ] API のエンドポイントからパラメータを引き抜いてくる方法を理解した
-- [ ] GET /student/{生徒 ID} のエンドポイントのインタフェースが決定した
+- API のエンドポイントからパラメータを引き抜いてくる方法を理解した
+- GET /student/{生徒 ID} のエンドポイントのインタフェースが決定した
 
 ##### POST リクエストを受け取ってみよう
 
@@ -479,8 +479,8 @@ curl -X POST localhost:8080/students -H 'Content-type: application/json' -d '{"n
 
 チェックポイント
 
-- [ ] API のエンドポイントで POST リクエストを受け取る方法を理解した
-- [ ] POST /student のエンドポイントのインタフェースが決定した
+- API のエンドポイントで POST リクエストを受け取る方法を理解した
+- POST /student のエンドポイントのインタフェースが決定した
 
 ##### 業務処理を作ろう
 
@@ -568,8 +568,8 @@ public class StudentService {
 
 チェックポイント
 
-- [ ] DI コンポーネントの作成の方法を理解した
-- [ ] DI コンポーネントの利用方法を理解した
+- DI コンポーネントの作成の方法を理解した
+- DI コンポーネントの利用方法を理解した
 
 ### 演習：生徒管理の API を実装してみましょう！
 
