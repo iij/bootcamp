@@ -96,9 +96,9 @@ import "./App.css";
 function App() {
   return (
     <div className="App">
-      <main className="App-main">
+      <header className="App-header">
         <div>Hello World!!</div>
-      </main>
+      </header>
     </div>
   );
 }
@@ -148,17 +148,17 @@ export default class Note extends React.Component {
 ```javascript
 import React from "react";
 import "./App.css";
-import Note from "./Note.js";
+import Note from "./Note";
 
 function App() {
   return (
     <div className="App">
-      <main className="App-main">
+      <header className="App-header">
         <div>Hello World!!</div>
         <Note />
         <Note />
         <Note />
-      </main>
+      </header>
     </div>
   );
 }
@@ -190,22 +190,17 @@ src/Note.js を下記のように修正してみましょう。
 import React from "react";
 
 export default class Note extends React.Component {
-
   // (3, "Component") => "Component! Component!! Component!!!"
   constructWord = (number, word) => {
-    let words = ''
-    for(let counter = 0 ; counter < number ; counter++) {
-      words += word + '!'.repeat(counter+1) + ' ';
+    let words = "";
+    for (let counter = 0; counter < number; counter++) {
+      words += word + "!".repeat(counter + 1) + " ";
     }
-    return words.trimEnd()
-  }
-
-  const words = constructWord(this.props.number, this.props.word);
+    return words.trimEnd();
+  };
 
   render() {
-    return (
-      <p>{words}</p>
-    );
+    return <p>{this.constructWord(this.props.number, this.props.word)}</p>;
   }
 }
 ```
@@ -221,7 +216,6 @@ function App() {
   return (
     <div className="App">
       <main className="App-main">
-        <div>Hello World!!</div>
         <Note word={"Component"} number={1} />
         <Note word={"Hoge"} number={2} />
         <Note word={"Huga"} number={3} />
@@ -256,36 +250,35 @@ src/Note.js を下記の通りに修正してください。
 import React from "react";
 
 export default class Note extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      counter: 1
-    }
+      counter: 1,
+    };
   }
 
   click = () => {
     // Stateのカウンタをインクリメント
     this.setState({
-      counter: this.state.counter++
+      counter: this.state.counter + 1,
     });
-  }
+  };
 
   // (3, "Component") => "Component! Component!! Component!!!"
   constructWord = (number, word) => {
-    let words = ''
-    for(let counter = 0 ; counter < number ; counter++) {
-      words += word + '!'.repeat(counter+1) + ' ';
+    let words = "";
+    for (let counter = 0; counter < number; counter++) {
+      words += word + "!".repeat(counter + 1) + " ";
     }
-    return words.trimEnd()
-  }
-
-  const words = constructWord(this.state.counter, this.props.word);
+    return words.trimEnd();
+  };
 
   render() {
     return (
-      <p>{words}</p>
-      <button onClick={this.click}>Click me!!</button>
+      <>
+        <button onClick={this.click}>Click me!!</button>
+        <p>{this.constructWord(this.state.counter, this.props.word)}</p>
+      </>
     );
   }
 }
