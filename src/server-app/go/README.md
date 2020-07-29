@@ -739,6 +739,16 @@ func (m Move) dynamax() (Move, error) {
 定義方法はほとんど関数定義と同じですが、関数名の前にそのメソッドを定義する型を記述することに注意しましょう。 \
 ここで型名の前に変数名を書くことでメソッドの本体でその変数を利用できます。
 
+:::tip Goはオブジェクト指向言語なの?
+これについては公式で明確に(`Yes and no.`)回答されています。[Is Go an object-oriented language?](https://golang.org/doc/faq#Is_Go_an_object-oriented_language)を参照してください。 \
+この回答をよく読むと`Yes and no.`と回答しておきながら、何故そうであるのかについては直接語られていません。 \
+ただただGoにおける言語機能を他の言語と比較しているだけです。 \
+アラン・ケイによる定義から様々な派生的な定義が発生してしまっている(要出典)オブジェクト指向という言葉に触れてしまうと、その定義を明確にすることだけで精一杯になってしまいます。 \
+Goで何ができるのかだけを列挙することで、`Yes and no.`である理由については読者が自身の定義と関連付けて考えよ、ということだと私は解釈しています。 \
+実際、大半のプログラム言語のユーザとしては、それがオブジェクト指向言語であるかどうかやオブジェクト指向言語とは何であるかというのは重要な情報ではなく、その言語には何が出来るのかが重要なのです。 \
+ここではGoには型を定義するための機能があり、その型にメソッドが定義できるということのみが重要です。
+:::
+
 よく使う制御構文である`if`/`for`/`switch`についても使い方はなんとなく分かるでしょうか。
 
 `(Pokemon).Moves()`は`isDynamax`でダイマックス状態かどうかのbool値を引数に取り、`false`であればそのまま`moves`フィールドの値を返し、`true`なら`moves`の中身を全てダイマックスわざに変換したスライスを新たに作って返します。
@@ -851,23 +861,23 @@ func (m Move) dynamax() (Move, error) {
 
 私は例外機構を持つ言語の経験がほとんどないので比較については当日TAの人に伺いますね。
 
-## 5. net/httpはじめの一歩
-[The Go Playground](https://play.golang.org/p/5YXGZvJ73b_1)
+## 5. REST API化
+[The Go Playground](https://play.golang.org/p/DPtuK29Q1nt)
 
 * 実行してもしばらく経って`timeout running program`というエラーが返ってきます
-* チュートリアルリポジトリの`http_hello`ディレクトリにサンプルコードが入っています
+* チュートリアルリポジトリの`poke_api`ディレクトリにサンプルコードが入っています
 
-### 4.1 HTTPサーバを実行してみる
-#### 4.1.1. 作業ディレクトリの作成
+### 5.1. APIサーバからダイマックスわざを取得したい
+#### 5.1.1. 作業ディレクトリの作成
 :computer: 以下のコマンドを実行して、作業ディレクトリを作成しましょう。
 
 ```shell
-$ cd .. # go_tutorial/calc ディレクトリにいることを想定
-$ mkdir http_hello
-$ cd http_hello
+$ cd .. # go_tutorial/pokemon ディレクトリにいることを想定
+$ mkdir poke_api
+$ cd poke_api
 ```
 
-#### 4.1.2. ソースコードの記述
+#### 5.1.2. ソースコードの記述
 :computer: 好きなエディタで以下のファイルを作成しましょう。
 
 * `go_tutorial/http_hello/main.go`
@@ -875,317 +885,166 @@ $ cd http_hello
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"path"
+	"strconv"
+	"strings"
 )
 
-func main() {
-	mux := http.NewServeMux()
+type Pokemon struct {
+	ID    int
+	Name  string
+	moves []Move
+}
 
-	mux.HandleFunc("/hello", helloHandler)
+func (p Pokemon) Moves(isDynamax bool) ([]Move, error) {
+	if isDynamax {
+		dynamaxMoves := []Move{}
 
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: mux,
+		for _, move := range p.moves {
+			dynMove, err := move.dynamax()
+			if err != nil {
+				return nil, err
+			}
+
+			dynamaxMoves = append(dynamaxMoves, dynMove)
+		}
+
+		return dynamaxMoves, nil
 	}
 
-	err := server.ListenAndServe()
+	return p.moves, nil
+}
+
+type Move struct {
+	Name string
+	Type string
+}
+
+func (m Move) dynamax() (Move, error) {
+	switch m.Type {
+	case "くさ":
+		return Move{
+			Name: "ダイソウゲン",
+			Type: m.Type,
+		}, nil
+	case "ほのお":
+		return Move{
+			Name: "ダイバーン",
+			Type: m.Type,
+		}, nil
+	case "みず":
+		return Move{
+			Name: "ダイストリーム",
+			Type: m.Type,
+		}, nil
+	default:
+		return Move{}, errors.New("unknown type")
+	}
+}
+
+var party = []Pokemon{
+	{ID: 3, Name: "フシギバナ", moves: []Move{{Name: "つるのむち", Type: "くさ"}}},
+	{ID: 6, Name: "リザードン", moves: []Move{{Name: "かえんほうしゃ", Type: "ほのお"}}},
+	{ID: 9, Name: "カメックス", moves: []Move{{Name: "みずでっぽう", Type: "みず"}}},
+}
+
+func getParty(w http.ResponseWriter, r *http.Request) {
+	renderResponse(w, party, http.StatusOK)
+}
+
+func getPokemon(w http.ResponseWriter, r *http.Request) {
+	p := strings.Split(r.URL.Path, "/")
+	if len(p) < 3 {
+		renderError(w, errors.New("invalid path"), http.StatusBadRequest)
+	}
+
+	indexParam := p[2]
+	index, err := strconv.Atoi(indexParam)
+	if err != nil {
+		renderError(w, err, http.StatusBadRequest)
+	}
+
+	if index > len(party) {
+		index = len(party)
+	}
+
+	renderResponse(w, party[index], http.StatusOK)
+}
+
+func getMove(w http.ResponseWriter, r *http.Request) {
+	p := strings.Split(r.URL.Path, "/")
+	if len(p) < 4 {
+		renderError(w, errors.New("invalid path"), http.StatusBadRequest)
+	}
+
+	indexParam := p[2]
+	index, err := strconv.Atoi(indexParam)
+	if err != nil {
+		renderError(w, err, http.StatusBadRequest)
+	}
+
+	if index > len(party) {
+		index = len(party)
+	}
+
+	poke := party[index]
+
+	moves, err := poke.Moves(false)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+
+	renderResponse(w, moves, http.StatusOK)
+}
+
+func router(w http.ResponseWriter, r *http.Request) {
+	p := path.Clean(r.URL.Path)
+
+	ok, err := path.Match("/party", p)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+	if ok {
+		getParty(w, r)
+		return
+	}
+
+	ok, err = path.Match("/party/[0-5]", p)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+	if ok {
+		getPokemon(w, r)
+		return
+	}
+
+	ok, err = path.Match("/party/[0-5]/move", p)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+	if ok {
+		getMove(w, r)
+		return
+	}
+}
+
+func main() {
+	http.HandleFunc("/", router)
+
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "hello, world!")
-}
-```
-
-```shell
-$ vim main.go
-```
-
-#### 4.1.3. 別ターミナルの準備
-今回のコードはサーバアプリケーションなので素朴に`go run main.go`で実行してしまうとプロンプトが返ってこず、動作確認が面倒です。 \
-そのため今回はターミナルを2つ用意する方針で実行します。
-
-:computer: これまで使用していたターミナルとは別のターミナルを用意し、以下のコマンドを実行しましょう。
-
-```bash
-$ docker exec -it go-tutor /bin/bash
-```
-
-:::tip
-`go-tutor`コンテナで`/bin/bash`を実行するコマンドです。
-:::
-
-#### 4.1.4. HTTPサーバの起動
-:computer: 以下のコマンドでHTTPサーバを起動しましょう。
-
-```bash
-$ go run main.go
-```
-
-::: tip チェックポイント3 🏁
-HTTPサーバを起動したのとは別のターミナル上で以下のコマンドを実行しましょう。 \
-出力が同じであればクリア!
-
-```shell
-$ curl http://localhost:8080/hello
-Hello, world!
-```
-:::
-
-HTTPサーバを起動しているほうのプロセスを終了するためにはCtrl-Cなどで終了を伝えましょう。
-
-### 4.2. 解説
-#### 4.2.1. 構造体と独自型とメソッド
-```go
-	mux := http.NewServeMux()
-	mux.HandleFunc("/hello", helloHandler)
-```
-
-や
-
-```go
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: mux,
-	}
-
-	err := server.ListenAndServe()
-```
-
-に注目します。 \
-これは他のプログラム言語を書いたことがあればお馴染みのメソッド記法です。
-
-:::tip Goはオブジェクト指向言語なの?
-これについては公式で明確に(`Yes and no.`)回答されています。[Is Go an object-oriented language?](https://golang.org/doc/faq#Is_Go_an_object-oriented_language)を参照してください。 \
-この回答をよく読むと`Yes and no.`と回答しておきながら、何故そうであるのかについては直接語られていません。 \
-ただただGoにおける言語機能を他の言語と比較しているだけです。 \
-アラン・ケイによる定義から様々な派生的な定義が発生してしまっている(要出典)オブジェクト指向という言葉に触れてしまうと、その定義を明確にすることだけで精一杯になってしまいます。 \
-Goで何ができるのかだけを列挙することで、`Yes and no.`である理由については読者が自身の定義と関連付けて考えよ、ということだと私は解釈しています。 \
-実際、大半のプログラム言語のユーザとしては、それがオブジェクト指向言語であるかどうかやオブジェクト指向言語とは何であるかというのは重要な情報ではなく、その言語には何が出来るのかが重要なのです。 \
-ここではGoには型を定義するための機能があり、その型にメソッドが定義できるということのみが重要です。
-:::
-
-```go
-	mux := http.NewServeMux()  // <- これは`http`パッケージの`NewServeMux()`関数の実行
-	mux.HandleFunc("/hello", helloHandler) // <- これは`mux`変数の型である`ServeMux`型に定義された`HandleFunc()`メソッドの実行
-```
-
-
-Go は構造体型を持ちます。
-[The Go Playground](https://play.golang.org/p/ebEr372GDdp)
-
-```go
-// 構造体型を基にしてAという型を宣言する。
-type A struct {
-  X int
-  Y int
-}
-
-// 型AのメソッドHoge()を宣言する。
-func (a A) Hoge() {
-  fmt.Println("X:", a.X)
-  fmt.Println("Y:", a.Y)
-}
-
-// aにA型の値を代入する。
-var a = A{
-  X: 1,
-  Y: 2,
-}
-
-// aの型AのメソッドHoge()を実行する。
-a.Hoge()
-// X: 1
-// Y: 2
-```
-このようにすることで、オブジェクト指向言語におけるクラスとメソッドのようなことができます。 \
-
-たとえば以下のようなコードも書けます。 \
-[The Go Playground](https://play.golang.org/p/nb76TxzaYMb)
-
-```go
-type Age int
-
-func (age Age) BirthYear() int {
-  // 返り値はint型なのでint(age)でAge型からint型にキャスト(変換)している。
-  return 2019 - int(age)
-}
-```
-ここでは`int`型に`Age`という別名を付けて、そのメソッドとして`BirthYear()`を定義しています。
-
-#### 3-2-2. `net/http`パッケージ
-`net/http`パッケージはその名の通り、HTTP通信に関連する関数、定数などが定義されたパッケージです。 \
-このパッケージ一つでHTTPクライアントもHTTPサーバも書くことができます。
-
-##### 3-2-2-1. `ServeMux`
-```go
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/hello", helloHandler)
-```
-
-URLは`スキーマ名://ホスト名:ポート番号/パス名`という構造をしています。(他にもURLで表される項目はありますが、今回は使用しないため省略します。) \
-`http://localhost:8080/hello`というURLであれば、
-  * スキーマ名: http
-  * ホスト名: localhost
-  * ポート番号: 8080
-  * パス名: /hello
-と解釈されます。
-
-`http.ServeMux`は特定のパスへのリクエストを特定の関数へ飛ばすためのものです。 \
-今回は`http://localhost:8080/hello`へのアクセスを`helloHandler()`という関数(ハンドラ)に引き渡す設定をします。 \
-
-`http.NewServeMux()`で`http.ServeMux`型の値を用意して、`mux.HandleFunc()`でハンドラの設定をしています。
-
-##### 3-2-2-2. `Server`
-```go
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: mux,
-	}
-
-	err := server.ListenAndServe()
-```
-
-`http.Server`はHTTPサーバそのものを表す型です。 \
-`Addr`フィールドにHTTP通信を待ち受けるアドレスを設定し、`Handler`フィールドに先程説明した`ServeMux`を設定します。
-
-そしてその`http.Server`型の値のメソッドである`server.ListenAndServe()`関数で実際にサーバを起動してHTTP通信を待ち受け始めます。 \
-注意すべきはこの`server.ListenAndServe()`が即時では終了せず、明示的にプロセスに終了方法を伝えるまで実行し続けることです。
-
-##### 3-2-2-3. ハンドラ
-```go
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "hello, world!")
-}
-```
-
-HTTP通信が飛んでくると`helloHandler()`という関数がそのリクエストを受けて処理をします。 \
-引数の`http.Request`型の値に実際のリクエストの内容が入っているので、それを利用して処理をすることも可能です。 \
-引数の`http.ResponseWriter`は`Write()`というメソッドを持っている型で、クライアントに送信したいメッセージを作って、`Write()`が叩かれれば、メッセージが送信されます。 \
-もう少し踏み込むと、Goではインタフェース型と呼ばれるメソッド定義のみを持つ型が存在し、`http.ResponseWriter`型は`Write()`や`Header()`などのメソッドを持つインタフェース型です。 \
-参考: [ResponseWriter](https://golang.org/pkg/net/http/#ResponseWriter)
-
-`fmt.Fprintln()`関数は第二引数の値を第一引数の`Write()`メソッドを使って書き込む、という関数で、今回はその挙動を利用してレスポンスを返しています。
-
-## 4. RDBをGoから触る
-[The Go Playground](https://play.golang.org/p/B0_HD0U241F)(動きません)
-
-* `go.mod`
-```
-module test
-```
-
-* `main.go`
-```go
-package main
-
-import (
-	"log"
-	"net/http"
-	"os"
-
-	"test/handler"
-)
-
-func main() {
-	mux := http.NewServeMux()
-
-	// handlerパッケージのUserRead()関数を"/user/"というパスで登録している。
-	mux.HandleFunc("/user/", handler.UserRead)
-
-	// HTTPサーバは"localhost:8080"で起動する。
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: mux,
-	}
-
-	// Goの特徴的なエラー処理。
-	if err := server.ListenAndServe(); err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	/*
-	  err := server.ListenAndServe()
-	  if err != nil {
-	    log.Println(err)
-	    os.Exit(1)
-	  }
-	  と同等。
-	*/
-}
-```
-
-* `handler/user.go`
-```go
-package handler
-
-import (
-	"log"
-	"net/http"
-	"strconv"
-	"strings"
-
-	"test/model"
-)
-
-func UserRead(w http.ResponseWriter, r *http.Request) {
-	// HTTPのリクエストがGETであることを確認している。
-	if r.Method != http.MethodGet {
-		// GETでなければ404を返す。
-		http.NotFound(w, r)
-		// 関数を終了する。
-		// Goではこのようなearly returnというパターンが頻出で、else 文はほぼ書かない。
-		return
-	}
-
-	// http://localhost:8080/user/1などでアクセスが来る。
-	// r.URL.Pathには"/user/1"が入っているのでそれを"/"で分割した配列を作る。
-	// 作られた配列は["", "user", "1"]となっており、User IDは[2]に入っている。
-	//
-	// strings.SplitN()関数は第3引数の数だけ分割する。
-	// 例えば、"/user/1/2/3"というパスを指定されていた場合はuserIDStrには"1/2/3"が入る。
-	userIDStr := strings.SplitN(r.URL.Path, "/", 3)[2]
-
-	// userIDStrは文字列なのでuint64型に変換する。
-	userID, err := strconv.ParseUint(userIDStr, 10, 64)
-	if err != nil {
-		// 先の"/user/1/2/3"みたいなパスの場合はこのパースに失敗してこの分岐に入る。
-		log.Println(err)
-		// この場合は400を返す。
-		renderError(w, err, http.StatusBadRequest)
-		return
-	}
-
-	// model packageの関数に処理を持って行き、エラーの判定をする。
-	user, err := model.FindUserByID(userID)
-	if err != nil {
-		log.Println(err)
-		// ここに入るということはサーバ側の処理で失敗しているので500を返す。
-		renderError(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	// 全ての処理が成功していれば、200とともにuserを返す。
-	renderResponse(w, user, http.StatusOK)
-}
-```
-
-* `handler/handler.go`
-  * このファイルは頑張って JSON を返すための細かい設定をしてくれる便利関数を定義しています
-```go
-package handler
-
-import (
-	"encoding/json"
-	"log"
-	"net/http"
-)
+// === 以下は JSON をクライアントに返すための細かい制御をするための関数 ===
 
 func renderError(w http.ResponseWriter, err error, code int) {
 	// JSONで返すので"Content-Type"ヘッダに"application/json"を指定します。
@@ -1197,9 +1056,7 @@ func renderError(w http.ResponseWriter, err error, code int) {
 		// `json:"error"`というのは構造体型のアノテーションと呼ばれるもので、特定の関数に構造体の情報を伝えるために使います。
 		// この場合はJSONに変換されるとき`error`というフィールド名にすることを指示しています。
 		Error string `json:"error"`
-		// ここまで構造体の定義。
 	}{
-		// ここが実際の構造体型の値の定義。
 		Error: err.Error(),
 	}
 
@@ -1207,16 +1064,16 @@ func renderError(w http.ResponseWriter, err error, code int) {
 		log.Println("render error", err)
 	}
 	/*
-	  enc := json.NewEncoder(w)
-	  err := enc.Encode(ret)
-	  if err != nil {
-	    log.Println("render error", err)
-	  }
-	  と同等
+	   enc := json.NewEncoder(w)
+	   err := enc.Encode(ret)
+	   if err != nil {
+	     log.Println("render error", err)
+	   }
+	   と同等
 	*/
 }
 
-// interface{}型というのは、メソッドが一つも定義されていないメソッドを意味します。
+// interface{}型というのは、メソッドが一つも定義されていないインターフェイスを意味します。
 // つまり任意の型はinterface{}型を満たします。
 // Goではインタフェースは明示的に書かずともインタフェース型で定義されたメソッドを全て定義した型は、
 // そのインタフェースを満たしている、と判断されます。
@@ -1231,118 +1088,218 @@ func renderResponse(w http.ResponseWriter, data interface{}, code int) {
 }
 ```
 
-* `model/user.go`
-```go
-package model
-
-import (
-	"database/sql"
-	// これはSQLite3を使うためのおまじない、として記述してください。
-	// 詳細知りたければteamsやハンズオン終了後に質問をください。
-	_ "github.com/mattn/go-sqlite3"
-)
-
-// SQLite3を使ってdb/chat.dbというファイル名でDBを開き、その操作のための構造体をdbという変数に代入しています。
-// sql.Open()関数は2つの値を返す関数で、もう一つの返り値はerror型の値ですが、今回エラー処理をさぼるために値を無視します。
-// _を記載することで、そこに返るはずだった値を無視することができます。
-// エラーを握り潰すことはよいこはやってはいけません。
-var db, _ = sql.Open("sqlite3", "db/chat.db")
-
-type User struct {
-	ID   uint64
-	Name string
-}
-
-func FindUserByID(id uint64) (*User, error) {
-	// SQL文を作っています。
-	// $1はプレースホルダで、後のstmt.QueryRow()の引数に設定した値が入ります。
-	sql := "SELECT id, name FROM users WHERE id = $1;"
-	// 先に作成したのはただの文字列なので、正しいSQL文になっているかを検証しつつ、操作のための構造体を返します。
-	stmt, err := db.Prepare(sql)
-	if err != nil {
-		// SQL文が間違っているとここで教えてくれます。
-		return nil, err
-	}
-	// deferというのはGoの特徴的な機能の一つで、ここではstmt.Close()関数は実行されず、FindUserByID()関数の実行完了時に必ず(例外はあります)実行されます。
-	// ファイルを開いた際のClose処理などにも使われて、後処理を忘れないためによく使われます。
-	defer stmt.Close()
-
-	user := User{}
-	// 先のSQL文は"SELECT id, name FROM users WHERE id = $1"となっており、`id`の中身が$1に収められstmt.QueryRow()メソッドで実行されます。
-	// その結果は id と name カラムが埋まっているので、その値を Scan()メソッドで user.ID と user.Name に放り込んでいます。
-	// &は後ろにくる値のポインタを取得する演算子ですが、詳細には触れません。
-	// こうしておかないと、Scan()メソッドには値のコピーが渡され、Scan()の中の操作が元の値に反映されなくなってしまいます。
-	if err := stmt.QueryRow(id).Scan(&user.ID, &user.Name); err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
+```shell
+$ vim main.go
 ```
 
-* `db/setup.sql`
-  * 少しMySQLとは文法が異なりますが、ここは主題ではないので触れません
-```sql
-DROP TABLE users;
+#### 5.1.3. 別ターミナルの準備
+今回のコードはサーバアプリケーションなので素朴に`go run main.go`で実行してしまうとプロンプトが返ってこず、動作確認が面倒です。 \
+そのため今回はターミナルを2つ用意する方針で実行します。
 
-CREATE TABLE users (
-  id integer PRIMARY KEY AUTOINCREMENT,
-  name text
-);
-
-INSERT INTO users (name) VALUES ("hogehoge");
-INSERT INTO users (name) VALUES ("fugafuga");
-```
-
-### 4-1. ディレクトリ構造
-```
-- go.mod # パッケージ管理用ファイル
-- main.go # サーバを準備したり、起動したりする。最初に実行される。
-- handler/
-  - handler.go # JSON形式でレスポンスを返すためにごにょごにょしてくれる関数を定義。
-  - user.go # HTTPリクエストを受けると実行される関数を定義。
-- model/
-  - user.go # User構造体を定義し、DBからUserデータを取得するための関数を定義。
-- db/
-  - setup.sql # DBの初期化用SQLファイル。
-```
-
-### 4-2. 使い方
-ターミナルを2つ用意します。
-docker環境の方は2つ目のターミナルでコンテナ内に入るために、
+:computer: これまで使用していたターミナルとは別のターミナルを用意し、以下のコマンドを実行しましょう。
 
 ```bash
 $ docker exec -it go-tutor /bin/bash
 ```
 
-を実行する必要があります。 \
-まず、一方のターミナルで以下を実行します。
+:::tip
+`go-tutor`コンテナで`/bin/bash`を実行するコマンドです。
+:::
+
+#### 5.1.4. HTTPサーバの起動
+:computer: 以下のコマンドでHTTPサーバを起動しましょう。
+
 ```bash
-# まず、DBを用意します。
-# エラーが発生しますが、
-#   Error: near line 1: no such table: users
-# であれば想定通りなので無視します。
-$ sqlite3 db/chat.db -init "db/setup.sql"
--- Loading resources from db/setup.sql
-Error: near line 1: no such table: users
-SQLite version 3.16.2 2017-01-06 16:32:41
-Enter ".help" for usage hints.
-sqlite>
-
-# sqlite を終了します。
-sqlite> .exit
-
-# サーバを起動します。
 $ go run main.go
-go: finding github.com/mattn/go-sqlite3 v1.11.0
-go: downloading github.com/mattn/go-sqlite3 v1.11.0
-go: extracting github.com/mattn/go-sqlite3 v1.11.0
-# プロンプトが返ってこなくなる
 ```
 
-その後、もう一方のターミナルで以下を叩きます。
-```bash
-$ curl http://localhost:8080/user/1
-{"ID":1,"Name":"hogehoge"}
+::: tip チェックポイント3 🏁
+HTTPサーバを起動したのとは別のターミナル上で以下のコマンドを実行しましょう。 \
+出力が同じであればクリア!
+
+```shell
+$ curl --no-proxy http://localhost:8080/party
+[{"ID":3,"Name":"フシギバナ"},{"ID":6,"Name":"リザードン"},{"ID":9,"Name":"カメックス"}]
+$ curl --no-proxy http://localhost:8080/party/0
+{"ID":3,"Name":"フシギバナ"}
+$ curl --no-proxy http://localhost:8080/party/0/move
+[{"Name":"つるのむち","Type":"くさ"}]
 ```
+:::
+
+HTTPサーバを起動しているほうのプロセスを終了するためにはCtrl-Cなどで終了を伝えましょう。
+
+### 5.2. 解説
+#### 5.2.1. HTTPハンドラの登録
+```go
+	http.HandleFunc("/", router)
+```
+
+[`http.HandleFunc()`](https://golang.org/pkg/net/http/#HandleFunc)は第1引数のURLパスへのアクセスされたときに第2引数の関数に処理を受け渡すように登録するための関数です。
+
+今回は`/`を登録しているので、全てのアクセスが`router()`関数に飛ぶことになります。
+
+:::tip ハンドラ? ルータ? コントローラ?
+特定のURLパスへのアクセスに対して実際に処理をするための関数の呼び方は様々あります。 \
+例に挙げた単語は微妙にニュアンスが違うことがあります。
+
+HTTPリクエストをそのまま扱う処理のことをハンドラとかコントローラとか呼びます。 \
+RailsのようなMVCフレームワークではコントローラと呼ぶことが多いです。 \
+
+URLパス毎にハンドラに処理を渡すためのハンドラを特にルータと呼ぶことが多いです。 \
+Railsだと`routes.rb`、Djangoだと`urls.py`に対応するものです。 \
+Goではマルチプレクサとも呼びます。
+:::
+
+#### 5.2.2. HTTPサーバの起動
+ハンドラの処理内容を見る前にHTTPサーバの起動部分を見てみましょう。
+
+```go
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+```
+
+[`http.ListenAndServe()`](https://golang.org/pkg/net/http/#ListenAndServe)は第1引数のURLでHTTPリクエストを待ち受ける関数です。 \
+この関数はCtrl-Cなりで強制終了するまで実行され続けます。
+
+何かしらの理由で終了すると`error`型の値が返ってくるので、4章で説明した通りにエラー処理しています。
+
+Goはこれを書くために生まれた言語と言っても過言ではなく、実際何もしなくていいHTTPサーバであればハンドラの登録も不要であり、本質的に必要な行はこの1行だけとなります。
+
+`ListenAndServe()`の第2引数も実はハンドラを登録するために用意されているのですが、`nil`を指定するとデフォルトで用意されているハンドラ(マルチプレクサ)を勝手に使ってくれます。 \
+さらに実はですが、このデフォルトのマルチプレクサに対してハンドラを登録するための関数が`http.HandleFunc()`だったりします。
+
+#### 5.2.3. ルータの処理
+`router()`関数の処理を見ていきましょう。
+
+```go
+func router(w http.ResponseWriter, r *http.Request) {
+	p := path.Clean(r.URL.Path)
+
+	ok, err := path.Match("/party", p)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+	if ok {
+		getParty(w, r)
+		return
+	}
+
+	ok, err = path.Match("/party/[0-5]", p)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+	if ok {
+		getPokemon(w, r)
+		return
+	}
+
+	ok, err = path.Match("/party/[0-5]/move", p)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+	if ok {
+		getMove(w, r)
+		return
+	}
+}
+```
+
+[`path.Clean()`](https://golang.org/pkg/path/#Clean)は変なURLパス(`//party/../party`とか)が指定されていた場合を想定して、冗長な表現を消すための関数です。 \
+この後の処理でURLパスを扱いやすくするために使っています。
+
+[`path.Match()`](https://golang.org/pkg/path/#Match)は指定したパターンに文字列がマッチしていれば`true`を返してくれる関数です。 \
+今回のサーバはURLパスに応じて処理を変更したいので、URLパスを判断するために使っています。
+
+今回は以下のAPIを作成しています。
+
+* `/party`: パーティ一覧(`getParty()`) 
+* `/party/<index>`: パーティ内のポケモンの取得(`getPokemon()`)
+* `/party/<index>/move`: パーティ内のポケモンのわざ一覧(`getMove()`)
+
+なお`renderError()`関数は第3引数のステータスコードでユーザにエラーを返す処理です。 \
+ただステータスコードを返すだけであれば関数に分けるほどもないのですが、今回はREST APIサーバなのでエラーもJSONで返したかったため、そのための処理を分離しています。 \
+今回は解説しませんが、興味があれば中を読んでみてください。
+
+#### 5.2.4. ハンドラ内の処理
+##### 5.2.4.1. `getParty()`
+```go
+func getParty(w http.ResponseWriter, r *http.Request) {
+	renderResponse(w, party, http.StatusOK)
+}
+```
+
+`renderResponse()`関数は第2引数の値をJSON形式でユーザに返すための関数です。 \
+JSONへの変換やヘッダの設定など雑多な処理を意識しないために別関数に括り出しています。 \
+今回は解説しませんが、興味があれば中を読んでみてください。
+
+##### 5.2.4.2. `getPokemon()`
+```go
+func getPokemon(w http.ResponseWriter, r *http.Request) {
+	p := strings.Split(r.URL.Path, "/")
+	if len(p) < 3 {
+		renderError(w, errors.New("invalid path"), http.StatusBadRequest)
+	}
+
+	indexParam := p[2]
+	index, err := strconv.Atoi(indexParam)
+	if err != nil {
+		renderError(w, err, http.StatusBadRequest)
+	}
+
+	if index > len(party) {
+		index = len(party)
+	}
+
+	renderResponse(w, party[index], http.StatusOK)
+}
+```
+
+URLパスは`/party/0`のような形をしているはずなので、そこからまず`0`という数値を取り出す必要があります。 \
+そのため[`strings.Split()`](https://golang.org/pkg/strings/#Split)で`/`区切りで文字列を分割しています。
+
+先の例では`p`は`["", "party", "0"]`という形に分割(最初の`/`も分割されることに注意)されているはずなので、その長さをチェックしてから`p[2]`を取り出せば`"0"`という文字列(まだ数値ではない)が取得できます。
+
+あとは[`strconv.Atoi()`](https://golang.org/pkg/strconv/#Atoi)で`int`型に変換してやればURLパスの解釈は完了です。
+
+細かいチェックとして、`party`変数の長さを越えた値を指定された場合は`party`変数の長さで頭打ちさせておいて、`party[index]`を返してやれば終わりです。
+
+##### 5.2.4.3. `getMove()`
+```go
+func getMove(w http.ResponseWriter, r *http.Request) {
+	p := strings.Split(r.URL.Path, "/")
+	if len(p) < 4 {
+		renderError(w, errors.New("invalid path"), http.StatusBadRequest)
+	}
+
+	indexParam := p[2]
+	index, err := strconv.Atoi(indexParam)
+	if err != nil {
+		renderError(w, err, http.StatusBadRequest)
+	}
+
+	if index > len(party) {
+		index = len(party)
+	}
+
+	poke := party[index]
+
+	moves, err := poke.Moves(false)
+	if err != nil {
+		renderError(w, err, http.StatusInternalServerError)
+	}
+
+	renderResponse(w, moves, http.StatusOK)
+}
+```
+
+前半のURLパスの解釈は`getPokemon()`の処理とほとんど同じです。
+
+あとは`Pokemon.Moves()`の実行結果を返してやれば終わりです。
+
+## 6. まとめ
 
 <credit-footer/>
