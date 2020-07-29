@@ -1303,5 +1303,39 @@ func getMove(w http.ResponseWriter, r *http.Request) {
 あとは`Pokemon.Moves()`の実行結果を返してやれば終わりです。
 
 ## 6. まとめ
+Goの概説からhello world、package分割、基本的な文法、Web APIサーバの作成までさっくり追っていきました。 \
+今回のサンプルコードはちゃんとエラー処理まで書いており、量はさておき質としてはほぼ業務で書くコードと遜色ないものだと思います。
+
+とはいえ最後のサンプルについてはプロダクションとしてリリースするためには足りていない部分もあります。 \
+具体的には
+
+* テストが無い
+  * [`testing`](https://golang.org/pkg/testing/)パッケージを使ったテストを書く
+  * GoではTDT(Table Driven Test)が好まれる
+* HTTPメソッドを判断していないので、実はPOSTでも同じ応答が返ってくる
+  * 小規模なままであればシンプルに`router()`でちゃんと`r.Method`に応じた分岐を書くとよい
+  * [go-chi/chi](https://github.com/go-chi/chi)のようなルータを担うパッケージもあるので利用するのもよい
+* もし更新APIを実装したとしても、データがメモリ上にしかないので再起動の度にデータが初期状態に戻ってしまう
+  * データベースを使い永続化したい
+  * [`database/sql`](https://golang.org/pkg/database/sql/)パッケージを使えばデータベースと接続できる
+* ログを出力したい
+  * [`log`](https://golang.org/pkg/log/)パッケージを使えばログが出せる
+
+のようなことを解決してみるのはよい経験になるでしょう。
+
+もちろん、やっている内に発生するであろう疑問などは私に聞いていただければ答えます。
+
+その他外部のコミュニティから情報を得るのも良いでしょう。
+
+* Gophers slackの#japanチャンネル
+  * 世界中のGopherが集うslack、その中の#japanに日本人Gopherが住んでいます
+* [vim-jp slackの#lang-goチャンネル](https://vim-jp.org/docs/chat.html)
+  * Vimコミュニティのslackですが、何故かGopher slackの#japanより活発
+  * 普通にEmacs使いの人もいるので、お使いのエディタに依らずどうぞ
+  * [こういう人](https://mattn.kaoriya.net/etc/gde.htm)がいたりします
+* [Go Conference](https://gocon.jp/)
+  * 今年はこんな状態なので開催されてませんが、例年は半年毎に開催されるGoコミュニティによるカンファレンス
+
+というわけで、Goやっていきましょう
 
 <credit-footer/>
