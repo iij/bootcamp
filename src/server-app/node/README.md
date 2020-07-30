@@ -16,7 +16,7 @@ prior_knowledge: JavaScript
 以下のコマンドでdockerコンテナを立ち上げてログインしてください。
 
 ```bash
-$ docker run --name bootcamp-node --rm -it regunorf/bootcamp-node /bin/bash
+$ docker run --name bootcamp-node --rm -it regunorf/bootcamp-node bash
 ```
 
 同じdockerコンテナに複数のターミナルを接続するには以下のようにします。
