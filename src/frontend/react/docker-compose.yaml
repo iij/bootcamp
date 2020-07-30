@@ -1,16 +1,12 @@
 version: "3.8"
 services:
-  client:
-    image: node:14.6.0-slim
-    working_dir: /app
-    volumes:
-      - ./app:/app
-      - /app/my-app/node_modules
+  dev:
+    image: ryusa/bootcamp-react:2020
     ports:
       - 3000:3000
-    networks:
-      - frontend
     tty: true
 
-networks:
-  frontend:
+  mock-server:
+    image: ryusa/bootcamp-react-mock:2020
+    ports:
+      - 5000:5000
