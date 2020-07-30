@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: Node.jsを使ったアプリケーション開発のハンズオンです
 time: 1h
 prior_knowledge: JavaScript
@@ -9,29 +9,30 @@ prior_knowledge: JavaScript
 
 # Node.jsでWebアプリを作る
 
-## 事前準備
+## 下準備
 
 ### dockerコンテナの立ち上げ方
 
 以下のコマンドでdockerコンテナを立ち上げてログインしてください。
 
 ```bash
-$ docker run --name bootcamp-node --rm -it regunorf/bootcamp-node /bin/bash
+$ docker run --name bootcamp-node --rm -it regunorf/bootcamp-node bash
 ```
 
 同じdockerコンテナに複数のターミナルを接続するには以下のようにします。
 
 ```bash
-$ docker exec -it bootcamp-node /bin/bash
+$ docker exec -it bootcamp-node bash
 ```
 
 ハンズオンでは同じコンテナに複数ターミナルでログインしていることを前提に記述している部分があるので、上記のように複数ターミナルを開いておいてください。
 
 ## Node.js とは
 
-Node.js はサーバーサイドで動作するJavaScriptのエンジンです。従来ブラウザ上でWebページを動的に動かすために使われていたJavaScriptを、ブラウザ上だけでなくサーバー上でも動かすためNode.jsなどが生まれました。
+Node.js はサーバサイドで動作するJavaScriptのエンジンです。従来ブラウザ上でWebページを動的に動かすために使われていたJavaScriptを、ブラウザ上だけでなくサーバ上でも動かすためNode.jsなどが生まれました。
 
-ブラウザ以外で動作するJavaScriptの実装としては他にもRhinoなどがあります。
+ブラウザ以外で動作するJavaScriptの実装としてはほかにもRhinoなどがあります。
+最近ではTypeScriptがそのまま動作する [Deno](https://github.com/denoland/deno) も登場しています。
 
 Node.jsの特徴としては、何よりもまず実装全体がイベント駆動で動作するという点です。これを説明するにはまずC10K問題から話をする必要があります。少し長くなりますが、Node.jsの立ち位置を知るためには必要なので簡単に解説します。
 
@@ -39,11 +40,12 @@ Node.jsの特徴としては、何よりもまず実装全体がイベント駆�
 
 Webサーバーは当然の事ながらたくさんのユーザーからのアクセスに答えて、HTMLを返したりサーバーサイドのプログラム（C言語やJavaやRubyなどで書かれた）を動かしてレスポンスを返す必要があります。その際に１つ１つ順番に処理していたのではキリがないため、たくさんのアクセスを並列に処理する必要があります。
 
-プログラムを並列に動かすやり方はいくつかありますが、当時（今でも）多く使われているApacheというサーバーではスレッドベースの並列処理が主要でした。
-簡単にいうと、１つのリクエスト中に別のリクエストが来た場合、コンピューターのメモリを切り出して新しくプログラムの実行環境を立ち上げるやり方です。
-このプログラムの実行環境は「プロセス」または「スレッド」と呼ばれます。
+プログラムを並列に動かすやり方はいくつかありますが、たとえばApacheではスレッド・プロセスベースの並列処理が主要でした。
+1つのリクエストに対してOSのプロセスを立ち上げ、それぞれのプロセスで別々のプログラムを動かすことで大量のリクエストをさばくことができます。
+しかし1つのサーバ上で起動できるプロセスの数には限度があります。そのためたとえば1万人の同時リクエストを1台のサーバで（処理能力に余裕があったとしても）さばけないのが問題となりました。
+プロセスを起動すること自体のオーバーヘッドも無視できません。
 
-これはユーザーからのリクエストが比較的少ない場合はうまく行きますが、例えば1万人のユーザーが同時にアクセスした場合などリクエスト数が増えてくると徐々に効率が悪くなってきます。これがC10k問題です。
+インターネットが普及して利用者が増えたことや、IoTなど大量の小さなデータを送信する機会が増えたことで、より効率の良い方法が求められました。
 
 ### イベント駆動
 
@@ -67,11 +69,16 @@ C10K 問題に対してNode.jsは「イベントループ」と「ノンブロ�
 
 ## first step
 
-ようやくハンズオンに入れます。
-まずは簡単なWebサーバーを作ってみましょう。
+まずは簡単なWebサーバを作ってみましょう。
 
-事前準備で立ち上げたdockerに入り、`bootcamp-node`というディレクトリを作成してください。
+下準備で立ち上げたdockerに入り、`bootcamp-node`というディレクトリを作成してください。
 そしてそのディレクトリ内に以下のファイルを`app.js`という名前で作成してください。
+
+```
+mkdir bootcamp-node
+cd bootcamp-node/
+vi app.js
+```
 
 ```javascript
 const http = require('http');
@@ -135,6 +142,13 @@ $ npm init
 npmはパッケージマネージャですが、このようにアプリケーションのメインファイルを指定したり`npm script`と呼ばれるコマンドを登録できるなど、Node.jsアプリケーション全体の管理もしてくれます。
 
 以下のコマンドでアプリケーションに`express`を追加してみましょう。
+
+必要であればプロキシを設定してください。
+
+```
+npm -g config set proxy http://proxy.iiji.jp:8080
+npm -g config set https-proxy http://proxy.iiji.jp:8080
+```
 
 ```bash
 $ npm install express
