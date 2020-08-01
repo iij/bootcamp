@@ -14,7 +14,7 @@ IIJ Bootcamp React に関する資料です。あらかじめ Bootcamp のリポ
 ```bash
 git clone https://github.com/iij/bootcamp.git
 cd src/frontend/react
-docker run --rm -itd --name bootcamp-react --mount type=bind,src=$(pwd)/app,dst=/app -p 3000:3000 --workdir=/app node:14.6.0-slim
+docker-compose up -d
 ```
 
 ## 始めに
@@ -65,8 +65,6 @@ React の基礎を体験したいだけなら、オンラインサービスを�
 
 ```bash
 cd /app
-npx create-react-app my-app
-cd my-app
 npm start
 ```
 
@@ -175,6 +173,34 @@ export default App;
 - [] React の基本の書き方を学んだ
 - [] Component の書き方を学んだ
 - [] Component の使い方を学んだ
+
+### やってみよう
+
+src/App.js を見てみると、src/Note.js のコンポーネントとは構成が異なります。src/App.js は関数型コンポーネントといい、複雑な機能を持たないコンポーネントを作成する際によく用いられます。
+
+ここで、コンポーネントに慣れるために src/App.js をクラスベースのコンポーネントに書き直してみましょう。
+
+```javascript
+import React from "react";
+import "./App.css";
+import Note from "./Note.js";
+
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <Note />
+          <Note />
+          <Note />
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
 
 ## Component 組み込みの機能
 
@@ -315,25 +341,69 @@ Component の機能として、主に利用する部分について解説が終�
 
 しかし、実際に SPA としてアプリケーションを構築する際は外部の API を経由してデータを取得してくることが多いです。そこで今回は`axios`という HTTPClient モジュールを利用して、データの取得〜State に保存〜画面に描画 の流れを体験してもらいます。
 
-### モジュールのインストール
-
-`axios`を npm でインストールしてみましょう。
-
-```bash
-npm install --save axios
-```
-
-package.json に反映されていればインストール完了です。
-
-:::tips package.json #とは
-
-(TBD)
-
-:::
-
 ### axios を使ってみよう
 
-`axios`に触ってみましょう。実は docker-compose で同時に 5000 番ポートにモック用の API が用意しておきました。その API をコールしてみます。
+このハンズオンで起動した docker-compose は起動時にモックサーバーも一緒に立ち上がるように設定されています。
+このモックサーバは 5000 番ポートをリッスンしているので、起動を確認するために一度アクセスしてみましょう。
+
+モックサーバー > [localhost:5000](http://localhost:5000)
+
+![画像5]()
+
+この内容を React 経由で取得し、ブラウザに表示してみましょう。
+src/App.js に修正を加えます。
+
+```javascript
+import React from "react";
+import "./App.css";
+import axios from "axios";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: "",
+    };
+  }
+
+  click = () => {
+    axios.get("http://localhost:5000/notes").then((response) => {
+      this.setState({
+        info: response.data,
+      });
+    });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <button onClick={this.click}>Call API!!</button>
+          <div>{JSON.stringify(this.state.info)}</div>
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+App クラスに新たな State`info`を追加し、また`axios`で HTTP のリクエストを送るメソッド`click`を追加しました。
+"Call API"ボタンを押下すると文字列が表示されたと思います。
+
+これは[localhost:5000](http://localhost:5000)で配信しているコンテンツを`axios`モジュールが拾ってきて State に保存したため、その内容が画面に表示されることになりました。
+
+このように`axios`モジュールを利用することで外部から情報を取得してユーザーインターフェースに組み込むことができるようになります。
+
+チェックポイント
+
+- `axios`モジュールを使ってみた
+- 外部 API コールを試してみた
+
+### コンポーネントのライフサイクルを触ってみよう
+
+さて、多くの Web サイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。これを実装してみましょう！
 
 src/App.js を下記のように修正します。
 
@@ -343,50 +413,43 @@ import "./App.css";
 import Note from "./Note.js";
 import axios from "axios";
 
-function App() {
-
+class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      info: ""
-    }
+      info: "Loading...",
+    };
   }
 
-  componentDidMount() {
-    axios
-      .get('http://localhost:5000/api/notes')
-      .then(response => (this.setState({
-        info: response
-      }))
-  }
+  componentDidMount = () => {
+    axios.get("http://localhost:5000/notes").then((response) => {
+      this.setState({
+        info: response.data,
+      });
+    });
+  };
 
-  return (
-    <div className="App">
-      <main className="App-main">
-        <div>Hello World!!</div>
-        <Note word={"Component"} />
-        <Note word={"Hoge"} />
-        <Note word={"Huga"} />
-      </main>
-      <div>{this.state.info}</div>
-    </div>
-  );
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <div>{JSON.stringify(this.state.info)}</div>
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
 ```
 
-ここまで修正すると、画面が描画後一瞬間を置いて大量の文字列が画面に描画されたと思います。
+画面を何度もリロードすると、一瞬"Loading..."という文字列が見えた瞬間、Json が画面に表示されたはずです。
 
 ![Gif1]()
 
-Component が実際にブラウザにロードされたタイミングで`componentDidMount`が呼ばれます。(React の Component の仕様)そこの中で API をコールし、そのレスポンスが届いたタイミングで画面に描画されました。
+この`componentDidMount`はブラウザ上にコンポーネントが描画された直後に走る React の提供しているメソッドです。
 
-`axios`はデフォルトで非同期処理になっているため注意しましょう。
-
-:::tips Component のライフサイクルについて
-
-React の Component には生まれる前、生まれた直後、削除される直前とライフサイクル毎に特定の処理を挟むことができます。
+React のコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義することができるようになります。
 
 1. コンポーネントが生成
 
@@ -404,55 +467,15 @@ React の Component には生まれる前、生まれた直後、削除される
 
 詳しくはこちら > [state とライフサイクル | React Docs](https://ja.reactjs.org/docs/state-and-lifecycle.html)
 
-:::
+## そろそろいい感じにしてみましょう
 
-### API からデータを取得して State に保存してみましょう
+これまでの中で下記のことを学びました。
 
-それでは、最後に API サーバーから取得したデータを State に保存し画面に表示てみます。
-下記の通り src/App.js を修正してみましょう。
+- コンポーネントによる UI の分割
+- コンポーネント親子間のデータの保存、連携方法
+- `axios`モジュールによる外部 API のコール
+- コンポーネントのライフサイクルフック
 
-```javascript
-import React from "react";
-import "./App.css";
-import Note from "./Note.js";
-import axios from "axios";
-
-function App() {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      students: []
-    }
-  }
-
-  componentDidMount() {
-    axios
-      .get('http://localhost:5000/api/student')
-      .then(response => {
-        const data = response.data;
-        this.setState({
-          students: data
-        })
-      })
-  }
-
-  render(
-    return (
-      <div className="App">
-        <main className="App-main">
-          <div>Hello World!!</div>
-          <Note word={"Component"} />
-          <Note word={"Hoge"} />
-          <Note word={"Huga"} />
-        </main>
-        <div>{this.state.info}</div>
-      </div>
-    );
-  )
-}
-
-export default App;
-```
+基本的な知識が身についていることを踏まえ、これらを複合して UI を作成してみましょう！
 
 <credit-footer/>
