@@ -72,7 +72,7 @@ npm start
 
 開発サーバが起動すると、localhost:3000 にブラウザでアクセスすると下記のようなページが表示されることを確認してください。
 
-![画面1]()
+![画面1](images/image1.png)
 
 チェックポイント
 
@@ -106,7 +106,7 @@ export default App;
 
 するとブラウザが自動的にリロードされ、下記のような画面に変わります。
 
-![画面2]()
+![画面2](images/image2.png)
 
 :::tips
 
@@ -152,8 +152,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>Hello World!!</div>
-        <Note />
         <Note />
         <Note />
       </header>
@@ -165,6 +163,8 @@ export default App;
 ```
 
 さあ、ブラウザに表示されている内容が変化したと思います。
+
+![画像3](images/image3.png)
 
 このように。React では Component という UI 部品を組み合わせることでデザイン、UI を作成していきます。
 
@@ -236,18 +236,20 @@ export default class Note extends React.Component {
 ```javascript
 import React from "react";
 import "./App.css";
-import Note from "./Note.js";
+import Note from "./Note";
 
-function App() {
-  return (
-    <div className="App">
-      <main className="App-main">
-        <Note word={"Component"} number={1} />
-        <Note word={"Hoge"} number={2} />
-        <Note word={"Huga"} number={3} />
-      </main>
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <Note word={"Component"} number={1} />
+          <Note word={"Hoge"} number={2} />
+          <Note word={"Huga"} number={3} />
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
@@ -255,7 +257,7 @@ export default App;
 
 ここまで修正すると、下記の通りにブラウザの表示が変わります。
 
-![画像3]()
+![画像4](images/image4.png)
 
 このように外部からパラメータを渡す場合、コンポーネントは`props`フィールドからそのパラメータを取得してくることができます。注意が必要なことは、`props`フィールドは Readonly なため、`props`フィールドの中身を書き換えたりすることはできません。
 
@@ -299,12 +301,21 @@ export default class Note extends React.Component {
     return words.trimEnd();
   };
 
+  // インラインスタイル
+  mystyle = {
+    display: "flex",
+    "justify-content": "center",
+    "align-items": "center",
+  };
+
   render() {
     return (
-      <>
-        <button onClick={this.click}>Click me!!</button>
+      <div style={this.mystyle}>
+        <button onClick={this.click} style={{ "min-width": "75px" }}>
+          Click me!!
+        </button>
         <p>{this.constructWord(this.state.counter, this.props.word)}</p>
-      </>
+      </div>
     );
   }
 }
@@ -312,9 +323,9 @@ export default class Note extends React.Component {
 
 ここまで修正すると下記の通りになります。
 
-![画像4]()
+![画像5](images/image5.png)
 
-State は Component の内部でのみ生きているデータベースです。State の特徴として`setState`メソッド経由で State に更新が走ると関連するコンポーネントや DOM が自動で更新されます。
+State は Component の内部でのみ生きているデータベースのようなものです。State の特徴として`setState`メソッド経由で State に更新が走ると関連するコンポーネントや DOM が自動で更新されます。
 
 実際に"Click me!!"のボタンをクリックしてみてください。
 
@@ -348,7 +359,7 @@ Component の機能として、主に利用する部分について解説が終�
 
 モックサーバー > [localhost:5000](http://localhost:5000)
 
-![画像5]()
+![画像6](images/image6.png)
 
 この内容を React 経由で取得し、ブラウザに表示してみましょう。
 src/App.js に修正を加えます。
@@ -367,7 +378,7 @@ class App extends React.Component {
   }
 
   click = () => {
-    axios.get("http://localhost:5000/notes").then((response) => {
+    axios.get("http://localhost:5000/menu").then((response) => {
       this.setState({
         info: response.data,
       });
@@ -410,7 +421,6 @@ src/App.js を下記のように修正します。
 ```javascript
 import React from "react";
 import "./App.css";
-import Note from "./Note.js";
 import axios from "axios";
 
 class App extends React.Component {
@@ -422,7 +432,7 @@ class App extends React.Component {
   }
 
   componentDidMount = () => {
-    axios.get("http://localhost:5000/notes").then((response) => {
+    axios.get("http://localhost:5000/menu").then((response) => {
       this.setState({
         info: response.data,
       });
@@ -445,7 +455,7 @@ export default App;
 
 画面を何度もリロードすると、一瞬"Loading..."という文字列が見えた瞬間、Json が画面に表示されたはずです。
 
-![Gif1]()
+![Gif1](images/gif1.gif)
 
 この`componentDidMount`はブラウザ上にコンポーネントが描画された直後に走る React の提供しているメソッドです。
 
