@@ -653,4 +653,54 @@ export default App;
 
 ですが、フロントエンドはアプリケーションの花形です。ぜひフロントエンドの知見を日々広げ、花形の開発者として克安来て行ってもらえれば嬉しいです。
 
+## 読み物
+
+ここから先は React に関する情報をまとめた読み物です。興味のある人はさっと目を通してみてください。
+
+### SPA はどこへ？
+
+Bootcamp 冒頭で
+
+> React でシングルページアプリケーション(=SPA)を書こう
+
+と書いておきながら、SPA というワードが一切出てきませんでした。実は、すでにこの Bootcamp で作成したコードが SPA になっています。
+
+[シングルページアプリケーション | Wikipedia](https://ja.wikipedia.org/wiki/シングルページアプリケーション)
+
+つまるところ
+
+- サーバから配信する HTML は単一
+  - 画面遷移が滑らか＆爆速
+- フロントエンドの DOM の操作を Javascript で行う
+  - 物理 DOM の操作と比べて軽量
+
+といったことが特徴です。create-react-app で構成したプロジェクトはデフォルトで SPA となっています。SPA でないものとして SSR(=サーバサイドレンダリング)が挙げられます。
+
+### JSX(Javascript 経験者向け)
+
+この Bootcamp では JavaScript のコードだとは思えない HTML と ES2015 のコードが混ぜこぜになっているようなコードが出てきました。
+
+この HTML 風の表現になっている部分は、[JSX](http://facebook.github.io/jsx/)という JavaScript の拡張構文で、実際には JavaScript にトランスパイルされてから実行されます。
+
+JSX についての詳細には踏み込みませんが、3 点だけ注意しておきます。
+
+1. JSX は HTML 風の記法で HTML 出力のためのコードを記述できるものであって、HTML そのものではありません。
+2. HTML では CSS のクラス名を適用するのに class 属性を記述しますが、class は ECMAScript の予約語なので、これを避けて className という語を用います。(上の例にあるとおりです。)
+3. (上記の例では出てきませんが)HTML では label タグに for 属性を使いますが、for は JavaScript の予約語なので、これを避けて htmlFor という語を用います。
+
+JSX は、あくまでも記法なので、JSX を使わずに同じ意味のコードを書くことは可能です。ですが React で開発する人のほとんどは JSX を利用しますので明確な理由がない場合は JSX を利用することをおすすめします。
+
+### PWA(PWA を知っている人向け)
+
+React のビルド成果物は PWA 対応しています。PWA の設定方法はとても簡単で、src/index.js の下記の部分を変更するだけです。
+
+```javascript
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister();
+```
+
+コメントで書いてある通り、`unregister()`を`register()`に変えてあげるだけで PWA 対応になります。
+
 <credit-footer/>
