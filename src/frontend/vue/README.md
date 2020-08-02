@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: フロントエンド開発フレームワークであるVue.jsで簡単なアプリケーションを作ってみます。
 time: 1h
 prior_knowledge: JavaScript, HTML, DOM
