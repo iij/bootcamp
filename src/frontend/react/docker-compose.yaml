@@ -8,7 +8,7 @@ services:
     container_name: bootcamp-react
 
   mock-server:
-    image: ryusa/bootcamp-react-mock:latest
+    image: ryusa/bootcamp-react-mock:2020
     ports:
       - 5000:5000
     container_name: bootcamp-react-mock
