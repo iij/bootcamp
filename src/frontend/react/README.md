@@ -1,6 +1,6 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
-description: Reactを使ってみよう
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+description: React でシングルページアプリケーションを書こう
 time: 2h
 prior_knowledge: 特になし
 ---
@@ -15,7 +15,7 @@ cd bootcamp/src/frontend/react
 docker-compose up -d
 ```
 
-# React でシングルページアプリケーション(=SPA)を書こう
+# React でシングルページアプリケーションを書こう
 
 ## 始めに
 
@@ -57,7 +57,7 @@ React は、もともと Facebook 社が開発している Web ユーザーイ�
 
 React を用いることで、コードが煩雑になりがちでメンテナンスが難しくなるフロントエンドの開発をスマートにできました。
 
-:::tips Create React App
+:::tip Create React App
 
 React を始めるための方法としては、いくつかの方法があります。
 
@@ -108,9 +108,9 @@ To create a production build, use yarn build.
 
 localhost:3000 にブラウザでアクセスすると下記のようなページが表示されることを確認してください。
 
-![画面1](images/image1.png)
+![画面1](./images/image1.png)
 
-チェックポイント
+チェックポイント(1/2)
 
 - `npm start`で React の開発サーバを起動した
 - React の初期ページを確認した
@@ -150,9 +150,9 @@ export default App;
 
 ※ 環境にとっては自動リロードしてくれない場合もあります。そのときはリロード(F5)をしてみてください。
 
-![画面2](images/image2.png)
+![画面2](./images/image2.png)
 
-チェックポイント
+チェックポイント(2/2)
 
 - React で Hello World を実施した
 
@@ -160,7 +160,7 @@ export default App;
 
 React は UI の部品を Component という単位に分割することで、ロジックやスタイルなどの再利用性を高めて実装を行います。
 
-:::tips なぜ Component を使うのか
+:::tip なぜ Component を使うのか
 
 React ではなく Vue ですが、こちらの記事が非常にわかりやすい例です。Vue と React ともにコンポーネントベースのフレームワークですので、根幹は一緒です。
 
@@ -209,11 +209,11 @@ export default App;
 
 さあ、[localhost:3000](localhost:3000)にアクセスするとブラウザに表示されている内容が変化したと思います。
 
-![画像3](images/image3.png)
+![画像3](./images/image3.png)
 
 このように React では Component という UI 部品を組み合わせることでデザイン、UI を作成していきます。
 
-チェックポイント
+チェックポイント(1/2)
 
 - クラスベースコンポーネントの書き方を学んだ
 - Component の使い方を学んだ
@@ -254,6 +254,10 @@ class App extends React.Component {
 
 export default App;
 ```
+
+チェックポイント(2/2)
+
+- 関数コンポーネントからクラスコンポーネントへ変換した
 
 ## Component 組込みの機能
 
@@ -311,17 +315,17 @@ export default App;
 
 ここまで修正すると、下記の通りにブラウザの表示が変わります。
 
-![画像4](images/image4.png)
+![画像4](./images/image4.png)
 
 親コンポーネントからデータを注入できるように`props`を適切に定義することで、Component の再利用性をあげることができます。
 注意が必要なこととして`props`は Readonly なため、`props`の中身を書き換えたりすることはできません。
 
-チェックポイント
+チェックポイント(1/3)
 
 - Component の `Props` について学んだ
 - Component 間のパラメータの受け渡し方を学んだ
 
-### State
+### Component内部で保持するデータストア : State
 
 `props`フィールドを通じてコンポーネント間のデータの受け渡しはできましたが、ユーザーからの入力や外部から取得した情報はどのように保存するべきでしょうか？
 Component には State というデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
@@ -381,18 +385,18 @@ export default class Note extends React.Component {
 
 ここまで修正すると下記の通りになります。
 
-![画像5](images/image5.png)
+![画像5](./images/image5.png)
 
 State は Component の内部でのみ生きているデータベースのようなものです。State を`setState`メソッド経由で更新を行うと、関連するコンポーネントや DOM が自動で更新されます。
 
 実際に"Click me!!"のボタンをクリックしてみてください。
 
-チェックポイント
+チェックポイント(2/3)
 
 - State を利用してローカルデータベースを作成できる
 - setState メソッドで State を更新すると DOM が自動でリロードされる
 
-:::tips Redux
+:::tip Redux
 
 State を利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。また State をもっと複雑に利用したいケースもでてきます。
 
@@ -404,7 +408,9 @@ State を利用することで、単一のコンポーネントでデータを�
 
 :::
 
-## API サーバからデータを取得してみる
+### API サーバからデータを取得してみる
+
+Componentの機能少し寄り道をします。
 
 親子間でのデータのデータのやりとりができるようになりましたが、このままではアプリケーションに組み込まれた情報でのみ表示ができるだけです。ほかのユーザーの情報やリアルタイムな情報等、アプリケーション以外のデータリソースからデータを取得する場合にはどのようにするのがよいでしょうか？
 
@@ -418,7 +424,7 @@ State を利用することで、単一のコンポーネントでデータを�
 
 モックサーバ > [localhost:5000](http://localhost:5000)
 
-![画像6](images/image6.png)
+![画像6](./images/image6.png)
 
 このモックサーバが配信しているコンテンツをフェッチし、ブラウザに表示してみましょう。
 src/App.js に修正を加えます。
@@ -471,7 +477,7 @@ App クラスに新たな State`info`を追加し、また`axios`で HTTP のリ
 - `axios`モジュールを使ってみた
 - 外部 API コールを試してみた
 
-## コンポーネントのライフサイクルを触ってみよう
+### コンポーネントのライフサイクル: LifeCycle
 
 少しコンポーネントの複雑な機能について触れてみましょう。Component を作成することに注力しましたが、ここでは Component の作成の方法に注視してみましょう。
 
@@ -517,7 +523,7 @@ export default App;
 
 画面を何度もリロードすると、一瞬"Loading..."という文字列が見えた瞬間、Json が画面に表示されたはずです。
 
-![Gif1](images/gif1.gif)
+![Gif1](./images/gif1.gif)
 
 初めて出てきた`componentDidMount`メソッドは`React.Component`で定義されているメソッドで、ブラウザ上にコンポーネントが描画された直後に走るメソッドです。
 
@@ -525,26 +531,27 @@ React のコンポーネントは`componentDidMount`のようにいくつかの�
 これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義できます。
 
 1. コンポーネントが生成されるタイミング
-
-- コンストラクタ
+    - コンストラクタ
 
 2. コンポーネントが DOM にロード(マウント)されるタイミング
-
-- componentDidMount
+    - componentDidMount
 
 3. コンポーネントが DOM から削除されるタイミング
-
-- componentWillUnmount
+    - componentWillUnmount
 
 それぞれのタイミングで実施したい処理があれば、それぞれのメソッドの中に実装してあげると良いでしょう。
 
 詳しくはこちら > [state とライフサイクル | React Docs](https://ja.reactjs.org/docs/state-and-lifecycle.html)
 
+チェックポイント
+- コンポーネントにライフサイクルがあることを理解した
+- ライフサイクルに合わせてフックを作成することができた
+
 ## 自分の手でフロントエンドを作成してみましょう
 
 先の節で`axios`モジュールを用いて外部サーバからデータを取得してきました。今までの知識を元に取得してきたデータを下記のような一覧表示する UI を作成してみましょう。
 
-![画像7](images/image7.png)
+![画像7](./images/image7.png)
 
 配信されているデータは下記の Food スキーマの配列です。データをパースして State に保存し、適切なコンポーネントに渡してあげましょう。
 
