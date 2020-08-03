@@ -38,17 +38,20 @@ Angular でアプリケーションを構築する場合はほぼ必ず [angular
 
 ### docker imageの利用方法
 
-```
+```bash
 docker pull forestsource/bootcamp-angular
 cd <好きなディレクトリ ex. "/var/tmp/angular">
 
 # MacOS, Linux
-docker run -it --rm -v "$(pwd)":/app -p 4200:4200 bootcamp-angular bash
+docker run --name bootcamp-angular -it --rm -v "$(pwd)":/app -p 4200:4200 forestsource/bootcamp-angular bash
 
 # Windows
 ## Docker Desktopの Settings -> Resources -> FILE SHARING -> C にチェックを入れる(作業したいディレクトリがあるドライブにチェック)
 mkdir C:\Users\%username\Desktop\bootcamp-angular
-docker run -it --rm -v C:\Users\%username\Desktop\bootcamp-angular:/app -p 4200:4200 bootcamp-angular bash
+docker run --name bootcamp-angular -it --rm -v C:\Users\%username\Desktop\bootcamp-angular:/app :/app -p 4200:4200 forestsource/bootcamp-angular bash
+
+# 追加でシェルを使いたい場合
+docker exec -it bootcamp-angular bash
 ```
 
 ### angular-cliで開発環境を構築
