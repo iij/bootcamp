@@ -523,7 +523,7 @@ export default App;
 
 画面を何度もリロードすると、一瞬"Loading..."という文字列が見えた瞬間、Json が画面に表示されたはずです。
 
-![Gif1](./images/gif1.gif)
+![Gif1](./images/Gif1.gif)
 
 初めて出てきた`componentDidMount`メソッドは`React.Component`で定義されているメソッドで、ブラウザ上にコンポーネントが描画された直後に走るメソッドです。
 
