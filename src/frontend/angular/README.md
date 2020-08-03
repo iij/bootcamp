@@ -82,6 +82,15 @@ Angular 開発環境の構築はこれで完了です。簡単ですね！
 `ng new`で生成されたアプリケーションの中身を少し見てみましょう。Angular アプリケーションのソースコードは主に `src/app/` 以下にあります。
 
 ```bash
+# docker版
+-rw-r--r-- 1 root root   246 Aug  3 10:18 app-routing.module.ts
+-rw-r--r-- 1 root root     0 Aug  3 10:18 app.component.css
+-rw-r--r-- 1 root root 25757 Aug  3 10:18 app.component.html
+-rw-r--r-- 1 root root  1089 Aug  3 10:18 app.component.spec.ts
+-rw-r--r-- 1 root root   220 Aug  3 10:18 app.component.ts
+-rw-r--r-- 1 root root   393 Aug  3 10:18 app.module.ts
+
+# VM版
 [vagrant@localhost bootcamp-angular]$ ls -l src/app/
 合計 20
 -rw-rw-r--. 1 vagrant vagrant  245  2月 27 11:35 app-routing.module.ts
