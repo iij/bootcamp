@@ -11,7 +11,7 @@ IIJ Bootcamp React に関する資料です。あらかじめ Bootcamp のリポ
 
 ```bash
 git clone https://github.com/iij/bootcamp.git
-cd src/frontend/react
+cd bootcamp/src/frontend/react
 docker-compose up -d
 ```
 
@@ -81,6 +81,13 @@ React を始めるための方法としては、いくつかの方法があり�
 `docker-compose up`で起動した`bootcamp-react`コンテナ内部にアクセスし、下記のコマンドをたたきましょう。
 
 ```bash
+# 下記のいずれかでシェルを取得する
+# docker-composeでbash取得
+docker-compose exec bootcamp-react bash
+# dockeコマンドでbash取得
+docker exec -it bootcamp-react bash
+# VSCode Remote Developmentでbootcamp-react:/appを開く
+
 cd /app
 npm start
 ```
@@ -112,6 +119,13 @@ localhost:3000 にブラウザでアクセスすると下記のようなペー�
 
 React の開発サーバは、ソースコードの変更を検知してその変更をブラウザに伝えてくれます。
 さっそくひとつやってみましょう。
+
+これから先、ファイルを何度か編集することになるのでcliでBootcampを進める人は別のシェルを取得しておいてください。
+
+```bash
+# シェル上でBootcampを進める人向け
+docker-compose exec bootcamp-react bash
+```
 
 src/App.js を開き下記の通りに編集してみましょう。
 
@@ -282,7 +296,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          // ComponentのPropsにデータを渡すには、DOMにパラメータを直接指定する
+          {/* ComponentのPropsにデータを渡すには、DOMにパラメータを直接指定する */}
           <Note word={"Component"} number={1} />
           <Note word={"Hoge"} number={2} />
           <Note word={"Huga"} number={3} />
@@ -353,11 +367,11 @@ export default class Note extends React.Component {
   render() {
     return (
       <div style={this.mystyle}>
-        // ボタンをクリックされたらclick()メソッドが発火し、Stateが更新される
+        {/* ボタンをクリックされたらclick()メソッドが発火し、Stateが更新される */}
         <button onClick={this.click} style={{ "min-width": "75px" }}>
           Click me!!
         </button>
-        // Stateのカウンタの数だけ叫ぶ
+        {/* Stateのカウンタの数だけ叫ぶ */}
         <p>{this.constructWord(this.state.counter, this.props.word)}</p>
       </div>
     );
