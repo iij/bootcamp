@@ -30,16 +30,34 @@ Angular は2016年に発表されたwebフレームワークで、googleが中�
 ## first step
 
 Angular でアプリを構築する場合はほぼ必ず [angular-cli](https://cli.angular.io/) というツールを利用します。これはAngular専用のCLIツールで、テンプレートコードを生成したり、開発用サーバーを立ち上げたりしてくれます。
+コマンド名は「ng」です。(aNGularの略称)
 
-まずはこれをインストールして、自動生成されるAngularアプリを起動してみましょう。
+まずはこれを使い、自動生成されるAngularアプリを起動してみましょう。
+
+### docker imageの利用方法
+
+```
+docker pull forestsource/bootcamp-angular
+cd <好きなディレクトリ ex. "/var/tmp/angular">
+
+# MacOS, Linux
+docker run -it --rm -v "$(pwd)":/app -p 4200:4200 bootcamp-angular bash
+
+# Windows
+## Docker Desktopの Settings -> Resources -> FILE SHARING -> C にチェックを入れる(作業したいディレクトリがあるドライブにチェック)
+mkdir C:\Users\%username\Desktop\bootcamp-angular
+docker run -it --rm -v C:\Users\%username\Desktop\bootcamp-angular:/app -p 4200:4200 bootcamp-angular bash
+```
 
 ### angular-cliで開発環境を構築
+今回使うdocker imageには既にangular(angular-cli)がインストールされています。
 
 ```bash
-sudo npm install -g @angular/cli
-
-# 質問が表示されますが、y => CSS を選んでください。
 ng new bootcamp-angular
+# > ? Would you like to add Angular routing? (y/N) : y  Angularを選択するユースケースではほぼ間違いなく使うかと思います。
+# > CSS を選択
+# > ✔ Packages installed successfully. と出力されたら成功です。
+
 cd bootcamp-angular/
 
 # Angular アプリが生成されている
@@ -49,8 +67,10 @@ ls -l
 ng serve --host 0.0.0.0
 ```
 
-アプリの起動後に http://192.168.20.10:4200/ にアクセスするとサンプルアプリが表示されます。
+アプリの起動後に http://localhost:4200 にアクセスするとサンプルアプリが表示されます。
 Angular 開発環境の構築はこれで完了です。簡単ですね！
+
+<img src="./images/welcome.png">
 
 ### サンプルアプリをいじってみる
 
@@ -70,11 +90,10 @@ Angular 開発環境の構築はこれで完了です。簡単ですね！
 Angular はcomponent指向のフレームワークという話をしましたが、この`.component`とついているのが１つのcomponentです。この`app.component`はアプリ全体を束ねる親componentになります。
 
 `app.component.html` の中を見ると以下のようなコードがあります。
+行が長いので`cat app.component.html | grep "app is running!"`すると見つけられます。
 
 ```html
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
+   <span>{{ title }} app is running!</span>
 ```
 
 `{{}}`というhtmlには見慣れない記法が入っています。Angular ではこのようにhtml側に変数を展開しながらUIを作っていきます。`title`という変数は`app.component.ts`で宣言されています。
@@ -108,8 +127,38 @@ title = 'my-first-angular';
 
 実は`ng new`コマンドはユニットテスト用の環境も用意してくれています。以下のコマンドを実行してください。(`ng serve`を止めてこちらを実行した方がいいかもしれません)
 
+#### 設定変更
+`./bootcamp-angular/karma.conf.js(テストツールの設定ファイル)`のブラウザ設定を下記のように必要があります。
+Chromeはrootで実行する場合は`--no-sandbox`が必要なので追加しています。
+
 ```bash
-ng test --browsers=ChromeHeadless
+@@ -25,7 +25,13 @@
+     colors: true,
+     logLevel: config.LOG_INFO,
+     autoWatch: true,
+-    browsers: ['Chrome'],
++    browsers: ['ChromeHeadlessNoSandbox'],
++    customLaunchers: {
++      ChromeHeadlessNoSandbox: {
++        base: 'ChromeHeadless',
++        flags: ['--no-sandbox']
++      }
++    },
+     singleRun: false,
+     restartOnFileChange: true
+   });
+```
+テスト実行
+
+```bash
+ng test
+
+#> 09 05 2020 16:06:23.410:INFO [karma-server]: Karma v5.0.5 server started at http://0.0.0.0:9876/
+#> 09 05 2020 16:06:23.411:INFO [launcher]: Launching browsers ChromeHeadlessNoSandbox with concurrency unlimited
+#> 09 05 2020 16:06:23.466:INFO [launcher]: Starting browser ChromeHeadless
+#> ...(省略)
+#> TOTAL: 2 FAILED, 1 SUCCESS
+#> TOTAL: 2 FAILED, 1 SUCCESS
 ```
 
 ユニットテストが実行され、いくつかエラーが表示されると思います。これはデフォルトで生成されるテストコードに「タイトルが`bootcamp-angular`であること」を確認するテストが含まれているためです。
@@ -117,25 +166,33 @@ ng test --browsers=ChromeHeadless
 そのテストコードは`src/app/app.component.spec.ts`にあります。
 
 ```typescript
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
   it(`should have as title 'bootcamp-angular'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
+    const app = fixture.componentInstance;
     expect(app.title).toEqual('bootcamp-angular');
   });
 
-  it('should render title in a h1 tag', () => {
+  it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to bootcamp-angular!');
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('.content span').textContent).toContain('bootcamp-angular app is running!');
   });
+});
+
 ```
 
 やはり色々書いてありますが、今はおまじないだと思ってください。重要なのは上の二箇所です。
 ここでは以下の２つのテストを実施しています。
 
 - `AppComponent` クラスの `title` 変数の内容が `bootcamp-angular` であること。
-- レンダリングされたhtml （完成系のhtml）の`h1`タグの中に`Welcome to bootcamp-angular!`という文字列が含まれること
+- レンダリングされたhtml （完成系のhtml）の`span`タグの中に`bootcamp-angular app is running!`という文字列が含まれること
 
 先ほどタイトルを変更してしまったので、テストが失敗するようになっています。これを編集してテストが通るようにしてみてください。`ng serve`と同様に、`ng test`もファイルを編集すると自動的にテストをやり直してくれます。
 
@@ -145,6 +202,13 @@ ng test --browsers=ChromeHeadless
 
 ```bash
 ng generate component peoples
+
+#> CREATE src/app/peoples/peoples.component.css (0 bytes)
+#> CREATE src/app/peoples/peoples.component.html (22 bytes)
+#> CREATE src/app/peoples/peoples.component.spec.ts (635 bytes)
+#> CREATE src/app/peoples/peoples.component.ts (279 bytes)
+#> UPDATE src/app/app.module.ts (479 bytes)
+
 ```
 
 すると`src/app/peoples/`以下にcomponentの雛形が生成されます。ただし作っただけでは表示されません。componentを表示するには以下の２通りの方法があります。
@@ -182,9 +246,10 @@ export class AppRoutingModule { }
 このようにAngularなどモダンなフレームワークはページ遷移を再現するための「ルーター」と呼ばれる機能を提供しています。
 
 ついでに邪魔なので、`src/app/app.component.html`には`peoples`へのリンクだけを残して綺麗にしてしまいましょう。
+この時 `<style>`タグは残しておくと、わずかに見やすくなります。
 
 ```html
-Hello Angular!
+<h1>Hello Angular!</h1>
 
 <ul>
   <li>
@@ -198,19 +263,22 @@ Hello Angular!
 <router-outlet></router-outlet>
 ```
 
+<img src="./images/new_router.png">
+
 このように、定義したroutingに従って`a`タグでリンクを張ることができます。
 
 ## API からデータを取得してみる
 
 次は外からHTTPアクセスでデータを取得してみます。実際にはWebサーバーのAPIを叩くことが多いですが、今回はjQueryの時と同様に以下のjsonファイルの内容を取得してみます。
 
-[https://iij.github.io/bootcamp//test.json](https://iij.github.io/bootcamp//test.json)
+[https://raw.githubusercontent.com/iij/bootcamp/master/test.json](https://raw.githubusercontent.com/iij/bootcamp/master/test.json)
 
 TypeScriptでは型の分からないobjectを扱うのは基本的には避けるべきです。そこでまずは取得するデータの型を定義しましょう。型を定義するには`interface`を使います（これはTypeScriptの話）。
 angular-cliでは`interace`を生成する機能があるので、それを使ってみましょう。
 
 ```bash
 ng generate interface models/people
+#> CREATE src/app/models/people.ts (28 bytes)
 ```
 
 すると `src/app/models/people.ts` にファイルが生成されます。取得するデータに合わせてfieldを定義しましょう。
@@ -232,24 +300,34 @@ export interface People {
 moduleの読み込みは`app.module.ts`で行います。以下のように追記してください。
 
 ```typescript
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http'; // 追記
+@@ -1,5 +1,6 @@
+ import { BrowserModule } from '@angular/platform-browser';
+ import { NgModule } from '@angular/core';
++import { HttpClientModule } from '@angular/common/http';
 
-import { AppRoutingModule } from './app-routing.module';
-// ~~ 省略 ~~
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule  // 追記
-  ],
-// ~~ 省略 ~~
+ import { AppRoutingModule } from './app-routing.module';
+ import { AppComponent } from './app.component';
+@@ -12,7 +13,8 @@
+   ],
+   imports: [
+     BrowserModule,
+-    AppRoutingModule
++    AppRoutingModule,
++    HttpClientModule
+   ],
+   providers: [],
+   bootstrap: [AppComponent]
+
 ```
 
 これでアプリケーションに`HttpClientModule`が読み込まれます。では`Service`の雛形を作りましょう。
 
 ```bash
 ng generate service services/people
+
+#> CREATE src/app/services/people.service.spec.ts (357 bytes)
+#> CREATE src/app/services/people.service.ts (135 bytes)
+
 ```
 
 `services/people.service.ts`にファイルが生成されます。テストコードも一緒に生成されますが、今回はテストコードまで触れません。
@@ -266,7 +344,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PeopleService {
-  private jsonUrl = 'https://iij.github.io/bootcamp//test.json';
+  private jsonUrl = 'https://github.com/iij/bootcamp/test.json';
 
   constructor(private http: HttpClient) { }
 
@@ -280,7 +358,8 @@ export class PeopleService {
 
 上で書いた`Service`の`getJson`メソッドを実行すると、URL先のjsonを非同期通信で取得します。非同期に取得したデータをHTMLに表示してみましょう。
 
-まずはcomponentでserviceを呼び出すため以下のように追記してください。
+まずはcomponentでserviceを呼び出すため`peoples/peoples.component.html`を以下のように追記してください。
+
 
 ```typescript
 import { Component, OnInit } from '@angular/core';
@@ -334,7 +413,7 @@ export class PeoplesComponent implements OnInit {
 </table>
 ```
 
-Angular の変態感が出てきました。AngularではHTML上に`*ngFor`のような独自の記法がよく登場します。
+Angular らしさが出てきました。AngularではHTML上に`*ngFor`のような独自の記法がよく登場します。
 
 `*ngFor` は Angular の機能の中でもよく使うものです。配列やmapを指定すると`for`文のようにHTMLを展開してくれます。今回は`peoples`と言う配列を渡しているので、`peoples`の長さだけ`<tr></tr>`が繰り返し表示されます。
 繰り返しの中では、各要素に`people`と言う変数でアクセスできるようにしています。
@@ -356,21 +435,24 @@ Angular の変態感が出てきました。AngularではHTML上に`*ngFor`の�
 `app.module.ts`を以下のように変更してください。
 
 ```typescript
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms'; // 追加
+@@ -1,6 +1,7 @@
+ import { BrowserModule } from '@angular/platform-browser';
+ import { NgModule } from '@angular/core';
+ import { HttpClientModule } from '@angular/common/http';
++import { ReactiveFormsModule } from '@angular/forms';
 
-import { AppRoutingModule } from './app-routing.module';
-
-~~省略~~
-
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule // 追加
-  ],
+ import { AppRoutingModule } from './app-routing.module';
+ import { AppComponent } from './app.component';
+@@ -14,7 +15,8 @@
+   imports: [
+     BrowserModule,
+     AppRoutingModule,
+-    HttpClientModule
++    HttpClientModule,
++    ReactiveFormsModule
+   ],
+   providers: [],
+   bootstrap: [AppComponent]
 ```
 
 続いてcomponentを書いていきます。`peoples/peoples.component.ts`を以下のように変更してください。
@@ -438,6 +520,10 @@ export class PeoplesComponent implements OnInit {
 何か入力して「追加」ボタンを押すと表示に追加されるはずです。
 
 一番下の行は不要ですが、Angular の機能を紹介するために書いています。`*ngIf`は`*ngFor`よりもさらに使う機能で、引数内の条件式が`true`の時にだけhtml要素を表示してくれます。
+
+ここまでくればこのような画面が表示されます。
+
+<img src="./images/all_done.png">
 
 ## 最後に
 
