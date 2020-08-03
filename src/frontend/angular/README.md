@@ -22,17 +22,19 @@ Angular は2016年に発表されたwebフレームワークで、googleが中�
 
 などが上げられます。
 
-比較的大規模なwebアプリの構築に向いていて、TypeScriptでの開発が半ば強制されることや、ベストプラクティスな構成が公式から提供されているため、アプリが大きくなってきても破綻しにくく、大人数での開発に向いているのが特徴です。
+比較的大規模なWebアプリケーションの構築に向いています。
+その理由としては、TypeScriptでの開発が半ば強制されること。
+ベストプラクティスな構成が公式から提供されているため、アプリケーションが大きくなってきても破綻しにくい。などが挙げられます。
 (大抵の必要なツールや機能が全て公式から提供されているため組み合わせに悩まなくていいのもポイント)
 
-逆に記述量が多いため、小さいアプリの開発ではオーバーヘッドが大きくなりがち。また学習コストも比較的高いです。
+逆に記述量が多いため、小さいアプリケーションの開発ではオーバーヘッドが大きくなりがち。また学習コストも比較的高いです。
 
 ## first step
 
-Angular でアプリを構築する場合はほぼ必ず [angular-cli](https://cli.angular.io/) というツールを利用します。これはAngular専用のCLIツールで、テンプレートコードを生成したり、開発用サーバーを立ち上げたりしてくれます。
+Angular でアプリケーションを構築する場合はほぼ必ず [angular-cli](https://cli.angular.io/) というツールを利用します。これはAngular専用のCLIツールで、テンプレートコードを生成したり、開発用サーバを立ち上げたりしてくれます。
 コマンド名は「ng」です。(aNGularの略称)
 
-まずはこれを使い、自動生成されるAngularアプリを起動してみましょう。
+まずはこれを使い、自動生成されるAngularアプリケーションを起動してみましょう。
 
 ### docker imageの利用方法
 
@@ -50,7 +52,7 @@ docker run -it --rm -v C:\Users\%username\Desktop\bootcamp-angular:/app -p 4200:
 ```
 
 ### angular-cliで開発環境を構築
-今回使うdocker imageには既にangular(angular-cli)がインストールされています。
+今回使うdocker imageにはすでにangular(angular-cli)がインストールされています。
 
 ```bash
 ng new bootcamp-angular
@@ -60,21 +62,21 @@ ng new bootcamp-angular
 
 cd bootcamp-angular/
 
-# Angular アプリが生成されている
+# Angular アプリケーションが生成されている
 ls -l
 
 # アプリ起動
 ng serve --host 0.0.0.0
 ```
 
-アプリの起動後に http://localhost:4200 にアクセスするとサンプルアプリが表示されます。
+アプリケーションの起動後 http://localhost:4200 にアクセスするとサンプルアプリケーションが表示されます。
 Angular 開発環境の構築はこれで完了です。簡単ですね！
 
 <img src="./images/welcome.png">
 
-### サンプルアプリをいじってみる
+### サンプルアプリケーションをいじってみる
 
-`ng new`で生成されたアプリの中身を少し見てみましょう。Angular アプリのソースコードは主に `src/app/` 以下にあります。
+`ng new`で生成されたアプリケーションの中身を少し見てみましょう。Angular アプリケーションのソースコードは主に `src/app/` 以下にあります。
 
 ```bash
 [vagrant@localhost bootcamp-angular]$ ls -l src/app/
@@ -87,7 +89,7 @@ Angular 開発環境の構築はこれで完了です。簡単ですね！
 -rw-rw-r--. 1 vagrant vagrant  393  2月 27 11:35 app.module.ts
 ```
 
-Angular はcomponent指向のフレームワークという話をしましたが、この`.component`とついているのが１つのcomponentです。この`app.component`はアプリ全体を束ねる親componentになります。
+Angular はcomponent指向のフレームワークという話をしましたが、この`.component`とついているのが１つのcomponentです。この`app.component`はアプリケーション全体を束ねる親componentになります。
 
 `app.component.html` の中を見ると以下のようなコードがあります。
 行が長いので`cat app.component.html | grep "app is running!"`すると見つけられます。
@@ -148,7 +150,7 @@ Chromeはrootで実行する場合は`--no-sandbox`が必要なので追加し�
      restartOnFileChange: true
    });
 ```
-テスト実行
+テストを実行する。
 
 ```bash
 ng test
@@ -269,7 +271,7 @@ export class AppRoutingModule { }
 
 ## API からデータを取得してみる
 
-次は外からHTTPアクセスでデータを取得してみます。実際にはWebサーバーのAPIを叩くことが多いですが、今回はjQueryの時と同様に以下のjsonファイルの内容を取得してみます。
+次は外からHTTPアクセスでデータを取得してみます。実際にはWebサーバのAPIをたたくことが多いですが、今回はjQueryの時と同様に以下のjsonファイルの内容を取得してみます。
 
 [https://raw.githubusercontent.com/iij/bootcamp/master/test.json](https://raw.githubusercontent.com/iij/bootcamp/master/test.json)
 
