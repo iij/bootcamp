@@ -1,125 +1,143 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
-description: JavaScriptフレームワークであるReactを使ってみよう
+description: Reactを使ってみよう
 time: 2h
 prior_knowledge: 特になし
 ---
 
 <header-table/>
 
-# ReactでクライアントサイドWebアプリケーションを書こう
+IIJ Bootcamp React に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下記のコマンドを叩いて準備まで終わらせておいてください。
 
-## 事前準備
-
-本ハンズオンの環境として、node.jsが必要です。
-
-講師はバージョン10.15.3を使いました。
-
-node.jsが動作しているなら、WindowsでもMacOSでもLinuxでも問題ありません。
-
-### おすすめ
-
-nodenv等、複数のバージョンのnode.jsを管理するツールの利用をおすすめします。
-
-Reactに限らず、node.jsを必要とするソフトウェア開発は、プロジェクト毎に異なるバージョンのnode.jsが必要になることが、ほぼ確実だからです。
-
-## Reactとは
-
-Reactは、Facebook社が開発しているWebユーザインターフェースのためのライブラリです。
-
-### メリット
-
-簡単に言うと、Webアプリケーションの画面表示まわりをいい感じに実装するためのライブラリで、以下の特徴があります。
-
-1. 保守性が高い。
-    - 関数型プログラミングの作法を大幅に導入し、状態（ステート）が一意であれば、一意の表示を得ることができます。（jQueryなどと比較して、デバッグが容易）
-2. 仮想DOMによる高いパフォーマンス
-    - 画面の背後にあるステートを更新すると、画面の中の「更新すべき部分だけ」自動的に更新することができます。（jQueryでは、プログラマが「更新すべき部分」を決定して、そこだけを更新するように自分で作り込まなければなりません。）
-3. JSXと呼ばれるHTMLにそっくりの記法でビューを記述する。
-    - あとで出てくるサンプルコードを見るとわかりますが、ビューの記述はほとんどHTMLそのままです。このため、デザイナーの作成したHTMLをビューの記述に取り込むことがカンタンになっています。
-
-なお、Facebook自身のUIこそが、Reactで書かれたものの実例です（Facebook社がFacebookのUIを、テスト/デバッグしやすく、素早くバージョンアップしていくために、Reactを作ったというわけです）。
-
-### 弱点
-
-Reactは非常に強力なライブラリではありますが、色々と敷居の高いライブラリでもあります。
-
-1. バージョンアップのペースが速い。
-    - Reactは非常に速いペースでバージョンアップされています。しかも、バージョンが少し違うだけで、APIが大幅に変化することが珍しくありません。
-	- あるバージョンのために学習した経験が、あっという間に陳腐化するのは、辛いものがあります。
-2. 学習コストが高い。
-    - Reactは、React自身の学習コストがそこそこ高いことに加えて、Reactと組み合わせて使用すべきライブラリも多数あります。そして、それらのライブラリも、バージョンアップのペースが速いのです。
-	- Reactの実装をスムーズに行なうための周辺ツールが多数あります。これらのツールをどう組み合わせてどう使うべきか、ある程度のベストプラクティスはあるものの、そのベストプラクティスの寿命はけっして長くありません。Web上に散在するヒント的なドキュメントの多くは、もはや陳腐化していることがほとんどです。
-3. 関数型プログラミングの知識が期待される。
-   - Reactは関数型プログラミングのアイデアを大幅に採用しています。関数型プログラミングの知識や経験の少ない人は、Reactで何が可能で何が難しいかをイメージすることが難しいと思われます。
-
-本講座では、2019年6月現在において、もっとも安定して使える、なるべく新しいバージョンを使っていきます。
-
-## Create React App
-
-
-Reactを始めるための方法としては、いくつかの方法があります。
-
-Reactの基礎を体験したいだけなら、オンラインサービスを使って体験するのが一番簡単です。
-
-* [CodePen](https://reactjs.org/redirect-to-codepen/hello-world)
-* [CodeSandbox](https://codesandbox.io/s/new)
-* [Glitch](https://glitch.com/edit/#!/remix/starter-react-template)
-
-また、既存のHTMLページの中にReactで書いたものを埋め込むだけなら、下記のチュートリアルが参考になります。
-
-* [Add React to a WebSite](https://reactjs.org/docs/add-react-to-a-website.html)
-
-しかし、一般的には、Reactを利用する目的は、ある程度の規模と機能をそなえたSingle Page Applicationを実装するためでしょう。
-
-この場合の公式サイト上の出発点は、以下になります。
-
-* [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
-
-ここにあるように、以下を実行すると、プロジェクトmy-appが作成され、サンプルアプリケーションをブラウザで確認できます。
-
-
+```bash
+git clone https://github.com/iij/bootcamp.git
+cd bootcamp/src/frontend/react
+docker-compose up -d
 ```
-npx create-react-app my-app
-cd my-app
+
+# React でシングルページアプリケーション(=SPA)を書こう
+
+## 始めに
+
+この Bootcamp では React の動作原理を学びながら簡単なシングルページアプリケーションの作成を行います。
+フロントエンド開発とはどのようなものか、経験して今後のエンジニア人生の糧になれば良いと思います。
+
+この Bootcamp を通して、具体的に下記を達成できるようになることを期待しています。
+
+- フロントエンド開発を経験する
+- コンポーネントベース開発を経験する
+- React 開発の流れを理解する
+- API サーバとフロントエンドアプリケーションの間で通信を行う経験する
+
+一方、下記の内容についてはこの Bootcamp で解説しません。
+
+- 仮想 DOM、React の動作原理
+- Jest などのユニットテストツール
+- Redux などの状態管理ツール
+
+## 推奨環境
+
+Bootcamp を実施するうえで、下記の環境を推奨とします。
+
+### Docker / docker-compose
+
+IIJ Bootcamp 全体を通して必要となるコンテナを動かすためのミドルウェア。
+
+### Visual Studio Code
+
+React を含め、いまやフロントエンド開発を進めるうえで IDE は必須です。筆者は Microsoft 社の Visual Studio Code を推奨しています。
+
+#### 拡張機能 Remote Development
+
+Visual Studio Code と Docker の組み合わせで開発をする場合、Remote Development の拡張機能をインストールすることをお勧めします。この拡張機能を利用することで、コンテナ内部で Visual Studio Code を開くことができます。
+
+## React とは
+
+React は、もともと Facebook 社が開発している Web ユーザーインタフェースのためのフレームワークです。しかし今では Web のインタフェース のみならず Native アプリケーションへのコンパイルなど幅広く活躍が期待されているフレームワークです。
+
+React を用いることで、コードが煩雑になりがちでメンテナンスが難しくなるフロントエンドの開発をスマートにできました。
+
+:::tips Create React App
+
+React を始めるための方法としては、いくつかの方法があります。
+
+- React の基礎を体験したい = オンラインサービスを使う
+  - [CodePen](https://reactjs.org/redirect-to-codepen/hello-world)
+  - [CodeSandbox](https://codesandbox.io/s/new)
+  - [Glitch](https://glitch.com/edit/#!/remix/starter-react-template)
+- 既存の HTML ページの中に React 埋め込みたい = 下記のチュートリアル
+  - [Add React to a WebSite](https://reactjs.org/docs/add-react-to-a-website.html)
+- フルに React を使ってアプリケーションを作りたい = Create ReactApp
+  - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
+
+このハンズオンでは、最初から React を使うことを想定して CreateReactApp を使ったプロジェクトひな型を作成しています。
+
+:::
+
+## Hello World
+
+### 初回起動
+
+`docker-compose up`で起動した`bootcamp-react`コンテナ内部にアクセスし、下記のコマンドをたたきましょう。
+
+```bash
+# 下記のいずれかでシェルを取得する
+# docker-composeでbash取得
+docker-compose exec bootcamp-react bash
+# dockeコマンドでbash取得
+docker exec -it bootcamp-react bash
+# VSCode Remote Developmentでbootcamp-react:/appを開く
+
+cd /app
 npm start
 ```
 
-(`npx`を使うためには、version 5.2.0以降のnpmが必要です。講師は、node 10.15.3に同梱されているversion 6.4.1で動作確認しています。)
+下記の文言が出力されたら React の開発サーバが 3000 番ポートで起動しています。
 
-わかると思いますが、一応説明しますと`npx create-react-app my-app`がプロジェクトの作成です。my-appがプロジェクト名で、まさしくその名前のディレクトリが作成されます。
+<pre>
+Compiled successfully!
 
-プロジェクトディレクトリに入りまして、`npm start`しますと、ソースコードのビルドが行なわれた後、開発サーバが起動しまして http://localhost:3000/ にてブラウザで開発中のアプリケーションを確認できるという塩梅です。（なお、npm startで起動した開発サーバを止めるには、npm startしたコンソールでCtrl-Cをタイプしてください。）
+You can now view app in the browser.
 
-それぞれのコマンドが、実際のところ何をしているかは、最終的には把握した方が良いですが、入門段階では「人間が勉強するにはかったるいことを、いろいろやってくれているんだなあ、便利だなあ」と思っておけば十分です。
+  Local:            http://localhost:3000
+  On Your Network:  http://XXX.XXX.XXX.XXX:3000
 
-開発サーバは、ソースコードの変更を察知して、その変更を即座にブラウザに伝えてくれます。
+Note that the development build is not optimized.
+To create a production build, use yarn build.
+</pre>
 
+localhost:3000 にブラウザでアクセスすると下記のようなページが表示されることを確認してください。
+
+![画面1](images/image1.png)
+
+チェックポイント
+
+- `npm start`で React の開発サーバを起動した
+- React の初期ページを確認した
+
+### Hello World
+
+React の開発サーバは、ソースコードの変更を検知してその変更をブラウザに伝えてくれます。
 さっそくひとつやってみましょう。
 
-src/App.jsを適当なエディタ(私はWebStormというIDEを使っています)で開きますと、以下のようなコードが見えます。
+これから先、ファイルを何度か編集することになるのでcliでBootcampを進める人は別のシェルを取得しておいてください。
+
+```bash
+# シェル上でBootcampを進める人向け
+docker-compose exec bootcamp-react bash
+```
+
+src/App.js を開き下記の通りに編集してみましょう。
 
 ```javascript
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div>Hello World!!</div>
       </header>
     </div>
   );
@@ -128,45 +146,59 @@ function App() {
 export default App;
 ```
 
-にわかにJavaScriptのコードだとは思えない、HTMLとES2015のコードが混ぜこぜになっているようなコードが出てきます。
+するとブラウザが自動的にリロードされ、下記のような画面に変わります。
 
-このHTML風の表現になっている部分は、[JSX](http://facebook.github.io/jsx/)というJavaScriptの拡張構文で、実際にはJavaScriptにトランスパイルされてから実行されます。
+※ 環境にとっては自動リロードしてくれない場合もあります。そのときはリロード(F5)をしてみてください。
 
-JSXについての詳細には踏み込みませんが、3点だけ注意しておきます。
+![画面2](images/image2.png)
 
-1. JSXはHTML風の記法でHTML出力のためのコードを記述できるものであって、HTMLそのものではありません。
-2. HTMLではCSSのクラス名を適用するのにclass属性を記述しますが、classはECMAScriptの予約語なので、これを避けてclassNameという語を用います。(上の例にあるとおりです。)
-3. (上記の例では出てきませんが)HTMLではlabelタグにfor属性を使いますが、forはJavaScriptの予約語なので、これを避けてhtmlForという語を用います。
+チェックポイント
 
-ここではdivタグによって作られたDOMツリーを表現するオブジェクトを生成してreturnしています。
+- React で Hello World を実施した
 
-(JSXは、あくまでも記法なので、JSXを使わずに同じ意味のコードを書くことは可能です。が、Reactで開発する人のほとんどはJSXを利用しますので、本チュートリアルでは解説しません。)
+## コンポーネントを作成してみる
 
-さて、このコードを適当に変更してみましょう。
+React は UI の部品を Component という単位に分割することで、ロジックやスタイルなどの再利用性を高めて実装を行います。
 
-たとえば、このような具合です。
+:::tips なぜ Component を使うのか
+
+React ではなく Vue ですが、こちらの記事が非常にわかりやすい例です。Vue と React ともにコンポーネントベースのフレームワークですので、根幹は一緒です。
+
+気になる人は読んでみてください。
+
+[ワイ「何でそんな小っさいコンポーネント作ってるん？ｗ」 | Qiita](https://qiita.com/Yametaro/items/e8cb39b1a20b762bfafa)
+
+:::
+
+### 小さなコンポーネントを作成してみましょう
+
+小さな Component を作ってみましょう。Component を記述する方法はいくつかありますが、まずクラスベースのコンポーネントを作成してみます。
+
+以下のソースコードを src/Note.js として作成してください。
 
 ```javascript
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+
+export default class Note extends React.Component {
+  render() {
+    return <p>Component! Component!! Component!!!</p>;
+  }
+}
+```
+
+さらに src/App.js が Note.js を使うように修正します。
+
+```javascript
+import React from "react";
+import "./App.css";
+import Note from "./Note";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <code>src/App.js</code>を編集し、保存して、リロードしてみよう。
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Reactを学ぶ。
-        </a>
+        <Note />
+        <Note />
       </header>
     </div>
   );
@@ -175,900 +207,514 @@ function App() {
 export default App;
 ```
 
-ブラウザに戻ってみますと、リロードするまでもなく、反映されているのがわかると思います。
+さあ、[localhost:3000](localhost:3000)にアクセスするとブラウザに表示されている内容が変化したと思います。
 
-### (補足) ユニットテスト
+![画像3](images/image3.png)
 
-ユニットテスト とは、メソッドや関数単位でテストコードを作成し、コードを書くのと同時に自動でテストを行う開発手法です。TDD (Test Driven Development) など聞いたことがあるかもしれません。
+このように React では Component という UI 部品を組み合わせることでデザイン、UI を作成していきます。
 
-実は、create react appで作ったプロジェクトには、ユニットテスト用の環境も用意してくれています。以下のコマンドを実行してください。(npm startを止めてこちらを実行した方がいいかもしれません)
+チェックポイント
 
-```
-npm test
-```
+- クラスベースコンポーネントの書き方を学んだ
+- Component の使い方を学んだ
 
-[スクリーンショット001](./Screenshot001.png "スクリーンショット001")
+### クラスベースコンポーネント
 
-このような画面が出力され、テストがパスしていることが報告されています。
+クラスベースコンポーネントは React の基本的な Component の記述方法です。
 
-そのテストコードはsrc/App.test.jsにあります。
+定義の方法は JavaScript のクラスに対して`React.Component`を継承させるだけです。
+さらに`React.Component`を継承したクラスが`render`メソッドをオーバーライドすることにより、メソッド内で返却した DOM をブラウザがマウントして描画させることができます。
 
-```javascript
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+コンポーネントを使う側は export されたコンポーネントを HTML のタグのようにして宣言することでコンポーネントを利用できます。
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
-});
+### App.js をクラスベースコンポーネントに置き換えてみよう
 
-```
+src/App.js を見てみると、src/Note.js のコンポーネントとは構成が異なります。src/App.js は関数型コンポーネントと呼び、複雑な状態を持たないコンポーネントを作成する際によく用いられます。
 
-ここでは、document.createElement('div')で作ったdivオブジェクトの中に、<App />をレンダリングしてトラブルがないことを確認しています。
-
-開始タグと終了タグの対応を壊したりしますと、テストに失敗するはずです。
-
-npm startで起動させた開発サーバ同様、npm testで起動させたテストランナーも、ソースファイルを保存すると自動的にテストをやりなおしてくれます。
-
-## Componentを作ってみる
-
-次はComponentを作ってみましょう。
-
-実は、Componentを記述する方法はいくつもあるのですが、ここではクラスベースのオブジェクト指向のスタイルで書いてみます。
-
-以下のソースコードをsrc/Peoples.jsに作成してください。
+試しに src/App.js をクラスベースのコンポーネントへ書き直してみましょう。
 
 ```javascript
-import React from 'react';
+import React from "react";
+import "./App.css";
+import Note from "./Note.js";
 
-export default class Peoples extends React.Component {
-    render() {
-        return (
-            <p>peoples works!</p>
-        );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <Note />
+          <Note />
+          <Note />
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+## Component 組込みの機能
+
+### 小要素へのデータの共有 : Props
+
+Note コンポーネントを作成しましたが、今のままでは"Component! Component!! Component!!!"と叫ぶだけのコンポーネントで再利用性が悪いです。
+
+他も文字を叫ぶことができるように、叫ぶ文字を外から渡してあげるることができるようにしましょう。
+
+src/Note.js を下記のように修正してみましょう。
+
+```javascript
+import React from "react";
+
+export default class Note extends React.Component {
+  // (3, "Component") => "Component! Component!! Component!!!"
+  constructWord = (number, word) => {
+    let words = "";
+    for (let counter = 0; counter < number; counter++) {
+      words += word + "!".repeat(counter + 1) + " ";
     }
-}
-```
+    return words.trimEnd();
+  };
 
-その上で、src/App.jsでPeoplesを使うように修正します。
-
-```javascript
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Peoples from './Peoples';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <code>src/App.js</code>を編集し、保存して、リロードしてみよう。
-        </p>
-        <Peoples />
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Reactを学ぶ。
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
-```
-
-さあ、ブラウザに表示されている内容が変化したと思います。
-
-つまり、ReactではComponentを作ることによって、JSXに記述できるタグを増やすことができます。
-
-この程度のことでは面白くないので、人々のリストを表示させてみましょう。
-
-まずはsrc/Peoples.js
-
-```javascript
-import React from 'react';
-
-export default class Peoples extends React.Component {
-    render() {
-        return (
-            <div>
-                <p>peoples works!</p>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.props.peoples.map((people) => {
-                                return (
-                                    <tr key={people.id}>
-                                        <td>{people.id}</td>
-                                        <td>{people.name}</td>
-                                    </tr>
-                                );
-                            })
-                        }
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
+  render() {
+    return <p>{this.constructWord(this.props.number, this.props.word)}</p>;
+  }
 }
 ```
 
 そして、src/App.js
 
 ```javascript
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Peoples from './Peoples';
+import React from "react";
+import "./App.css";
+import Note from "./Note";
 
-const peoples = [
-  { "id": "1", "name": "bob" },
-  { "id": "2", "name": "alice" },
-  { "id": "3", "name": "John" }
-];
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <code>src/App.js</code>を編集し、保存して、リロードしてみよう。
-        </p>
-        <Peoples peoples={peoples}/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Reactを学ぶ。
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          {/* ComponentのPropsにデータを渡すには、DOMにパラメータを直接指定する */}
+          <Note word={"Component"} number={1} />
+          <Note word={"Hoge"} number={2} />
+          <Note word={"Huga"} number={3} />
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
 ```
 
-どうなりましたか。
+ここまで修正すると、下記の通りにブラウザの表示が変わります。
 
-peoples works!の下に、テーブルが表示され、その中に人々の一覧が表示されましたね。
+![画像4](images/image4.png)
 
-どのようにして、この仕組みが動いているのか、解説します。
+親コンポーネントからデータを注入できるように`props`を適切に定義することで、Component の再利用性をあげることができます。
+注意が必要なこととして`props`は Readonly なため、`props`の中身を書き換えたりすることはできません。
 
-まずsrc/App.jsですが、ここでは定数peoplesに表示したい人々のデータを定義しています。
+チェックポイント
 
-（ここで記述している人々のデータは、後でAPIサーバから取得することになるJSONと同じものです。)
+- Component の `Props` について学んだ
+- Component 間のパラメータの受け渡し方を学んだ
 
-そして、そのpeoplesを以下のようにしてPeoplesタグのpeoples属性として渡しています。
+### State
 
-```JSX
-<Peoples peoples={peoples}/>
-```
+`props`フィールドを通じてコンポーネント間のデータの受け渡しはできましたが、ユーザーからの入力や外部から取得した情報はどのように保存するべきでしょうか？
+Component には State というデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
 
-このpeoples属性は、src/Peoples.jsに定義しているPeoplesクラスの中では、`this.props.peoples`で参照することができます。(`this.props`はそのインスタンスに与えられた属性を保持しているオブジェクトで、このオブジェクトのことを「プロパティ」と呼びます。どこでプロパティがセットされるかというと、上記のJSXがPeoplesクラスのインスタンスをnewしており、その引数として属性リストが渡されるという塩梅です。)
-
-上記のコードでは`this.props.peoples`にmapメソッドを適用して、配列(リスト)の各要素をJSXにてHTMLに展開しています（より正確に言うと、プロパティpeoplesと仮想DOMの対応を定義している、ということになりますが、さしあたりHTMLに展開していると思っておいて良いです）。
-
-`<tr>`にkey属性を指定しています。これはHTMLでは不要の記述で、React独特の書き方です。key属性に、mapで展開される各要素を特定するユニークな値を指定することで、this.props.peoplesの中身が変化したとき、画面を自動的に（リアクティヴに）更新することができるようになっているのです。（あとで、実際に変化させる実験をします。）
-
-mapメソッドは、関数型プログラミングにおけるHello World的な存在です。
-
-ここでは、`this.props.peoples`に定義されているオブジェクトのリストの写像(map)として`<tr>`から`</tr>`で表現されるテーブルの行のリストを仮想DOMの中に展開しています。
-
-`this.props.peoples`に対してforEach的なループを記述するのではなく、mapを使う、というところがReactのReactらしいところです。
-
-Reactでは、ほぼほぼ、プロパティにあるリストをmapで展開する、という方法でのみ繰り返しデータをレンダリングします。
-
-関数型プログラミング（とりわけHaskellのような遅延評価のある言語）に親しんでいる人には、renderメソッドが実際にレンダリング処理を記述しているというよりは、renderメソッドの定義を通じて「プロパティと仮想DOMの対応を宣言している」という言い方が通じると思います。
-
-ここで重要なことは、`this.props`の内容が同一であれば、出力される画面も同一になる、ということです。
-
-`this.props`以外の情報をrenderは参照していません。
-
-このような原則を守らせる強制力をJavaScriptは持っていないのですが、Reactのプログラマーは自主的に`this.props`以外の情報をrenderが参照しないように留意します。この原則を守ることによってデバッグが容易になり、複雑なアプリケーションを安心して開発/保守できるようになるのです。
-
-せっかくなので、ここでユニットテストを書きましょう。
-
-まずはテストを書くために便利なライブラリであるreact-test-rendererをインストールします。
-
-```sh
-npm install react-test-renderer
-```
-
-そして、以下の内容でsrc/Peoples.test.jsを記述してください。
+src/Note.js を下記の通りに修正してください。
 
 ```javascript
-import React from 'react';
-import Peoples from './Peoples';
-import renderer from 'react-test-renderer';
+import React from "react";
 
-const peoples = [
-    { "id": "1", "name": "bob" },
-    { "id": "2", "name": "alice" },
-    { "id": "3", "name": "John" }
-];
+export default class Note extends React.Component {
+  constructor(props) {
+    super(props);
+    // これがState
+    // JavaScriptのオブジェクトとして登録する
+    this.state = {
+      counter: 1,
+    };
+  }
 
-it('renders with peoples correctly', () => {
-    const peoplesTable = renderer.create(<Peoples peoples={peoples} />).toJSON();
-    expect(peoplesTable).toMatchSnapshot();
-});
-```
-
-こうしておいて、`npm test`を実行すると、srcディレクトリの中に`__snapshots__`というディレクトリができて、その中にPeoples.test.js.snapなるファイルが作られます。
-
-```javascript
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`renders with peoples correctly 1`] = `
-<div>
-  <p>
-    peoples works!
-  </p>
-  <table
-    border="1"
-  >
-    <thead>
-      <tr>
-        <th>
-          ID
-        </th>
-        <th>
-          Name
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          1
-        </td>
-        <td>
-          bob
-        </td>
-      </tr>
-      <tr>
-        <td>
-          2
-        </td>
-        <td>
-          alice
-        </td>
-      </tr>
-      <tr>
-        <td>
-          3
-        </td>
-        <td>
-          John
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-`;
-```
-
-この出力を良く眺めて、意図どおりであるなら、まずはOKです。
-
-スナップショットは、そのテストについてスナップショットがない状態で`npm test`すると自動的に生成されます。以後は、このスナップショットをテストの正解として、テストが実行されます。
-
-Peoples.jsを少し変更（たとえば`<tr>`の中のIDの`<td>`とNameの`<td>`を入れ替えてみるとか）して`npm test`し、テストが失敗することを確認してみましょう。
-
-期待どおりにエラーがレポートされたと思います。
-
-## APIからデータを取得してみる
-
-次は外からHTTPアクセスでデータを取得してみます。実際にはWebサーバのAPIを叩くことが多いですが、今回はjQueryの時と同様に以下のJSONファイルの内容を取得してみます。
-
-https://https://iij.github.io/bootcamp//test.json
-
-React自身は外部との通信をどのように記述するかの規則はありません。この点、Serviceを使うことになっているAngularとは異なります。
-
-React自身は外部で通信することだけではなく、状態の管理についてもオープンです。ここで私が慣れているという理由でReduxというライブラリを使います。
-
-なぜ状態管理が必要なのかというと、通信が走る前と通信が完了した後では状態を変化させる必要があるためです。
-
-実際のコードを書いて、このあたりのことを実感しながら前進しましょう。
-
-まずはHTTPクライアントとして、axiosをインストールします。
-
-```sh
-npm install --save axios
-
-```
-
-続いてsrc/App.jsを以下のように修正します。
-
-```javascript
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Peoples from './Peoples';
-import axiosBase from 'axios';
-
-const axios = axiosBase.create({
-  headers: {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest'
-  },
-  responseType: 'json'
-});
-
-const url = 'https://iij.github.io/bootcamp//test.json';
-
-let peoples = [];
-
-axios.get(url)
-    .then((response) => {
-          if (response.status === 200) {
-            peoples = response.data;
-            console.log('got!');
-            console.dir(peoples);
-          } else {
-            alert(`response status is ${response.status}`);
-          }
-        })
-    .catch((error) => {
-      alert('an error occurs.');
-      console.error(`an error on get ${url}`);
-      console.dir(error);
+  click = () => {
+    // ClickされたらStateのカウンタをインクリメント
+    this.setState({
+      counter: this.state.counter + 1,
     });
+  };
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <code>src/App.js</code>を編集し、保存して、リロードしてみよう。
-        </p>
-        <Peoples peoples={peoples}/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Reactを学ぶ。
-        </a>
-      </header>
-    </div>
-  );
+  // (3, "Component") => "Component! Component!! Component!!!"
+  constructWord = (number, word) => {
+    let words = "";
+    for (let counter = 0; counter < number; counter++) {
+      words += word + "!".repeat(counter + 1) + " ";
+    }
+    return words.trimEnd();
+  };
+
+  // インラインスタイル
+  mystyle = {
+    display: "flex",
+    "justify-content": "center",
+    "align-items": "center",
+  };
+
+  render() {
+    return (
+      <div style={this.mystyle}>
+        {/* ボタンをクリックされたらclick()メソッドが発火し、Stateが更新される */}
+        <button onClick={this.click} style={{ "min-width": "75px" }}>
+          Click me!!
+        </button>
+        {/* Stateのカウンタの数だけ叫ぶ */}
+        <p>{this.constructWord(this.state.counter, this.props.word)}</p>
+      </div>
+    );
+  }
+}
+```
+
+ここまで修正すると下記の通りになります。
+
+![画像5](images/image5.png)
+
+State は Component の内部でのみ生きているデータベースのようなものです。State を`setState`メソッド経由で更新を行うと、関連するコンポーネントや DOM が自動で更新されます。
+
+実際に"Click me!!"のボタンをクリックしてみてください。
+
+チェックポイント
+
+- State を利用してローカルデータベースを作成できる
+- setState メソッドで State を更新すると DOM が自動でリロードされる
+
+:::tips Redux
+
+State を利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。また State をもっと複雑に利用したいケースもでてきます。
+
+その場合は Redux というモジュールを使うと良いでしょう。Redux はアプリケーションの状態を管理するためのモジュールで React と親和性が非常に高いためよく利用されます。
+
+ただし Redux は扱いに癖があり、特に TypeScript なしでは導入が難しいためこのハンズオンでは紹介にとどめておきます。
+
+詳しくはこちら > [React Redux](https://react-redux.js.org/introduction/quick-start)
+
+:::
+
+## API サーバからデータを取得してみる
+
+親子間でのデータのデータのやりとりができるようになりましたが、このままではアプリケーションに組み込まれた情報でのみ表示ができるだけです。ほかのユーザーの情報やリアルタイムな情報等、アプリケーション以外のデータリソースからデータを取得する場合にはどのようにするのがよいでしょうか？
+
+今回は外部にある HTTP のインタフェースを備えた API サーバをデータリソースとして、そこからデータを取得してアプリケーションに組み込んでみましょう。
+データリソースにアクセスするためのクライアントモジュールとして、`axios`というモジュールを利用します。
+
+### axios を使ってみよう
+
+このハンズオンで起動した docker-compose は起動時にモックサーバも一緒に立ち上がるように設定されています。
+このモックサーバは 5000 番ポートをリッスンしているので、起動を確認するために一度アクセスしてみましょう。
+
+モックサーバ > [localhost:5000](http://localhost:5000)
+
+![画像6](images/image6.png)
+
+このモックサーバが配信しているコンテンツをフェッチし、ブラウザに表示してみましょう。
+src/App.js に修正を加えます。
+
+```javascript
+import React from "react";
+import "./App.css";
+import axios from "axios";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: "",
+    };
+  }
+
+  click = () => {
+    axios.get("http://localhost:5000/menu").then((response) => {
+      this.setState({
+        info: response.data,
+      });
+    });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <button onClick={this.click}>Call API!!</button>
+          <div>{JSON.stringify(this.state.info)}</div>
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
 ```
 
+App クラスに新たな State`info`を追加し、また`axios`で HTTP のリクエストを送るメソッド`click`を追加しました。
+"Call API"ボタンを押下すると文字列が表示されたと思います。
 
-ここでブラウザで見ようとするとエラーになります。
+これは[localhost:5000](http://localhost:5000)で配信しているコンテンツを`axios`モジュールが拾ってきて State に保存したため、その内容が表示されることになりました。
 
-詳しくは長くなるので別途勉強してほしいのですが、localhost:3000で提供されているJavaScriptのコードから、別サイトのgithub.comのリソースをGETしようとしたので、Cross-Originリクエストとしてブロックされたのです。
+`axios`を利用することで、RESTFul API などの HTTP インタフェースで公開しているサーバと通信ができます。
 
-実際にアプリケーションを作るときには、APIとアプリケーションを別のドメインで提供することはあるので、そのときにはこの問題を解決するためにAPIサーバにちょっとした設定をします。今回はそこまでの設定をするほどのことではないので、安直な解決策を選びます。
+チェックポイント
 
-chromeないしchromium-browserを使っているなら、起動オプションに`--user-data-dir=/tmp/myhome --disable-web-security`を付与します。こうすることで、Cross-Originリクエストがブロックされなくなります。（もちろん、この起動オプションをつけて起動したブラウザは危険ですから、自分の開発中のアプリケーション以外にアクセスしてはいけません。）
+- `axios`モジュールを使ってみた
+- 外部 API コールを試してみた
 
-今度はどうでしょう。エラーは出なくなりましたが、画面には人々が表示されません。
+## コンポーネントのライフサイクルを触ってみよう
 
-コンソールを確認すると、ちゃんと通信は成功しています。
+少しコンポーネントの複雑な機能について触れてみましょう。Component を作成することに注力しましたが、ここでは Component の作成の方法に注視してみましょう。
 
-(axiosの処理の部分で.thenおよび.catchを使った構文があります。これはES2015で採用されたPromiseという仕組みを利用しています。このあたりについても詳しいことは述べませんが、.thenの中身は通信が成功した後に処理されるのであって、最初は通信を始めた後、通信の結果を待たずに先に進んでしまう、ということを知っておいてください。つまり、peoplesは空配列のまま先に進んでAppクラスのインスタンスが生成されます。その後になって通信が成功して.thenの中身が実行される、という順番になります。)
+多くの Web サイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。これを React の言葉に置き換えると「Component が表示されるタイミングで`axios`等のクライアントでデータをフェッチして Component に受け渡している」といったところでしょうか。
+この機能は Component のライフサイクルを利用することで実現できます。実装してみましょう！
 
-要するに通信が成功してpeoplesが更新されたにも関わらず、peoplesが変化したことにAppクラスのインスタンスが気付いていないのです。
-
-peoplesの変化をAppクラスのインスタンスに伝える必要があります。
-
-そこでReduxを導入していきます。
-
-```sh
-npm install --save react-redux redux-thunk redux
-```
-
-Reduxは、React専用の状態管理ライブラリというわけではありません。
-
-そのため、ReactからReduxを使うためのモジュールとしてreact-reduxがあります。
-
-redux-thunkは、あるアクションの結果を受けて続きのアクションを実行するための「サンク」を提供するReduxのための「ミドルウェア」です。
-
-順番に見ていきましょう。
-
-まず、src/index.jsですが、以下のように修正します。
+src/App.js を下記のように修正します。
 
 ```javascript
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import store from './redux/store';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import "./App.css";
+import axios from "axios";
 
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>, document.getElementById('root'));
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: "Loading...",
+    };
+  }
 
+  componentDidMount = () => {
+    axios.get("http://localhost:5000/menu").then((response) => {
+      this.setState({
+        info: response.data,
+      });
+    });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <div>{JSON.stringify(this.state.info)}</div>
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+画面を何度もリロードすると、一瞬"Loading..."という文字列が見えた瞬間、Json が画面に表示されたはずです。
+
+![Gif1](images/gif1.gif)
+
+初めて出てきた`componentDidMount`メソッドは`React.Component`で定義されているメソッドで、ブラウザ上にコンポーネントが描画された直後に走るメソッドです。
+
+React のコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。
+これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義できます。
+
+1. コンポーネントが生成されるタイミング
+
+- コンストラクタ
+
+2. コンポーネントが DOM にロード(マウント)されるタイミング
+
+- componentDidMount
+
+3. コンポーネントが DOM から削除されるタイミング
+
+- componentWillUnmount
+
+それぞれのタイミングで実施したい処理があれば、それぞれのメソッドの中に実装してあげると良いでしょう。
+
+詳しくはこちら > [state とライフサイクル | React Docs](https://ja.reactjs.org/docs/state-and-lifecycle.html)
+
+## 自分の手でフロントエンドを作成してみましょう
+
+先の節で`axios`モジュールを用いて外部サーバからデータを取得してきました。今までの知識を元に取得してきたデータを下記のような一覧表示する UI を作成してみましょう。
+
+![画像7](images/image7.png)
+
+配信されているデータは下記の Food スキーマの配列です。データをパースして State に保存し、適切なコンポーネントに渡してあげましょう。
+
+```typescript
+interface Food {
+  id: Number;
+  name: String;
+  description: String;
+  price: Number;
+}
+```
+
+:::details サンプルコード
+
+`src/Food.js`
+
+```javascript
+import React from "react";
+
+export default class Food extends React.Component {
+  // インラインスタイルは御行儀が悪く、本来避けるべき
+  // 代わりにCSS Modulesなどのスタイルローダーを使いましょう
+  containerStyle = {
+    margin: "15px",
+  };
+
+  rowStyle = {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    fontSize: "0.6em",
+  };
+
+  nameStyle = {
+    margin: "0",
+  };
+
+  priceStyle = {
+    margin: "0 5px",
+  };
+
+  render() {
+    return (
+      <div style={this.containerStyle}>
+        <p style={this.nameStyle}>{this.props.name}</p>
+
+        <div style={this.rowStyle}>
+          <small>{this.props.description}</small>
+          <p style={this.priceStyle}>{this.props.price}円</p>
+        </div>
+      </div>
+    );
+  }
+}
+```
+
+`src/App.js`
+
+```javascript
+import React from "react";
+import "./App.css";
+import Food from "./Food";
+import axios from "axios";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: undefined,
+    };
+  }
+
+  componentDidMount = () => {
+    axios.get("http://localhost:5000/menu").then((response) => {
+      this.setState({
+        data: response.data,
+      });
+    });
+  };
+
+  render() {
+    let list;
+    // Q: this.state.dataがundefinedになることはある？
+    if (this.state.data) {
+      list = this.state.data.map((row, key) => {
+        return (
+          <Food
+            // このkeyはReactでコンポーネントのリストを作成する際に必要とされるもの
+            // keyの値はリストの中でユニークであるべき
+            // 詳細 : https://ja.reactjs.org/docs/lists-and-keys.html
+            key={key}
+            name={row.name}
+            description={row.description}
+            price={row.price}
+          />
+        );
+      });
+    } else {
+      list = <p>Loading...</p>;
+    }
+
+    return (
+      <div className="App">
+        <header className="App-header">
+          <div style={{ textAlign: "left" }}>{list}</div>
+        </header>
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+:::
+
+## 最後に
+
+<s>いかがでしたか？</s> 以上で React のハンズオンは終了です。
+
+昨今のフロントエンド界隈は比較的落ち着いてきた(=デファクトが固まりつつある)印象がありますが、それでも流行り廃りの早い世界です。この文書も、いつ時代遅れになるかもわかりません。
+
+ですが、フロントエンドはアプリケーションの花形です。ぜひフロントエンドの知見を日々広げ、花形の開発者として活躍してもらえればうれしいです。
+
+## 読み物
+
+ここから先は React に関する情報をまとめた読み物です。興味のある人はさっと目を通してみてください。
+
+### SPA はどこへ？
+
+Bootcamp 冒頭で
+
+> React でシングルページアプリケーション(=SPA)を書こう
+
+と書いておきながら、SPA という言葉が一切出てきませんでした。実は、すでにこの Bootcamp で作成したコードが SPA になっています。
+
+[シングルページアプリケーション | Wikipedia](https://ja.wikipedia.org/wiki/シングルページアプリケーション)
+
+- サーバから配信する HTML は単一
+  - 画面遷移が滑らか＆爆速
+- フロントエンドの DOM の操作を JavaScript で行う
+  - 物理 DOM の操作と比べて軽量
+
+といったことが特徴です。create-react-app で構成したプロジェクトはデフォルトで SPA となっています。SPA でないものとして SSR(=サーバサイドレンダリング)が挙げられます。
+
+### JSX(JavaScript 経験者向け)
+
+この Bootcamp では JavaScript のコードだとは思えない HTML と ES2015 のコードが混ぜこぜになっているようなコードが出てきました。
+
+この HTML 風の表現になっている部分は、[JSX](http://facebook.github.io/jsx/)という JavaScript の拡張構文で、実際には JavaScript にトランスパイルされてから実行されます。
+
+JSX についての詳細には踏み込みませんが、3 点だけ注意しておきます。
+
+1. JSX は HTML 風の記法で HTML 出力のためのコードを記述できるものであって、HTML そのものではありません。
+2. HTML では CSS のクラス名を適用するのに class 属性を記述しますが、class は ECMAScript の予約語ですので、これを避けて className という語を用います。(上の例にあるとおりです。)
+3. HTML では label タグに for 属性を使いますが、for は JavaScript の予約語ですので、これを避けて htmlFor という語を用います。
+
+JSX は、あくまでも記法ですが、JSX を使わずに同じ意味のコードを書くことは可能です。ですが React で開発する人のほとんどは JSX を利用しますので明確な理由がない場合は JSX を利用することをお勧めします。
+
+### PWA(PWA を知っている人向け)
+
+React のビルド成果物は PWA 対応しています。PWA の設定方法はとても簡単で、src/index.js の下記の部分を変更するだけです。
+
+```javascript
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
 
-重要なことは、2つ。
-
-1. react-reduxモジュールからProviderをインポートし、AppをProviderで囲んでいます。
-2. Providerに渡すstoreなるものをsrc/redux/store.jsからインポートしています。
-
-src/redux/store.jsは、以下の内容です。
-
-```javascript
-import { applyMiddleware, compose, createStore } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
-
-export default createStore(
-    rootReducer,
-    compose(
-        applyMiddleware(thunk)
-    )
-);
-```
-
-reduxモジュールからapplyMiddleware, compose, createStoreをインポートしています。
-
-createStoreは、文字どおり「ストア」を作るメソッドです。
-
-composeは関数合成のためのメソッドで、applyMiddlewareはミドルウェアを導入するためのメソッドです。ここではひとつしかミドルウェアがないのでcomposeは不要なのですが、あとでミドルウェアを追加することを考えてcomposeを使っています。（実際、追加することになります。）
-
-redux-thunkモジュールからthunkをインポートしています。thunkは前述のとおり、複数のアクションをひとつのアクションとしてまとめる機能を実現するミドルウェアです。
-
-src/redux/reducers/index.jsからrootReducerをインポートしています。
-
-リデューサとは、Reduxのコンセプト上の用語で、具体的には「状態」と「アクション」を引数にとって、「新しい状態」を返す関数として定義します。
-
-Reduxの「ストア」の中には「状態 state」が存在するのですが、この状態は不変オブジェクトです。状態を変更することは許可されておらず、新しい状態を作るための唯一の方法が、ストアにアクションをdispatchすることです。ストアにアクションをdispatchすると、ストアはリデューサに現在の状態とアクションを渡します。リデューサは、状態とアクションから新しい状態を作り、ストアに返します。ストアは、新しい状態を、ストアとconnectしているコンポーネントに反映させます。
-
-そのsrc/redux/reducers/index.jsは以下の内容です。
-
-```javascript
-import { combineReducers } from 'redux';
-import peoples from './peoples';
-
-export default combineReducers({ peoples });
-```
-
-reduxモジュールからcombineReducersをインポートします。combineReducersは複数のリデューサを合成します。
-
-そしてsrc/redux/reducers/peoples.jsからpeopleをインポートし、combineReducersを使って合成してエクスポートしていますね。
-
-そのsrc/redux/reducers/peoples.jsの内容は以下のとおりです。
-
-```javascript
-import { SET_FETCHING, FETCH_PEOPLES } from '../actionTypes';
-
-const initialState = {
-    inFetching: false,
-    peoples: []
-};
-
-export default function(state = initialState, action) {
-    console.log("PEOPLES Reducer");
-    console.dir(state);
-    console.dir(action);
-    switch (action.type) {
-        case SET_FETCHING:
-            return {
-               inFetching: true,
-               peoples: []
-            };
-        case FETCH_PEOPLES:
-            return {
-                inFetching: false,
-                peoples: action.peoples
-            }
-        default:
-            return state;
-    }
-}
-```
-
-src/redux/actionTypes.jsから`SET_FETCHING`, `FETCH_PEOPLES`をインポートしています。あとで見ますが、これは単にアクションの種別を区別するための定数で、その実体は同名の文字列です。
-
-定数initialStateは初期状態です。ここではisFetching すなわちAPIから人々のデータを取得中であるかどうかのフラグおよびpeoples すなわち人々のデータを格納するリストを定義しています。isFetchingはfalse、peoplesは空リストを初期値としました。
-
-export defaultしている関数が、peoplesリデューサです。
-
-状態とアクションを引数としてとります。
-
-consoleは、デバッグ用の出力です。実際には必要ありません。
-
-switchからがリデューサの本体です。
-
-`SET_FETCHING`に対しては、isFetchingをtrueにして、peopleを空リストにした新しい状態を返しています。
-
-`FETCH_PEOPLES`に対しては、isFetchingをfalseにして、アクションのpeopleプロパティをpeopleに渡した新しい状態を返しています。
-
-デフォルトは古い状態をそのまま返しています。
-
-src/redux/actionTypes.jsも見ておきましょう。
-
-```javascript
-export const SET_FETCHING = 'SET_FETCHING';
-export const FETCH_PEOPLES = 'FETCH_PEOPLES';
-
-```
-
-見てのとおりですね。特に面白くはありません。
-
-さて、以上でindex.jsにインポートされたstoreの正体がわかりました。
-
-要するに...
-
-1. src/redux/actionTypes.jsに反応するリデューサと、redux-thunkモジュールの提供するthunkミドルウェアを適用してcreateStoreしたストアであるstoreを用意し、
-2. Providerにそのstoreを渡してAppを囲んでいる
-
-...わけです。
-
-そしてAppクラスとstoreをconnectします。
-
-src/App.jsは以下のように修正しました。
-
-```javascript
-import React from 'react';
-import { connect } from 'react-redux';
-import logo from './logo.svg';
-import './App.css';
-import Peoples from './Peoples';
-import * as actions from './redux/actions';
-
-let lastFetching = null;
-
-class App extends React.Component {
-    render() {
-        console.log('App render');
-        console.dir(this.props);
-        if (this.props.peoples.length === 0 && !this.props.isFetching) {
-            const now = Date.now();
-            if (lastFetching === null) {
-                lastFetching = now;
-                console.log("FETCH_PEOPLES");
-                this.props.fetchPeoples();
-            }
-            return (
-                <div>fetch peoples</div>
-            );
-        }
-        if (this.props.isFetching) {
-            return (
-                <div>now loading</div>
-            );
-        }
-
-        return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <p>
-                        <code>src/App.js</code>を編集し、保存して、リロードしてみよう。
-                    </p>
-                    <Peoples peoples={this.props.peoples} />
-                    <a
-                        className="App-link"
-                        href="https://reactjs.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Reactを学ぶ。
-                    </a>
-                </header>
-            </div>
-        );
-    }
-}
-
-const mapStateToProps = (state) => {
-    console.dir(state);
-    const props = {
-        isFetching: state.peoples.isFetching,
-        peoples: state.peoples.peoples,
-    }
-    return props;
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchPeoples() {
-            const action = actions.fetchPeoples();
-            dispatch(action);
-        },
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
-```
-
-react-reduxモジュールからconnect関数をインポートしています。
-
-connectはsrc/App.jsの最後の行で、2つの関数とAppクラスとを接続するために使っています。
-
-簡単に言うと、Providerに渡されたstoreとAppクラスを接続するのがconnectの役割です。
-
-connectの最初の引数mapStateToPropsは、状態を引数としてとり、これをAppのプロパティとしてどのように対応させるかを定義する関数です。ここではstate.peoples.isFetchingをプロパティisFetchingに、state.peoples.peoplesをプロパティpeoplesに対応させています。
-
-stateの次にpeoplesとあるのは、peoplesリデューサの管理下の状態であることを意味しています。規模が大きくなってくると、リデューサも大きくなってくるので、リデューサを適当な粒度で分割できるようにしているわけです。
-
-connectの2つ目の引数mapDispatchToPropsは、ストアにアクションをdispatchするための関数オブジェクトdispatchを引数にとって、Appのプロパティに実際にアクションをdispatchする関数オブジェクトを定義する関数です。ここではプロパティfetchPeoplesに、src/redux.actions.jsに定義されているactions.fetchPeoplesをdispatchする関数オブジェクトを定義しています。
-
-そのsrc/actions.jsは最後に述べるので、その前に、Appクラスのrenderメソッドを読んでいきましょう。
-
-最初にあるconsoleはデバッグを助けるためのもので、実際には不要です。
-
-次のif文は、プロパティpeoplesが空リストであり、プロパティisFetchingがfalseであるなら、ということですから、初期状態であるなら、という意味です。
-
-const nowにはエポックからのミリ秒をセットします。
-
-その上で、モジュールAppに閉じた変数lastFetching (初期値null) がnullであるかを検査し、nullであるなら、lastFetchingにnowをセットした上で、プロパティfetchPeoplesにある関数オブジェクトを評価します。つまりactions.jsで定義されたactions.fetchPeoplesをストアにdispatchするわけです。
-
-その上で<div>fetch peoples</div>をreturnしています。ほんの一瞬だけ、画面にはfetch peoplesが見えるかも、しれません。
-
-ここでsrc/redux/actions.jsを見てみましょう。
-
-```javascript
-import { FETCH_PEOPLES, SET_FETCHING } from './actionTypes';
-import axiosBase from 'axios';
-
-const axios = axiosBase.create({
-    headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-    },
-    responseType: 'json'
-});
-
-function errorHandler(error) {
-    alert('failed to call api');
-}
-
-export function fetchPeoples() {
-    const url = 'https://iij.github.io/bootcamp//test.json';
-    return async (dispatch) => {
-        dispatch({
-            type: SET_FETCHING,
-        });
-        const response = await axios.get(url).catch((error) => errorHandler(error));
-        if (response.status === 200) {
-            const peoples = response.data;
-            console.log('got!');
-            console.dir(peoples);
-            dispatch({
-                type: FETCH_PEOPLES,
-                peoples,
-            });
-        }
-    };
-}
-```
-
-src/redux/actionTypes.jsから`FETCH_PEOPLES`と`SET_FETCHING`をインポートしているのは、リデューサに伝えるアクション種別が必要だからです。
-
-関数fetchPeoplesの定義を見ていきましょう。
-
-定数urlに取得したいリソースのURLが定義されています。
-
-そしてasyncで修飾された、dispatchを引数とするラムダ式をreturnしています。
-
-このdispatchを引数とするラムダ式としてアクションを表現する技法が「サンク thunk」なのです。
-
-サンクとは、コンピュータ科学の世界では、遅延評価される関数オブジェクトのようなものを指しています。
-
-redux-thunkミドルウェアを適用されたReduxストアは、dispatchされたアクションが単純なオブジェクトであればそのままリデューサに渡します(言わば通常どおりの挙動です)。dispatchされたアクションが、dispatchを引数とするラムダ式であるなら、そのラムダ式にdispatchオブジェクトを渡します。
-
-かくして、多段階的なアクションをエレガントに表現することができるのです。
-
-fetchPeoplesでは、まず以下のオブジェクトをdispatchしてます。
-
-```json
-{
-  type: SET_FETCHING
-}
-```
-
-すでにpeoplesリデューサで見たように、`SET_FETCHING`アクションは、状態isFetchingをtrueにして状態peoplesを空リストにした新しい状態を作り出すアクションです。つまるところ、通信中のフラグを立てた、ということです。
-
-その上で、axiosを使ってurlをGETし、結果をresponseにセットします。
-
-このとき、axios.getの前にキーワードawaitが修飾されています。awaitはasyncと対になっているキーワードで非同期処理を表現しています。
-
-ここでは、responseはaxios.getが成功した場合にセットされ、その後の行の処理に進みます。
-非同期なので、axios.getを実行したら、結果を待たずに抜けてしまいます。
-
-ここではif (response.status === 200) 以降の処理は、axios.getが成功した後に、コールバック処理として、呼び出されます。
-
-なので、最初の瞬間は`SET_FETCHING`をdispatchして、axios.getをリクエストする、というアクションとして実行されます。
-
-ここでAppクラスのrenderに戻りましょう。
-
-アクション`SET_FETCHING`がpeoplesリデューサに処理されますと、isFetchingがtrueな新しい状態が作られます。state.peoples.isFetchingが変化したので、mapStateToPropsの定義にしたがってAppクラスのプロパティisFetchingが変化しますので、renderメソッドが呼び出されます。
-
-renderメソッドの最初のif文はisFetchingがtrueなので、次のif文に進みます。
-
-次のif文では、プロパティisFetchingがtrueなので<div>now loading</div>をreturnします。やはり一瞬だけ、now loadingが画面に見えるかもしれません。
-
-この後、axios.getが完了しますと、if (response.status === 200)以降が評価されます。
-
-response.dataに https://iij.github.io/bootcamp//test.json が返してきたJSONオブジェクトが入っています。
-
-これをアクション `FETCH_PEOPLES` にpepolesとして加えてdispatchします。
-
-するとpeoplesリデューサによって、isFetchingがfalseであり、peoplesにアクションに含まれるpeoplesをセットした新しい状態が作られます。
-
-新しい状態が作られたので、mapStateToPropsにある定義によって、AppクラスのプロパティisFetchingがfalseになり、peoplesに https://iij.github.io/bootcamp//test.json が返してきたJSONオブジェクトがセットされます。
-
-プロパティが変化したので、renderが呼ばれます。
-
-最初の2つのif文がfalseなので、最後のreturnが評価されます。
-
-ふう。ちょっと長いセクションでしたね。
-
-少し休憩をとりましょう。
-
-[Reduxの概念図](./redux.png "Reduxの概念図")
-
-## Formを作る
-
-最後にFormを作ります。
-
-ここでは、Peoplesの作る表の下に、AddPeopleフォームを作ることにしましょう。
-
-AddPeopleコンポーネントをsrc/AddPeople.jsに定義しましょう。
-
-内容は以下のとおりです。
-
-```javascript
-import React from 'react';
-import { connect } from 'react-redux';
-import * as actions from './redux/actions';
-
-class AddPeople extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { name: ''};
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleChange(event) {
-        this.setState({ name: event.target.value });
-    }
-
-    handleSubmit(event) {
-        if (!this.state.name) {
-            alert('please input name.');
-        } else {
-            this.props.addPeople(this.state.name);
-            this.setState({ name: ''});
-        }
-        event.preventDefault();
-    }
-
-    render() {
-        return(
-          <form onSubmit={this.handleSubmit}>
-              <input type="text" onChange={this.handleChange} value={this.state.name} />
-              <input type="submit" value="add" />
-          </form>
-        );
-    }
-}
-
-const makeDispatchToProps = (dispatch) => {
-  return {
-      addPeople(name) {
-          const action = actions.addPeople(name);
-          dispatch(action);
-      }
-  }
-};
-
-export default connect(null, makeDispatchToProps)(AddPeople);
-```
-
-いくつか新しい概念が出てきています。
-
-まずコンストラクタを定義しています。
-
-その内容は以下のとおり。
-
-1. super(props)を通じてスーパークラスの初期化処理を実行します。
-2. this.stateを初期化
-3. this.handleChangeとthis.handleSubmitにthisをbind
-
-1はおまじないみたいなものですが、React.Componentのサブクラスにコンストラクタを定義するための常套句です。
-
-2で、入力フォームに入力された新しい人物の名前を保持するstateを用意します。ここでいうstateはReduxストアにあるstateとは関係がなく、Reactの基本機能として用意されているもので、プロパティのように親コンポーネントから渡されるものではなく、このコンポーネントの中に閉じた状態を保持するための機構です。
-
-3は...これも常套句なのですが、AddPeopleクラスのメソッドhandleChangeとhandleSubmitをthisとむすびつけます...これを宣言しないと、各メソッドは単なる関数として機能し、その関数の中でthisが使えないのです。
-
-handleChangeメソッドは、renderの中にある`<input type="text" ... />`の中のonChangeから呼び出されます。つまり入力フォームに文字を入力すると、そのonChangeイベントがhandleChangeに渡ります。event.target.valueで入力フォームに入った文字列が取得できるので、これをthis.setStateで新しい状態としてセットしています。
-
-handleSubmitメソッドは、renderの中にある`<form>`のonSubmitから呼び出されます。
-
-ここでは、this.state.nameが空であったらダイアログを出して入力を促し、さもなければthis.state.nameを引数にしてthis.props.addPeopleを呼び出して、さらにthis.setStateを使って入力フィールドを空にしています。
-
-handleSubmitの最後に`event.preventDefault()`があるのもJavaScriptの常套句で、この場合はformのsubmit時のデフォルトの挙動である、そのフォームを提供したURL自身へのGETリクエストを抑止します。
-
-this.props.addPeopleはmakeDispatchToPropsを通じてthis.propsにセットされており、その関数オブジェクトは、actions.addPeopleに引数nameを渡してアクションんを作ってdispatchしています。
-
-addPeopleはsrc/redux/actions.jsに新しく定義します。
-
-```javascript
-export function addPeople(name) {
-    return {
-        type: ADD_PEOPLE,
-        name,
-    }
-}
-```
-
-定義というほどものもでもありませんが、`ADD_PEOPLE`をアクション種別とし、引数nameを合わせ持つJSONオブジェクトを作ってreturnするだけです。
-
-`ADD_PEOPLE`は、例によってsrc/redux/actionTypes.jsに定義します。
-
-```javascript
-export const ADD_PEOPLE = 'ADD_PEOPLE';
-```
-
-そしてsrc/redux/reducers/peoples.jsに`ADD_PEOPLE`を処理するケースを加えます。
-
-```javascript
-        case ADD_PEOPLE:
-            const peoples = [];
-            let maxId = 0;
-            state.peoples.forEach((p) => {
-                const id = Number(p.id);
-               if (maxId < id) {
-                   maxId = id;
-               }
-               peoples.push(p);
-            });
-            const newPeople = {
-                id: maxId + 1,
-                name: action.name,
-            };
-            peoples.push(newPeople);
-            return {
-                inFetching: state.inFetching,
-                peoples,
-            };
-
-```
-
-そして最後に、src/App.jsのrenderの中にAddPeopleを埋め込みます。
-
-```JavaScript
-                    <Peoples peoples={this.props.peoples} />
-                    <AddPeople />
-```
-
-さあ、どうでしょう。
-
-期待どおりに動きましたか？
+コメントで書いてあるとおり、`unregister()`を`register()`に変えてあげるだけで PWA 対応になります。
 
 <credit-footer/>
