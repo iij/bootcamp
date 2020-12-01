@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: Docker の概要を学び、コンテナ操作を体験します
 time: 1h
 prior_knowledge: 仮想化、CUI 操作
