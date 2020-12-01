@@ -1,8 +1,5 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-description: 
-time: 1h
-prior_knowledge: OpenSSH, YAML
 ---
 
 # ansibleでホストの構成管理
@@ -544,3 +541,5 @@ ACLとは、通信の（不）許可を設定することで、サーバのセ�
 
 他のファイルについても、この講義を受けた後の最終的なファイルの内容になっています。
 ハンズオンを進める中でつまずくことがあれば、参考にしてもらえればと思います。
+
+<credit-footer/>

@@ -1,8 +1,5 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-description: jenkinsを手元で動かしてプロダクトの理解や使い所を考えます
-time: 1h
-prior_knowledge: docker, 継続的インテグレーション
 ---
 
 # Jenkins を触ってみよう
