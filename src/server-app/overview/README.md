@@ -1,11 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright （c) 2020, Internet Initiative Japan Inc.
-description: 
-time: 1h
-prior_knowledge: 特になし
 ---
-
-<header-table/>
 
 # サーバアプリケーション界隈概要
 

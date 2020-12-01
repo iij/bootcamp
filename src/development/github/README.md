@@ -482,3 +482,5 @@ confluenceにgistのURLを貼ると内容が自由に展開されるマクロが
 - [GitHub.com ヘルプドキュメント](https://help.github.com/ja/github)
 - [GitHub Learning Lab](https://lab.github.com/)
 - [Code Review Developer Guide | eng-practices](https://google.github.io/eng-practices/review/)
+
+<credit-footer/>

@@ -651,3 +651,5 @@ Gitには機能が限定されるますがGUIクライアントも用意され�
 - [Git - ヘルプ | IntelliJ IDEA](https://pleiades.io/help/idea/using-git-integration.html)
 
 これらのクライアントの利用も検討してください。
+
+<credit-footer/>

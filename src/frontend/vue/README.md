@@ -1,11 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-description: フロントエンド開発フレームワークであるVue.jsで簡単なアプリケーションを作ってみます。
-time: 1h
-prior_knowledge: JavaScript, HTML, DOM
 ---
-
-<header-table/>
 
 # Vue.js を触ってみよう
 

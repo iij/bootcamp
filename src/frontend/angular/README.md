@@ -1,3 +1,7 @@
+---
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+---
+
 # Angular を触ってみよう
 
 ## Angular の紹介
@@ -551,3 +555,5 @@ observable.pipe(
 やはり詳しくは [公式ドキュメント](https://angular.jp/guide/observables) を参照してください（若干分かりにくいかもしれません）。
 
 Angular ではHTTPリクエストはもちろん、URLの変更やform要素の入力、ユーザーイベントなど全ての変更がObservableで処理されています。
+
+<credit-footer/>
