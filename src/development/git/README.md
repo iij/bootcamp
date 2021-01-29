@@ -639,7 +639,7 @@ Git ハンズオンは以上で終了です。
 
 ### 7.1. GUIクライアント
 
-Gitには機能が限定されるますがGUIクライアントも用意されています。おすすめは以下の3つのクライアントです。
+Gitには、機能が限定されますがGUIクライアントも用意されています。おすすめは以下の3つのクライアントです。
 
 - [GitHub Desktop (Win, macOS)](https://desktop.github.com/)
 - [TortoiseGit (Win)](https://tortoisegit.org/)
