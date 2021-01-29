@@ -73,7 +73,7 @@ git clone git@github.com:iij/bootcamp.git
 [Downloading Git](https://git-scm.com/download/win)から「64-bit Git for Windows Setup」を選んでインストールしてください。
 
 インストール途中で以下のようにGitで利用するテキストエディタに何を使うのかを聞かれます。
-VS Codeをインストールした人は「Use Visual Studio Code as Git's default editor」を選択してください。
+VSCodeをインストールした人は「Use Visual Studio Code as Git's default editor」を選択してください。
 
 ![Choosing default editor](./images/git_choosing_editor.jpg)
 
