@@ -469,7 +469,7 @@ GitHubのアカウントを持っている人は自由に作成でき、参照�
 コードハイライトを利用することもできます。
 
 IIJでは社内での情報共有のため[Confluence](https://www.atlassian.com/ja/software/confluence)が導入されていますが、
-confluenceにgistのURLを貼ると内容が自由に展開されるマクロが導入されています。
+confluenceにgistのURLを貼ると内容が自動で展開されるマクロが導入されています。
 
 ![gistをcfに貼り付けた様子](./images/gist.png)
 
