@@ -73,19 +73,19 @@ GitHubは単純なGitサーバの機能だけではなく、開発に必要な�
 
 GitHub以外にも[GitLab](https://about.gitlab.com/)や[Bitbucket](https://bitbucket.org/)といったソフトウェアが利用されています。
 
-### 1.6. GitHubを利用する準備
+### 1.1. GitHubを利用する準備
 
 リモートとのGitリポジトリにはいくつかの通信方式が利用できますが、最も一般的なものはSSHを使う方法です。
 このハンズオンではGitHubとの通信にSSHを利用します。
 まずはGitHubを利用する準備を整えましょう。
 
-#### 1.6.1. SSH鍵の作成
+#### 1.1.1. SSH鍵の作成
 
 :computer: SSHするための鍵を生成してください。すでに作成されている方はそちらを利用してください。
 
 - [新しい SSH キーを生成して ssh-agent に追加する](https://help.github.com/ja/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-#### 1.6.2. アカウントを作る
+#### 1.1.2. アカウントを作る
 
 :computer: https://github.com/ に ログインしてアカウントを作成してください。
 
