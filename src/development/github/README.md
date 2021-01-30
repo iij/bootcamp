@@ -261,7 +261,7 @@ Blameボタンを押してください。
 $ git checkout -b fix
 ```
 
-`REAMDE.md`に何か1行足してください。
+`REAMDE.md`に何か1行足してコミットしてください。
 
 :computer: ブランチをリモートリポジトリに反映させます
 
