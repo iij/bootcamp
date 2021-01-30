@@ -468,7 +468,7 @@ TAを自分の`first_repo`に招待してGitHub Flowを体験しよう。
 GitHubのアカウントを持っている人は自由に作成でき、参照は自由にできます。
 コードハイライトを利用することもできます。
 
-IIJでは社内での情報共有ため[Confluence](https://www.atlassian.com/ja/software/confluence)が導入されていますが、
+IIJでは社内での情報共有のため[Confluence](https://www.atlassian.com/ja/software/confluence)が導入されていますが、
 confluenceにgistのURLを貼ると内容が自由に展開されるマクロが導入されています。
 
 ![gistをcfに貼り付けた様子](./images/gist.png)
