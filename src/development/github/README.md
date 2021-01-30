@@ -209,7 +209,7 @@ origin	git@github.com:kazuki-h/first_repo.git (push)
 
 ![Git Push](./images/git_push.drawio.svg)
 
-:computer: README.md に好きな文言を加えてコミットし、pushしてみましょう。
+:computer: `README.md`に好きな文言を加えてコミットし、pushしてみましょう。
 
 ```bash
 $ git add README.md
@@ -274,7 +274,7 @@ GitHubでリポジトリの一番上のページを開き、`2 branches`にな�
 
 ![Github上でブランチを切りかえる](./images/github_switch_branch.png)
 
-fixブランチに切り替えて、README.mdの内容が切り替わることを確認してください。
+fixブランチに切り替えて、`README.md`の内容が切り替わることを確認してください。
 
 ## 3. Pull Request
 
