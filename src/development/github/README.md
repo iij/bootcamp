@@ -71,7 +71,7 @@ Gitサーバを立て、そこを経由してやりとりするのが一般的�
 [GitHub](https://github.com/)とはGitのリモートリポジトリをホスティングしてくれるサービスです。
 GitHubは単純なGitサーバの機能だけではなく、開発に必要な便利な機能をセットで提供してくれます。
 
-GitHub以外にも[GitLab](https://about.gitlab.com/)や[Bitbucket](https://bitbucket.org/)といったソフトウェアが利用されています。
+GitHub以外にも[GitLab](https://about.gitlab.com/)や[Bitbucket](https://bitbucket.org/)といったサービスが利用されています。
 
 ### 1.1. GitHubを利用する準備
 
