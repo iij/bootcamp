@@ -279,7 +279,7 @@ fixブランチに切り替えて、`README.md`の内容が切り替わること
 ## 3. Pull Request
 
 GitHub最大のメリット、それがPull Requestです。
-Web UIのないGitサーバというものも存在しますが、Pull Requestを使うためにGitHubを使うと行ってもよいくらいです。
+Web UIのないGitサーバというものも存在しますが、Pull Requestを使うためにGitHubを使うと言ってもよいくらいです。
 
 Pull Requestは別のブランチで作成した変更を取り込んでもらう依頼を行うための機能です。
 Gitlabでは「Merge Request」と呼びます。
