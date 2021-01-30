@@ -294,7 +294,7 @@ Pull Requestは別のブランチで作成した変更を取り込んでもら�
 
 ![Pull Requestを作成する](./images/github_compare_create_pull_request.png)
 
-Pull Requestを作成する画面になったらどういった変更を入れるかを記載します。
+Pull Requestを作成する画面になったら、どういった変更を入れるかを記載して「Create pull request」ボタンを押します。
 
 ![Pull Requestの内容を記入する](./images/github_open_pull_request.png)
 
