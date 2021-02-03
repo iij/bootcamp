@@ -224,7 +224,7 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 `/get` にアクセスして、最初に登録したデータが取り出せていれば成功です。
 
 ```bash
-$ curl -X POST -d "title=iijbootcamp&body=IIJBootCamp is fun!!" http://localhost:8080/add
+$ curl -X POST -d 'title=iijbootcamp&body=IIJBootCamp is fun!!' http://localhost:8080/add
 Successfully added
 
 $ curl http://localhost:8080/get
