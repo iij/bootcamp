@@ -215,7 +215,6 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 `docker-compose ps` コマンドでは、Docker Compose で管理してる各コンテナの状態を一覧で見ることができます。「State」が「Up」になっていれば立ち上がっている状態です。その他のカラムは`docker ps` の意味と同様です。
 
 
-:::
 #### Webアプリケーションの動作確認方法
 では、実際にWebアプリケーションが動作しているか確認するために以下のコマンドを入力してください。
 
@@ -230,8 +229,6 @@ Successfully added
 $ curl http://localhost:8080/get
 [{ID:ObjectIdHex("5c6642fc04b685000117c15b") Title:iijbootcamp Body:IIJBootCamp is fun!!}]
 ```
-
-:::
 
 また、`docker-compose start`、`docker-compose stop` で一括してコンテナの起動・停止を行えます。さらに起動中のコンテナの停止と削除を一括して行う場合は、`docker-compose down` が利用できます。では、先ほど起動したコンテナたちを停止してみましょう。
 
