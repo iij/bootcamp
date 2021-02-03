@@ -33,7 +33,7 @@ GitとGitHubを使った基本的なソフトウェア開発サイクルを回�
 
 新卒研修の内容を踏まえたものになっています。
 プログラミング言語の知識は必要ありません。
-自分がこの講義を受講したらよいかわからない。受講できるレベルにあるかわからない場合は担当のメンターに相談してください。
+自分がこの講義を受講したらよいかわからない、受講できるレベルにあるかわからない場合は担当のメンターに相談してください。
 
 ### 0.4. この講義で取り扱わないこと
 
@@ -73,7 +73,7 @@ git clone git@github.com:iij/bootcamp.git
 [Downloading Git](https://git-scm.com/download/win)から「64-bit Git for Windows Setup」を選んでインストールしてください。
 
 インストール途中で以下のようにGitで利用するテキストエディタに何を使うのかを聞かれます。
-VS Codeをインストールした人は「Use Visual Studio Code as Git's default editor」を選択してください。
+VSCodeをインストールした人は「Use Visual Studio Code as Git's default editor」を選択してください。
 
 ![Choosing default editor](./images/git_choosing_editor.jpg)
 
@@ -139,7 +139,7 @@ VCSにはたくさんの種類がありましたが戦国時代を経て、現�
 
 まずは自分の情報を登録しましょう。
 
-自分の名前とメールアドレスします。
+自分の名前とメールアドレスを設定します。
 `--global`オプションをつけているので、あらゆるリポジトリでこの設定が有効になります。
 
 :computer: 自分のアカウント情報を設定する。
@@ -194,7 +194,7 @@ $ git init
 
 リポジトリの中にGitで変更を管理しないファイルを置いておくこともできます。
 Gitで変更を管理することを`追跡(track)`と呼びます。
-追跡されていないファイルは`Untrack`です。
+追跡されていないファイルは`Untracked`です。
 
 追跡されているファイルは`Unmodified`、`Modified`、`Staged`の3つの状態で管理します。
 
@@ -639,7 +639,7 @@ Git ハンズオンは以上で終了です。
 
 ### 7.1. GUIクライアント
 
-Gitには機能が限定されるますがGUIクライアントも用意されています。おすすめは以下の3つのクライアントです。
+Gitには、機能が限定されますがGUIクライアントも用意されています。おすすめは以下の3つのクライアントです。
 
 - [GitHub Desktop (Win, macOS)](https://desktop.github.com/)
 - [TortoiseGit (Win)](https://tortoisegit.org/)
