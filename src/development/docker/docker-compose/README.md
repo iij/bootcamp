@@ -62,7 +62,7 @@ Docker Compose とは、複数のコンテナから構成されるようなア�
 
 ### 2.1 Dockerfile の作成
 
-この節では、前述したコンテナのDockerfile を作成します。Dockerfile の作成については、前講義「Docker を触ってみる」で行いましたので、各命令などの詳細な説明は割愛します。Docker Compose を使う際、コンテナの指定方法は、
+この節では、前述したコンテナのDockerfile を作成します。Dockerfile の作成については、前講義「Docker を触ってみよう」で行いましたので、各命令などの詳細な説明は割愛します。Docker Compose を使う際、コンテナの指定方法は、
 
 1. `docker run` と同様にimage を指定して起動する
 2. Dockerfile を指定して起動時にbuild する
