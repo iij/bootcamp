@@ -161,7 +161,7 @@ Webhook などの HTTP リクエストからジョブを実行するトリガを
 
 ![build-trigger](./images/build-trigger.png)
 
-認証トークンを設定できるので適当な文字列設定して保存します。保存後、設定画面に書かれているように`localhost:8080/job/test-project/build`にリクエストしてみましょう。先ほど取得した API token を使用するため、ここで入力した JOB ごとの認証トークンは使用しません。
+認証トークンを設定できるので適当な文字列を設定して保存します。保存後、設定画面に書かれているように`localhost:8080/job/test-project/build`にリクエストしてみましょう。先ほど取得した API token を使用するため、ここで入力した JOB ごとの認証トークンは使用しません。
 
 ```bash
 curl -X POST --user 'admin:<API token>' 'http://localhost:8080/job/test-project/build'
