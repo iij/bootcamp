@@ -173,6 +173,8 @@ curl -X POST --user 'admin:<API token>' 'http://localhost:8080/job/test-project/
 ## パラメータ付きビルド
 
 ビルドにはパラメータを設定できます。「General」にある「ビルドをパラメータ化」からパラメータを設定してみてください。
+「パラメータの追加」を押すと種類を選ぶプルダウンが出てきます。
+ここでは「テキスト」のパラメータを追加してみましょう。
 
 ![build-param](./images/build-param.png)
 
