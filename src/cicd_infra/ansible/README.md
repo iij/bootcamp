@@ -428,7 +428,7 @@ ansible rp1 -m command -a 'nginx -V'
 #### inventories/hosts
 
 まずはAnsibleの管理対象にアプリケーション増設用のサーバ（app2）を追加します。
-教材の`inventories/host`を下記のように追記してください。
+教材の`inventories/hosts`を下記のように追記してください。
 
 ```diff
 [app]
