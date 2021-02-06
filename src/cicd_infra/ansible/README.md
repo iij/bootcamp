@@ -64,7 +64,7 @@ docker exec -it docker-compose_ansible_1 bash
 
 Ansibleで主に使うコマンドは`ansible`と`ansible-playbook`の2つです。
 
-[ansibleコマンド](https://docs.ansible.com/ansible/latest/cli/ansible.html)はアドホックにAnsibeを実行できます。
+[ansibleコマンド](https://docs.ansible.com/ansible/latest/cli/ansible.html)はアドホックにAnsibleを実行できます。
 YAMLなどのファイルを用意しなくても良いので、細かな日々の運用作業や確認作業などに使えます。
 
 [ansible-playbookコマンド](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html)は`playbook`と呼ばれるYAMLファイルにしたがってAnsibleを実行するコマンドになります。
