@@ -62,7 +62,7 @@ Docker Compose とは、複数のコンテナから構成されるようなア�
 
 ### 2.1 Dockerfile の作成
 
-この節では、前述したコンテナのDockerfile を作成します。Dockerfile の作成については、前講義「Docker を触ってみる」で行いましたので、各命令などの詳細な説明は割愛します。Docker Compose を使う際、コンテナの指定方法は、
+この節では、前述したコンテナのDockerfile を作成します。Dockerfile の作成については、前講義「Docker を触ってみよう」で行いましたので、各命令などの詳細な説明は割愛します。Docker Compose を使う際、コンテナの指定方法は、
 
 1. `docker run` と同様にimage を指定して起動する
 2. Dockerfile を指定して起動時にbuild する
@@ -215,7 +215,6 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 `docker-compose ps` コマンドでは、Docker Compose で管理してる各コンテナの状態を一覧で見ることができます。「State」が「Up」になっていれば立ち上がっている状態です。その他のカラムは`docker ps` の意味と同様です。
 
 
-:::
 #### Webアプリケーションの動作確認方法
 では、実際にWebアプリケーションが動作しているか確認するために以下のコマンドを入力してください。
 
@@ -224,14 +223,12 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 `/get` にアクセスして、最初に登録したデータが取り出せていれば成功です。
 
 ```bash
-$ curl -X POST -d "title=iijbootcamp&body=IIJBootCamp is fun!!" http://localhost:8080/add
+$ curl -X POST -d 'title=iijbootcamp&body=IIJBootCamp is fun!!' http://localhost:8080/add
 Successfully added
 
 $ curl http://localhost:8080/get
 [{ID:ObjectIdHex("5c6642fc04b685000117c15b") Title:iijbootcamp Body:IIJBootCamp is fun!!}]
 ```
-
-:::
 
 また、`docker-compose start`、`docker-compose stop` で一括してコンテナの起動・停止を行えます。さらに起動中のコンテナの停止と削除を一括して行う場合は、`docker-compose down` が利用できます。では、先ほど起動したコンテナたちを停止してみましょう。
 
