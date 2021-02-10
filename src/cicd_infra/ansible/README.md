@@ -64,7 +64,7 @@ docker exec -it docker-compose_ansible_1 bash
 
 Ansibleで主に使うコマンドは`ansible`と`ansible-playbook`の2つです。
 
-[ansibleコマンド](https://docs.ansible.com/ansible/latest/cli/ansible.html)はアドホックにAnsibeを実行できます。
+[ansibleコマンド](https://docs.ansible.com/ansible/latest/cli/ansible.html)はアドホックにAnsibleを実行できます。
 YAMLなどのファイルを用意しなくても良いので、細かな日々の運用作業や確認作業などに使えます。
 
 [ansible-playbookコマンド](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html)は`playbook`と呼ばれるYAMLファイルにしたがってAnsibleを実行するコマンドになります。
@@ -102,7 +102,7 @@ ansible-playbook site.yml
 ```
 
 `failed=0`と表示されれば実行は成功です。
-ブラウザで<http://loclahost:8080>にアクセスすると素朴なWebアプリケーションの画面が見えます。
+ブラウザで<http://localhost:8080>にアクセスすると素朴なWebアプリケーションの画面が見えます。
 また、下記コマンドでホストに対して実際にファイルがコピーされていることが確認できます。
 
 ```sh
@@ -348,7 +348,7 @@ ansible-playbook site.yml
 `failed=0`と表示されれば実行は成功です。
 
 ブラウザで<https://localhost:8443>にアクセスして確認します。
-自己証明書を使っているためブラウザから注意文言が表示されますが、スキップしてください。
+自己署名証明書を使っているためブラウザから注意文言が表示されますが、スキップしてください。
 すると、さきほどと同じ画面が表示されます。
 
 ここで、もう一つ注目してほしい部分があります。
@@ -428,7 +428,7 @@ ansible rp1 -m command -a 'nginx -V'
 #### inventories/hosts
 
 まずはAnsibleの管理対象にアプリケーション増設用のサーバ（app2）を追加します。
-教材の`inventories/host`を下記のように追記してください。
+教材の`inventories/hosts`を下記のように追記してください。
 
 ```diff
 [app]
