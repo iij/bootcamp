@@ -122,7 +122,7 @@ service apache2 start
 デフォルトではDocument Rootは`/var/www/html/`に設定されています。
 
 ::: tip
-Document RootはApacheが静的ファイルを配信するためのroot directryです。
+Document RootはApacheが静的ファイルを配信するためのroot directoryです。
 :::
 
 この下にある`index.html`ファイルを自分の物に置き換えてみましょう。
