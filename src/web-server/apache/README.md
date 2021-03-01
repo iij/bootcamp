@@ -140,7 +140,7 @@ echo 'Hello Bootcamp!!' > index.html
 この設定は変更できます。
 :::
 
-Document root配下にディレクトリを作成するとブラウザからも同様にアクセスできます。
+Document Root配下にディレクトリを作成するとブラウザからも同様にアクセスできます。
 
 ```sh
 mkdir /var/www/html/hoge
