@@ -21,40 +21,111 @@ footer: CC BY-SA Licensed | Copyright （c) 2021, Internet Initiative Japan Inc.
 
 （1993年 フォーマルな仕様制定は1997年）
 
+```perl
+#!/usr/bin/perl
+
+print "Content-type: text/html \n\n";
+print "<html>";
+print "<head><title>IIJ Bootcamp</title></head>";
+print "<body>";
+print "<p>Welcom to IIJ Bootcamp</p>";
+print "</body>";
+print "</html>";
+```
+
 1. Common Gateway Interface
-2. WebサーバでHTTPリクエストを受けて、外部プログラムにHTTPリクエストを渡し、外部プログラムの出力をHTTPレスポンスとして返すしくみ。
+2. ApacheなどのWebサーバでHTTPリクエストを受けて、外部プログラムにHTTPリクエストを渡し、出力をHTTPレスポンスとして返すしくみ。
 3. Perlが大流行するきっかけとなった。
-   1. Perlは文字列処理が強力（C言語は文字列処理が貧弱）
-	2. PerlからMySQL/PostgreSQLに接続してHTTPレスポンスを生成するスタイル
+   - Perlは文字列処理が強力（C言語は文字列処理が貧弱）
+   - PerlからMySQL/PostgreSQLに接続してHTTPレスポンスを生成するスタイル
 4. 今日でもPerlで実装されたプロダクトは存続している（MovableTypeとか、mixiとか。CookPadもPerlでスタートしたはず)。
 
 ## PHP
+
+```php
+<html>
+ <head>
+  <title>IIJ Bootcamp</title>
+ </head>
+ <body>
+ <?php echo '<p>Welcom to IIJ Bootcamp</p>'; ?> 
+ </body>
+</html>
+```
 
 （開発開始は1994年 実質的に最初の公開版PHP 3が1997年 本格普及はPHP 4で2000年)
 
 1. CGIはHTTPリクエストを受けるごとに、新しいプロセスをforkする必要があり、Webサーバにとって負荷が高かった。
 2. WebサーバのモジュールとしてPerlを動作させる方法が考案された（mod_perl 1998年)。
-    1. しかしPerlはWebサーバのモジュールとして動作させる前提で設計/実装されたものではなく、やや使い勝手が悪かった。
-	2. 類似の技術としてFastCGIというものもあり、これは常駐プロセスとしてCGI実行エンジンを用意しておき、HTTPリクエストを常駐プロセスに流し込むという方法。やはり癖があった。
+   1. しかしPerlはWebサーバのモジュールとして動作させる前提で設計/実装されたものではなく、やや使い勝手が悪かった。
+   2. 類似の技術としてFastCGIというものもあり、これは常駐プロセスとしてCGI実行エンジンを用意しておき、HTTPリクエストを常駐プロセスに流し込むという方法。やはり癖があった。
 3. 最初からWebサーバのモジュールとして実行することを念頭に置いた、Webプログラミングに特化した処理系としてPHPが登場、大流行してPerlを駆逐する。
    1. Facebookも長い間PHPで書かれていた。
+
+### Perl CGI
+
+![perl_cgi](./perl_cgi.drawio.png "perl_cgi")
+
+### mod_perl
+
+![mod_perl](./mod_perl.drawio.png "mod_perl")
 
 ## サーブレット
 
 （1996年に初期バージョンが公開 1998年に最初の公式API仕様が確立 2001年にStrutsが登場)
 
+```java
+<%@ page contentType="text/html" %>
+
+<html>
+<head>
+<title>IIJ Bootcamp</title>
+</head>
+<body>
+<p>
+<% System.out.println("Welcom to IIJ Bootcamp"); %>
+</p>
+
+現在時刻: <%= new java.util.Date() %>
+
+</body>
+</html>
+```
+
 1. 1995年Sun Microsystems社がJava言語を売り出した。
    - 最初にアピールした`Applet`は、Webページの中にJavaのサンドボックス環境を埋め込んでアプリケーションを実行するというものだった。しかし制約が大きいうえにマシンパワーを要求するので、実用的なアプリケーションを作る環境としては、流行らなかった。
 2. しかしサーバサイドの技術として発表されたサーブレットは2000年ごろから流行し始め、2001年にStrutsが登場するとその人気は決定的になった。
     1. サーブレットはHTTPリクエストを（CGIのようにプロセスをforkするのではなく)スレッドで処理するので性能が高かった。
-	1. Javaは静的に型付けされた言語であるため、Javaで書かれたアプリケーションはPHPよりも品質を確保しやすいかった。
-	2. WebアプリケーションフレームワークであるStrutsを使うと、プログラムを一定のスタイルで記述することを助け、同時に大人数で分業することを助けた。規模の大きなエンタープライズシステムの実装が可能になった。
-	3. Javaで書かれたコードはポータビリティがあり、サーバのOSやCPUが変わっても、そのまま実行できた。（まだx86系のCPUが市場を独占しておらず、SPARCやAlphaなどのCPUもある程度のシェアを持っていた。)
+    2. Javaは静的に型付けされた言語であるため、Javaで書かれたアプリケーションはPHPよりも品質を確保しやすいかった。
+    3. WebアプリケーションフレームワークであるStrutsを使うと、プログラムを一定のスタイルで記述することを助け、同時に大人数で分業することを助けた。規模の大きなエンタープライズシステムの実装が可能になった。
+    4. Javaで書かれたコードはポータビリティがあり、サーバのOSやCPUが変わっても、そのまま実行できた。（まだx86系のCPUが市場を独占しておらず、SPARCやAlphaなどのCPUもある程度のシェアを持っていた。)
 3. かくしてカジュアルな（コンシューマ向けの）WebアプリケーションはPHPで、シリアスな（エンタープライズ向けの）WebアプリケーションはJavaサーブレットで書く、という時代が続くことになった。
 
 ## Java EE / Spring
 
 （Java EE 1999年 / Spring 2002年）
+
+※ サンプルは適当です
+
+```java
+@ManagedBean(name="HelloBootcamp")
+@RequestScoped
+public class HelloBootcamp {
+   private String message;
+
+   /** Creates a new instance of HelloBootcamp */
+   public HelloBootcamp() {
+      this.message = "Welcom to IIJ Bootcamp";
+   }
+
+   *@EJB
+   private MessageFacade messageFacade;*
+
+   public String getMessage() {
+      return this.message;
+   }
+}
+```
 
 1. Sun Microsystemはサーブレットの成功に気を良くして、これを一層強力に推進してエンタープライズの世界を支配しようと試みた。そうして出てきたのはJava EE（Enterprise Edition）であった。
 2. Java EEは、エンタープライズアプリケーションを多数のサーバの連携する分散処理を通じて実現することを構想し、その中核技術としてEJB（Enterprise JavaBeans）を据えた。EJBを使うと、ネットワーク越しにJavaのオブジェクトが通信し合い、データベースへの永続化も含めてエレガントに処理できるはずだった。Sun Microsystemsの制定したJava EE仕様を実装するアプリケーションサーバ製品が複数のベンダーから出荷され、活況を呈した。
