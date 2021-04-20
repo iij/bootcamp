@@ -15,8 +15,8 @@ footer: CC BY-SA Licensed | Copyright （c) 2021, Internet Initiative Japan Inc.
    4. Java EE / Spring
    5. Ruby on Rails
    6. Ajaxの出現 / フロントエンド+APIサーバの時代
-   7. Node.jsとクラウド
-   8. Goとマイクロサービス
+   7. Node.js
+   8. Go
 2. アプリケーションとインフラ
    1. オンプレミス
    2. Docker, Kubernetes
