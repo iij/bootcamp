@@ -2,22 +2,29 @@
 footer: CC BY-SA Licensed | Copyright （c) 2021, Internet Initiative Japan Inc.
 ---
 
-# サーバアプリケーション界隈概要
+# サーバアプリケーション界隈Overview
 
 ここでいうサーバアプリケーションとは、Webアプリケーションを構成する要素の中のサーバサイドの実装技術のことをなんとなく表現しています。
 
 ## 目次
 
-1. CGI
-2. PHP
-3. サーブレット
-4. Java EE / Spring
-5. Ruby on Rails
-6. Ajaxの出現 / フロントエンド+APIサーバの時代
-7. Node.jsとクラウド
-8. Goとマイクロサービス
+1. 開発言語・スタイルの変遷
+   1. CGI
+   2. PHP
+   3. サーブレット
+   4. Java EE / Spring
+   5. Ruby on Rails
+   6. Ajaxの出現 / フロントエンド+APIサーバの時代
+   7. Node.jsとクラウド
+   8. Goとマイクロサービス
+2. アプリケーションとインフラ
+   1. オンプレミス
+   2. Docker, Kubernetes
+   3. AWS, GCP
 
-## CGI
+## 開発言語・スタイルの変遷
+
+### CGI
 
 （1993年 フォーマルな仕様制定は1997年）
 
@@ -40,7 +47,7 @@ print "</html>";
    - PerlからMySQL/PostgreSQLに接続してHTTPレスポンスを生成するスタイル
 4. 今日でもPerlで実装されたプロダクトは存続している（MovableTypeとか、mixiとか。CookPadもPerlでスタートしたはず)。
 
-## PHP
+### PHP
 
 ```php
 <html>
@@ -62,15 +69,15 @@ print "</html>";
 3. 最初からWebサーバのモジュールとして実行することを念頭に置いた、Webプログラミングに特化した処理系としてPHPが登場、大流行してPerlを駆逐する。
    1. Facebookも長い間PHPで書かれていた。
 
-### Perl CGI
+#### Perl CGI
 
 ![perl_cgi](./perl_cgi.drawio.png "perl_cgi")
 
-### mod_perl
+#### mod_perl
 
 ![mod_perl](./mod_perl.drawio.png "mod_perl")
 
-## サーブレット
+### サーブレット
 
 （1996年に初期バージョンが公開 1998年に最初の公式API仕様が確立 2001年にStrutsが登場)
 
@@ -101,7 +108,7 @@ print "</html>";
     4. Javaで書かれたコードはポータビリティがあり、サーバのOSやCPUが変わっても、そのまま実行できた。（まだx86系のCPUが市場を独占しておらず、SPARCやAlphaなどのCPUもある程度のシェアを持っていた。)
 3. かくしてカジュアルな（コンシューマ向けの）WebアプリケーションはPHPで、シリアスな（エンタープライズ向けの）WebアプリケーションはJavaサーブレットで書く、という時代が続くことになった。
 
-## Java EE / Spring
+### Java EE / Spring
 
 （Java EE 1999年 / Spring 2002年）
 
@@ -154,7 +161,7 @@ public class HelloController {
    - StrutsはStrus1の後継バージョンであるStruts2が、Struts1とまったく互換性がなかったため、Struts1を採用していた開発会社に受け入れられなかった。
    - その後脆弱性問題を連発したため、今日ではまったく人気がない。
 
-## Ruby on Rails
+### Ruby on Rails
 
 ```ruby
 class HelloController < ApplicationController
@@ -200,7 +207,7 @@ user = User.find(1) # id=1なデータをDBで検索する
 User.create(password: 'hogehoge', username: 'hugahuga') # データの作成（DBにinsert）
 ```
 
-## Ajaxの出現 / フロントエンド+APIサーバの時代
+### Ajaxの出現 / フロントエンド+APIサーバの時代
 
 1. Google MapsおよびGmailの出現により、「画面遷移を伴わないWebアプリケーション」というものがユーザーに認知され始めた。2005年ごろのことである。
 2. Googleのエンジニアたちの使った技法は、技術としてはそれ以前から存在していたが誰も注目してこなかったXMLHttpRequestというJavaScriptの機能を初めて本格的に使用するものだった。
@@ -210,7 +217,7 @@ User.create(password: 'hogehoge', username: 'hugahuga') # データの作成（D
    2. このスタイルが定着すると、デスクトップアプリケーションと比較しても遜色ないUIのWebアプリケーションが当たり前のように期待されるようになっていった。
    3. 要求の高度化に応えるため、フロントエンド側のフレームワークが非常に速いペースで開発されているのが今日の状況である。今日、人気のあるフロントエンド・フレームワークとしてReact （Facebook)、Angular （Google)、Vue.js （Evan You)などがある。
 
-## Node.js
+### Node.js
 
 Perlから始まり、ここまで出てきたJavaやRailsは基本的に同期的なI/Oとシングルプロセスで動作する。
 そのため複数のリクエストを同時に処理するためにはApacheなど外部のツールによってマルチプロセス化し、1つのリクエストを1プロセスに割り当てる形でレスポンスを返している。
@@ -242,7 +249,7 @@ Node.jsはJavaScriptの実行環境の一つで、I/O待ち（HDDへの書き込
 
 最近ではSPAフレームワークからの流れでSSR(Server Side Rendering)を採用するサービスも増えており、その実行環境としてNode.jsが引き続き使われている。
 
-## Go
+### Go
 
 2016年くらいから利用例の増えてきたプログラミング言語で、静的型付け・シンプルな言語体系・高速な動作・並行処理が得意などの特徴がある。
 RubyやPythonなどのスクリプト言語のような開発スピードと、JavaやCのような静的型付けによる安全性・実行の速さを両立していることで、Webサービスのバックエンドとして使われることが増えた。
@@ -262,9 +269,9 @@ RubyやPython、Javaなどの実行環境をインストールする必要がな
 - コンパイル言語なので（スクリプト言語に比べると）デバッグが難しい
 - Railsのようなフレームワークに頼らず、自力でアプリケーションを構築していく必要がある
 
-## アプリケーションの実行インフラ
+## アプリケーションとインフラ
 
-### オンプレ
+### オンプレミス
 
 ### Docker, Kubernetes
 
