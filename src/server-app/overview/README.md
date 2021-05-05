@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright （c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 ---
 
 # サーバアプリケーション界隈Overview
