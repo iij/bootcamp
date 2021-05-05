@@ -26,7 +26,7 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 ### CGI
 
-（1993年 フォーマルな仕様制定は1997年）
+（1993年 フォーマルな[仕様](https://www.w3.org/CGI/)制定は1997年）
 
 ```perl
 #!/usr/bin/perl
@@ -40,12 +40,13 @@ print "</body>";
 print "</html>";
 ```
 
-1. Common Gateway Interface
-2. ApacheなどのWebサーバでHTTPリクエストを受けて、外部プログラムにHTTPリクエストを渡し、出力をHTTPレスポンスとして返すしくみ。
-3. Perlが大流行するきっかけとなった。
-   - Perlは文字列処理が強力（C言語は文字列処理が貧弱）
-   - PerlからMySQL/PostgreSQLに接続してHTTPレスポンスを生成するスタイル
-4. 今日でもPerlで実装されたプロダクトは存続している（MovableTypeとか、mixiとか。CookPadもPerlでスタートしたはず)。
+- Common Gateway Interface の略
+- The Apache HTTP Server ("httpd") などのWebサーバでHTTPリクエストを受けて、外部プログラムにHTTPリクエストを渡し、出力をHTTPレスポンスとして返すしくみ。
+- Perlが大流行するきっかけとなった。
+  - Perlは文字列処理が強力（C言語は文字列処理が貧弱）
+  - PerlからMySQL/PostgreSQLに接続してHTTPレスポンスを生成するスタイル
+- 今日でもPerlで実装されたプロダクトは存続している（MovableTypeとか、mixiとか。CookPadもPerlでスタートしたはず)。
+- CGIの仕組み自体はPerl以外でもRubyやPython、シェルスクリプトなど文字列を出力できるプログラムであれば利用できる
 
 ### PHP
 
@@ -63,9 +64,9 @@ print "</html>";
 （開発開始は1994年 実質的に最初の公開版PHP 3が1997年 本格普及はPHP 4で2000年)
 
 1. CGIはHTTPリクエストを受けるごとに、新しいプロセスをforkする必要があり、Webサーバにとって負荷が高かった。
-2. WebサーバのモジュールとしてPerlを動作させる方法が考案された（mod_perl 1998年)。
+2. WebサーバのモジュールとしてPerlを動作させる方法が考案された（apache httpd + mod_perl 1998年)。
    1. しかしPerlはWebサーバのモジュールとして動作させる前提で設計/実装されたものではなく、やや使い勝手が悪かった。
-   2. 類似の技術としてFastCGIというものもあり、これは常駐プロセスとしてCGI実行エンジンを用意しておき、HTTPリクエストを常駐プロセスに流し込むという方法。やはり癖があった。
+   2. 類似の技術としてFastCGIというものもあり、これは常駐プロセスとしてCGI実行エンジンを用意しておくことで、リクエストごとにプロセスをforkする必要を無くしたものだったが、やはり癖があった。
 3. 最初からWebサーバのモジュールとして実行することを念頭に置いた、Webプログラミングに特化した処理系としてPHPが登場、大流行してPerlを駆逐する。
    1. Facebookも長い間PHPで書かれていた。
 
