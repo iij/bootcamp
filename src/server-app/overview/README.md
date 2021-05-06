@@ -197,15 +197,15 @@ rails generate controller User name:string email:string
 ```
 
 ```ruby
-class User < ActiveRecord::Base
-   attr_accessible :password, :username
+class Person < ActiveRecord::Base
+   attr_accessible :email, :name
 end
 ```
 
 ```ruby
-user = User.find(1) # id=1なデータをDBで検索する
+person = Person.find(1) # id=1なデータをDBで検索する
 
-User.create(password: 'hogehoge', username: 'hugahuga') # データの作成（DBにinsert）
+Person.create(email: 'hoge@example.com', username: 'hoge') # データの作成（DBにinsert）
 ```
 
 ### Ajaxの出現 / フロントエンド+APIサーバの時代
