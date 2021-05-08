@@ -1,18 +1,34 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 ---
 
-# ansibleでホストの構成管理
+# ansibleによるIT自動化
 
 ## 0. この講義について
 
 この講義ではハンズオン形式でAnsibleについて学びます。
 ハンズオン用の教材は[こちら](https://github.com/iij/ansible-exercise)になります。
 
-### 下準備
+### 本講義で扱うこと
 
-この講義を受けるにはいくつかの環境準備が必要です。
-教材のREADMEに従い、講義当日までに環境を整えてください。
+- Ansible 概論
+- Ansible を実行するためのConfigurationファイル作成
+- Ansible によるIT自動化の実行
+
+### 本講義で扱わないこと
+
+- Ansible パッケージング・ロードマップの説明
+- Ansibleのインストール
+- AnsibleによるIT自動化を行う対象となる実行環境の構築
+- Ansible Vaultによるセキュリティ強化
+- AnsibleTower の利用
+
+
+### 事前準備
+
+この講義を受けるには、Ansibleの実行環境が必要となります。
+本講義を受けるにあたり、予めハンズオン教材に目を通すほか
+教材のREADMEに従い、講義当日までに実行環境の構築を終えて下さい。
 
 ### ネットワーク構成
 
@@ -23,53 +39,20 @@ footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 
 この講義では図中のansibleコンテナから各ホストを管理します。
 
-## 1. Ansibleとは
+## 1. Ansible概要
 
-公式ドキュメント: <https://docs.ansible.com/ansible/latest/index.html>
+- [Ansible概要](./INTRODUCTION.md)
 
-Ansibleとは、IT自動化ツールです。
-サーバの設定やアプリケーションのデプロイなど、さまざまな処理を自動化できます。
-`IaC（Infrastructure as Code）`から生まれたツールで、[YAML](https://yaml.org/)と呼ばれる記述（解読）のしやすい言語で書くことができるため、
-サーバなどに詳しくない人にも理解しやすいです。
-またサーバなどの状態がファイルとして記述されるため、アプリケーションのソースコードと同様にGitなどでバージョン管理できます。
+## 2. Ansibleの実行
 
-Ansibleが実際にサーバを管理する際、基本的には[OpenSSH](https://www.openssh.com/)を使って対象サーバへアクセスします。
-OpenSSHは多くのサーバにデフォルトでインストールされており、Ansible独自のデーモンをインストールする手間もなく導入しやすいです。
+- [サンプルの実行](./SAMPLE_RUN.md)
 
-またモジュールやプラグインも多く、数多くの処理を自動化できます。
+### 3. Ansible playbookの作成
 
-* [モジュール一覧](https://docs.ansible.com/ansible/latest/modules/list_of_all_modules.html)
-* [プラグイン一覧](https://docs.ansible.com/ansible/latest/plugins/plugins.html)
+- [Ansibleファイルの作成](./CREATE_PLAYBOOK.md)
 
-### サンプル実行
 
-まずは実際にAnsibleを実行してみましょう。
 
-ダウンロードした[教材](https://github.com/iij/ansible-exercise)のフォルダ内で下記コマンドを実行しコンテナ内に入る、
-またはVScodeの`Remote - Containers`を使い教材のフォルダを開き、コンテナ内に入ります。
-
-Windows
-
-```powershell
-docker-compose -f docker-compose\docker-compose.yml start
-docker exec -it docker-compose_ansible_1 bash
-```
-
-Mac/Linux
-
-```sh
-docker-compose -f docker-compose/docker-compose.yml up -d
-docker exec -it docker-compose_ansible_1 bash
-```
-
-Ansibleで主に使うコマンドは`ansible`と`ansible-playbook`の2つです。
-
-[ansibleコマンド](https://docs.ansible.com/ansible/latest/cli/ansible.html)はアドホックにAnsibleを実行できます。
-YAMLなどのファイルを用意しなくても良いので、細かな日々の運用作業や確認作業などに使えます。
-
-[ansible-playbookコマンド](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html)は`playbook`と呼ばれるYAMLファイルにしたがってAnsibleを実行するコマンドになります。
-基本的にAnsibleを実行する際は、こちらのコマンドを使います。
-このハンズオンでも主に`ansible-playbook`コマンドを使っていきます。
 
 それではまずは何のファイルも編集せずに、下記のコマンドをコンテナ内で実行し、Ansibleを実行してみましょう。
 
