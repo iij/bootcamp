@@ -217,6 +217,54 @@ prior_knowledge: なし
     - [pttl](https://redis.io/commands/pttl): ミリ秒単位で 消えるまでの時間を教えてくれる
 
 ### プログラムから Redis を使おう
+* それでは、実際にPythonでRedis を利用するコードを書いていきます。
+* 手元の環境で好きなエディタを使って Python のコードを書いた上で docker container の中から そのコードを読み出せるようにします。
+
+#### Redis Server 起動
+* 事前準備の通り Redis サーバーを起動してください。
+```Shell
+docker run --rm --name test-server redis:6.2.3-alpine3.13
+```
+* ``` Ready to accept connections ``` と出ればOK このターミナルは開いたままにします
+* もし、ターミナルが閉じたり、Ctrl-C で終了してしまったら、再度 起動してください
+
+#### コンテナの中から実行する
+* どこか作業用のディレクトリを作成してそこに移動してください
+    ```Shell
+    mkdir iij_bootcamp_redis
+    cd iij_bootcamp_redis
+    ```
+
+* プログラムを置く場所として app ディレクトリを作成し その中にhello_world.py を作成してください
+    ```Python
+    print("Hello World!")
+    ```
+
+* 今いる場所から見ると app/hello_world.py が作られたはずです。
+    ```
+    $ cat app/hello_world.py
+    print("Hello World!")
+    ```
+
+* コンテナ の中から起動
+    * -v で app ディレクトリを コンテナの中では /app に マウントします。
+        ```Shell
+            docker run -it --rm -v `pwd`/app:/app python:3.9.5-slim-buster bash
+        ```
+    * ls -l で ファイルが有るか確認します。
+        ```Shell
+        コンテナ内 $: ls -l /app
+        total 4
+        -rw-rw-r-- 1 1000 1000 22 May 13 08:37 hello_world.py
+        ```
+    * python で起動します
+        ```Shell
+        コンテナ内: python /app/hello_world.py
+        Hello World!
+        ```
+
+* これで、 手元で書いたファイルを コンテナ内のPython から起動することができました。
+
 - 手元の適当なディレクトリに (Python の) スクリプトを作成します。仮に ~/app ディレクトリを使うとします
     - Python から Redis を扱うためのライブラリ [Redis Python Client](https://github.com/andymccurdy/redis-py) を pip でインストールする
 
