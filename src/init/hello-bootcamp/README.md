@@ -118,7 +118,7 @@ HTML ファイルが作成できたら、nginx の docker コンテナを以下�
 windows
 
 ```
-$ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%¥content,target=/usr/share/nginx/html,ro -d nginx
+$ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%/content,target=/usr/share/nginx/html,ro -d nginx
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 

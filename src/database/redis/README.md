@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: Redisの概要を学び、Pythonを使って実際に使ってみます。
 time: 1h
 prior_knowledge: なし
@@ -61,7 +61,14 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. さらに別のターミナルを開いて、python のイメージを確認する
+1. (最初に起動した Redis サーバは C-c とめられます)
+
+1. Python Clientから接続用のReidsサーバを起動する
+
+    ```Shell
+    docker run -d --rm --name test-server -p 6379:6379 redis:5
+    ```
+1. さらに別のターミナルを開いて、Pythonが使えるコンテナイメージを展開する
 
     * python container を起動
     ```Shell
@@ -95,6 +102,22 @@ prior_knowledge: なし
       1. redis server の起動
       1. redis-cli による redis の操作
       1. python からの redis の操作
+
+1. 参考: Redisを使ったGeospatial
+
+    ```Shell
+    test-server:6379> GEOADD sample-loc 139.700258 35.690921  "shinjuku-station"
+    (integer) 1
+    test-server:6379> GEOADD sample-loc 139.70121502876282 35.69271580036533  "shinjuku-alta"
+    (integer) 1
+    test-server:6379> GEOADD sample-loc 139.69163417816162 35.68947430993086 "tocho"
+    (integer) 1
+    test-server:6379> GEORADIUS sample-loc 139.700258 35.690921 500 m
+    1) "shinjuku-station"
+    2) "shinjuku-alta"
+    test-server:6379> GEODIST sample-loc shinjuku-station tocho
+    "795.2182"
+    ```
 
 ## あらすじ
 
@@ -276,12 +299,6 @@ docker pull jupyter/base-notebook
 docker run --rm --link test-server:redis -p 8888:8888 -v ~/app:/home/jovyan/work jupyter/base-notebook
 # メッセージを見て、ブラウザから localhost:8888 に接続する
 ```
-
-### Advanced: Dockerfile, docker-compose を使ってみよう
-
-- pip install redis をしなくてよいイメージを作成する
-- ~/app ディレクトリをマウントせず、コピーして実行してみる
-- Redis, Python コンテナが起動するように docker-compose 設定を作る
 
 ## 参考資料
 
