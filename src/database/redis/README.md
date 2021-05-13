@@ -171,6 +171,12 @@ prior_knowledge: なし
         - [decr](https://redis.io/commands/decr): 1引く
         - [incrby](https://redis.io/commands/incrby): n足す
         - [decrby](https://redis.io/commands/decrby): n引く
+    - リスト処理
+        - [rpush](https://redis.io/commands/rpush): 右に 要素を足す
+        - [rpop](https://redis.io/commands/rpop): 右から一つ取り出す。それは消える
+        - [lpush](https://redis.io/commands/lpush): 左に 要素を足す
+        - [lpop](https://redis.io/commands/lpop): 左から一つ取り出す。それは消える
+        - [lrange](https://redis.io/commands/lrange): 左から 決められた範囲を得る
     - まとめて操作
         - [mset](https://redis.io/commands/mset): まとめてセットする。上書きあり
         - [msetnx](https://redis.io/commands/msetnx): まとめてセットする。上書きなし
