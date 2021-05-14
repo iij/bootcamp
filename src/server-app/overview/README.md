@@ -283,8 +283,16 @@ RubyやPython、Javaなどのように実行環境をインストールする必
 
 ### オンプレミス
 
-### Docker, Kubernetes
+### クラウド
 
-### AWS, GCP
+### SaaS/IaaS/PaaS/CaaS/FaaS
+
+### AWS
+
+### GCP
+
+### Azure
+
+### その他
 
 <credit-footer/>
