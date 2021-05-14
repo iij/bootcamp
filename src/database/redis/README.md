@@ -210,7 +210,7 @@ prior_knowledge: なし
         - [setex](https://redis.io/commands/setex): n秒だけ使えるキーを宣言する (set + expire)
 
 - expiration(有効期限)
-    - [expire](https://redis.io/commands/setnx): 何秒後に消すか設定する。 DEL,SET 等の操作をすると クリアされる、 INCR の操作では クリアされない
+    - [expire](https://redis.io/commands/expire): 何秒後に消すか設定する。 DEL,SET 等の操作をすると クリアされる、 INCR の操作では クリアされない
     - [expireat](https://redis.io/commands/expireat): 何時になったら消すか設定する。
     - [persist](https://redis.io/commands/persist): 有効期限を 削除する (消えなくなる)
     - [ttl](https://redis.io/commands/ttl): 秒単位で消えるまでの時間を教えてくれる
