@@ -35,7 +35,7 @@ print "Content-type: text/html \n\n";
 print "<html>";
 print "<head><title>IIJ Bootcamp</title></head>";
 print "<body>";
-print "<p>Welcom to IIJ Bootcamp</p>";
+print "<p>Welcome to IIJ Bootcamp</p>";
 print "</body>";
 print "</html>";
 ```
@@ -81,6 +81,35 @@ print "</html>";
 ### Java Servlet (サーブレット)
 
 （1996年に初期バージョンが公開 1998年に最初の公式API仕様が確立 2001年にStrutsが登場)
+
+Java Servletの例
+
+```java
+package bootcamp;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class HelloServlet extends HttpServlet {
+  public void doGet (HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException {
+    PrintWriter pw = res.getWriter();
+
+    res.setContentType("text/html; charset=Shift_JIS");
+
+    pw.println("<html>");
+    pw.println("<head><title>IIJ Bootcamp</title></head>");
+    pw.println("<body>");
+    pw.println("<p>Welcome to IIJ Bootcamp</p>");
+    pw.println("</body>");
+    pw.println("</html>");
+  }
+}
+
+```
+
+JavaのテンプレートエンジンであるJSP(JavaServer Pages)の例
 
 ```java
 <%@ page contentType="text/html" %>
@@ -173,7 +202,7 @@ class HelloController < ApplicationController
 end
 ```
 
-1. 2004年、37signales社がbasecampというプロジェクト管理アプリケーションの実装に使用していたRuby on RailsというWebアプリケーションフレームワークを発表した。Railsは非常にインパクトのあるフレームワークで、以降のサーバサイドプログラミングの世界を一変させてしまった。
+1. 2004年、37signals社がbasecampというプロジェクト管理アプリケーションの実装に使用していたRuby on RailsというWebアプリケーションフレームワークを発表した。Railsは非常にインパクトのあるフレームワークで、以降のサーバサイドプログラミングの世界を一変させてしまった。
 2. その特徴を列挙すると以下のとおり。
    1. 2つの哲学。「同じことを繰り返さない DRY: Don't repeat yourself」「設定より規約 Convention over Configuration」
       - Strutsでは互いに関連し合う複雑な設定ファイルが多く必要だった
