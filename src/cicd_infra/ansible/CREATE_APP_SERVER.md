@@ -77,7 +77,7 @@ ansible-playbook -i inventory/hosts site.yml
 ```
 
 `failed=0`と表示されれば実行は成功です。
-ブラウザで<http://localhost:8080>にアクセスすると素朴な Web アプリケーションの画面が見えます。
+ブラウザで<http://localhost:18080>にアクセスすると素朴な Web アプリケーションの画面が見えます。
 また、下記コマンドでホストに対して実際にファイルがコピーされていることが確認できます。
 
 ```sh

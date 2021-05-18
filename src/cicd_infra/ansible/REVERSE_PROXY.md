@@ -4,17 +4,24 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 ## 5. リバースプロキシの導入/運用
 
-それではいよいよ本格的にAnsibleを活用してみます。
+それではいよいよ本格的に Ansible を活用してみます。
 さきほどのセクションで構築したデータベースとアプリケーションを流用に変更を加えてみます。
 
 現在の状態は、ブラウザから直接アプリケーションに`HTTP`でアクセスしている状態です。
-nginxを導入し、`HTTPS`でアクセスしてみましょう。
+nginx を導入し、`HTTPS`でアクセスしてみましょう。
 
-### ディレクトリ構造
+今回、新たに Reverse proxy サーバを構築するにあたっては
+既存の`site.yml`への追記が必要となります。
 
-その前にまず、ディレクトリ構造とそれぞれの役割について説明します。
-下記は教材のディレクトリ構造の一部抜粋です。
-Ansibleに関わるファイルやディレクトリのみを抜粋しています。
+前回までで記述ルールのいくつかはご説明致しましたが
+本格的に作業に取り組む前に一つ確認をしておきます。
+
+### Ansible playbook ディレクトリ構造
+
+作業に取りかかる前にまず、ディレクトリ構造を確認してみましょう。
+下記は教材のディレクトリ構造から Ansible に関わるファイルやディレクトリのみを抜粋しています。
+
+それぞれのファイル・ディレクトリに役割説明を記載しています。
 
 ```sh
 ├── ansible.cfg  # Ansibleの設定ファイル
@@ -42,23 +49,28 @@ Ansibleに関わるファイルやディレクトリのみを抜粋していま�
     └── proxy.yml  # Proxy配下でハンズオンを実施するためのファイル
 ```
 
-なぜ、このような構成にしているかと言うと、Ansibleではより多くの人たちが正しく仕えるように
-推奨の記述方式を定めています。
-ディレクトリ構成もその一部であり、詳しく知りたい人はAnsibleの[ベストプラクティス](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)をご覧ください。
+なぜ、このような構成にしているかと言うと、
+Ansible ではより多くの人たちが正しく仕えるように推奨の記述方式を定めています。
+
+ディレクトリ構成もその一部であり、Inventory や Role 等は Ansible を実行する上で
+それぞれのファイルを探すデフォルトパスになっていますので、よほどの理由が無い限り
+ベストプラクティスに沿って作成する事が推奨されます。
+
+詳しく知りたい人は Ansible の[ベストプラクティス](https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html)をご覧ください。
 
 ### ファイル編集
 
 それではファイルを作成してみましょう。
-TLSの証明書に加え、いくつかの設定ファイルはすでに用意してあります。
-皆さんには下記4つのファイルを編集してもらいます。
+TLS の証明書に加え、いくつかの設定ファイルはすでに用意してあります。
+皆さんには下記 4 つのファイルを編集してもらいます。
 
 #### roles/nginx/tasks/main.yml
 
-nginxを構築するためのタスクファイルです。
+nginx を構築するためのタスクファイルです。
 [公式ドキュメント](http://nginx.org/en/linux_packages.html#RHEL-CentOS)のインストール手順に加え、設定ファイルや証明書の配布を行っています。
 
-Ansibleはモジュールと呼ばれるものを使って、さまざまな処理を行います。
-Ansibleに組込み済みのモジュールは[公式ドキュメント](https://docs.ansible.com/ansible/latest/modules/list_of_all_modules.html)にリストアップされており、各モジュールごとの書き方が載っています。
+Ansible はモジュールと呼ばれるものを使って、さまざまな処理を行います。
+Ansible に組込み済みのモジュールは[公式ドキュメント](https://docs.ansible.com/ansible/latest/modules/list_of_all_modules.html)にリストアップされており、各モジュールごとの書き方が載っています。
 モジュールを自作して使うこともできますが、基本的には上記のサイトから行いたい処理に合ったモジュールを探し、タスクファイルを作ります。
 
 下記の内容を教材の`roles/nginx/tasks/main.yml`にコピーしましょう。
@@ -72,16 +84,14 @@ Ansibleに組込み済みのモジュールは[公式ドキュメント](https:/
   environment: "{{ proxy_env | default({}) }}"
 
 - name: add Nginx repository
-  yum_repository:
-    name: nginx-stable
-    description: 'nginx stable repo'
-    baseurl: http://nginx.org/packages/centos/$releasever/$basearch/
-    gpgkey: https://nginx.org/keys/nginx_signing.key
-    enabled: yes
+  copy:
+    src: "etc/yum.repos.d/nginx.repo"
+    dest: "/etc/yum.repos.d/nginx.repo"
+    mode: 0644
 
 - name: install Nginx
   yum:
-    name: "nginx-{{ nginx_version }}-1.el7.ngx.x86_64"
+    name: "nginx"
     state: present
   environment: "{{ proxy_env | default({}) }}"
   ignore_errors: "{{ ansible_check_mode }}"
@@ -126,24 +136,23 @@ Ansibleに組込み済みのモジュールは[公式ドキュメント](https:/
     enabled: yes
 ```
 
-nginxの構築に使用したモジュールの一覧は以下になります。
+nginx の構築に使用したモジュールの一覧は以下になります。
 
-|                                                    モジュール名                                                    | 説明                                                                                                                                                                            |
-| :----------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|                 [yum](https://docs.ansible.com/ansible/latest/modules/yum_module.html#yum-module)                  | yumコマンドを使ってRPMパッケージを操作できるモジュールです。                                                                                                                    |
-| [yum-repository](https://docs.ansible.com/ansible/latest/modules/yum_repository_module.html#yum-repository-module) | yumで使用するリポジトリを操作できるモジュールです。                                                                                                                             |
-|                [file](https://docs.ansible.com/ansible/latest/modules/file_module.html#file-module)                | 対象サーバのファイルシステムを操作できるモジュールです。<br>ディレクトリやファイルを作成/削除したり、ファイルのオーナーやパーミッションを変更できたりします。                   |
-|                [copy](https://docs.ansible.com/ansible/latest/modules/copy_module.html#copy-module)                | 対象サーバへファイルをコピーできるモジュールです。                                                                                                                              |
-|          [template](https://docs.ansible.com/ansible/latest/modules/template_module.html#template-module)          | 対象サーバへファイルをコピーできるモジュールです。`copy`との違いはファイル内に`Jinja2`テンプレートが使える点です。<br>ファイル内で変数を使いたい場合はこちらを使います。        |
-|           [systemd](https://docs.ansible.com/ansible/latest/modules/systemd_module.html#systemd-module)            | [systmed](https://wiki.archlinux.jp/index.php/Systemd)によって管理されるプロセスを操作できるモジュールです。<br>基本的にはLinux環境でプロセスを常駐させる場合はこれを使います。 |
+|                                           モジュール名                                           | 説明                                                                                                                                                                              |
+| :----------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|        [yum](https://docs.ansible.com/ansible/latest/modules/yum_module.html#yum-module)         | yum コマンドを使って RPM パッケージを操作できるモジュールです。                                                                                                                   |
+|       [file](https://docs.ansible.com/ansible/latest/modules/file_module.html#file-module)       | 対象サーバのファイルシステムを操作できるモジュールです。<br>ディレクトリやファイルを作成/削除したり、ファイルのオーナーやパーミッションを変更できたりします。                     |
+|       [copy](https://docs.ansible.com/ansible/latest/modules/copy_module.html#copy-module)       | 対象サーバへファイルをコピーできるモジュールです。                                                                                                                                |
+| [template](https://docs.ansible.com/ansible/latest/modules/template_module.html#template-module) | 対象サーバへファイルをコピーできるモジュールです。`copy`との違いはファイル内に`Jinja2`テンプレートが使える点です。<br>ファイル内で変数を使いたい場合はこちらを使います。          |
+|  [systemd](https://docs.ansible.com/ansible/latest/modules/systemd_module.html#systemd-module)   | [systmed](https://wiki.archlinux.jp/index.php/Systemd)によって管理されるプロセスを操作できるモジュールです。<br>基本的には Linux 環境でプロセスを常駐させる場合はこれを使います。 |
 
 #### roles/nginx/templates/etc/nginx/conf.d/app.conf.j2
 
-nginxの設定ファイルです。
+nginx の設定ファイルです。
 ファイル内で変数を使用しているので`templates`下に配置しています。
 
 分かりやすさのために、配置するディレクトリをコピー先のパスと同じにしています。
-Ansibleやサーバの構築/運用に慣れないうちは、こうしておくことをお勧めします。
+Ansible やサーバの構築/運用に慣れないうちは、こうしておくことをお勧めします。
 
 下記の内容を教材の`roles/nginx/templates/etc/nginx/conf.d/app.conf.j2`にコピーしましょう。
 
@@ -182,13 +191,13 @@ server {
 }
 ```
 
-nginxの設定について説明することは主題から外れるので、この講義では行いません。
-興味のある人はnginxの[公式ドキュメント](http://nginx.org/en/docs/http/configuring_https_servers.html)をご覧ください。
+nginx の設定について説明することは主題から外れるので、この講義では行いません。
+興味のある人は nginx の[公式ドキュメント](http://nginx.org/en/docs/http/configuring_https_servers.html)をご覧ください。
 
 #### playbooks/rp.yml
 
-nginxを構築するための実行ファイルです。
-対象サーバとロールを指定することで、指定したサーバにnginxを構築できます。
+nginx を構築するための実行ファイルです。
+対象サーバとロールを指定することで、指定したサーバに nginx を構築できます。
 
 下記の内容を教材の`playbooks/rp.yml`にコピーしましょう。
 
@@ -215,19 +224,10 @@ nginxを構築するための実行ファイルです。
 
 ### 実行
 
-さて、ファイルがすべて準備できたらいよいよAnsibleを実行します。
-
-さきほど紹介したとおり、まずは`-C（--check）`オプションを付け、`dryrun`により結果を確認しましょう。
+さて、ファイルがすべて準備できたらいよいよ Ansible を実行します。
 
 ```sh
-ansible-playbook -C site.yml
-```
-
-`failed=0`の表示があれば実行は成功です。
-`-C（--check）`オプションを外し、本実行を行いましょう。
-
-```sh
-ansible-playbook site.yml
+ansible-playbook -i inventories/hosts site.yml
 ```
 
 `failed=0`と表示されれば実行は成功です。
@@ -237,27 +237,27 @@ ansible-playbook site.yml
 すると、さきほどと同じ画面が表示されます。
 
 ここで、もう一つ注目してほしい部分があります。
-Ansibleの実行ログを眺めると、データベースやJavaアプリケーションの構築用のタスクもステータスが`ok`の状態で、実行されているのが分かると思います。
-またさきほど実行した`ansible-playbook site.yml`をもう一度実行すると、nginxの構築タスクも含め、すべてのタスクのステータスが`ok`になります。
+Ansible の実行ログを眺めると、データベースや Java アプリケーションの構築用のタスクもステータスが`ok`の状態で、実行されているのが分かると思います。
+またさきほど実行した`ansible-playbook site.yml`をもう一度実行すると、nginx の構築タスクも含め、すべてのタスクのステータスが`ok`になります。
 
 ある操作を何回行っても等価であるとき、その操作を`冪等`であると言います。
-**Ansibleの良さの1つがこの`冪等`性です。**
-基本的にAnsibleは同じタスクを何回実行しても、差分のないタスクは実行されません。
+**Ansible の良さの 1 つがこの`冪等`性です。**
+基本的に Ansible は同じタスクを何回実行しても、差分のないタスクは実行されません。
 すなわち、ファイルを変更しない限りホストに対して余計な変更が加わらず、安全です。
 
 しかしこの`冪等`性は意識していないと壊れてしまう場合があります。
-Ansibleを使うときは`冪等`性に注意を払いましょう。
+Ansible を使うときは`冪等`性に注意を払いましょう。
 
-## 3. [ケース2] バージョンアップ & スケーリング
+## 3. [ケース 2] バージョンアップ & スケーリング
 
-さて、nginxを導入して初期構築タスクを自動化できました。
+さて、nginx を導入して初期構築タスクを自動化できました。
 次は変数やホスト情報を編集して、運用タスクを自動化してみましょう。
 
 ### バージョンアップ
 
-まずはnginxのバージョンアップをしてみましょう。
+まずは nginx のバージョンアップをしてみましょう。
 
-さきほどインストールされたnginxのバージョンは少し古めの`1.16.1`です。
+さきほどインストールされた nginx のバージョンは少し古めの`1.18.0-1`です。
 このバージョンは`roles/nginx/defaults/main.yml`に`nginx_version`という変数として定義されています。
 また、下記のコマンドを実行することで、確認することもできます。
 
@@ -265,39 +265,23 @@ Ansibleを使うときは`冪等`性に注意を払いましょう。
 ansible rp1 -m command -a 'nginx -V'
 ```
 
-これを`1.18.0`にアップデートしてみたいと思います。
+これを`1.20.0-1`にアップデートしてみたいと思います。
 教材の`inventories/group_vars/all.yml`に下記を追記しましょう。
 
 ```yml
-nginx_version: 1.18.0
+nginx_version: 1.20.0
 ```
 
-Ansibleには変数の優先度が設定されており、同じ名前の変数は優先度の高いほうが有効になります。
+Ansible には変数の優先度が設定されており、同じ名前の変数は優先度の高いほうが有効になります。
 これを利用することでロールの完全性を担保しつつ、タスクの内容を編集できます。
 
 具体的な優先度は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable)をご覧ください。
 
-ファイルの準備ができたらAnsibleを実行します。
-さきほどと同様に`ansible-playbook -C site.yml`を実行しても良いですが、
-実行したいのはnginxのタスクだけですので、データベースやアプリケーションのタスクは余計です。
-
-そこで実行コマンドを下記に変更します。
+ファイルの準備ができたら Ansible を実行します。
 
 ```sh
-ansible-playbook -C site.yml -t nginx
+ansible-playbook -i inventories/hosts site.yml
 ```
-
-すると、さきほどまで実行されていたデータベースやアプリケーション構築のタスクは実行されず、nginxの構築タスクだけが実行されます。
-また`changed=1`となり、nginxのインストールのタスクだけが変更されることが確認できます。
-
-Ansibleにはタグという機能があり、タスクやロールなどに任意の値を設定できます。
-これを利用することで、Ansible実行時に任意のタスクのみを実行する/しないことができます。
-実はさきほどの`playbooks/rp.yml`にタグが設定してありました。
-
-タグは増やしすぎても管理がたいへんになるので、ある程度のまとまりやよく使うタスクにのみ付与するのが良いでしょう。
-タグの詳細については[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)をご覧ください。
-
-`failed=0`という表示が確認できたら`-C（--check）`のオプションを外し、上記コマンドを実行しましょう。
 
 本実行が完了したら、さきほどの確認コマンドを実行してバージョンが上がったことを確認してみましょう。
 
@@ -308,11 +292,11 @@ ansible rp1 -m command -a 'nginx -V'
 ### スケールアップ
 
 次はアプリケーションサーバをスケールアップ（増設）してみましょう。
-と言っても増設用のサーバはすでにコンテナとして起動してあるので、皆さんがすべきことは下記2つのファイルの編集です。
+と言っても増設用のサーバはすでにコンテナとして起動してあるので、皆さんがすべきことは下記 2 つのファイルの編集です。
 
 #### inventories/hosts
 
-まずはAnsibleの管理対象にアプリケーション増設用のサーバ（app2）を追加します。
+まずは Ansible の管理対象にアプリケーション増設用のサーバ（app2）を追加します。
 教材の`inventories/hosts`を下記のように追記してください。
 
 ```diff
@@ -323,11 +307,11 @@ app1
 
 これで`app`グループの中に`app2`サーバを追加できました。
 
-Ansibleには管理対象のホストをグルーピングし、設定したグループ単位でAnsibleを実行したり、変数を設定できたりします。
+Ansible には管理対象のホストをグルーピングし、設定したグループ単位で Ansible を実行したり、変数を設定できたりします。
 こうすることで、柔軟かつ効率的にサーバを管理できます。
-この講義ではそれぞれ1台しかありませんが、データベースサーバやリバースプロキシサーバもグループに分けられています。
+この講義ではそれぞれ 1 台しかありませんが、データベースサーバやリバースプロキシサーバもグループに分けられています。
 
-Ansibleのグループやホストについての詳細は[公式ドキュメント](hhttps://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)をご覧ください。
+Ansible のグループやホストについての詳細は[公式ドキュメント](hhttps://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#inventory-basics-formats-hosts-and-groups)をご覧ください。
 
 #### inventories/group_vars/all.yml
 
@@ -342,42 +326,42 @@ nginx_backends:
 +   port: "{{ server_port }}"
 ```
 
-これはnginxが通信を経由させるサーバのリストを格納している変数です。
-ここに新しく`app2`サーバの情報を追記することで、nginxが`app2`サーバにも通信を流してくれます。
+これは nginx が通信を経由させるサーバのリストを格納している変数です。
+ここに新しく`app2`サーバの情報を追記することで、nginx が`app2`サーバにも通信を流してくれます。
 
-nginxはロードバランサ（負荷分散装置）としての機能も備えているので、
+nginx はロードバランサ（負荷分散装置）としての機能も備えているので、
 こうすることで今まで`app1`サーバにしかいかなかった通信が`app2`にも行くようになり、負荷を分散できます。
 
-nginxの機能について詳しく説明することは主題から外れてしまいますので、この講義では行いません。
-さらに詳しく知りたい人はnginxの[公式ドキュメント](http://nginx.org/en/docs/http/load_balancing.html)をご覧ください。
+nginx の機能について詳しく説明することは主題から外れてしまいますので、この講義では行いません。
+さらに詳しく知りたい人は nginx の[公式ドキュメント](http://nginx.org/en/docs/http/load_balancing.html)をご覧ください。
 
 #### 実行
 
-さて、ファイルの準備ができたらAnsibleを実行します。
-もうお馴染みとなった下記コマンドを実行します。
+さて、ファイルの準備ができたら Ansible を実行します。
+今回は事前にチェックを行ってみましょう。
 
 ```sh
 ansible-playbook -C site.yml
 ```
 
 `dryrun`で結果を確認すると、新たに`app2`サーバが増えていることが確認できます。
-また、nginxの設定ファイルの差分も確認できるはずです。
+また、nginx の設定ファイルの差分も確認できるはずです。
 
 `failed=0`と表示されていれば問題ありません。
 `-C（--check）`のオプションを外し、本実行を行いましょう。
 
 コマンドが終了したら、ブラウザで<https://localhost:8443>にアクセスして確認してみましょう。
 
-このWebアプリケーションは動作しているサーバのホスト名を画面に表示しています。
+この Web アプリケーションは動作しているサーバのホスト名を画面に表示しています。
 新しくブラウザを開き<https://localhost:8443>にアクセスすると、ホスト名の表記が変わっているはずです。
 
-これにより、nginxが正常に負荷を分散してくれていることが確認できます。
+これにより、nginx が正常に負荷を分散してくれていることが確認できます。
 
 ここで、もう一つ注目していただきたいところがあります。
-Ansibleの実行ログの中に、`RUNNING HANDLER`という表記が確認できると思います。
+Ansible の実行ログの中に、`RUNNING HANDLER`という表記が確認できると思います。
 さきほどと同じ様に`ansible-playbook site.yml`と実行した場合、この表記がなくなると思います。
 
-これはAnsibleのハンドラという機能になります。
+これは Ansible のハンドラという機能になります。
 これは、ハンドラを設定したタスクが`changed`のときにのみ実行されるタスクを設定できる機能です。
 実際に実行されるタスクは各ロールの`handlers/main.yml`に書かれています。
 
@@ -386,45 +370,33 @@ Ansibleの実行ログの中に、`RUNNING HANDLER`という表記が確認で�
 
 詳細は[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change)をご覧ください。
 
-## 4. [応用課題] ACLの導入
-
-応用課題として、全サーバにACL（Access Control List）を導入してみましょう。
-
-ACLとは、通信の（不）許可を設定することで、サーバのセキュリティレベルを高める手法のひとつです。
-多くのプロダクション環境のサーバではACLが設定され、セキュリティレベルを高めています。
-
-この講義で使用したサーバのここまでの状態は、どんな通信でも許可してしまうセキュリティ的には脆弱な状態です（ローカル環境ですので攻撃されたりすることはありません）。
-
-そこで、ACLの実装のひとつである[iptables](https://linuxjm.osdn.jp/html/iptables/man8/iptables.8.html)を導入し、サーバのセキュリティレベルを向上させましょう。
-
-教材の`roles/iptables`にロールのひな型を用意しておきました。
-このひな型を利用/編集して、全サーバにACLを導入できる様にしてみましょう。
-
-また、以下の表の通りに各サーバのポートを許可しましょう。
-適切にポートを許可しなかった場合、Web画面が正常に表示されなくなります。
-
-| サーバ名 | グループ名 | 許可ポート |
-| :------: | :--------: | :--------: |
-|   db1    |     db     |    3306    |
-| app[1,2] |    app     |    8080    |
-|   rp1    |     rp     |    8443    |
-
-### ヒント
-
-いくつかヒントを載せておきます。
-
-1. CentOS7で`iptables`をインストールする場合は`yum`で`iptables-services`をインストールする
-2. 設定ファイルは`/etc/sysconfig/iptables`
-3. Ansibleのすべての管理対象サーバは`all`グループに自動的に属している
-4. 各グループの変数は`inventories/group_vars/<group_name>.yml`で設定できる
-5. まずは`roles/iptables`の中身を確認してみるとよいでしょう
-
 ### 解答例
 
-[教材のsolutionブランチ](https://github.com/iij/ansible-exercise/tree/solution)が解答例になっています。
+[教材の solution ブランチ](https://github.com/iij/ansible-exercise/tree/solution)が解答例になっています。
 この解答例以外にも多くの実現方法がありますが、参考にしてもらえればと思います。
 
 他のファイルについても、この講義を受けた後の最終的なファイルの内容になっています。
 ハンズオンを進める中でつまずくことがあれば、参考にしてもらえればと思います。
+
+### コラム 特定の playbook のみ実行する
+
+Ansible には冪等性を担保する為の仕組みが備わっているというのは記述したとおりです。
+しかしながら、実行する前から不要と分かっている作業まで読み込ませ、Ansible に実行判断を任せるというのは
+万が一を気にする運用の場では不安を感じたり、処理時間が惜しいと感じることもあるでしょう。
+
+Ansible ではそのような際に、実行タスクを分けて実行する事も可能になっています。
+今回のケースでは以下のように実行する事で nginx のみのタスクだけ実行する、といった事が可能になります。
+
+```sh
+ansible-playbook -C site.yml -t nginx
+```
+
+これはどのように実行しているのでしょうか。
+実は Ansible には`タグ`という機能があり、タスクやロールなどに任意の値（タグ）を付けることができます。
+これを利用することで、Ansible 実行時に任意のタスクのみを実行する/しないことができます。
+実はさきほどの`playbooks/rp.yml`にタグが設定してありました。
+
+タグは増やしすぎても管理がたいへんになるので、ある程度のまとまりやよく使うタスクにのみ付与するのが良いでしょう。
+タグの詳細については[公式ドキュメント](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)をご覧ください。
 
 <credit-footer/>
