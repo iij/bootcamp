@@ -344,3 +344,166 @@ site-80とsite-81がランダムで表示されたでしょうか。
 - ApacheとnginxそれぞれにBasic認証を導入し、アクセスした時にユーザー名とパスワードの入力を求められるようにしてください。
 - ブラウザで動作確認ができたら、次は`curl`コマンドでアクセスしてBasic認証がどのように動作するか確認してください。
 
+### Pythonアプリを動かしてみよう
+
+Pythonで書かれたWebアプリをApache経由で動かす設定を作ってみます。
+このdocker imageには既にpythonがインストールされています。
+
+```sh
+python --version
+#Python 3.8.2
+```
+
+Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
+これはPython側のインタフェースを規定することで、他のプログラム(今回の場合Apache)から呼び出しやすくする物です。
+
+あとでやるDjangoなど主要なPythonフレームワークはこのAPIに従っているため、Djangoで作成したアプリは今回と同じ手順でApacheから実行することができます。
+
+以下のようなPythonコードを`/var/www/html/site-80`以下に置いておきましょう。
+
+`vim /var/www/html/site-80/app.py`
+
+```python
+def application(environ, start_response):
+    status = '200 OK'
+    output = b'Hello! This is python application!'
+
+    response_headers = [('Content-type', 'text/plain'),
+                        ('Content-Length', str(len(output)))]
+    start_response(status, response_headers)
+    return [output]
+```
+
+次にwsgiを動かすためのApache moduleをインストールします。
+
+```sh
+pip install mod-wsgi
+
+#Collecting mod-wsgi
+#  Using cached mod_wsgi-4.7.1.tar.gz (498 kB)
+#Building wheels for collected packages: mod-wsgi
+#  Building wheel for mod-wsgi (setup.py) ... done
+#  Created wheel for mod-wsgi: filename=mod_wsgi-4.7.1-cp38-cp38-linux_x86_64.whl size=809821 sha256=570b19e67813e819f04ee00006b5c556339e37a03dea4af0021837b098588c0d
+#  Stored in directory: /root/.cache/pip/wheels/e9/82/71/1b42d6274a24af477453cecc993213fc8abd15433d80b01e93
+#Successfully built mod-wsgi
+#Installing collected packages: mod-wsgi
+#Successfully installed mod-wsgi-4.7.1
+```
+
+インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
+
+```sh
+ls /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+```
+
+このファイルを読み込むように、`vim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
+
+```xml
+LoadModule wsgi_module /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+```
+
+moduleを有効化しておきます。
+
+```sh
+a2enmod wsgi
+```
+
+準備が整ったのでsite-80に先ほどのPythonアプリケーションを読み込ませましょう。
+`vim /etc/apache2/sites-available/site-80.conf`
+
+```xml
+<VirtualHost *:80>
+  DocumentRoot /var/www/html/site-80
+  WSGIScriptAlias /app /var/www/html/site-80/app.py
+</VirtualHost>
+```
+
+最後にApacheをリスタートします。
+
+```sh
+service apache2 restart
+```
+
+`http://localhost:8080/app` にアクセスしてみてください。`Hello! This is python application!` が表示されるでしょうか。
+
+うまくいったら`app.py`を適当に変更して、Pythonが動的に実行されているのを確認してください。
+
+またnginxから同様のアプリケーションを動かせるようにしてみてください。
+
+### パフォーマンス測定
+
+ApacheにはApache Benchというパフォーマンス測定ツールがついています。これを使ってMPMの違いがどのようにパフォーマンスに影響するか確認してみましょう。
+
+Apache Benchは`ab`コマンドで使用できます。試しに先ほどのPythonアプリケーションのパフォーマンスを測定してみましょう。
+
+```sh
+ab -n 1000 -c 100 localhost:80/app
+```
+
+これは`localhost:80/app`に対して合計10000リクエストを同時に100ずつ実行するコマンドです。
+実行結果には成功したリクエスト数や処理時間など、分析に使える情報が書かれています。
+
+同時に1000リクエストを投げても、この時点では捌けていると思います。
+
+```sh
+ab -n 1000 -c 1000 localhost:80/app
+```
+
+これだけでは面白くないので、pythonアプリにわざとディレイを入れてみましょう。
+
+`vim /var/www/html/site-80/app.py`
+
+```python
+import time
+
+def application(environ, start_response):
+    time.sleep(3)
+
+    status = '200 OK'
+    output = b'Hello! Thisa is python application!'
+
+    response_headers = [('Content-type', 'text/plain'),
+                        ('Content-Length', str(len(output)))]
+    start_response(status, response_headers)
+    return [output]
+```
+
+保存したらもう一度
+
+```sh
+ab -n 1000 -c 1000 localhost:80/app
+```
+
+を試してみましょう。理論上は3秒で全部のリクエストが成功するはずですがどうでしょうか。
+さらにもっと数を増やすとどうでしょうか。
+
+他にも色んなことを試してみてください。
+
+- psコマンドでApacheのプロセスを確認して、リクエスト中に何が起こってるのか確認しましょう。
+  - apache の再起動直後とパフォーマンス測定後の変化を見てみましょう
+- `/var/log/apache2/error.log` を確認してみましょう
+- MPM(Multi-Processing-Module)をpreforkやworkerに変えるとどうなるでしょうか
+- MPMの設定を変えてパフォーマンスチューニングをしてみましょう
+
+### 補足: MPMの変更
+
+現在のMPMの確認
+
+```sh
+apachectl -V | grep MPM
+
+#Server MPM:     event
+```
+
+MPMをpreforkに変更する。
+
+```sh
+a2dismod mpm_event
+a2enmod mpm_prefork
+service apache2 restart
+apachectl -V | grep MPM
+
+#Server MPM:     prefork
+```
+
+<credit-footer/>
