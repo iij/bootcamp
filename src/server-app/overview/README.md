@@ -19,8 +19,8 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
    8. Go
 2. アプリケーションとインフラ
    1. オンプレミス
-   2. Docker, Kubernetes
-   3. AWS, GCP
+   2. クラウドサービス
+   3. 主なクラウドサービス
 
 ## 開発言語・スタイルの変遷
 
@@ -312,16 +312,107 @@ RubyやPython、Javaなどのように実行環境をインストールする必
 
 ### オンプレミス
 
-### クラウド
+サーバー等の機器を購入(又はリース)し、自社内やデータセンターに設置して運用することを指す。
 
-### SaaS/IaaS/PaaS/CaaS/FaaS
+初期投資コスト、機器リプレイス等による運用コスト、調達時間が多くかかるデメリットがあるが、全て自社内での管理になるためカスタマイズを自由に行うことが出来るメリットがある。
 
-### AWS
+### クラウドサービス
 
-### GCP
+インターネットを経由して、ITリソースをオンデマンドで利用できるサービスを指す。
 
-### Azure
+初期投資コストや調達時間は不要で、必要な時に必要な分だけ即利用出来るメリットがある。
 
-### その他
+反面、クラウド事業者が提供するサービスに依存することになり、ベンダーロックインのリスクがある。
+
+オンプレミスに無い概念として「リージョン」「ゾーン」が存在する。
+リージョンによっては料金、提供しているサービスが異なる場合があるため、用途に応じて慎重な選択が必要。
+- リージョン ・・・ データセンターが設置されている地域。日本や北米など国、州レベルで分かれている。
+- ゾーン ・・・ リージョンを物理的に細分化した単位。複数のゾーンに分散させることで災害対策が可能。
+
+![cloud-region-zone](./cloud-region-zone.png "cloud-region-zone")
+
+
+#### 主なクラウドサービスの種類
+
+- **SaaS**
+  - 読み (サーズ)
+  - **Software as a Service** の略。ソフトウェアをサービスとして提供。
+  - インストールが不要で、プラットフォームを問わないマルチデバイスで利用可能。
+  - 主なSaaS
+    - GMail、Slack、Office Online 等
+- **IaaS**
+  - 読み (イアース)
+  - **Infrastructure as a Service** の略。サーバーやストレージ等のハードウェアリソースをサービスとして提供。
+  - 機器の購入や設置が不要で、CPUやメモリなど構成を自由に選択可能。またリソースの増減も容易に出来る。
+  - 仮想マシンの立ち上げとなるため起動に時間がかかる。
+  - 主なIaaS
+    - Amazon EC2、Google Compute Engine、Azure Virtual Machines 等
+- **PaaS**
+  - 読み (パース)
+  - **Platform as a Service** の略。アプリケーションを実行するためのプラットフォームをサービスとして提供。
+  - アプリケーションを実行するに必要なハードウェア、ネットワーク、OS、ミドルウェア、実行環境が用意されており、プログラムを準備するだけで手軽にサービスを提供出来る。
+  - 反面、構成が決められているため柔軟性に欠ける場合がある。
+  - 主なPaaS
+    - AWS Elastic Beanstalk、Google App Engine、Heroku 等
+- **CaaS**
+  - 読み (カース)
+  - **Container as a Service** の略。コンテナ管理・実行環境(コンテナオーケストレーション)をサービスとして提供。
+  - コンテナ技術を使用するため、IaaSよりも高速に立ち上がり、PaaSよりも柔軟な構成が可能。
+  - 主なCaaS
+    - Amazon EKS、Amazon ECS、Google Kubernetes Engine 等
+- **FaaS**
+  - 読み (ファーズ)
+  - **Function as a Service** の略。関数の管理・実行環境をサービスとして提供。
+  - ハードウェア、ネットワークなどのインフラ管理をクラウド業者に任せ、開発者は業務に必要な処理のみに集中出来る。
+  - イベントドリブンで動作し、イベントが発生した時に処理が実行される。
+  - 主なFaaS
+    - AWS Lambda、Google Cloud Functions、Azure Functions 等
+
+![cloud-service](./cloud-service.png "cloud-service")
+
+
+### 主なクラウドサービス
+#### Amazon Web Services (AWS)
+
+![cloud-aws](./cloud-aws.png "cloud-aws")
+
+- Amazonが提供するクラウドサービス。現在シェア1位。
+- 2006年に最初のサービス(SQS)をリリース、2021年時点で200個を超えるサービスを提供している。
+- 25のリージョン、80のゾーンが利用可能。
+- Amazonのプライムデーやサイバーマンデー等で急増するトラフィックを支えている。
+- 主なサービス
+  - Amazon EC2、AWS Lambda、Amazon S3、Amazon RDS、Amazon DynamoDB、Amazon VPC
+
+
+#### Google Cloud Platform (GCP)
+
+![cloud-gcp](./cloud-gcp.png "cloud-gcp")
+
+- Googleが提供するクラウドサービス。現在シェア3位。
+- 2008年に最初のサービス(GAE)をリリース、2021年時点で90個を超えるサービスを提供している。
+- 25のリージョン、76のゾーンが利用可能。
+- 膨大な計算を必要とするGoogleのインフラを支えている。
+- 主なサービス
+  - Compute Engine、Cloud Functions、Cloud Storage、Cloud SQL、Cloud Bigtable、Virtual Private Cloud
+
+#### Microsoft Azure
+
+![cloud-azure](./cloud-azure.png "cloud-azure")
+
+- Microsoftが提供するクラウドサービス。現在シェア2位。
+- 2010年に最初のサービス(Azure)をリリース、2021年時点で200個を超えるサービスを提供している。
+- 60を超えるリージョンが利用可能。
+- Microsoft製品との親和性が高く、Microsoft製品を使ってきた企業・ユーザーは学習コストが少なく済む。
+- 主なサービス
+  - Azure Virtual Machines、Azure Functions、Azure Blob Storage、Azure SQL Database、Azure Cosmos DB、Azure Virtual Network
+
+#### その他
+
+- Alibaba Cloud
+  - Alibabaが提供するクラウドサービス。現在シェア4位。
+- IBM Cloud
+  - IBMが提供するクラウドサービス。現在シェア5位。
+- Oracle Cloud
+  - Oracleが提供するクラウドサービス。
 
 <credit-footer/>
