@@ -6,7 +6,7 @@ GoでWebアプリケーションを作る(下準備編)
 ## 講義利用物(配布しているDockerImageに含まれています)
 * [Go](https://golang.org/)
 * curl
-* エディタ(いずれか1つ)
+* エディタ(いずれか1つ使えれば大丈夫です)
 	* vim-nox
 	* emacs-nox
 	* nano
