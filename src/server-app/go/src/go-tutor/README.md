@@ -42,3 +42,11 @@
 	* `docker rmi <username>/go-tutor:<version>`
 2. その他 作業中のdockerimage
 	* `make clean`
+
+## 6. リンクの更新
+
+* 講義[GoでWebアプリケーションを作る](../../) で、参照しているpathを書き換えます
+* 本手順作成時点で確認しているpathは、以下です
+	* [GoでWebアプリケーションを作る(下準備編)](../../var/md/init.md)
+		* docker pullしてくる対象のimage名
+
