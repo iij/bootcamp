@@ -25,5 +25,5 @@ RUN cd /opt && wget -nv --show-progress --progress=bar:force:noscroll https://go
     mkdir /.cache && \
     chmod 777 /.cache
 
-WORKDIR ${GOPATH}
 ADD ./samples /go/src/samples/
+WORKDIR ${GOPATH}/samples/
