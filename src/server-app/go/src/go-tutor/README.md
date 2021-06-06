@@ -27,7 +27,7 @@
 	* `docker login`
 2. 任意のimage idを確認しておく
 	* `docker images`
-	* 1つも作成されていない場合は、`1. dev` で作成
+	* 1つも作成されていない場合は、`3. image更新やら試験` をすると作成されます
 3. tag付け
 	* `docker tag <image id> <username>/go-tutor:<version>`
 		* `<imaege id>`
