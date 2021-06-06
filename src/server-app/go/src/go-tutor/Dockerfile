@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
     apt install -y curl wget tzdata language-pack-ja-base language-pack-ja && \
-    apt-get -y install vim-nox emacs-nox curl sqlite3 locales && \
+    apt-get -y install vim-nox emacs-nox nano curl sqlite3 locales && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
