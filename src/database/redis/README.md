@@ -359,8 +359,10 @@ docker exec -it test-server redis-cli
     >>> conn = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
     >>> r.ping()
     True
+    ```
 
     * 事前準備ではここまででした。 それでは実際にこの対話式UIを利用して redis へ書き込みをしてみましょう
+
     ```
     // 複数データセット: mset コマンド
     >>> conn.mset({'key1': 'value1', 'key2': 'value2'})
