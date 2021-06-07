@@ -273,9 +273,42 @@ prior_knowledge: なし
 
 * これで、 手元で書いたファイルを コンテナ内のPython から起動することができました。
 
-- 手元の適当なディレクトリに (Python の) スクリプトを作成します。仮に ~/app ディレクトリを使うとします
-    - Python から Redis を扱うためのライブラリ [Redis Python Client](https://github.com/andymccurdy/redis-py) を pip でインストールする
+#### Redis Server 起動
+* 事前準備の通り Redis Server を起動してください。
+```Shell
+docker run --rm --name test-server redis:6.2.3-alpine3.13
+```
+* ``` Ready to accept connections ``` と出ればOK このターミナルは開いたままにします。
+* もし、ターミナルが閉じたり、Ctrl-C で終了してしまったら、再度 起動してください
 
+#### Redis Server 接続
+* Redis には redis-cli という ツールが有ります。 事前準備では ping などを試しました。
+  * 他にも どんな動きがRedis に対して実行されているか知ることができる機能があるので起動しましょう
+  * ref: https://redis.io/topics/notifications
+```Shell
+# ネットワーク越し 別コンテナ
+docker run -it --link test-server:redis --rm redis:6.2.3-alpine3.13 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+
+# 直接 乗り込んで起動
+docker exec -it test-server redis-cli
+```
+
+* エラーメッセージ以外のすべてを通知するように設定
+```
+127.0.0.1:6379> config set 'notify-keyspace-events' AKE
+```
+
+* すべてのキーに対して通知を購読
+```
+127.0.0.1:6379> psubscribe '__key*__:*'
+```
+
+* 最初は真っ黒のままです。 何かしら redis に対して操作を行うと どんなことを行ったのか画面に表示されるようになります。
+* 今は開きっぱなしにしましょう
+
+#### コンテナの中から Redis Server へ接続
+* 次に Redis へ接続するコードを書いてみます。
+    - 再度、Pythonのコンテナを起動します。 先ほどと同様 iij_bootcamp_redis の中から実行してください。
     ```Shell
     docker run -it --link test-server:redis --rm --name test-python -v `pwd`/app:/app python:3.9.5-slim-buster bash
     ```
