@@ -345,10 +345,72 @@ docker exec -it test-server redis-cli
     REDIS_ENV_REDIS_DOWNLOAD_SHA=2139009799d21d8ff94fc40b7f36ac46699b9e1254086299f8d3b223ca54a375
     REDIS_ENV_GOSU_VERSION=1.10
     REDIS_ENV_REDIS_VERSION=5.0.5
-    root@24108149af23:/app#
     ```
 
-- ~/app ディレクトリにプログラムを作って、上記の Shell で実行してみましょう。
+- Python には 事前準備にも使った対話式のUIがあります。
+    * 起動
+    ```Shell
+    コンテナ内部: $ python
+    ```
+
+    * ping してみる。
+    ```
+    >>> import os, redis
+    >>> conn = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
+    >>> r.ping()
+    True
+
+    * 事前準備ではここまででした。 それでは実際にこの対話式UIを利用して redis へ書き込みをしてみましょう
+    ```
+    // 複数データセット: mset コマンド
+    >>> conn.mset({'key1': 'value1', 'key2': 'value2'})
+    True
+
+    // 複数データゲット: mget コマンド
+    >>> conn.mget(['key1', 'key2'])
+    [b'value1', b'value2']
+    ```
+    ```
+    // 複数データセット,ゲットを別手法でやってみる : mset,mget,scan コマンド
+    >>> keys = conn.scan(match='key*')
+    >>> values_1 = conn.mget(keys[1])
+    >>> print(values_1)
+    [b'value1', b'value2']
+
+    // データを追加して
+    >>> conn.mset({'key1': 'value1', 'key2': 'value2', 'id1': 'ichiro', 'id2': 'jiro'})
+
+    // key から始まるキーに紐づく値
+    >>> keys = conn.scan(match='key*')
+    >>> values_1 = conn.mget(keys[1])
+    >>> print(values_1)
+    [b'value1', b'value2']
+
+    // id から始まるキーに紐づく値
+    >>> keys = conn.scan(match='id*')
+    >>> all_id = conn.mget(keys[1])
+    >>> print(all_id)
+    [b'ichiro', b'jiro']
+    ```
+
+    ```
+    // 複数データ削除: delete コマンド
+    >>> _, keys = conn.scan(match='key*')
+    >>> print(conn.mget(keys))
+    [b'value1', b'value2']
+
+    >>> ret = conn.delete(*keys)
+
+    >>> print(conn.mget(keys))
+    [None, None]
+
+    // もちろん消してないやつは消えていない
+    >>> _, keys = conn.scan(match='id*')
+    >>> print(conn.mget(keys))
+    [b'ichiro', b'jiro']
+    >>>
+    ```
+
 
 #### 要素を入れてみる
 
