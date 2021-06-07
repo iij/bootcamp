@@ -46,7 +46,10 @@ prior_knowledge: なし
 
     * redis-cli を起動します。 これで対話的に コマンドが打てます。
     ```Shell
+    # ネットワーク越し 別コンテナ
     docker run -it --link test-server:redis --rm redis:6.2.3-alpine3.13 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+    # 直接 乗り込んで起動
+    docker exec -it test-server redis-cli
     ```
 
     * redis のping コマンドで PONG と帰ってくれば 正常に接続できています。
@@ -76,6 +79,7 @@ prior_knowledge: なし
     ```
 
     * redis 用のライブラリをインストール
+      * ```コンテナ内部: $``` は プロンプト例です。 実際は ```root@1960714230b6:/#``` のように表示されています。
     ```
     コンテナ内部: $ pip install redis
     ```
@@ -86,10 +90,12 @@ prior_knowledge: なし
     ```
 
     * python で redis に接続し、 redis の ping コマンドをしてみる。 PONG ではなく True と帰ってくればOK
+      * ```>>>``` は プロンプト なので実際には入力しません。
     ```
+    >>>
     >>> import os, redis
-    >>> r = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
-    >>> r.ping()
+    >>> conn = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
+    >>> conn.ping()
     True
     ```
 
@@ -219,14 +225,7 @@ prior_knowledge: なし
 ### プログラムから Redis を使おう
 * それでは、実際にPythonでRedis を利用するコードを書いていきます。
 * 手元の環境で好きなエディタを使って Python のコードを書いた上で docker container の中から そのコードを読み出せるようにします。
-
-#### Redis Server 起動
-* 事前準備の通り Redis サーバーを起動してください。
-```Shell
-docker run --rm --name test-server redis:6.2.3-alpine3.13
-```
-* ``` Ready to accept connections ``` と出ればOK このターミナルは開いたままにします
-* もし、ターミナルが閉じたり、Ctrl-C で終了してしまったら、再度 起動してください
+* 事前準備のおさらいも兼ねています
 
 #### コンテナの中から実行する
 * どこか作業用のディレクトリを作成してそこに移動してください
@@ -235,7 +234,11 @@ docker run --rm --name test-server redis:6.2.3-alpine3.13
     cd iij_bootcamp_redis
     ```
 
-* プログラムを置く場所として app ディレクトリを作成し その中にhello_world.py を作成してください
+* プログラムを置く場所として iij_bootcamp_redisの中に app ディレクトリを作成し その中にhello_world.py を作成してください エディタは自由です。
+    ```Shell
+    mkdir app
+    vim app/hello_world.py
+    ```
     ```Python
     print("Hello World!")
     ```
@@ -245,22 +248,27 @@ docker run --rm --name test-server redis:6.2.3-alpine3.13
     $ cat app/hello_world.py
     print("Hello World!")
     ```
+    * そうでない場合は cd コマンドで 階層を移動して 必ず app ディレクトリのひとつ上の階層に移動してください (例だとiij_bootcamp_redisにいてほしい)
 
 * コンテナ の中から起動
-    * -v で app ディレクトリを コンテナの中では /app に マウントします。
+    * -v で 今いるところの app ディレクトリを コンテナの中では /app に マウントします。
         ```Shell
             docker run -it --rm -v `pwd`/app:/app python:3.9.5-slim-buster bash
         ```
     * ls -l で ファイルが有るか確認します。
         ```Shell
-        コンテナ内 $: ls -l /app
+        コンテナ内部 $ ls -l /app
         total 4
         -rw-rw-r-- 1 1000 1000 22 May 13 08:37 hello_world.py
         ```
     * python で起動します
         ```Shell
-        コンテナ内: python /app/hello_world.py
+        コンテナ内部: $ python /app/hello_world.py
         Hello World!
+        ```
+    * うまく Hello World! と表示されたら このコンテナは一旦閉じてしまいましょう
+        ```Shell
+        コンテナ内部: $ exit
         ```
 
 * これで、 手元で書いたファイルを コンテナ内のPython から起動することができました。
@@ -269,15 +277,31 @@ docker run --rm --name test-server redis:6.2.3-alpine3.13
     - Python から Redis を扱うためのライブラリ [Redis Python Client](https://github.com/andymccurdy/redis-py) を pip でインストールする
 
     ```Shell
-    docker run -it --link test-server:redis --rm --name test-python -v ~/app:/app python:3.7 bash
-    root@24108149af23:/# cd app
-    root@24108149af23:/app# pip install redis
+    docker run -it --link test-server:redis --rm --name test-python -v `pwd`/app:/app python:3.9.5-slim-buster bash
+    ```
+
+    - 先程と同様に /app には hello_world.py があるはずです
+    ```
+    コンテナ内部: $ cd /app
+    コンテナ内部: $ ls
+    hello_world.py
+    ```
+
+    - さて、今度は redis と接続をするため 事前準備で行ったようにライブラリのインストールをしましょう。
+      * なお、現状 コンテナを起動するたびに 必要ですが 自分でDockerfile を書くなど image を build することで割愛することも可能です
+    ```
+    コンテナ内部: $ pip install redis
     Collecting redis
       Downloading https://files.pythonhosted.org/packages/ac/a7/cff10cc5f1180834a3ed564d148fb4329c989cbb1f2e196fc9a10fa07072/redis-3.2.1-py2.py3-none-any.whl (65kB)
          |████████████████████████████████| 71kB 3.2MB/s
     Installing collected packages: redis
     Successfully installed redis-3.2.1
-    root@24108149af23:/app# env | grep REDIS
+    ```
+
+    - 先程起動したRedis Server の情報が連携できているか確認します。
+      * 細かい値が違くても問題ないです。
+    ```
+    コンテナ内部: $ env | grep REDIS
     REDIS_PORT_6379_TCP_PROTO=tcp
     REDIS_PORT=tcp://172.17.0.2:6379
     REDIS_NAME=/test-python/redis
