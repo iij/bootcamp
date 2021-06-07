@@ -428,6 +428,7 @@ docker exec -it test-server redis-cli
         # ...
     }
     ```
+    サンプル: https://github.com/iij/bootcamp/blob/master/src/database/redis/ex01.py
 
     - /etc/passwd の内容をユーザごとのハッシュに格納する
 
@@ -438,10 +439,12 @@ docker exec -it test-server redis-cli
         # ...
     }
     ```
+    サンプル: https://github.com/iij/bootcamp/blob/master/src/database/redis/ex02.py
 
 ### Expire を試してみる
 
 - expire 付きで値を格納し、実際にその時間が過ぎると値が消えていくことを確認する
+  サンプル: https://github.com/iij/bootcamp/blob/master/src/database/redis/ex03.py
 
 ### メッセージキューを実装する
 
