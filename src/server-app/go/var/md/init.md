@@ -31,8 +31,8 @@ GoでWebアプリケーションを作る(下準備編)
 	```
 3. 作業ディレクトリの確認
 	```shell
-	root@<container id>:/go/src/samples# ls
-	Dockerfile  README.md  calc  hello_world  poke_api  pokemon
+	root@<container id>:/go/src/# ls
+	samples
 	```
 4. 任意のエディタ起動確認
 	```shell
