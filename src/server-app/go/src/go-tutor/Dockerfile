@@ -5,10 +5,10 @@ ENV GOVERSION 1.16.5
 
 ENV GOROOT /opt/go
 ENV GOPATH /go/src
-ENV GO111MODULE=on
 
 ENV LANG ja_JP.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
+ENV GO111MODULE=off
 
 RUN apt update && \
     apt install -y curl wget tzdata language-pack-ja-base language-pack-ja && \
