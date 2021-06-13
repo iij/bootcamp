@@ -19,8 +19,8 @@ GoでWebアプリケーションを作る
 想定レベルは以下の通りです。  
 * ls, cd 程度のLinuxファイル操作が行える  
 * curl (もしくは、wget) の操作が行える  
-* 実行ファイル(.ext, elf)という存在を知っている  
-* `if`, `for`, `select` などの、割と多くの言語で近い表現のある構文を知っている  
+* 実行ファイル(.exe, elf)という存在を知っている  
+* `if`, `for`, `switch case` などの、割と多くの言語で近い表現のある構文を知っている  
 * 引数、戻り値 というキーワードを知っている  
 
 出来ると理解が捗るスキルは以下の通りです。  
@@ -64,7 +64,7 @@ git clone git@github.com:iij/bootcamp.git
 
 # 1. Goとは
 Googleが主導して開発しているプログラミング言語です。  
-正式名称は、`Go` ですが、ググラビリティが低いので、`Golang` `golang` `go言語` Go言語` `go-lang` 辺りで表記されていることが多いです。  
+正式名称は、`Go` ですが、ググラビリティが低いので、`Golang` `golang` `go言語` `Go言語` `go-lang` 辺りで表記されていることが多いです。  
 わざわざ、[開発者の一人(Rob Pike 氏) が、ツイート](https://twitter.com/rob_pike/status/886054143235719169) してくれてもいます。  
 
 ## 1.1. 特徴
@@ -93,7 +93,8 @@ Go言語の環境を用意するだけで、[標準パッケージ](https://gola
 標準パッケージの多くが、クロスコンパイルされることを前提としているため、標準パッケージを活用することで、環境ごとに不具合の起きづらい開発を行うことが可能です。  
 例えば、ファイルパスの文字列結合は、`"path1" + "\" + "path2"` といった表現はせず、`path/filepath` の関数`Join` を用い、`filepath.Join("path1", "path2")`というように表現することをお勧めします。  
 
-ただし、一部パッケージはOS依存のケースがあります。例えばWindowsのレジストリのような、OSに依存する処理を行うソースコードの場合に他環境向けのコンパイル操作を行うと、失敗します。  
+注意しておかなければいけない点としては、一部パッケージには、OS依存のものがあるということです。  
+例えば、Windowsのレジストリに対する処理のような、OSに依存するものがあります。  
 
 ### 1.1.5. 周辺ツールが標準で提供される
 Go言語をインストールするだけで、パッケージの管理やダウンロード、コンパイル、テスト、字句解析、ドキュメント生成など、多くのことが実行できます。  
@@ -106,11 +107,13 @@ Go言語をインストールするだけで、パッケージの管理やダウ
 対して、並行プログラミングする場合は、`go func(){//<yourCode>}()` のような形で関数を呼び出します。  
 わずか、3 byteほどの差分で並行プログラミングを表すことが可能です。  
 
-興味のある方は、[Pthreads プログラミング](https://www.oreilly.co.jp/books/4900900664/) などで、他言語のマルチスレッド記法を学習されると、  
+興味のある方は、[Pthreads プログラミング](https://www.oreilly.co.jp/books/4900900664/) などの、他言語のマルチスレッド記法を学習すると、  
 この容易さに感動できるのではないでしょうか。  
 
-#### :rocket: Go言語の並列スレッドは、Goroutine(ごーるーちん)
-並列スレッドは、Goroutineと呼ばれます。  
+
+なお、Go言語で並列動作させた関数等は、Goroutine(ごーるーちん) と呼びます。
+
+#### :rocket: Goroutineは、カーネルスレッドではありません。
 OSのカーネルスレッドとは異なり、ユーザ空間で動作する軽量なスレッドです。  
 それぞれのGoroutineの管理（スケジューリングなど）も、1つのユーザ空間スレッドとして動作しています。  
 
@@ -132,18 +135,21 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 基本的なフォルダ構成は、 `/go/src/go_tutorial/<セクション名>/<プログラム名>/***.go` のようになります。  
 
 講師側が説明で用いるソースコード（答え）は、`/go/src/samples/<セクション名>/<プログラム名>/***.go` の形で格納してあります。  
-講師側が想定している出力結果と、自身の書いたコードの出力を確認したい場合は、`/go/src/samples/`配下を実行することで、容易に確認できます。  
-また、ハンズオンがうまく行かない際、`diff /go/src/go_tutorial/<セクション名>/<プログラム名>/***.go /go/src/samples/<セクション名>/<プログラム名>/***.go` のように確認することで、課題解決を助ける可能性があります。  
+講師側が想定している出力結果を確認したい際は、`/go/src/samples/`配下を実行することで、容易に確認できます。  
+また、ハンズオンがうまく行かない際には、以下のように差分を確認することで、課題解決を助ける可能性があります。  
+```shell
+diff /go/src/go_tutorial/<セクション名>/<プログラム名>/***.go /go/src/samples/<セクション名>/<プログラム名>/***.go
+```
 
 # 2. Hello, World
 
 ## 2.1. Goの実行と変数の扱い方
-### 2.1.1 Goを動かす
+### 2.1.1. Goを動かす
 Go言語で作成されたソースコードの実行方法は2つあります。  
 ソースコードをコンパイル（`go build`）し、実行形式ファイル（.exe等）を実行する方法と、  
 ソースコードをスクリプト言語のように実行する`go run`コマンドを用いる方法です。  
 
-:computer: 以下のコマンドを実行して、Goを動かしてみよう  
+:computer: 2.1.1.1. 以下のコマンドを実行して、Goを動かしてみよう  
 
 ```shell
 :# WORKPATH /go/src/samples/2_helloworld/hello/
@@ -157,16 +163,16 @@ $ go run main.go
 	import "fmt"
 
 	func main() {
-		fmt.Println("Hello, 世界")
+		fmt.Println("Hello, W0rld!!")
 	}
 	```
-:recycle:
+:recycle: 2.1.1.1. 結果
 ```shell
 $ go run main.go
 Hello, W0rld!!
 ```
 
-:computer: 以下のコマンドを実行して、Goをコンパイルしてみよう。  
+:computer: 2.1.1.2. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
 ```shell
 :# WORKPATH /go/src/samples/2_helloworld/hello/
 $ go build main.go
@@ -174,7 +180,7 @@ $ ls
 $ file ./main
 $ ./main
 ```
-:recycle:
+:recycle: 2.1.1.2. 結果
 ```shell
 $ go build main.go
 $ ls
@@ -192,14 +198,14 @@ Hello, W0rld!!
 きっと便利ツールを作ってお手元のWindowsで動かしたくなることもあるでしょう。  
 [1.1.3. クロスコンパイルが容易](#### 1.1.3. クロスコンパイルが容易) でも触れた通り、簡単に作成できることを確認してもらいます。  
 
-:computer: 以下のコマンドを実行して、Goをコンパイルしてみよう。  
+:computer: 2.2.1. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
 ```shell
 :# WORKPATH /go/src/samples/2_helloworld/hello/
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
 $ file ./main.exe
 ```
-:recycle:
+:recycle: 2.2.1. 結果
 ```shell
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
@@ -208,17 +214,22 @@ $ file ./main.exe
 main.exe: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows
 ```
 
+//TODO: go tool dist list書く
+
 ## 2.3. まとめ//TODO:
 
 # 3. 変数の定義方法確認//WIP:TODO:
+//WIP:TODO: func構文の説明を入れる 
 本章では、変数の定義が失敗しているソースコードを修正いただきます。  
-まず、Go言語では、変数の定義記述が3つあります。  
+//WIP:TODO: ここ章立てわける？
+まず、Go言語では、変数の定義記法が3つあります。  
 * `var HENSU string`
 	* 型指定有り。変数初期値の指定無し(stringなので、`""`になります。)
 * `HENSU := "GreatValueeeeee"`
 	* 型指定無し。代入元の型を引き継ぐ
 * `var HENSU string = "GreatValueeeee"`
 	* 型指定有り。変数初期値の指定有り
+
 予期せぬ型が変数に定義されないよう、最初のうち（書いている型をイメージできるまで）は、冗長ですが、一番下の例の書き方をお薦めします。  
 
 
