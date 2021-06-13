@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"net/url"
 	"sync"
 	"bufio"
 	"bytes"
@@ -16,12 +15,52 @@ type ResponseWriter interface {
 	Write([]byte) (int, error)
 }
 
+func HandleFunc(p string, h func(ResponseWriter, *Request)) {
+	if h == nil {
+		panic("zakohttp: nil handler")
+	}
+
+	handleFunc(p, h)
+}
+
+func ListenAndServe(addr string, h http.Handler) error {
+	s := newServer(addr, h)
+	return s.zakoListenAndServe()
+}
+
 type Server struct {
 	http.Server
+	l          net.Listener
 
 	ctx        context.Context
 	ctx_cancel context.CancelFunc
 	ctx_mtx    *sync.Mutex
+}
+
+func (self *Server) Serve(l net.Listener) error {
+	rcv_ch := make(chan *newconn)
+	run_receiver(self.ctx, l, rcv_ch)
+
+	for {
+		select {
+		case <- self.ctx.Done():
+			return nil
+		case rcv := <- rcv_ch:
+			if rcv.err != nil {
+				self.errlog("zakohttp: %s", rcv.err)
+				continue
+			}
+
+			rw := rcv.con
+			c := self.newConn(rw)
+			c.serve(self.ctx)
+		}
+	}
+}
+
+func (self *Server) Close() error {
+	self.ctx_cancel()
+	return self.l.Close()
 }
 
 func newServer(addr string, h http.Handler) *Server {
@@ -60,7 +99,6 @@ func (self *Server) zakoListenAndServe() error {
 	if err != nil {
 		return err
 	}
-	defer ln.Close()
 
 	return self.Serve(ln)
 }
@@ -69,150 +107,109 @@ func (self *Server) errlog(f string, vals ...interface{}) {
 	fmt.Fprintf(os.Stdout, f, vals...)
 }
 
-func (self *Server) Serve(l net.Listener) error {
-	type rcv struct {
-		con net.Conn
-		err error
-	}
+type newconn struct {
+	con net.Conn
+	err error
+}
 
-	rcv_ch := make(chan *rcv)
+func run_receiver(ctx context.Context, l net.Listener, rcv_ch chan <- *newconn) {
 	go func() {
 		for {
 			con, err := l.Accept()
 			select {
-			case <- self.ctx.Done():
+			case <- ctx.Done():
 				return
-			case rcv_ch <- &rcv{con: con, err: err}:
+			case rcv_ch <- &newconn{con: con, err: err}:
 			}
 		}
 	}()
+}
 
-	for {
-		select {
-		case <- self.ctx.Done():
-			return nil
-		case rcv := <- rcv_ch:
-			func() {
-				if rcv.err != nil {
-					self.errlog("zakohttp: %s", rcv.err)
-					return
-				}
+type conn struct {
+	srv *Server
 
-				con_r := bufio.NewReader(rcv.con)
-				con_w := bufio.NewWriter(rcv.con)
-				req, err := http.ReadRequest(con_r)
-				if err != nil {
-					self.errlog("zakohttp: %s", rcv.err)
-					return
-				}
+	con net.Conn
+	r   *bufio.Reader
+	w   *bufio.Writer
+}
 
-				fmt.Println(req.RequestURI)
-
-				w := new(writer)
-				w.Write([]byte("HTTP/1.1 200 OK\n\n"))
-				defaultServeMux.ServeHTTP(w, req)
-
-				r := bufio.NewReader(w.buffer())
-				resp, err := http.ReadResponse(r, req)
-				if err != nil {
-					self.errlog("zakohttp: %s", err)
-					return
-				}
-				w.Write([]byte("\n"))
-				resp.Write(con_w)
-
-				con_w.Flush()
-				rcv.con.Close()
-			}()
-		}
+func (self *Server) newConn(rw net.Conn) *conn {
+	return &conn{
+		srv: self,
+		con: rw,
+		r: bufio.NewReader(rw),
+		w: bufio.NewWriter(rw),
 	}
 }
 
-type writer struct {
+func (self *conn) serve(ctx context.Context) {
+	defer self.con.Close()
+	defer self.w.Flush()
+
+	req, err := http.ReadRequest(self.r)
+	if err != nil {
+		self.srv.errlog("zakohttp: %s", err)
+		return
+	}
+
+	w := newResponse()
+	defaultServeMux.ServeHTTP(w, req)
+	r := bufio.NewReader(w.buffer())
+	resp, err := http.ReadResponse(r, req)
+	if err != nil {
+		self.srv.errlog("zakohttp: %s", err)
+		return
+	}
+	resp.Write(self.w)
+}
+
+type response struct {
 	b  bytes.Buffer
 }
 
-func (self *writer) Header() http.Header { //nop
+func newResponse() *response {
+	self := new(response)
+	self.Write([]byte("HTTP/1.1 200 OK\n\n"))
+	return self
+}
+
+func (self *response) Header() http.Header { //nop
 	return make(http.Header)
 }
 
-func (self *writer) Write(bs []byte) (int, error) {
+func (self *response) Write(bs []byte) (int, error) {
 	return self.b.Write(bs)
 }
 
-func (self *writer) WriteHeader(statusCode int) { //nop
+func (self *response) WriteHeader(statusCode int) { //nop
 	return
 }
 
-func (self *writer) buffer() *bytes.Buffer {
+func (self *response) buffer() *bytes.Buffer {
+	self.Write([]byte("\n"))
 	return &(self.b)
 }
 
-type ServeMux struct {
+type serveMux struct {
 	sm *http.ServeMux
 }
 
-func (self *ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (self *serveMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	self.sm.ServeHTTP(w, r)
 }
 
-func (self *ServeMux) HandleFunc(p string, h func(http.ResponseWriter, *http.Request)) {
+func (self *serveMux) HandleFunc(p string, h func(http.ResponseWriter, *http.Request)) {
 	self.sm.HandleFunc(p, h)
 }
 
-var defaultServeMux *ServeMux
+var defaultServeMux *serveMux
 func init() {
-	defaultServeMux = &ServeMux{sm: http.DefaultServeMux}
+	defaultServeMux = &serveMux{sm: http.DefaultServeMux}
 }
 
-type Request struct {
-	org *http.Request
-}
-
-func asZakoRequest(req *http.Request) *Request {
-	return &Request{org: req}
-}
-
-func (self *Request) Method() string {
-	if self.org == nil {
-		return ""
-	}
-	return self.org.Method
-}
-
-func (self *Request) URL() *url.URL {
-	if self.org == nil {
-		return &url.URL{}
-	}
-	return self.org.URL
-}
-
-func (self *Request) Proto() string {
-	if self.org == nil {
-		return ""
-	}
-	return self.org.Proto
-}
-
-func (self *Request) RequestURI() string {
-	if self.org == nil {
-		return ""
-	}
-	return self.org.RequestURI
-}
-
-func HandleFunc(p string, h func(ResponseWriter, *Request)) {
-	if h == nil {
-		panic("zakohttp: nil handler")
-	}
-
+func handleFunc(p string, h func(ResponseWriter, *Request)) {
 	h_wrapper := func(r_w http.ResponseWriter, req *http.Request){
-		h(r_w, asZakoRequest(req))
+		h(r_w, conv2ZakoRequest(req))
 	}
 	defaultServeMux.HandleFunc(p, h_wrapper)
-}
-
-func ListenAndServe(addr string, h http.Handler) error {
-	s := newServer(addr, h)
-	return s.zakoListenAndServe()
 }

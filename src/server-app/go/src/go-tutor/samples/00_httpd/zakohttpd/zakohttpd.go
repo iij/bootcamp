@@ -3,9 +3,8 @@ package main
 import (
 	"os"
 	"fmt"
-	"time"
+//	"time"
 	http "./http"
-	"sync"
 )
 
 func die(s string, msg ...interface{}) {
@@ -14,8 +13,8 @@ func die(s string, msg ...interface{}) {
 }
 
 func httphandler(w http.ResponseWriter, r *http.Request) {
-	time.Sleep(10 * time.Second)
-	fmt.Fprintf(w, "Hello, %q", r.URL().Path)
+//	time.Sleep(10 * time.Second)
+	fmt.Fprintf(w, "Hello, %q", r.URL.Path)
 }
 
 func zakohttpd() error {
