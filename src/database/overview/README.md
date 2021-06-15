@@ -50,7 +50,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 
 1. RDBMS(Relational Database Management System)
    
-   関係（かんけい、リレーション、英: Relation）とは関係モデル（リレーショナルモデル）において、一つの見出しと0以上の同じ型の組 (タプル、行) の
+   関係（かんけい、リレーション、英: Relation）とは関係モデル（リレーショナルモデル）において、一つの見出しと0以上の同じ型の組(タブル、行)の
    順序づけられていない集合からなるデータ構造のことである。 
    　
    ![Relation](./Relational_model_concepts_ja.png "Relation")
