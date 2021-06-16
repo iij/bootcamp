@@ -96,7 +96,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 1. SQL(Strutured Query Languageの略)
    - データ定義: データを格納する表を定義 / DDL (Data Definition Language)
    - データ操作: 表に対してデータの検索、更新、挿入、削除、複数の表を結合 / DML (Data Manipulation Language)
-   - トランザクション機能: データを更新してから、更新情報が確定するまでの一連の流れを管理 DCL (Data Control Language)
+   - トランザクション機能: データを更新してから、更新情報が確定するまでの一連の流れを管理 / DCL (Data Control Language)
 
    SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
    前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
@@ -127,7 +127,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 　　先ほどのemp表、dept表からSUPPORT部所属の社員(とLocationも)を「検索」するケースで見てみます
      ```
      SELECT e.ename, d.loc from emp e, dept d
-     WHEREZ e.deptno=d.deptno AND e.deptno=30
+     WHERE e.deptno=d.deptno AND e.deptno=30
      ;
      ```
      表の結合方法はNASTED LOOPとすれば、emp表には10行、dept表には10行データがあるので最大で
@@ -135,12 +135,11 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
      最適か？と判断する「コスト」を常に考えていると理解しておきましょう。
 　　　
      ```
-     // - DBAを目指す人への課題                   
-     // 次のSQLを影響を考えて、結果がどうなってどういう影響があり、どういう理由でそうなったか調べて
-     // みてください
+     // - データベースをもっと深く勉強したいと考えている方へ課題                   
+     // 次のSQLを実行し、結果がどうなって、どのような影響があり、なぜそうなったか調べてみてください
 
      SELECT e.ename, d.loc from emp e, dept d
-     WHEREZ e.deptno=d.deptno AND e.deptno=30
+     WHERE e.deptno=d.deptno AND e.deptno=30
      AND d.deptno=30
      ;
      ```
