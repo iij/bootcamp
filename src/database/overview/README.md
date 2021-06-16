@@ -78,7 +78,8 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
      8     32    furuhashi ENGINEER 2050 2000-04-01 XXXXXXXXXXX
      9     40    asano     ENGINEER 2001 1998-01-01 XXXXXXXXXXX
      10    30    minamino  ENGINEER 2001 1998-01-01 XXXXXXXXXXX
-     // dept１
+
+     // dept
      DEPNO DNAME       LOCATION    DESC
      10    CEOROOM     IDB         XXXXXXXXXXX
      20    HR          IDB         XXXXXXXXXXX        
@@ -98,11 +99,10 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    - データ操作: 表に対してデータの検索、更新、挿入、削除、複数の表を結合 / DML (Data Manipulation Language)
    - トランザクション機能: データを更新してから、更新情報が確定するまでの一連の流れを管理 / DCL (Data Control Language)
 
-   SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
-   前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
-
-   Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Qeuery)は？
-   A.< 　　>
+     SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
+     前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
+     Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Qeuery)は？
+     A.< 　　>
 
 ##  ACID特性
 
@@ -117,7 +117,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 ## データの保全
 
 1. データの保全
-　　データベースにおいてデータの一貫性を保護し，不整合を排除して安全にデータを保管する行為もしくはその考え方
+   - データベースにおいてデータの一貫性を保護し，不整合を排除して安全にデータを保管する行為もしくはその考え方
   　
 ## データベースの中で起きている事を知る
 
