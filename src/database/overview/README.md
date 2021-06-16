@@ -183,7 +183,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 
 ## Database as a Service
 
-1. Databaの管理コスト無視できない、重要性は変わらず
+1. Databaseの維持管理コストは無視できない、重要性は変わらずむしろ増すばかり
    - MySQLとにかく詳しい人ください
    - Memcachedもわかるとありがたい
    - RedisでClusterは組めますか？
@@ -192,20 +192,18 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    - 管理は専門性とトレードオフ
 
 2. Full Managed Database Service
-   Database管理から開放します、さあどうぞ
-   - AWS RDS
-   - GCP CloudSQL
+   - Database管理から開放します、さあどうぞ
+     - AWS RDS
+     - GCP CloudSQL
    
-   顧客「性能が全然足りません、なんとかして！」
-   クラウドベンダー「性能要求に応じてスケールアウトさせますね」「Read Replica？すぐ出来ます！」
-  
-   - AWS Aurora
-   - GCP Spanner
+   - 顧客「性能が全然足りません、なんとかして！」
+     - クラウドベンダー「性能要求に応じてスケールアウトさせます!」
+     - AWS Aurora
+     - GCP Spanner
 
-   顧客「クラウドでDataWareHouse したい！」
-
-   - AWS RedShift
-   - Google BigQuery
+   - 顧客「クラウドでDataWareHouse したい！」
+     - AWS RedShift
+     - Google BigQuery
 
 ## 最適解
 
