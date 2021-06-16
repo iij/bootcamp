@@ -156,7 +156,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 1. e-commerce
 
    - 1990年代後半から、企業がインターネットを介して不特定多数の消費者に対して小売（企業対消費者間取引、B2C）を行うことが徐々に広まる
-   - - B2CのコマースにおけるDatabaseの重要性は増す一方、役割が多岐に、要件の増大は☝️
+   - B2CのコマースにおけるDatabaseの重要性は増す一方、役割が多岐に、要件の増大は☝️
    
 2. Online Game / Social Game
 
@@ -169,13 +169,17 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 
 1. データモデルを根底から捉え直す
    - 一時的なセッション情報管理、ユニーク性の担保、テンポラリかつアドホックなデータ等、割り切ってデータを管理したらいいのでは？
+   
    1.1 KVS
        - memcached
        - redis
        - cassandora
-   1.2 DocumentDB
+
+   1.2 DocumentDB 
        - MongoDB
-       - CouchBae
+         - Schema Lessの衝撃
+         - JSONファイルをドキュメントとして保存
+       - CouchBase
 
 ## Database as a Service
 
