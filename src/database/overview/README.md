@@ -23,7 +23,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 6. データの保全
 7. データベースの中で起きている事を知る
 8. RDBMSが突きつけられた課題
-9. RDBMSに代る選択肢 (kvs, Document DB, others)
+9. RDBMSに代る選択肢
 10. Database as a Service
 11. 最適解は何か
 
@@ -52,29 +52,32 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    
    関係（かんけい、リレーション、英: Relation）とは関係モデル（リレーショナルモデル）において、一つの見出しと0以上の同じ型の組(タブル、行)の
    順序づけられていない集合からなるデータ構造のことである
+
    ![Relation](./Relational_model_concepts_ja.png "Relation")
+   
    出典:WIKIPEDIA
    
    RDBMSにおいてはデータを行と列から構成される2次元の表形式で表す事が多く、ここからはTABLE(表)を使ったデータモデルを例に
-   理解を進める
+   講義を進めます
   
 ##  Relational Model
 
 1. もう少し身近なデータを使って「関係」を表現してみます
-   - 2021年度新入社員の関係性に関するモデル化
+   - 2021年度新入社員の関係性に関するデータをモデル化
 　　　
      ```
      // emp
      EMPNO DEPNO ENAME     JOB      MGR  HIREDATE   SAL
-     1     10    suzuki    CEO      null 1992-12-03 XXXXXXXXXXX
-     2     20    tanaka    HR-MGR   1001 1993-01-21 XXXXXXXXXXX        
-     3     40    sato      ENGINEER 2001 1995-10-30 XXXXXXXXXXX
-     4     51    sasaki    SALES    2010 1997-04-01 XXXXXXXXXXX
-     5     50    sasaki    SALES    2020 1999-06-01 ZZZZZZZZZZZ
-     6     51    takahashi GENERAL  1002 1999-06-01 ZZZZZZZZZZZ
-     7     20    nishi     GENERAL  1002 1999-04-01 ZZZZZZZZZZZ
-     8     32    fujimoto  ENGINEER 2050 2000-04-01 XXXXXXXXXXX
-     9     40    fujita    ENGINEER 2001 1998-01-01 XXXXXXXXXXX
+     1     10    moriyasu  CEO      null 1992-12-03 XXXXXXXXXXX
+     2     20    sorimachi HR-MGR   1001 1993-01-21 XXXXXXXXXXX        
+     3     40    ado       ENGINEER 2001 1995-10-30 XXXXXXXXXXX
+     4     51    ogawa     SALES    2010 1997-04-01 XXXXXXXXXXX
+     5     50    muroya    SALES    2020 1999-06-01 ZZZZZZZZZZZ
+     6     51    endo      GENERAL  1002 1999-06-01 ZZZZZZZZZZZ
+     7     20    morita    GENERAL  1002 1999-04-01 ZZZZZZZZZZZ
+     8     32    furuhashi ENGINEER 2050 2000-04-01 XXXXXXXXXXX
+     9     40    asano     ENGINEER 2001 1998-01-01 XXXXXXXXXXX
+     10    30    minamino  ENGINEER 2001 1998-01-01 XXXXXXXXXXX
      // dept１
      DEPNO DNAME       LOCATION    DESC
      10    CEOROOM     IDB         XXXXXXXXXXX
@@ -86,31 +89,30 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
      40    DEVELOPMENT IDB         XXXXXXXXXX
      50    SALES1E     IDB         XXXXXXXXXXX
      51    SALES2E     IDB         XXXXXXXXXXX
-     52    SALES3E     IDB         XXXXXXXXXXX
      53    SALES1W     OSK         XXXXXXXXXXX
      ```
 ##  SQL 
 
 1. SQL(Strutured Query Languageの略)
-   - データ定義:データを格納する表を定義
-   - データ操作:表に対してデータの検索、更新、挿入、削除、複数の表を結合
-   - トランザクション機能:データを更新してから、更新情報が確定するまでの一連の流れを管理
-   
-   この中から最も重要な機能となる「データ検索/Query(クエリ)」について触れます
+   - データ定義: データを格納する表を定義 / DDL (Data Definition Language)
+   - データ操作: 表に対してデータの検索、更新、挿入、削除、複数の表を結合 / DML (Data Manipulation Language)
+   - トランザクション機能: データを更新してから、更新情報が確定するまでの一連の流れを管理 DCL (Data Control Language)
+
+   SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
    前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
-   
-    Q.ENGINEER職かつ、DEVELOPMENT部に属している社員名を調べよ
-    A.< >
+
+    Q.全社員の中でSUPPORT部に属している社員名を調べるSQLを考えてみよう
+    A.< 　　>
 
 ##  ACID特性
 
-1. ACIDとは
+1. ACID特性とは
 　 信頼性のあるトランザクションシステムの持つべき性質として1970年代後半にジム・グレイが定義した概念
   これ以上分解してはならないという意味の不可分性、一貫性、独立性、および永続性は、トランザクション処理の信頼性を保証する為の性質
-   - “Atomicity”（原子性）
+   - “Atomicity”   （原子性）
    - “Consistency” （一貫性）
-   - “Isolation”（独立性）
-   - “Durability”（耐久性)
+   - “Isolation”   （独立性）
+   - “Durability”  （耐久性)
 
 ## データの保全
 
@@ -119,9 +121,31 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
   　
 ## データベースの中で起きている事を知る
 
-1. 適切な探索経路を見つける
-   果たして何をもって「適切」なのか？
-   「適切な」経路であることの意味は？
+1. 最適な探索経路を見つける / 最も最小の___でデータ集合を得る / 出来る限り最小限の___でデータにアクセスしたい
+   何をもって「適切」なのかを判断するデータベース内部の機構を ___ と呼ぶ
+
+　　先ほどのemp表、dept表からSUPPORT部所属の社員(とLocationも)を「検索」するケースで見てみます
+     ```
+     SELECT e.ename, d.loc from emp e, dept d
+     WHEREZ e.deptno=d.deptno AND e.deptno=30
+     ;
+     ```
+     表の結合方法はNASTED LOOPとすれば、emp表には10行、dept表には10行データがあるので最大で
+     10x10回の探索でデータの特定が出来るでしょう。データベース内部では、100回行って探索する事を
+     最適か？と判断する「コスト」を常に考えていると理解しておきましょう。
+　　　
+     ```
+     // - DBAを目指す人への課題                   
+     // 次のSQLを影響を考えて、結果がどうなってどういう影響があり、どういう理由でそうなったか調べて
+     // みてください
+
+     SELECT e.ename, d.loc from emp e, dept d
+     WHEREZ e.deptno=d.deptno AND e.deptno=30
+     AND d.deptno=30
+     ;
+     ```
+
+   「適切な」経路であることの意味や理由は都度状況に応じて変わる事も、頭の片隅に置いておきましょう。
  
 ## RDBMSが突きつけられた課題
 
