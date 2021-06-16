@@ -99,10 +99,11 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    - データ操作: 表に対してデータの検索、更新、挿入、削除、複数の表を結合 / DML (Data Manipulation Language)
    - トランザクション機能: データを更新してから、更新情報が確定するまでの一連の流れを管理 / DCL (Data Control Language)
 
-     SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
-     前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
-     Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Qeuery)は？
-     A.< 　　>
+   SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
+   前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
+   
+   Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Qeuery)はどうなりますか？
+   A.< 　　　　　　　>
 
 ##  ACID特性
 
@@ -204,6 +205,8 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    - 顧客「クラウドでDataWareHouseが出来ると助かる。費用は使っただけ、にして欲しい」
      - AWS RedShift
      - Google BigQuery
+
+![Database_lists](./db_lists.png "Databases")
 
 ## 最適解
 
