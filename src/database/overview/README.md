@@ -127,27 +127,27 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
   
      -> 何をもって「適切」なのかを判断するデータベース内部の機構を ___ と呼ぶ
 
-　　先ほどのemp表、dept表からSUPPORT部所属の社員(とLocation)を「検索」する場合どうなるか？みてみます
+   先ほどのemp表、dept表からSUPPORT部所属の社員(とLocation)を「検索」する場合どうなるか？みてみます
 
-    ```
-    SELECT e.ename, d.loc from emp e, dept d
-    WHERE e.deptno=d.deptno AND e.deptno=30
-    ;
-    ```
+   ```
+   SELECT e.ename, d.loc from emp e, dept d
+   WHERE e.deptno=d.deptno AND e.deptno=30
+   ;
+   ```
     
-    表の結合方法はNASTED LOOPとすれば、emp表には10行、dept表には10行データがあるので最大で
-    10x10回の探索でデータの特定が出来るでしょう。データベース内部では、100回行って探索する事を
-    最適か？と判断する「コスト」を常に考えていると理解しておきましょう。
+   表の結合方法はNASTED LOOPとすれば、emp表には10行、dept表には10行データがあるので最大で
+   10x10回の探索でデータの特定が出来るでしょう。データベース内部では、100回行って探索する事を
+   最適か？と判断する「コスト」を常に考えていると理解しておきましょう。
 　　　
-    ```
-    // - データベースをもっと深く勉強したいと考えている方へ課題                   
-    // 次のSQLを実行し、結果がどうなって、どのような影響があり、なぜそうなったか調べてみてください
-
-    SELECT e.ename, d.loc from emp e, dept d
-    WHERE e.deptno=d.deptno AND e.deptno=30
-    AND d.deptno=30
-    ;
-    ```
+   ```
+   // - データベースをもっと深く勉強したいと考えている方へ課題                   
+   // 次のSQLを実行し、結果がどうなって、どのような影響があり、なぜそうなったか調べてみてください
+   
+   SELECT e.ename, d.loc from emp e, dept d
+   WHERE e.deptno=d.deptno AND e.deptno=30
+   AND d.deptno=30
+   ;
+   ```
 
    「適切な」経路であることの意味や理由は都度状況に応じて変わる事も、頭の片隅に置いておきましょう。
  
