@@ -36,7 +36,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    
    出典:WIKIPEDIA
    
-3. データベースとは
+2. データベースとは
 　　データベースとは、構造化した情報またはデータの組織的な集合であり、通常はコンピューター・システムに電子的に格納されています。データベースは通常、データベース管理システム
   （DBMS）で制御します。データとDBMS、およびそれらに関連するアプリケーションをまとめてデータベース・システムと呼びます。多くの場合は単にデータベースと呼んでいます。
 
@@ -170,24 +170,43 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 1. データモデルを根底から捉え直す
    - 一時的なセッション情報管理、ユニーク性の担保、テンポラリかつアドホックなデータ等、割り切ってデータを管理したらいいのでは？
    
-   1.1 KVS
-       - memcached
-       - redis
-       - cassandora
+2. KVS
+   - memcached
+   - redis
+   - cassandora
 
-   1.2 DocumentDB 
-       - MongoDB
-         - Schema Lessの衝撃
-         - JSONファイルをドキュメントとして保存
-       - CouchBase
+3. DocumentDB 
+   - MongoDB
+     - Schemaless
+     - JSONファイルをドキュメントとして保存
+   - CouchBase
 
 ## Database as a Service
 
 1. Databaの管理コスト無視できない、重要性は変わらず
-
+   - MySQLとにかく詳しい人ください
+   - Memcachedもわかるとありがたい
+   - RedisでClusterは組めますか？
+   - 新Versionのあの機能を試したいんです、いつ試せそうですか？
    - 開発者はコードだけを書きたい
    - 管理は専門性とトレードオフ
+
+2. Full Managed Database Service
+   Database管理から開放します、さあどうぞ
+   - AWS RDS
+   - GCP CloudSQL
    
+   顧客「性能が全然足りません、なんとかして！」
+   クラウドベンダー「性能要求に応じてスケールアウトさせますね」「Read Replica？すぐ出来ます！」
+  
+   - AWS Aurora
+   - GCP Spanner
+
+   顧客「クラウドでDataWareHouse したい！」
+
+   - AWS RedShift
+   - Google BigQuery
+
 ## 最適解
 
 　皆さんは今後、様々な形でデータと向き合い合うことになると思います。今日の講義で様々なDatabaseが存在する事を紹介し、本当にごく一部ですがDatabaseの
