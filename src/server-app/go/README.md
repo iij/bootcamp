@@ -10,7 +10,7 @@ prior_knowledge: golang
 GoでWebアプリケーションを作る
 ===
 
-# 0. この講義について
+# 0. この講義について (5min)
 ## 0.1. 目的
 * あなたがプログラミングを行う際の選択肢として、Goを挙げられる為の第一歩となること
 	* より、知らない方に知っていただくことを重要視しています
@@ -19,9 +19,9 @@ GoでWebアプリケーションを作る
 想定レベルは以下の通りです。  
 * ls, cd 程度のLinuxファイル操作が行える  
 * curl (もしくは、wget) の操作が行える  
-* 実行ファイル(.exe, elf)という存在を知っている  
+* 実行形式ファイル(.exeなど)という存在を知っている  
 * `if`, `for`, `switch case` などの、割と多くの言語で近い表現のある構文を知っている  
-* 引数、戻り値 というキーワードを知っている  
+* 関数、引数、戻り値 というキーワードを知っている  
 
 出来ると理解が捗るスキルは以下の通りです。  
 * どんな言語(COBOL, Javascript, bash, python, ...) でも良いので、簡単なコーディングを行ったことがある  
@@ -62,20 +62,19 @@ $ git clone <リモートリポジトリのアドレス>
 git clone git@github.com:iij/bootcamp.git
 ```
 
-# 1. Goとは
+# 1. Goとは (5min)
 Googleが主導して開発しているプログラミング言語です。  
 正式名称は、`Go` ですが、ググラビリティが低いので、`Golang` `golang` `go言語` `Go言語` `go-lang` 辺りで表記されていることが多いです。  
 わざわざ、[開発者の一人(Rob Pike 氏) が、ツイート](https://twitter.com/rob_pike/status/886054143235719169) してくれてもいます。  
 
 ## 1.1. 特徴
-参考: [今改めて読み直したい Go基礎情報 その1](https://budougumi0617.github.io/2019/06/20/golangtokyo25-read-again-awesome-go-article/) \
-参考: [Go入門](https://www.slideshare.net/takuyaueda967/2016-go)
+
 
 ### 1.1.1. シンプルである
-設計思想としてSimplicityを是としています。  
-参考: [Simplicity is Complicated](https://talks.golang.org/2015/simplicity-is-complicated.slide#1)  
+設計思想として単純さを是としています。  
+[Simplicity is Complicated](https://talks.golang.org/2015/simplicity-is-complicated.slide#1)  
 
-例えば、言語仕様を見ると、使用されるキーワードは25個しかありません。  
+例えば、言語仕様。使用されるキーワードは25個しかありません。  
 [The Go Programming Language Specification#Keywords](https://golang.org/ref/spec#Keywords)  
 表現や構造がシンプルであるため、学習コストが低いという側面があります。  
 
@@ -141,22 +140,23 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 diff /go/src/go_tutorial/<セクション名>/<プログラム名>/***.go /go/src/samples/<セクション名>/<プログラム名>/***.go
 ```
 
-# 2. Hello, World
+# 2. Hello, World (10min)
+本章では、Go言語の実行方法とコンパイル方法を確認いただきます。  
 
-## 2.1. Goの実行と変数の扱い方
+## 2.1. Goの実行
 ### 2.1.1. Goを動かす
 Go言語で作成されたソースコードの実行方法は2つあります。  
 ソースコードをコンパイル（`go build`）し、実行形式ファイル（.exe等）を実行する方法と、  
 ソースコードをスクリプト言語のように実行する`go run`コマンドを用いる方法です。  
 
-:computer: 2.1.1.1. 以下のコマンドを実行して、Goを動かしてみよう  
+#### :computer: 2.1.1.1. 以下のコマンドを実行して、Goを動かしてみよう  
 
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/hello/
+:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ <お好きなエディタ> main.go
 $ go run main.go
 ```
-* /go/src/samples/2_helloworld/hello/main.go
+* /go/src/go_tutorial/2_helloworld/hello/main.go
 	```go
 	package main
 
@@ -172,9 +172,9 @@ $ go run main.go
 Hello, W0rld!!
 ```
 
-:computer: 2.1.1.2. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
+#### :computer: 2.1.1.2. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/hello/
+:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ go build main.go
 $ ls
 $ file ./main
@@ -182,6 +182,7 @@ $ ./main
 ```
 :recycle: 2.1.1.2. 結果
 ```shell
+:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ go build main.go
 $ ls
 main  main.go
@@ -198,15 +199,16 @@ Hello, W0rld!!
 きっと便利ツールを作ってお手元のWindowsで動かしたくなることもあるでしょう。  
 [1.1.3. クロスコンパイルが容易](#### 1.1.3. クロスコンパイルが容易) でも触れた通り、簡単に作成できることを確認してもらいます。  
 
-:computer: 2.2.1. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
+### :computer: 2.2.1. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/hello/
+:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
 $ file ./main.exe
 ```
 :recycle: 2.2.1. 結果
 ```shell
+:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
 main main.exe main.go
@@ -214,68 +216,83 @@ $ file ./main.exe
 main.exe: PE32+ executable (console) x86-64 (stripped to external PDB), for MS Windows
 ```
 
-//TODO: go tool dist list書く
+##### Tips: クロスコンパイル先の対象一覧
+クロスコンパイル時に指定する環境変数(`GOOS`, `GOARCH`)へ指定できる値は、`go tool dist list` というコマンドで確認できます。  
+```shell
+$ go tool dist list
+aix/ppc64
+android/386
+android/amd64
+android/arm
+android/arm64
+....
+```
 
-## 2.3. まとめ//TODO:
+## 2.3. まとめ//TODO:いる？
 
-# 3. 変数の定義方法確認//WIP:TODO:
-//WIP:TODO: func構文の説明を入れる 
-本章では、変数の定義が失敗しているソースコードを修正いただきます。  
-//WIP:TODO: ここ章立てわける？
-まず、Go言語では、変数の定義記法が3つあります。  
-* `var HENSU string`
+# 3. 変数の定義方法確認 (10min)
+本章では、変数の定義方法の確認と、変数定義に失敗しているソースコードを修正いただきます。  
+
+## 3.1. 変数定義方法
+Go言語では、変数の定義記法が3つあります。  
+
+1. `var HENSU string`
 	* 型指定有り。変数初期値の指定無し(stringなので、`""`になります。)
-* `HENSU := "GreatValueeeeee"`
+2. `HENSU := "GreatValueeeeee"`
 	* 型指定無し。代入元の型を引き継ぐ
-* `var HENSU string = "GreatValueeeee"`
+3. `var HENSU string = "GreatValueeeee"`
 	* 型指定有り。変数初期値の指定有り
 
 予期せぬ型が変数に定義されないよう、最初のうち（書いている型をイメージできるまで）は、冗長ですが、一番下の例の書き方をお薦めします。  
+予期せぬ型が変数に定義されうる例として、`interface型` というものが存在します。  
+本講義では、`interface型` は扱わない為、説明は割愛しますが、使い方として、`なんでも型` のような使い方ができます。  
+:rocket: 同一PublicMethodのようなものを保有する異なる型のポインタを同じ変数として扱う型です。同一PublicMethodをAny指定することで、なんでも渡せるポインタ領域を作成できます。  
+変数`なんでも型`が示しているのは、int型だと思っていたらstring型だった。というようなケースもおきえてしまいます。意図しない挙動を防ぐためにも、最初のうちは、一番下の書き方をお勧めします。  
 
-
-:rocket: Tips  
+##### :rocket: Tips: privateとPublicの指定方法
 Go言語の名前空間は、`private`は先頭小文字。`Public`が先頭大文字と決まっています。  
 packageの要素や、構造体の要素を外部から参照させたい場合は、先頭大文字の変数名となるようご注意ください。  
 
-## 3.1 不具合箇所は、最高の講師に教えてもらおう
+## 3.2. 不具合箇所は、最高の講師に教えてもらおう
 Go言語では、書き方を間違えているととても丁寧に教えてくれる強い味方がいます。  
 それは、コンパイラ（`go build`）です。  
 「うーん、あ、この辺のソースみた？」とだけ返してくる先輩に比べ、「3行目、変数定義されていないよ！？」と場所まで指定して教えてくれます。  
+変数定義方法で、3番目をお勧めする理由の1つも、型が異なる場合に教えてもらえる可能性が高まるためです。  
 ちょっと厳しい点があるとすれば、指摘が英語であることです。  
 中学生レベルの英語と、単語を調べる力があれば解決できる文章しか出てこないので、ぜひ`go build`大先生に弟子入りしてみてください。  
 
-:rocket: Tips `go vet`も先生  
+##### Tips: `go build`と、`go vet`  
 `go vet <ソースコードファイルパス>`の方が、起こり得る問題や、より根本的な箇所まで教えてくれます。  
 ただ、プログラマが意図した泥臭い書き方を問題として報告してくるケースもあるため、執筆者は`go build`のエラーを見ることが多いです。  
 
-:rocket: Tips 一度に教えてくれる量は限りがある  
+##### Tips: 一度に教えてくれる量は限りがある  
 エラーが多いと、数個のエラーの後に`too many error....`と続き、全てのエラーを教えてくれないことがあります。  
 しょうがないので、教えてもらっているエラーから対処していきましょう。  
 
 
-:computer: 以下のコマンドを実行して、修正箇所を認識てみよう。  
+### :computer: 3.2.1. 以下のコマンドを実行して、修正箇所を認識てみよう。  
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/plzfixme/
+:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 ```
 
 :recycle:
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/plzfixme/
+:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 # command-line-arguments
 ./main.go:6:2: undefined: value
 ./main.go:7:14: undefined: value
 ```
 
-## 3.2. 不具合の修正
-:computer: ソースコードを修正し、エラーを無くしてみよう。  
+## 3.3. 不具合の修正
+### :computer: 3.3.1. ソースコードを修正し、エラーを無くしてみよう。  
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/plzfixme/
+:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ <お好きなエディタ> main.go
 $ go run main.go
 ```
-* /go/src/samples/2_helloworld/plzfixme/main.go
+* `/go/src/go_tutorial/3_var/plzfixme/main.go`
 	```go
 	package main
 
@@ -288,19 +305,184 @@ $ go run main.go
 	```
 :recycle:
 ```shell
-:# WORKPATH /go/src/samples/2_helloworld/plzfixme/
+:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 GYUDON
 ```
+### :rocket: :computer: 3.3.2. 変数定義方法が3種類を全て試してみよう。
 
-## 3.3. まとめ //:WIP:TODO
+## 3.3. まとめ //:WIP:TODOいる？
 
-# 4. 関数 //WIP:
+# 4. 関数 (15min)
+本章では、関数の定義方法と、Goっぽい関数の扱われ方について、確認いただきます。  
 
-## 注意事項
-本章では、引数、戻り値、というキーワードを説明しません。  
+## 4.1. 関数の定義
+Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです  
+```go
+func <関数名>([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>)] {
+	<処理>
+}
+```
+このフォーマットをみてわかる通り、Go言語では、複数の戻り値を指定できます。  
 
-## 4.1. 関数の実行される順番
+なお、引数、戻り値がない場合は、省略可能なため、最も短い関数の定義は、以下のようになります。  
+```go
+func myFunc() {
+	<処理>
+}
+```
+引数がいくつか存在し、戻り値が1つだけの場合は、以下のようになります。  
+```go
+func myFunc(name string, age uint) bool {
+	var find bool
+	<処理>
+	return find
+}
+```
+また、戻り値が複数になると、戻り値の型をかっこで囲む必要があります。  
+```go
+func myFunc(name string, age uint) (bool, error) {
+	var find bool
+	var result error
+	<処理>
+	return find, result
+}
+```
+関数の基本的な定義方法は以上です。  
+##### :rocket: 変数名を戻り値の定義で、合わせて定義する方法もあります。  
+変数の名前スコープが、関数内全体のスコープになり、認識すべき範囲が広がるため、執筆者は、あまり扱いません。  
+```go
+func myFunc(name string, age uint) (find bool, result error) {
+	<処理>
+	return find, result
+}
+```
+
+## 4.2. 関数を書いてみる
+第3章で、修正したソースコードを更新してもらいます。  
+作成いただく関数は、渡された牛丼名を食べる関数です。  
+本講義で行えることは限られるので、行為を以下のように定義します。  
+* 空白以外の文字列を全て牛丼名とみなす
+* 食べる行為は、`fmt.Println`することとする
+* 食べた場合は、`true`, 食べたい無い場合は、`false`を返す  
+
+## 4.2.1. :computer: 関数を書く
+```shell
+:# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
+$ <お好きなエディタ> eaters.go
+$ go run main.go
+```
+* `/go/src/go_tutorial/4_funcy/monkey/eaters.go`
+	```go
+	package main
+
+	import "fmt"
+
+	func Eat(name string) bool {
+		<nameが空白か比較する>
+		<nameが空白以外ならば、`fmt.Println(name)`を実行し、`return true`を行う>
+		<nameが空白ならば、`return false`を行う>
+	}
+
+	func main() {
+		var name1 string = "GYUDON"
+		if ok := Eat(name1); !ok {
+			fmt.Println("cannt eat: ", name1)
+		}
+
+		var name2 string = ""
+		if ok := Eat(name2); !ok {
+			fmt.Println("cannt eat: ", name2)
+		}
+	}
+	```
+:recycle:
+```shell
+:# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
+$ go run main.go
+GYUDON
+cannt eat: 
+```
+##### Tips: 判定処理用の変数は、`if ok := function(var); !ok{` といった、ifのワンライナーで扱われる形式をよく目にします。  
+
+### 4.2.2. Goっぽい関数
+Go言語の関数は、戻り値を複数返せる特徴を持っています。  
+この特徴を活かし、Goでは、戻り値の最後に関数処理エラーの有無を識別できる値をつける形がよく使われます。  
+なお、エラーが無い場合は、`nil`を渡してあげます。  
+
+#### 4.2.2.1. :computer: Goっぽい関数を実行してみる
+```shell
+:# WORKPATH /go/src/go_tutorial/4_funcy/likego/
+$ <お好きなエディタ> eaters.go
+$ go run main.go
+```
+* `/go/src/go_tutorial/4_funcy/monkey/eaters.go`
+	```go
+	package main
+
+	import "fmt"
+
+	func Eat(name string) (bool, error) {
+		if name == "" {
+			return false, fmt.Errorf("name is empty.")
+		}
+		fmt.Println(name)
+		return true, nil
+	}
+
+	func main() {
+		var name1 string = "GYUDON"
+		if _, err := Eat(name1); err != nil {
+			fmt.Println("cannt eat: ", name1)
+		}
+
+		var name2 string = ""
+		if _, err := Eat(name2); err != nil {
+			fmt.Println("cannt eat: ", name2)
+		}
+	}
+	```
+```shell
+:# WORKPATH /go/src/go_tutorial/4_funcy/likego/
+$ go run eaters.go
+GYUDON
+cannot eat: 
+```
+
+##### Tips: 戻り値に、使わない変数が含まれる場合、`_` に代入することで捨てることができます。
+
+#### 4.2.2.2. :rocket: 変数スコープの注意事項
+戻り値の変数を後ほど活用する場合は、スコープに注意してください。  
+例えば、ファイル読み込みなどで、(`読み込んだ文字列`, `error`) のペアが戻り値となるケースです。  
+例1では、第一戻り値が、ifのスコープ内となり、後続処理で活用できません。  
+例2のように、ifの手前で一度変数を定義する必要があります。  
+* 例1
+	```go
+	func Printer(name string) (bool, error) { ...
+	...
+	func main() {
+		var name string = "GYUDON"
+		if ok, err := Printer(name); err != nil {
+			panic(err)
+		}
+		// ここでは ok がスコープ外
+	}
+	```
+* 例2
+	```go
+	func Printer(name string) (bool, error) { ...
+	...
+	func main() {
+		var name string = "GYUDON"
+		ok, err := Printer(name)
+		if err != nil {
+			panic(err)
+		}
+		// ここでは ok がスコープ内になる
+	}
+	```
+
+## 4.3. 関数の実行される順番
 Go言語では、`func main(){}` が、実行されます。  
 そのため、仮に以下のようなソースコードを実行すると、`runtime.main_main·f: function main is undeclared in the main package` と、main関数が見つからないエラーが表示されます。  
 ```go
@@ -314,88 +496,18 @@ func MySuperFunction() {
 }
 ```
 
-:rocket: Tips
+##### :rocket: `init`関数
 `func main(){}` よりも先に実行される、`func init(){}` という関数があります。  
 後ほど触れるパッケージで、初期化処理を行いたいケースなどで活用できます。  
 
-## 4.2. Goっぽい関数
-Go言語の関数は、戻り値を複数返せる特徴を持っています。  
-この特徴を活かし、Goでは、戻り値の最後に関数処理エラーの有無を識別できる値をつけるスタンダートな記法があります。  
 
-```go
-package main
-
-import "fmt"
-
-func Printer(name string) {
-	if name == "" {
-		return
-	}
-	fmt.Println(name)
-}
-
-func main() {
-	var name string = "GYUDON"
-	Printer(name)
-}
-```
-
-```go
-package main
-
-import "fmt"
-
-func Printer(name string) error {
-	if name == "" {
-		return fmt.Errorf("name is empty.")
-	}
-	fmt.Println(name)
-}
-
-func main() {
-	var name string = "GYUDON"
-	if err := Printer(name); err != nil {
-		panic(err)
-	}
-}
-```
-
-`if err := Printer(name); err != nil {`
-`err := Printer(name)`
-`if err != nil {`
-
-
-:rocket: tips
-```go
-func Printer(name string) bool, error { ...
-...
-func main() {
-	var name string = "GYUDON"
-	if ok, err := Printer(name); err != nil {
-		panic(err)
-	}
-	// ここでは ok がスコープ外
-}
-```
-```go
-func Printer(name string) bool, error { ...
-...
-func main() {
-	var name string = "GYUDON"
-	ok, err := Printer(name)
-	if err != nil {
-		panic(err)
-	}
-	// ここでは ok がスコープ内になる
-}
-```
-
-
-
-# 5. パッケージ//TODO:
+# 5. パッケージ
+本章では、パッケージの参照方法と、実際にパッケージの作成を試していただきます。  
 
 ## 5.1. パッケージを使う
-`import fmt`
+実は既に、何度も登場している、`import fmt` が、パッケージ名fmtを使います。という表現です。  
+`import <パッケージ名>` を増やすことで、他のパッケージを活用できます。  
+複数のパッケージのimportでは、以下のように`()`でまとめることで、より文字数の少ない書き方もできます。  
 ```go
 import (
 	"fmt"
@@ -403,16 +515,140 @@ import (
 )
 ```
 
+## 5.1.1. :computer: 4章のソースコードを直す
+4章で作成いただいたソースコードには、修正すべき問題があります。  
+それは、エラー時の出力先と、正常時の出力先が同じstdoutであることです。  
+`fmt`に含まれる、`Print`関係の関数には、出力先を指定できるものが存在します。  
+出力先を指定できる関数を用い、エラー出力をstderrに出力するよう修正いただきます。  
+なお、Go言語のstderr定数は、`os`パッケージの、`os.Stderr`として存在するため、追加で、`os`パッケージのインポートをいただきます。  
+
+実行時は、stdoutを捨てる(`> /dev/null`)すると、差分がわかることでしょう。  
+
+```shell
+:# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+$ <お好きなエディタ> eaters.go
+$ go run eaters.go
+$ go run eaters.go > /dev/null
+```
+* `/go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go
+	```go
+	package main
+
+	import (
+		"fmt"
+		"os" //追加
+	)
+
+	func Eat(name string) (bool, error) {
+		if name == "" {
+			return false, fmt.Errorf("name is empty.")
+		}
+		fmt.Println(name)
+		return true, nil
+	}
+
+	func main() {
+		var name1 string = "GYUDON"
+		if _, err := Eat(name1); err != nil {
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+		}
+
+		var name2 string = ""
+		if _, err := Eat(name2); err != nil {
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+		}
+	}
+	```
+```shell
+:# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+$ go run eaters.go
+GYUDON
+cannot eat: ''
+$ go run eaters.go > /dev/null
+cannot eat: ''
+```
+
 ## 5.2. パッケージを作る
+実は既に、mainパッケージを何度も作成いただいています。  
+1行目に書いている`package main` がそうです。  
+`package main`は、それを起点として実行できる決められたパッケージ名です。  
+今回は、main以外の任意の名前が指定可能な、起点から呼び出されるパッケージを作成いただきます。  
 
-:rocket: tips
-env 11MODULE の話
+### 5.2.1. :computer: 関数Eatのshopパッケージ化
+```shell
+:# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+$ <お好きなエディタ> shop/shop.go
+$ <お好きなエディタ> eaters.go
+$ go run eaters.go
+```
+* `/go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go`
+	```go
+	package shop
 
-# 6. 構造体 //WIP:TODO:
+	import (
+		"fmt"
+	)
 
+	func Eat(name string) (bool, error) {
+		if name == "" {
+			return false, fmt.Errorf("name is empty.")
+		}
+		fmt.Println(name)
+		return true, nil
+	}
+	```
+* `/go/src/go_tutorial/5_package/notKinkyuJi/eaters.go`
+	```go
+	package main
+
+	import (
+		"fmt"
+		"./shop"
+	)
+
+	func main() {
+		var name1 string = "GYUDON"
+		if _, err := shop.Eat(name1); err != nil {
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+		}
+
+		var name2 string = ""
+		if _, err := shop.Eat(name2); err != nil {
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+		}
+	}
+	```
+:recycle:
+```shell
+:# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+$ <お好きなエディタ> shop/shop.go
+$ <お好きなエディタ> eaters.go
+$ go run eaters.go
+GYUDON
+cannot eat: ''
+```
+
+##### :rocket: 真のパッケージ化
+本章の課題では、`import "./shop"`のような、相対Pathによるimportを行っています。  
+相対Pathによるimportは推奨されず、コンパイルエラーとなります。  
+本講義では、`go mod`の説明を割愛するため、対象エラーを無効化できる環境変数`GO111MODULE=off`を指定しています。  
+使えるmoduleを作成する場合は、[Module作成方法](https://golang.org/doc/tutorial/create-module)や、[その他のModuleの呼び方](https://golang.org/doc/tutorial/call-module-code)を参考に、`go mod`に沿ったパッケージ化が推奨されます。  
+
+# 6. 構造体 (15min)
+本章では、構造体の定義方法と、構造体に関係付ける関数（メソッド）の作成方法について、確認いただきます。  
+
+## 6.1.0. 構造体の雑な説明//TODO
+自身で定義できる型が、構造体です。既に定義済みの型を0個以上まとめ、拡張することができます。  
+構造体を定義する目的の例としては、  
+Go言語に用意されている型や、Go言語の標準パッケージで扱える型では、不足する時に拡張する
+オリジナルint型
 ## 6.1. 構造体の定義
+Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです  
+```go
+
 ## 6.2. 関数の関連付け
-:rocket: tips
+
+##### :rocket: Tips: レシーバ引数は、実体ではなくリファレンス(ポインタ)渡しが多い
 `func (self Type) funcname` より、`func(self *Type) funcname` の方が使う
 
 
@@ -461,5 +697,10 @@ env 11MODULE の話
 もちろん、本講義開催の講師陣に質問いただいても問題ありません。  
 情報源はたくさんあるので、貪欲にGoを知ってみてください。  
 ではみなさん、Let's Go!!  
+---
+
+## 参考
+* [今改めて読み直したい Go基礎情報 その1](https://budougumi0617.github.io/2019/06/20/golangtokyo25-read-again-awesome-go-article/) \
+* [Go入門](https://www.slideshare.net/takuyaueda967/2016-go)
 
 <credit-footer/>
