@@ -550,12 +550,12 @@ $ go run eaters.go > /dev/null
 	func main() {
 		var name1 string = "GYUDON"
 		if _, err := Eat(name1); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
 		}
 
 		var name2 string = ""
 		if _, err := Eat(name2); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
 		}
 	}
 	```
@@ -609,12 +609,12 @@ $ go run eaters.go
 	func main() {
 		var name1 string = "GYUDON"
 		if _, err := shop.Eat(name1); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
 		}
 
 		var name2 string = ""
 		if _, err := shop.Eat(name2); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , ) //更新
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
 		}
 	}
 	```
@@ -637,20 +637,194 @@ cannot eat: ''
 # 6. 構造体 (15min)
 本章では、構造体の定義方法と、構造体に関係付ける関数（メソッド）の作成方法について、確認いただきます。  
 
-## 6.1.0. 構造体の雑な説明//TODO
-自身で定義できる型が、構造体です。既に定義済みの型を0個以上まとめ、拡張することができます。  
-構造体を定義する目的の例としては、  
-Go言語に用意されている型や、Go言語の標準パッケージで扱える型では、不足する時に拡張する
-オリジナルint型
+## 6.1.0. 構造体とは
+構造体は、任意の定義ずみの型を0個以上まとめることが可能な型です。  
+例えば、既存の型では収められる量が不足する際に扱います。  
+int64では、最大約923京(`9,223,372,036,854,775,807`) の京の桁(10^16)まで表せますが、1那由多(10^60)は、表すことができません。  
+int64をいくつか組み合わせ、このint64は、1の位から。このint64は、垓（がい）の位から。と役割を決めていくことで、1那由多以上を表せる型を定義できます。  
+
 ## 6.1. 構造体の定義
-Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです  
+Go言語では、`type`から始まる形で、名前付きの型を定義できます。  
 ```go
+type <名称> <型>
+```
+構造体の定義は、型部分に、予約された表現である、`struct {}`を用い定義します。  
+(変数に直接代入する構造体の定義方法もありますが、本講義ではふれません。)  
+```go
+type <名称> struct {
+	[<名前> <型>]
+	[<名前> <型>]
+	...
+}
+```
+例えば、[6.1.0 構造体とは]() で例に挙げたint64では桁数が不足する際の構造体をGo言語で記述すると、以下のようになります。  
+```go
+type FantasticInt struct {
+	ichi_no_keta int64
+	kgai_no_keta int64
+	//続く
+```
 
-## 6.2. 関数の関連付け
+## 6.2. 構造体への関数の関連付け
+先ほど例に挙げた`type FantasticInt`は、`+-/` を用いて計算ができません。  
+```go
+package main
 
-##### :rocket: Tips: レシーバ引数は、実体ではなくリファレンス(ポインタ)渡しが多い
-`func (self Type) funcname` より、`func(self *Type) funcname` の方が使う
+import "fmt"
 
+type FantasticInt struct {
+	ichi_no_keta int64
+	gai_no_keta int64
+	#...省略
+}
+
+func main() {
+	var num1 FantasticInt = FantasticInt{ichi_no_keta: 0, gai_no_keta: 1 #...省略 }
+	var num2 FantasticInt = FantasticInt{ichi_no_keta: 1, gai_no_keta: 1 #...省略 }
+
+	fmt.Println(num1 + num2)
+}
+```
+これは、コーダが独自に定義した型をどのように計算するかGo言語に定義されていない為におきます。  
+残念ながら`+-/`を活用した計算はできませんが、処理を定義することで計算は可能となります。  
+独自の型へ独自の処理を定義する方法は、3つあります。  
+### 6.2.1. 型を利用するスコープ上に、そのまま処理を書く
+```
+func main() {
+	var num1 FantasticInt
+	var num2 FantasticInt
+
+	var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
+	var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
+	#...省略
+
+	fmt.Println(ichi_no_keta)
+	fmt.Println(gai_no_keta)
+	#...省略
+}
+```
+### 6.2.2. 型を引数として利用できる関数を定義する
+```
+func Add(num1 FantasticInt, num2 FantasticInt) FantasticInt {
+	var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
+	var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
+	#...省略
+
+	return FantasticInt{
+		ichi_no_keta: ichi_no_keta,
+		gai_no_keta: gai_no_keta,
+		#...省略
+	}
+}
+```
+### 6.2.3. 型をレシーバ引数として関数と関連付けする
+型に関数を紐付け、`変数.関数()`の形で呼び出す方法です。レシーバ引数で紐付けを行っている関数を、メソッドとも呼びます。  
+```go
+func (<レシーバ引数>) <関数名> ([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>)] {
+```
+`FantasticInt`へ、数字を追加する、足し算メソッドを用意する場合は、以下のようになります。  
+```go
+func (self *FantasticInt) Add(num FantasticInt) {
+	#...省略
+
+func main() {
+	var num1 FantasticInt
+	var num2 FantasticInt
+
+	num1.Add(num2)
+	fmt.Println(num1)
+}
+```
+先程紹介した2つでは、**AとBを足し、Cという新しい領域を作成**しています。  
+今回の記法では、**AにBに加える** というような、レシーバ引数となった実体へ影響を与えるような書き方も行えます。  
+どちらの表現でも処理自体は行えますが、処理の効率や可読性の観点から、どちらを選ぶか判断が必要です。  
+
+なお、本講義で詳細は触れませんが、実体に影響を与えるためには、リファレンス参照（ポインタのようなもの）が必要です。  
+引数を定義する際の`<変数> <型>` を、`<変数> *<型>` のようにアスタリスクをつけることでリファレンス参照となります。  
+
+##### Tips: Go言語には、"math/big" があります
+int64では扱えないサイズを例に挙げ、本資料では独自の方を定義していますが、  
+Go言語標準パッケージに、int64よりも大きいサイズを扱える、[math/big](https://golang.org/pkg/math/big/)パッケージが存在します。  
+
+## 6.3. 牛丼屋型と、注文する関数を定義する
+先ほども紹介した通り、構造体(`struct`) は、`任意の定義ずみの型を0個以上まとめることが可能な型`なため、数字桁を扱うグルーピング以外にも活用できます。  
+牛丼屋で考えてみます。  
+```go
+type GYUDONYA struct {
+	reji_1  TypeOfCashRegister
+	reji_2  TypeOfCashRegister
+
+	seki_1  TypeOfChair
+	seki_2  TypeOfChair
+	seki_3  TypeOfChair
+
+	chubo_1 TypeOfKitchen
+
+	menu    string
+
+	ZipCode int64
+	#...省略
+```
+レジや席がいくつか存在し、厨房やメニューがあることでしょう。あとは、所在の郵便番号(ZipCode)。他にも、電話番号や社員の一覧など、構成要素はまだまだありそうです。  
+牛丼屋を完璧にシミュレーションするコードを作成したければ、もっと沢山の構成要素を意識する必要がありますが、牛丼屋を考える講義でも無く、執筆者が牛丼屋で働いたこともないので、もう少しシンプルな実習コードとします。  
+
+### 6.3.1. :computer: お店で食べられる牛丼屋型を実行する
+```shell
+:# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+$ <お好きなエディタ> shop/shop.go
+$ <お好きなエディタ> eaters.go
+$ go run eaters.go
+```
+* `/go/src/go_tutorial/6_struct/weakShop/shop/shop.go`
+	```go
+	package shop
+
+	import (
+		"fmt"
+	)
+
+	type Gyudon struct {
+		menu string
+	}
+
+	func NewGyudon() Gydon { //変数定義用の関数
+		return Gyudon{
+			menu: "NegitamaGyudon",
+		}
+	}
+
+	func (self *Gyudon) Eat() (bool, error) {
+		if self.menu == "" {
+			return false, fmt.Errorf("name is empty.")
+		}
+		fmt.Println(name)
+		return true, nil
+	}
+	```
+* `/go/src/go_tutorial/6_struct/weakShop/eaters.go`
+	```go
+	package main
+
+	import (
+		"fmt"
+		"./shop"
+	)
+
+	func main() {
+		myshop := NewGyudon()
+		if _, err := myshop.Eat(); err != nil {
+			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err)
+		}
+	}
+	```
+:recycle:
+```shell
+:# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+$ <お好きなエディタ> shop/shop.go
+$ <お好きなエディタ> eaters.go
+$ go run eaters.go
+NegitamaGyudon
+```
 
 # 7. Webアプリケーション//WIP:TODO:
 
