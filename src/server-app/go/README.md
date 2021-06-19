@@ -781,6 +781,7 @@ $ go run eaters.go
 
 	import (
 		"fmt"
+		"time"
 	)
 
 	type Gyudon struct {
@@ -797,6 +798,8 @@ $ go run eaters.go
 		if self.menu == "" {
 			return false, fmt.Errorf("name is empty.")
 		}
+
+		time.Sleep(time.Second * 10) //擬似食べてる時間
 		fmt.Println(name)
 		return true, nil
 	}
@@ -826,28 +829,189 @@ $ go run eaters.go
 NegitamaGyudon
 ```
 
-# 7. Webアプリケーション//WIP:TODO:
+# 7. Webアプリケーション
+本章では、これまで順番に作り上げてきたGyudon型をhttpサーバとして起動する方法を確認いただきます。  
+これまでGo言語の基本的な扱い方を学習いただいたみなさんには、最もつまらない話となることでしょう。  
 
-## 7.1. ベースのCLIツール
-## 7.1. net/http パッケージ
-を、使わない互換あるけど、最小機能のzakohttpを使ってもらいます
-## 7.3. curl
+## 7.1. httpを起動する方法
+Go言語の標準パッケージ [net/http](https://golang.org/pkg/net/http/) を活用するだけで起動します。  
+特に細かい処理に拘らず、デフォルト動作でhttpサーバを書くのであれば、以下の2行ですみます。  
+```go
+func main() {
+	http.HandleFunc("/", httphandler)   //どこのPathで、どんな処理をするか
+	http.ListenAndServe("localhost:8080", nil) //どの接続元(ホスト名:ポート)で、サーバを起動するか
+}
+```
+
+## 7.2. はじめてのGo言語Webアプリケーション起動
+では、httpサーバの書き方も知っていただいたので、実際にコーディングしてもらいましょう。  
+理由は後ほど説明しますが、本講義では、[net/http](https://golang.org/pkg/net/http/)パッケージではなく、講義用の下位互換httpパッケージ(zakohttp) を参照してもらいます。  
+
+```shell
+:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+$ <お好きなエディタ> shop/shop.go
+$ <お好きなエディタ> gyudon-httpd.go
+$ go run eaters.go
+
+:# 2つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ curl http://localhost/
+```
+* `/go/src/go_tutorial/7_webapp/weakShop/shop/shop.go`
+	```go
+	package shop
+
+	import (
+		"fmt"
+		"time"
+		"./http"
+	)
+
+	type Gyudon struct {
+		menu string
+	}
+
+	func NewGyudon() Gydon {
+		return Gyudon{
+			menu: "NegitamaGyudon",
+		}
+	}
+
+	func (self *Gyudon) Eat(w http.ResponseWriter, r *http.Request) { //引数をhttpdのセッション状態を受け取れるように追加
+		if self.menu == "" {
+			return false, fmt.Errorf("name is empty.")
+		}
+
+		time.Sleep(time.Second * 10) //擬似食べてる時間
+		fmt.Fprintf(w, "'%s'\n", self.name) //食べた事を報告
+		return true, nil
+	}
+	```
+* `/go/src/go_tutorial/7_struct/weakShop/gyudon-httpd.go`
+	```go
+	package main
+
+	import (
+		"fmt"
+		"./shop"
+		"./http"
+	)
+
+	func main() {
+		myshop := NewGyudon()
+		http.HandleFunc("/", myshop.Eat)
+		http.ListenAndServe("localhost:8080", nil)
+	}
+	```
+:recycle:
+```shell
+:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+$ <お好きなエディタ> shop/shop.go
+$ <お好きなエディタ> eaters.go
+$ go run eaters.go
+
+:# 2つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ curl http://localhost/
+NegitamaGyudon
+```
+
 ## 7.4. Goroutineに触れる
-### 7.4.1 ワンオペ牛丼屋は、大変そう
-### 7.4.2 バイト（goroutine）を雇おう
+Go言語の特徴でも述べた([1.1.7. 並行プログラミングが文法レベルでサポートされている]())通り、Go言語では並行処理が簡単にかけます。  
+開発いただいたhttpサーバを用い、(脳内イメージは、並列処理な説明をしてしまいますが、)並行処理を体験いただきます。  
 
-## 7.5. まとめ //WIP:TODO:update
-* テストが無い
-  * [`testing`](https://golang.org/pkg/testing/)パッケージを使ったテストを書く
-  * GoではTDT(Table Driven Test)が好まれる
-* HTTPメソッドを判断していないので、実はPOSTでも同じ応答が返ってくる
-  * 小規模なままであればシンプルに`router()`でちゃんと`r.Method`に応じた分岐を書くとよい
-  * [go-chi/chi](https://github.com/go-chi/chi)のようなルータを担うパッケージもあるので利用するのもよい
-* もし更新APIを実装したとしても、データがメモリ上にしかないので再起動の度にデータが初期状態に戻ってしまう
-  * データベースを使い永続化したい
-  * [`database/sql`](https://golang.org/pkg/database/sql/)パッケージを使えばデータベースと接続できる
-* ログを出力したい
-  * [`log`](https://golang.org/pkg/log/)パッケージを使えばログが出せる
+突然ですが、牛丼屋を1人で貸し切った事がある人はいますか？  
+大手牛丼チェーンの各社が、貸切をサービスとして実施しているか、執筆者はしりませんが、平時の利用で貸し切ることは無いと思います。  
+店舗を占有しては、Aさんが食べ終わるまで、Bさんが牛丼を食べることができなくなってしまいますものね。  
+
+httpサーバも同じような考えが必要です。  
+プログラムは、指定しない限り、処理を順番に行います。つまり、常に貸切状態の牛丼屋です。  
+そのため、何も考えないと、Aさんの画面が表示されるまで、Bさんの画面はずっと読み込み中でくるくるしてしまうといったことがおきます。  
+
+座席数の少ない美味しい牛丼屋ならばともかく、2人ほどから行列のできるhttpサーバなんて、利用者が離れてしまいます。  
+
+### 7.4.1 :computer: 貸切なhttpサーバ体験
+試しに、2つのリクエストを送ると、2つ目のリクエストが15秒以上かかり、応答することがわかるかと思います。  
+これは、1つ目の処理と、2つ目の処理が、順番に動作しているため、2つ目のリクエストには、1つ目のリクエストの合計待ち時間が発生するために発生します。  
+2つほどならまだ良いのですが、1000件同時にアクセスがくると、最後に並んだ人は、目も当てられないほど待たなくてはいけません。  
+
+```shell
+:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+$ go run eaters.go
+
+:# 2つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+
+:# 3つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+```
+:recycle:
+```shell
+:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+$ go run eaters.go
+
+:# 2つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+
+:# 3つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+```
+
+### 7.4.3 を雇おう
+このような問題を解決するには、お客さんごとに専用の調理人や座席を割り当て、占有される区間をバラバラに処理できるようにするしかありません。  
+不思議なポッケがあれば、牛丼屋にお客さんが来店したら、調理人やお客さんの座席をまるっとコピーすることで解決できるとは思います。  
+
+`/go/src/go_tutorial/7_webapp/weakShop/http/zakohttpd.go` の、`c.serve(self.ctx)` が、Eat処理を呼び出す大元になっています。  
+本講義で、zakohttpの仕組みは割愛します。
+ここを、Goroutine化すれば、その先にあるEat処理も、新しく誕生したGoroutineの中で動作するようになります。
+
+
+```shell
+:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+$ <お好きなエディタ> http/zakohttpd.go
+$ go run eaters.go
+
+:# 2つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+
+:# 3つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+```
+* /go/src/go_tutorial/7_webapp/weakShop/http/zakohttpd.go
+	```go
+	c.serve(self.ctx)    #もともとの書かれ方
+	go c.serve(self.ctx) #go と、加筆する
+	```
+:recycle:
+```shell
+:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+$ <お好きなエディタ> http/zakohttpd.go
+$ go run eaters.go
+
+:# 2つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+
+:# 3つ目の、ターミナル
+$ docker exec -it go-tutor /bin/bash
+$ time curl http://localhost/
+```
+
+余談ですが、本内容は、Go言語標準パッケージの以下の処理を参考に作成しています。  
+[https://golang.org/src/net/http/server.go?s=79801:84098#L3013](https://golang.org/src/net/http/server.go?s=79801:84098#L3013)  
+本講義を通して、Go標準パッケージのようなものを触ってしまいましたね。すごい  
+
+##### Tips: Goroutineは、注意して使いましょう
+お手軽な`go func()` ですが、注意が必要です。  
+それは、並行動作を簡単に行えますが、並行動作に対応した処理やデータの安全性は、プログラマ自身が考え、コード化しておく必要があるということです。  
+groutineが迷子になったり、データが壊れたり、リソースの奪い合いになったりと、危険なことがいっぱいあります。  
+本番サービスとして、きちんと提供する場合は、並列プログラミングを学習してから利用することをお勧めします。  
 
 # 8. 最後に
 今回は、Goを知ってもらうために、Goの概要説明、実行やコンパイル、関数や構造体、そして、Goroutineをサクッと追っていきました。  
