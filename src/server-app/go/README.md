@@ -58,6 +58,9 @@ Goを知らない方かつ、プログラミング技術をこれから身につ
 	* コメントです。存在する状態でもソースコードが動作します
 * :computer: の、実行プロンプト先頭 `:# WORKPATH <ファイルパス>`
 	* 動作させるカレントディレクトリを示します。`cd <ファイルパス>` すると、快適にハンズオンを楽しめます
+* :computer: の、実行プロンプト先頭 `:# COPY <srcファイルパス> <dstファイルパス>`
+	* 1つ以上前の演習で作成したソースコードを引き継げる演習の場合、コピーするパスを表示しています
+	* `cp <srcファイルパス> <dstファイルパス>` とすることで、引き継ぎができます
 
 ### 解釈例
 
@@ -212,7 +215,7 @@ Hello, W0rld!!
 
 ## 2.2. クロスコンパイルの体験
 きっと便利ツールを作ってお手元のWindowsで動かしたくなることもあるでしょう。  
-[1.1.3. クロスコンパイルが容易](#### 1.1.3. クロスコンパイルが容易) でも触れた通り、簡単に作成できることを確認してもらいます。  
+[1.1.3. クロスコンパイルが容易](#113-クロスコンパイルが容易) でも触れた通り、簡単に作成できることを確認してもらいます。  
 
 ### :computer: 2.2.1. 以下のコマンドを実行して、Goをコンパイルしてみましょう。  
 ```shell
@@ -425,6 +428,7 @@ Go言語の関数は、戻り値を複数返せる特徴を持っています。
 
 #### 4.2.2.1. :computer: Goっぽい関数を実行してみる
 ```shell
+:# COPY /go/src/go_tutorial/4_funcy/monkey/eaters.go /go/src/go_tutorial/4_funcy/likego/eaters.go
 :# WORKPATH /go/src/go_tutorial/4_funcy/likego/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
@@ -593,6 +597,7 @@ cannot eat: 'name is empty.'
 
 ### 5.2.1. :computer: 関数Eatのshopパッケージ化
 ```shell
+:# COPY /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
 :# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
@@ -805,6 +810,8 @@ type GYUDONYA struct {
 
 ### 6.3.1. :computer: お店で食べられる牛丼屋型を実行する
 ```shell
+:# COPY /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
+:# COPY /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
 :# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
@@ -888,6 +895,8 @@ func main() {
 理由は後ほど説明しますが、本講義では、[net/http](https://golang.org/pkg/net/http/)パッケージではなく、講義用の下位互換httpパッケージ(zakohttp) を参照してもらいます。  
 
 ```shell
+:# COPY /go/src/go_tutorial/6_struct/weakShop/shop/shop.go /go/src/go_tutorial/7_webapp/weakShop/shop/shop.go
+:# COPY /go/src/go_tutorial/6_struct/weakShop/eaters.go /go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
