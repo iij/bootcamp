@@ -375,7 +375,7 @@ func myFunc(name string, age uint) (find bool, result error) {
 ```shell
 :# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
 $ <お好きなエディタ> eaters.go
-$ go run main.go
+$ go run eaters.go
 ```
 * `/go/src/go_tutorial/4_funcy/monkey/eaters.go`
 	```go
@@ -401,10 +401,10 @@ $ go run main.go
 		}
 	}
 	```
-:recycle:
+:recycle: 4.2.1. 結果
 ```shell
 :# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
-$ go run main.go
+$ go run eaters.go
 GYUDON
 cannt eat: 
 ```
@@ -419,9 +419,9 @@ Go言語の関数は、戻り値を複数返せる特徴を持っています。
 ```shell
 :# WORKPATH /go/src/go_tutorial/4_funcy/likego/
 $ <お好きなエディタ> eaters.go
-$ go run main.go
+$ go run eaters.go
 ```
-* `/go/src/go_tutorial/4_funcy/monkey/eaters.go`
+* `/go/src/go_tutorial/4_funcy/likego/eaters.go`
 	```go
 	package main
 
@@ -537,7 +537,7 @@ $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 $ go run eaters.go > /dev/null
 ```
-* `/go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go
+* `/go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go`
 	```go
 	package main
 
@@ -571,9 +571,9 @@ $ go run eaters.go > /dev/null
 :# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
 $ go run eaters.go
 GYUDON
-cannot eat: ''
+cannot eat: 'name is empty.'
 $ go run eaters.go > /dev/null
-cannot eat: ''
+cannot eat: 'name is empty.'
 ```
 
 ## 5.2. パッケージを作る
@@ -634,7 +634,7 @@ $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 GYUDON
-cannot eat: ''
+cannot eat: 'name is empty.'
 ```
 
 ##### :rocket: 真のパッケージ化
@@ -850,7 +850,7 @@ $ go run eaters.go
 ```shell
 :# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
 $ <お好きなエディタ> shop/shop.go
-$ <お好きなエディタ> eaters.go
+$ <お好きなエディタ> gyudon-httpd.go
 $ go run eaters.go
 NegitamaGyudon
 ```
@@ -881,7 +881,7 @@ func main() {
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
-$ go run eaters.go
+$ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
@@ -917,7 +917,7 @@ $ curl http://localhost/
 		return true, nil
 	}
 	```
-* `/go/src/go_tutorial/7_struct/weakShop/gyudon-httpd.go`
+* `/go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go`
 	```go
 	package main
 
@@ -937,8 +937,8 @@ $ curl http://localhost/
 ```shell
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> shop/shop.go
-$ <お好きなエディタ> eaters.go
-$ go run eaters.go
+$ <お好きなエディタ> gyudon-httpd.go
+$ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash

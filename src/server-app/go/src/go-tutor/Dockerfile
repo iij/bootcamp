@@ -26,4 +26,5 @@ RUN cd /opt && wget -nv --show-progress --progress=bar:force:noscroll https://go
     chmod 777 /.cache
 
 ADD ./samples /go/src/samples/
+ADD ./go-tutorial /go/src/go-tutorial
 WORKDIR ${GOPATH}
