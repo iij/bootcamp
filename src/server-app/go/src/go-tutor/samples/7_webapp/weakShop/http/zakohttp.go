@@ -53,7 +53,7 @@ func (self *Server) Serve(l net.Listener) error {
 
 			rw := rcv.con
 			c := self.newConn(rw)
-			c.serve(self.ctx)
+			go c.serve(self.ctx)
 		}
 	}
 }

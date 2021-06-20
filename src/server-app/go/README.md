@@ -311,6 +311,7 @@ $ go run main.go
 :recycle: 3.3.1. 結果
 ```shell
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+$ <お好きなエディタ> main.go
 $ go run main.go
 GYUDON
 ```
@@ -611,6 +612,7 @@ $ go run eaters.go
 	package main
 
 	import (
+		"os"
 		"fmt"
 		"./shop"
 	)
@@ -814,7 +816,7 @@ $ go run eaters.go
 		menu string
 	}
 
-	func NewGyudon() Gydon { //変数定義用の関数
+	func NewGyudon() Gyudon { //変数定義用の関数
 		return Gyudon{
 			menu: "NegitamaGyudon",
 		}
@@ -826,7 +828,7 @@ $ go run eaters.go
 		}
 
 		time.Sleep(time.Second * 10) //擬似食べてる時間
-		fmt.Println(name)
+		fmt.Println(self.menu)
 		return true, nil
 	}
 	```
@@ -835,12 +837,13 @@ $ go run eaters.go
 	package main
 
 	import (
+		"os"
 		"fmt"
 		"./shop"
 	)
 
 	func main() {
-		myshop := NewGyudon()
+		myshop := shop.NewGyudon()
 		if _, err := myshop.Eat(); err != nil {
 			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err)
 		}
@@ -885,7 +888,7 @@ $ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ curl http://localhost/
+$ curl http://localhost:8080/
 ```
 * `/go/src/go_tutorial/7_webapp/weakShop/shop/shop.go`
 	```go
@@ -894,14 +897,14 @@ $ curl http://localhost/
 	import (
 		"fmt"
 		"time"
-		"./http"
+		"../http"
 	)
 
 	type Gyudon struct {
 		menu string
 	}
 
-	func NewGyudon() Gydon {
+	func NewGyudon() Gyudon {
 		return Gyudon{
 			menu: "NegitamaGyudon",
 		}
@@ -909,12 +912,12 @@ $ curl http://localhost/
 
 	func (self *Gyudon) Eat(w http.ResponseWriter, r *http.Request) { //引数をhttpdのセッション状態を受け取れるように追加
 		if self.menu == "" {
-			return false, fmt.Errorf("name is empty.")
+			return
 		}
 
 		time.Sleep(time.Second * 10) //擬似食べてる時間
-		fmt.Fprintf(w, "'%s'\n", self.name) //食べた事を報告
-		return true, nil
+		fmt.Fprintf(w, "'%s'\n", self.menu) //食べた事を報告
+		return
 	}
 	```
 * `/go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go`
@@ -922,13 +925,12 @@ $ curl http://localhost/
 	package main
 
 	import (
-		"fmt"
 		"./shop"
 		"./http"
 	)
 
 	func main() {
-		myshop := NewGyudon()
+		myshop := shop.NewGyudon()
 		http.HandleFunc("/", myshop.Eat)
 		http.ListenAndServe("localhost:8080", nil)
 	}
@@ -942,8 +944,8 @@ $ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ curl http://localhost/
-NegitamaGyudon
+$ curl http://localhost:8080/
+'NegitamaGyudon'
 ```
 
 ## 7.3. Goroutineに触れる
@@ -966,28 +968,39 @@ HTTPサーバで、他者の処理が終わらないと利用できないなん�
 
 ```shell
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
-$ go run eaters.go
+$ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
 
 :# 3つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
 ```
 :recycle: 7.4.1 結果
 ```shell
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
-$ go run eaters.go
+$ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
+'NegitamaGyudon'
+
+real    0m10.036s
+user    0m0.014s
+sys     0m0.013s
 
 :# 3つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
+'NegitamaGyudon'
+
+real    0m18.991s
+user    0m0.004s
+sys     0m0.010s
+
 ```
 
 これは、2つ目のリクエストが、1つ目のリクエストが終わるまでの待ち時間＋自身の実行時間となるためです。  
@@ -1015,15 +1028,15 @@ AさんとBさんに、同時に牛丼を食べてもらう方法は、簡単で
 ```shell
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> http/zakohttpd.go
-$ go run eaters.go
+$ go run gyudon-httpd.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
 
 :# 3つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
 ```
 * /go/src/go_tutorial/7_webapp/weakShop/http/zakohttpd.go
 	```go
@@ -1038,11 +1051,23 @@ $ go run eaters.go
 
 :# 2つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
+'NegitamaGyudon'
+
+
+real    0m10.033s
+user    0m0.019s
+sys     0m0.009s
 
 :# 3つ目の、ターミナル
 $ docker exec -it go-tutor /bin/bash
-$ time curl http://localhost/
+$ time curl http://localhost:8080/
+'NegitamaGyudon'
+
+
+real    0m10.012s
+user    0m0.019s
+sys     0m0.009s
 ```
 
 ##### Tips: Goroutineは、注意して使いましょう

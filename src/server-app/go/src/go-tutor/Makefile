@@ -1,6 +1,6 @@
 D=docker
-IMAGE_NAME=go-tour
-CONTAINER_NAME=go-tour
+IMAGE_NAME=go-tutor
+CONTAINER_NAME=go-tutor
 
 SRCS := $(shell find . -type f)
 export http_proxy
