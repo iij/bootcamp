@@ -8,6 +8,8 @@
 ## 1. update sample
 * `./samples` 配下を更新してください
 	* docker containerの、`/go/src/samples` に mountされます
+* `./go_tutorial` 配下を更新してください
+	* docker containerの、`/go/src/go_tutorial` に mountされます
 
 ## 2. update dockerfile
 * `./Dockerfile` を編集してください
@@ -36,6 +38,8 @@
 			* 任意の値
 2. `docker push <username>/go-tutor:<version>`
 	* `3. tag付け` と同じ変数値
+5. logout
+	* `docker logout`
 
 ## 5. ゴミ掃除
 1. tag付け対象削除

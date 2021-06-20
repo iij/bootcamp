@@ -18,10 +18,10 @@ GoでWebアプリケーションを作る(下準備編)
 ## 手順
 1. docker imageをpullする
 	```shell
-	$ docker pull hinoshiba/go-tutor
+	$ docker pull hinoshiba/go-tutor:v2021r1
 	...
 	:# 確認コマンド
-	$ docker images | grep hinoshiba/go-tutor
+	$ docker images | grep go-tutor
 	hinoshiba/go-tutor   latest              <image id>        x minutes ago        <size>
 	```
 2. docker imageを実行する
@@ -32,14 +32,14 @@ GoでWebアプリケーションを作る(下準備編)
 3. 作業ディレクトリの確認
 	```shell
 	root@<container id>:/go/src/# ls
-	samples
+	go_tutorial  samples
 	```
 4. 任意のエディタ起動確認
 	```shell
 	:# 下記3つ、どちらでも大丈夫です
-	root@<container id>:/go/src/samples# vim
-	root@<container id>:/go/src/samples# nano
-	root@<container id>:/go/src/samples# emacs
+	root@<container id>:/go/src/# vim
+	root@<container id>:/go/src/# nano
+	root@<container id>:/go/src/# emacs
 	```
 	* 注意事項: DockerContainerの話
 		* コンテナは、停止するとデータが **保存されません**
