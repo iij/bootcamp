@@ -296,8 +296,8 @@ $ go run main.go
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 # command-line-arguments
-./main.go:6:2: undefined: Watashi_no_Hensu
-./main.go:7:14: undefined: Watashi_no_Hensu
+./main.go:6:2: undefined: WatashiNoHensu
+./main.go:7:14: undefined: WatashiNoHensu
 ```
 
 ## 3.3. 不具合の修正
