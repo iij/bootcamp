@@ -270,7 +270,7 @@ Go言語では、変数の定義記法が3つあります。
 
 ##### :rocket: Tips: privateとPublicの指定方法
 Go言語の名前空間は、`private`は先頭小文字。`Public`が先頭大文字と決まっています。  
-packageの要素や、構造体の要素を外部から参照させたい場合は、先頭大文字の変数名となるようご注意ください。  
+packageに含める要素（変数や関数、構造体や構造体の要素など）をpackageの外部から参照させたい場合、先頭大文字の変数名とするようご注意ください。  
 
 ## 3.2. 不具合箇所は、最高の講師に教えてもらおう
 Go言語では、書き方を間違えているととても丁寧に教えてくれる強い味方がいます。  
@@ -690,7 +690,7 @@ type FantasticInt struct {
 
 構造体を変数として定義する場合は、intなどの標準型と同様、以下のように定義できます。  
 要素にアクセスする際は、`<変数>.<要素の名前>` と指定します。  
-```
+```go
 func main() {
 	var MyInt FantasticInt
 
@@ -723,7 +723,7 @@ func main() {
 残念ながら`+-*/`を活用した計算はできませんが、処理を定義することで計算は可能となります。  
 独自の型へ独自の処理を定義する方法は、3つあります。  
 ### 6.2.1. 型を利用するスコープ上に、そのまま処理を書く
-```
+```go
 func main() {
 	var num1 FantasticInt
 	var num2 FantasticInt
@@ -738,7 +738,7 @@ func main() {
 }
 ```
 ### 6.2.2. 型を引数として利用できる関数を定義する
-```
+```go
 func Add(num1 FantasticInt, num2 FantasticInt) FantasticInt {
 	var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
 	var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
