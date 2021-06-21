@@ -56,15 +56,22 @@ Goを知らない方かつ、プログラミング技術をこれから身につ
 	* 直前の要素をn回繰り返します
 * Go言語ソースコード上の、`// <任意のコメント>`
 	* コメントです。存在する状態でもソースコードが動作します
-* :computer: の、実行プロンプト先頭 `:# WORKPATH <ファイルパス>`
-	* 動作させるカレントディレクトリを示します。`cd <ファイルパス>` すると、快適にハンズオンを楽しめます
-* :computer: の、実行プロンプト先頭 `:# COPY <srcファイルパス> <dstファイルパス>`
-	* 1つ以上前の演習で作成したソースコードを引き継げる演習の場合、コピーするパスを表示しています
-	* `cp <srcファイルパス> <dstファイルパス>` とすることで、引き継ぎができます
-
+* :computer: の、`:# <任意の表現>`
+	* ハンズオンに対するコメントです。執筆者の任意のコメントもしくは、決まった表現をします
+	* 決まった表現は、以下です
+		* `:# WORKPATH <ファイルパス>`
+			* 動作させるカレントディレクトリを示します。`cd <ファイルパス>` すると、快適にハンズオンを楽しめます
+			* 省略されている場合、pathの指定はありません。どのようなディレクトリから実行しても出力が同一となる想定です
+		* `:# COPY <srcファイルパス> <dstファイルパス>`
+			* 1つ以上前の演習で作成したソースコードを引き継げる演習の場合、コピーするパスを表示しています
+				* 記載のファイルパスは、フルパスとしているため、どのようなディレクトリからであっても実行可能です
+			* `cp <srcファイルパス> <dstファイルパス>` とすることで、引き継ぎができます
+		* `:# TERMINAL <識別番号>`
+			* ハンズオンで利用するターミナルを識別します
 ### 解釈例
 
 ```shell
+:# TERMINAL 9999999
 $ git clone <リモートリポジトリのアドレス>
 ```
 
@@ -145,6 +152,7 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 特別な注釈がない限り、実施するプロンプトは、コンテナ上です。  
 もしコンテナを実行していないようであれあば、以下のコマンドを実行してください。  
 ```shell
+:# TERMINAL 0
 $ docker run --name go-tutor -it --rm hinoshiba/go-tutor /bin/bash
 ```
 
@@ -155,7 +163,8 @@ $ docker run --name go-tutor -it --rm hinoshiba/go-tutor /bin/bash
 講師側が想定している出力結果を確認したい際は、`/go/src/samples/`配下を実行することで、容易に確認できます。  
 また、ハンズオンがうまく行かない際には、以下のように差分を確認することで、課題解決を助ける可能性があります。  
 ```shell
-diff /go/src/go_tutorial/<セクション名>/<プログラム名>/***.go /go/src/samples/<セクション名>/<プログラム名>/***.go
+:# TERMINAL 0
+$ diff /go/src/go_tutorial/<セクション名>/<プログラム名>/***.go /go/src/samples/<セクション名>/<プログラム名>/***.go
 ```
 
 # 2. Hello, World ( 10 min )
@@ -170,6 +179,7 @@ Go言語で作成されたソースコードの実行方法は2つあります�
 #### :computer: 2.1.1.1. 以下のコマンドを実行して、Goを動かしてみよう  
 
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ <お好きなエディタ> main.go
 $ go run main.go
@@ -186,12 +196,14 @@ $ go run main.go
 	```
 :recycle: 2.1.1.1. 結果
 ```shell
+:# TERMINAL 0
 $ go run main.go
 Hello, W0rld!!
 ```
 
 #### :computer: 2.1.1.2. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ go build main.go
 $ ls
@@ -200,6 +212,7 @@ $ ./main
 ```
 :recycle: 2.1.1.2. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ go build main.go
 $ ls
@@ -219,6 +232,7 @@ Hello, W0rld!!
 
 ### :computer: 2.2.1. 以下のコマンドを実行して、Goをコンパイルしてみましょう。  
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
@@ -226,6 +240,7 @@ $ file ./main.exe
 ```
 :recycle: 2.2.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
@@ -287,12 +302,14 @@ Go言語では、書き方を間違えているととても丁寧に教えてく
 
 ### :computer: 3.2.1. 以下のコマンドを実行して、修正箇所を認識てみよう。  
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 ```
 
 :recycle: 3.2.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 # command-line-arguments
@@ -303,6 +320,7 @@ $ go run main.go
 ## 3.3. 不具合の修正
 ### :computer: 3.3.1. ソースコードを修正し、エラーを無くしてみよう。  
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ <お好きなエディタ> main.go
 $ go run main.go
@@ -320,6 +338,7 @@ $ go run main.go
 	```
 :recycle: 3.3.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
 $ <お好きなエディタ> main.go
 $ go run main.go
@@ -384,6 +403,7 @@ func myFunc(name string, age uint) (find bool, result error) {
 
 ## 4.2.1. :computer: 関数のコーディング
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
@@ -414,6 +434,7 @@ $ go run eaters.go
 	```
 :recycle: 4.2.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
 $ go run eaters.go
 GYUDON
@@ -428,6 +449,7 @@ Go言語の関数は、戻り値を複数返せる特徴を持っています。
 
 #### 4.2.2.1. :computer: Goっぽい関数を実行してみる
 ```shell
+:# TERMINAL 0
 :# COPY /go/src/go_tutorial/4_funcy/monkey/eaters.go /go/src/go_tutorial/4_funcy/likego/eaters.go
 :# WORKPATH /go/src/go_tutorial/4_funcy/likego/
 $ <お好きなエディタ> eaters.go
@@ -461,6 +483,7 @@ $ go run eaters.go
 	```
 :recycle: 4.2.2.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/4_funcy/likego/
 $ go run eaters.go
 GYUDON
@@ -544,6 +567,7 @@ import (
 なお、Go言語のstderr定数は、`os`パッケージの、`os.Stderr`として存在するため、追加で、`os`パッケージのインポートください。  
 
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
@@ -580,6 +604,7 @@ $ go run eaters.go > /dev/null
 	```
 :recycle: 5.1.1 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
 $ go run eaters.go
 GYUDON
@@ -597,6 +622,7 @@ cannot eat: 'name is empty.'
 
 ### 5.2.1. :computer: 関数Eatのshopパッケージ化
 ```shell
+:# TERMINAL 0
 :# COPY /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
 :# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
 $ <お好きなエディタ> shop/shop.go
@@ -643,6 +669,7 @@ $ go run eaters.go
 	```
 :recycle: 5.2.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
@@ -810,12 +837,14 @@ type GYUDONYA struct {
 
 ### 6.3.1. :computer: お店で食べられる牛丼屋型を実行する
 ```shell
+:# TERMINAL 0
 :# COPY /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
 :# COPY /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
 :# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
+:# 10秒程度待機する
 ```
 * `/go/src/go_tutorial/6_struct/weakShop/shop/shop.go`
 	```go
@@ -865,16 +894,30 @@ $ go run eaters.go
 	```
 :recycle: 6.3.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run eaters.go
+:# 10秒程度待機する
 NegitamaGyudon
 ```
 
 # 7. Webアプリケーション ( 15 min )
 本章では、これまで順番に作り上げてきたGyudon型をWebアプリケーションサーバとして起動する方法を確認してもらいます。  
 本章までを通して、Go言語の基本的な扱い方を学習した皆さんには、最も簡単な章かもしれません。  
+
+## 7.0. 準備
+本章以降、複数のターミナルを用い、ハンズオンいただきます。  
+既存のコンテナに接続し利用するため、それぞれターミナルを起動し、以下コマンドを実行ください。  
+```shell
+:# TERMINAL 1
+$ docker exec -it go-tutor /bin/bash
+
+:# TERMINAL 2
+$ docker exec -it go-tutor /bin/bash
+```
+
 
 ## 7.1. httpを起動する方法
 Go言語の標準パッケージ [net/http](https://golang.org/pkg/net/http/) を活用するだけで起動します。  
@@ -895,6 +938,7 @@ func main() {
 理由は後ほど説明しますが、本講義では、[net/http](https://golang.org/pkg/net/http/)パッケージではなく、講義用の下位互換httpパッケージ(zakohttp) を参照してもらいます。  
 
 ```shell
+:# TERMINAL 0
 :# COPY /go/src/go_tutorial/6_struct/weakShop/shop/shop.go /go/src/go_tutorial/7_webapp/weakShop/shop/shop.go
 :# COPY /go/src/go_tutorial/6_struct/weakShop/eaters.go /go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
@@ -902,9 +946,9 @@ $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run gyudon-httpd.go
 
-:# 2つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 1
 $ curl http://localhost:8080/
+:# 10秒程度待機する
 ```
 * `/go/src/go_tutorial/7_webapp/weakShop/shop/shop.go`
 	```go
@@ -953,15 +997,21 @@ $ curl http://localhost:8080/
 	```
 :recycle: 7.2. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run gyudon-httpd.go
 
-:# 2つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 1
 $ curl http://localhost:8080/
+:# 10秒程度待機する
 'NegitamaGyudon'
+```
+:computer: 7.2. 後処理
+```shell
+:# TERMINAL 0
+:# Ctrl + C で、gyudon-httpd.goをKillください
 ```
 
 ## 7.3. Goroutineに触れる
@@ -983,43 +1033,50 @@ HTTPサーバで、他者の処理が終わらないと利用できないなん�
 試しに、2つのリクエストを送ると、1つ目のリクエストが10秒、2つ目のリクエストが約20秒かかることがわかると思います。  
 
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ go run gyudon-httpd.go
 
-:# 2つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 1
 $ time curl http://localhost:8080/
+:# 10秒程度待機する
 
-:# 3つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 2
 $ time curl http://localhost:8080/
+:# 10秒程度待機する
 ```
-:recycle: 7.4.1 結果
+:recycle: 7.3.1. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ go run gyudon-httpd.go
 
-:# 2つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 1
 $ time curl http://localhost:8080/
 'NegitamaGyudon'
+:# 10秒程度待機する
 
 real    0m10.036s
 user    0m0.014s
 sys     0m0.013s
 
-:# 3つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 2
 $ time curl http://localhost:8080/
 'NegitamaGyudon'
+:# 10秒程度待機する
 
 real    0m18.991s
 user    0m0.004s
 sys     0m0.010s
 
 ```
-
 これは、2つ目のリクエストが、1つ目のリクエストが終わるまでの待ち時間＋自身の実行時間となるためです。  
+
+:computer: 7.3.1. 後処理
+```shell
+:# TERMINAL 0
+:# Ctrl + C で、gyudon-httpd.goをKillください
+```
 
 
 ### 7.3.2. 並行プログラミング
@@ -1042,32 +1099,35 @@ AさんとBさんに、同時に牛丼を食べてもらう方法は、簡単で
 ここをGoroutine化し、その先にあるEat関数を新しく誕生させた座席(Goroutine)で動作させるようにしましょう。  
 
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> http/zakohttpd.go
 $ go run gyudon-httpd.go
 
-:# 2つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 1
 $ time curl http://localhost:8080/
+:# 10秒程度待機する
 
-:# 3つ目の、ターミナル
-$ docker exec -it go-tutor /bin/bash
+:# TERMINAL 2
 $ time curl http://localhost:8080/
+:# 10秒程度待機する
 ```
 * /go/src/go_tutorial/7_webapp/weakShop/http/zakohttpd.go
 	```go
 	c.serve(self.ctx)    //Line56 もともとの書かれ方
 	go c.serve(self.ctx) //Line56 変更後。go と、加筆する
 	```
-:recycle: 7.4.4. 結果
+:recycle: 7.3.3. 結果
 ```shell
+:# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> http/zakohttpd.go
 $ go run eaters.go
 
-:# 2つ目の、ターミナル
+:# TERMINAL 1
 $ docker exec -it go-tutor /bin/bash
 $ time curl http://localhost:8080/
+:# 10秒程度待機する
 'NegitamaGyudon'
 
 
@@ -1075,9 +1135,10 @@ real    0m10.033s
 user    0m0.019s
 sys     0m0.009s
 
-:# 3つ目の、ターミナル
+:# TERMINAL 2
 $ docker exec -it go-tutor /bin/bash
 $ time curl http://localhost:8080/
+:# 10秒程度待機する
 'NegitamaGyudon'
 
 
