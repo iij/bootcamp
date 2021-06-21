@@ -1050,6 +1050,7 @@ $ time curl http://localhost:8080/
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ go run gyudon-httpd.go
+:# 何も出力されない場合、実行中です。続くハンズオンを実施ください
 
 :# TERMINAL 1
 $ time curl http://localhost:8080/
@@ -1103,6 +1104,7 @@ AさんとBさんに、同時に牛丼を食べてもらう方法は、簡単で
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> http/zakohttpd.go
 $ go run gyudon-httpd.go
+:# 何も出力されない場合、実行中です。続くハンズオンを実施ください
 
 :# TERMINAL 1
 $ time curl http://localhost:8080/
@@ -1122,7 +1124,8 @@ $ time curl http://localhost:8080/
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> http/zakohttpd.go
-$ go run eaters.go
+$ go run gyudon-httpd.go
+:# 何も出力されない場合、実行中です。続くハンズオンを実施ください
 
 :# TERMINAL 1
 $ docker exec -it go-tutor /bin/bash
@@ -1145,6 +1148,11 @@ $ time curl http://localhost:8080/
 real    0m10.012s
 user    0m0.019s
 sys     0m0.009s
+```
+:computer: 7.3.3. 後処理
+```shell
+:# TERMINAL 0
+:# Ctrl + C で、gyudon-httpd.goをKillください
 ```
 
 ##### Tips: Goroutineは、注意して使いましょう
