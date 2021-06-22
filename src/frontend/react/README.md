@@ -711,17 +711,4 @@ JSX についての詳細には踏み込みませんが、3 点だけ注意し�
 
 JSX は、あくまでも記法ですが、JSX を使わずに同じ意味のコードを書くことは可能です。ですが React で開発する人のほとんどは JSX を利用しますので明確な理由がない場合は JSX を利用することをお勧めします。
 
-### PWA(PWA を知っている人向け)
-
-React のビルド成果物は PWA 対応しています。PWA の設定方法はとても簡単で、src/index.js の下記の部分を変更するだけです。
-
-```javascript
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
-```
-
-コメントで書いてあるとおり、`unregister()`を`register()`に変えてあげるだけで PWA 対応になります。
-
 <credit-footer/>
