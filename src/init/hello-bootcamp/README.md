@@ -58,6 +58,46 @@ Dockerで何かコンテナを動かす際にはイメージファイルが必�
 
 そこでイメージファイルをキャッシュしておくための社内ミラーサーバが立っていますので、そちらを使う設定を追加します。
 
+Dockerのアプリを立ち上げ、Preferences > Docker Engine を開いてください。
+
+![docker engine config](./docker_mirror_config.png)
+
+画像では色々と書いてありますが、必要なのは以下の設定です。下記の項目を追加してください。
+
+```json
+{
+    "registry-mirrors": ["https://<sample>.jp"],
+    "insecure-registries": [ "<sample>.jp" ]
+}
+```
+
+ミラーサーバーのURLは社内で利用可能なものを設定してください。
+
+記述を追加したら`Apply & Restart`で再起動します。その後再びterminalから`docker system info`というコマンドを実行してください。
+
+```terminal
+$ docker system info
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  app: Docker App (Docker Inc., v0.9.1-beta3)
+  buildx: Build with BuildKit (Docker Inc., v0.5.1-docker)
+  compose: Docker Compose (Docker Inc., 2.0.0-beta.1)
+  scan: Docker Scan (Docker Inc., v0.8.0)
+
+Server:
+...
+ Insecure Registries:
+  <sample>.jp
+  127.0.0.0/8
+ Registry Mirrors:
+  https://<sample>.jp/
+...
+```
+
+`Insecure Registries`と`Registry Mirrors`に先ほど設定した値が入っていれば成功です。
+
 ### hello-world コンテナを動かす (Check.2)
 
 hello-world コンテナをダウンロードして、実際に docker で動かしてみます。
@@ -100,7 +140,7 @@ TA や講師など、周りの先輩に遠慮なく声をかけてください�
 
 ## Nginx を立てて手元で HTML を書き換える
 
-次は docker の [volume](https://docs.docker.com/storage/volumes/) という機能を使い、コンテナの中のファイルを手元で編集できるようにしてみます。
+次は docker の [volumes](https://docs.docker.com/storage/volumes/) という機能を使い、コンテナの中のファイルを手元で編集できるようにしてみます。
 これができると docker 環境で動かすファイルを手元のエディタで編集できるためとても便利です。
 
 ここでは Nginx という web サーバーを使い、簡単な HTML ファイルをホスティングしてみます。そしてその HTML ファイルを手元で書き換えてみましょう。
@@ -109,7 +149,7 @@ TA や講師など、周りの先輩に遠慮なく声をかけてください�
 
 以下のようにディレクトリを作成し、その中に html ファイルを作成してください。
 
-```
+```terminal
 mkdir content
 vim content/index.html // メモ帳などでも可。 vimから抜けるには ESCキーを押した後「:wq<Enter>」を入力してください。
 ```
@@ -126,14 +166,14 @@ HTML ファイルが作成できたら、nginx の docker コンテナを以下�
 
 windows
 
-```
+```terminal
 $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%/content,target=/usr/share/nginx/html,ro -d nginx
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
 mac/linux
 
-```
+```terminal
 $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=$PWD/content,target=/usr/share/nginx/html,ro -d nginx
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
@@ -154,7 +194,7 @@ Hello Bootcamp!!!!!!
 
 最後に Docker コンテナを止めて掃除しておきます。
 
-```
+```terminal
 docker stop test-nginx
 docker rm test-nginx
 ```
