@@ -5,7 +5,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 ## 2. Ansibleの実行
 
 Ansibleを利用する為にはいくつかのファイルを書く必要がありますが
-まずは実際にAnsibleを実行して実行イメージを掴んでみましょう。
+まずは実際にAnsibleを実行してイメージを掴んでみましょう。
 
 ### サンプルの実行
 
