@@ -1233,14 +1233,16 @@ sys     0m0.009s
 ```
 
 ##### Tips: Goroutineは、注意して使いましょう
-お手軽な`go func()` ですが、注意が必要です。  
-それは、並行動作を簡単に行えますが、並行動作に対応した処理やデータの安全性は、プログラマ自身が考え、コード化しておく必要があるということです。  
-groutineが迷子になったり、データが壊れたり、リソースの奪い合いになったりと、危険なことがいっぱいあります。  
+お手軽な`go func(){}()` ですが、注意が必要です。  
+並行動作を簡単に行えますが、並行動作に対応した処理やデータの安全性は、プログラマ自身が考え、コード化しておく必要があります。  
+Goroutineが迷子になったり、データが壊れたり、リソースの奪い合いになったりと、危険なことが多くあります。  
 本番サービスとして、きちんと提供する場合は、並行プログラミングを学習してから利用することをお勧めします。  
 
 ### 7.4. zakohttpパッケージについて
 第7章は、Go言語標準パッケージ [net/http](https://golang.org/src/net/http) の以下の処理を参考に作成しています。  
-[https://golang.org/src/net/http/server.go?s=79801:84098#L3013](https://golang.org/src/net/http/server.go?s=79801:84098#L3013)  
+
+[https://github.com/golang/go/blob/release-branch.go1.16/src/net/http/server.go#L3013](https://github.com/golang/go/blob/release-branch.go1.16/src/net/http/server.go#L3013)  
+
 実は、本講義を通して、Go標準パッケージの劣化版を、Go標準パッケージに近づけるコーディングをしてもらいました。  
 [net/http](https://golang.org/src/net/http) パッケージは、通信に関する処理や、同期処理、書き込み処理やハンドラの登録など、Goで触っておくと良さそうな表現が色々と存在します。  
 腕試しをされるのであれば、zakohttpの問題を考え、アップグレードし続けてみてください。  
