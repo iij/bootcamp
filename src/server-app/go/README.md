@@ -401,7 +401,7 @@ func myFunc(name string, age uint) (find bool, result error) {
 	* 本章では、`fmt.Println` を用いて、文字列を出力します
 * 食べた場合は、`true`, 食べたい無い場合は、`false`を返す  
 
-## 4.2.0 if構文
+## 4.2.0. if構文
 本章のハンズオンでは、上述した定義を表すために、条件分岐が必要となります。  
 条件分岐を表すための、Go言語によるif構文の書き方を先に紹介します。  
 
