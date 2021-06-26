@@ -1,7 +1,7 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 description: Go言語を使って簡単なWebアプリケーションを作ります
-time: 1.5h
+time: 2.0h
 prior_knowledge: golang
 ---
 
