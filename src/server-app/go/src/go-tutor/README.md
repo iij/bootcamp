@@ -25,20 +25,19 @@
 1. `1. update sample`, `2. update dockerfile`, 本手順をくり返し、納得のいく構成に更新
 
 ## 4. build and push
-1. login
+1. builderの用意
+	```
+	docker buildx create --name <buildername>
+	docker buildx use <buildername>
+	docker buildx inspect --bootstrap
+	```
+2. login
 	* `docker login`
-2. 任意のimage idを確認しておく
-	* `docker images`
-	* 1つも作成されていない場合は、`3. image更新やら試験` をすると作成されます
-3. tag付け
-	* `docker tag <image id> <username>/go-tutor:<version>`
-		* `<imaege id>`
-			* `2. 任意のimage idを確認しておく` で確認したもの
-		* `<username>`, `<version>`
-			* 任意の値
-2. `docker push <username>/go-tutor:<version>`
-	* `3. tag付け` と同じ変数値
-5. logout
+3. build and push
+	```
+	docker buildx build --platform linux/arm64,linux/amd64,linux/386,linux/s390x,linux/arm/v7,linux/arm/v6 -t <username>/go-tutor:<version> --push .
+	```
+4. logout
 	* `docker logout`
 
 ## 5. ゴミ掃除

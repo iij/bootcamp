@@ -18,7 +18,7 @@ GoでWebアプリケーションを作る(下準備編)
 ## 手順
 1. docker imageをpullする
 	```shell
-	$ docker pull hinoshiba/go-tutor:v2021r1
+	$ docker pull hinoshiba/go-tutor:v2021r2
 	...
 	:# 確認コマンド
 	$ docker images | grep go-tutor
@@ -26,7 +26,7 @@ GoでWebアプリケーションを作る(下準備編)
 	```
 2. docker imageを実行する
 	```shell
-	$ docker run --name go-tutor -it --rm hinoshiba/go-tutor:v2021r1 /bin/bash
+	$ docker run --name go-tutor -it --rm hinoshiba/go-tutor:v2021r2 /bin/bash
 	root@<container id>:/go/src/samples#   # プロンプトが返ってくる
 	```
 3. 作業ディレクトリの確認

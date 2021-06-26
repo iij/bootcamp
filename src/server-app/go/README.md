@@ -153,7 +153,7 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 もしコンテナを実行していないようであれあば、以下のコマンドを実行してください。  
 ```shell
 :# TERMINAL 0
-$ docker run --name go-tutor -it --rm hinoshiba/go-tutor:v2021r1 /bin/bash
+$ docker run --name go-tutor -it --rm hinoshiba/go-tutor:v2021r2 /bin/bash
 ```
 
 ハンズオンでは、こちらから指示したpathに、ディレクトリやファイルを作成してもらい、Go言語に触れてもらいます。  
