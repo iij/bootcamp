@@ -45,6 +45,13 @@
 	* `docker rmi <username>/go-tutor:<version>`
 2. その他 作業中のdockerimage
 	* `make clean`
+3. builderの削除
+	```
+	docker buildx use default
+	docker buildx inspect --bootstrap
+	docker buildx stop <buildername>
+	docker buildx rm <buildername>
+	```
 
 ## 6. リンクの更新
 
