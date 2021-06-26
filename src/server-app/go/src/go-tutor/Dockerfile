@@ -1,9 +1,6 @@
-FROM ubuntu:20.04
+FROM golang:1.16.5 AS builder
 LABEL maintainer="s.k.noe@hinoshiba.com"
 
-ENV GOVERSION 1.16.5
-
-ENV GOROOT /opt/go
 ENV GOPATH /go/src
 ENV GO111MODULE=off
 
@@ -11,20 +8,13 @@ ENV LANG ja_JP.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
-    apt install -y curl wget tzdata language-pack-ja-base language-pack-ja && \
-    apt-get -y install vim-nox emacs-nox nano curl locales && \
+    apt install -y curl wget tzdata file locales && \
+    apt install -y vim-nox emacs-nox nano && \
     apt clean && \
     rm -rf /var/lib/apt/lists/* && \
     ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
     locale-gen ja_JP.UTF-8
 
-RUN cd /opt && wget -nv --show-progress --progress=bar:force:noscroll https://golang.org/dl/go${GOVERSION}.linux-amd64.tar.gz && \
-    tar zxf go${GOVERSION}.linux-amd64.tar.gz && rm go${GOVERSION}.linux-amd64.tar.gz && \
-    ln -s /opt/go/bin/go /usr/bin/ && \
-    mkdir -p ${GOPATH} && \
-    mkdir /.cache && \
-    chmod 777 /.cache
-
-ADD ./samples /go/src/samples/
-ADD ./go_tutorial /go/src/go_tutorial
+ADD ./samples ${GOPATH}/samples/
+ADD ./go_tutorial ${GOPATH}/go_tutorial
 WORKDIR ${GOPATH}
