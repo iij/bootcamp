@@ -144,6 +144,7 @@ public class SampleClass extends Object {
   }
 
   public void makeInstance() {
+    // クラスの具体的な値(オブジェクト)のことを"インスタンス"と言います
     var ins = new MyInnerClass("hello"); // Java11から型推論が使える
     ins.getFinalizedString(); // → hello
   }
