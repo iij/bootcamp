@@ -266,7 +266,7 @@ Spring Bootアプリケーションのmain関数は`com.github.iij.bootcamp.serv
 ❯ ./gradlew bootRun
 ```
 
-```java
+```java{10-13}
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.boot.SpringApplication;
@@ -309,7 +309,7 @@ JavaにはLombokなどのボイラーテンプレートを解消するツール�
 ❯ ./gradlew bootRun
 ```
 
-```java{5-8,17-25}
+```java{5-8,19-27}
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.boot.SpringApplication;
@@ -480,7 +480,7 @@ public class UserService {
 
 ```
 
-```java
+```java{6-8,13-21}
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -537,7 +537,7 @@ $ curl 'localhost:8080/user?slug=bob'
 ❯ ./gradlew bootRun
 ```
 
-```java
+```java{27-35}
 package com.github.iij.bootcamp.serverapp;
 
 import java.util.ArrayList;
@@ -576,7 +576,7 @@ public class UserService {
 }
 ```
 
-```java
+```java{7-10,23-52}
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.beans.factory.annotation.Autowired;
