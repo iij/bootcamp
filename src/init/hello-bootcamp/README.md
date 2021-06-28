@@ -202,6 +202,7 @@ Hello Bootcamp!
 * `--mount....`: いまのディレクトリの content ディレクトリの内容を コンテナの中で /usr/share/nginx/html の中身として扱い
 * `-d`: daemon (バックグラウンドで実行し続ける)モードで
 * `nginx`: nginx:latest タグ の イメージを使って コンテナを起動する
+
 というものになります。
 
 windows
@@ -221,7 +222,9 @@ $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=$PWD/content,
 ```
 
 エラーなく起動できたら 起動したコンテナのID が表示されます。ここは実行ごとに変わります。
+
 ブラウザを開き、[localhost:8080](http://localhost:8080) （`localhost`または ssh 先の IP アドレス）にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
+
 なお、`-d` オプションを付けているので、 バックグラウンドで起動し続けています。 再度起動し直してみたい場合は 一度 ```docker stop``` する必要があります。お掃除の手順を参照してください。
 
 ### HTML ファイルを書き換える
