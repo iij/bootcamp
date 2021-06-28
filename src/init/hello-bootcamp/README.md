@@ -18,6 +18,22 @@ https://docs.docker.com/engine/install/
 
 この資料では Windows と macOS について、簡単に取り上げます。
 
+### 読み方
+```
+このような 黒枠 になっている部分は 実際にコマンドを打ち込む部分です。 Terminal や コマンドプロンプトなどで入力ください
+$ また、 左端の $ や > は プロンプトと言って 実際には入力しません。
+```
+
+例えば 以下の表記であれば ```$ docker --version ``` ではなく ```docker --version``` とだけ入力してください。
+なお、 $ や > から始まらない ```Docker version 19.03.1``` は 出力例です。 こちらも 入力する必要はありません。
+コピペするときは気をつけてください。
+
+```
+$ docker --version
+
+Docker version 19.03.1
+```
+
 ### Windows
 
 windows の場合 [docker-for-windows](https://docs.docker.com/docker-for-windows/) を使うのがおすすめです。WSL や仮想環境に linux を立てることもできますが、ネットワークのトラブルなどが頻発するため現状あまりお勧めしません。
@@ -43,6 +59,7 @@ Mac の場合は [docker-for-mac](https://docs.docker.com/docker-for-mac/) を�
 
 ```
 $ docker --version
+
 Docker version 19.03, build c97c6d6
 ```
 
@@ -73,6 +90,8 @@ This message shows that your installation appears to be working correctly.
 以下のようなエラーで失敗した場合 proxy の設定が必要な場合があります。
 
 ```
+$ docker run hello-world
+
 Unable to find image 'hello-world:latest' locally
 docker: Error response from daemon: Get https://registry-1.docker.io/v2/: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers).
 See 'docker run --help'.
@@ -98,11 +117,20 @@ TA や講師など、周りの先輩に遠慮なく声をかけてください�
 
 ### HTML ファイルの作成
 
-以下のようにディレクトリを作成し、その中に html ファイルを作成してください。
+以下のようにディレクトリを作成し、
 
 ```
-mkdir content
-vim content/index.html // メモ帳などでも可。 vimから抜けるには ESCキーを押した後「:wq<Enter>」を入力してください。
+$ mkdir content
+```
+
+その中に `index.html`  ファイルを作成してください。
+
+例えば、 vim を使うなら以下のような コマンド になります。
+vim がなければ 各種 メモ帳など自分の好きなエディタを利用してください。
+vim から抜けるには ESCキーを押した後「:wq<Enter>」を入力してください。
+
+```
+$ vim content/index.html
 ```
 
 `index.html`の内容はなんでもいいですが、例えば以下のようにしてみましょう。
@@ -113,12 +141,21 @@ Hello Bootcamp!
 
 ### docker コンテナの起動 (Check.3)
 
-HTML ファイルが作成できたら、nginx の docker コンテナを以下のように起動します。
+`index.html` ファイルが作成できたら、nginx の docker コンテナを以下のように起動します。
+
+いずれも
+* `--name` : test-nginx という名前で
+* `-p 8080:80` : localhost の 8080 port を コンテナの中で 80 port に 転送し
+* `--mount....`: いまのディレクトリの content ディレクトリの内容を コンテナの中で /usr/share/nginx/html の中身として扱い
+* `-d`: daemon (バックグラウンドで実行し続ける)モードで
+* `nginx`: nginx:latest タグ の イメージを使って コンテナを起動する
+というものになります。
 
 windows
 
 ```
-$ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%¥content,target=/usr/share/nginx/html,ro -d nginx
+> docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%¥content,target=/usr/share/nginx/html,ro -d nginx
+
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
@@ -126,10 +163,13 @@ mac/linux
 
 ```
 $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=$PWD/content,target=/usr/share/nginx/html,ro -d nginx
+
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
-エラーなく起動できたらブラウザを開き、[localhost:8080](http://localhost:8080) （`localhost`または ssh 先の IP アドレス）にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
+エラーなく起動できたら 起動したコンテナのID が表示されます。ここは実行ごとに変わります。
+ブラウザを開き、[localhost:8080](http://localhost:8080) （`localhost`または ssh 先の IP アドレス）にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
+`-d` オプションを付けているので、 バックグラウンドで起動し続けています。 再度起動し直してみたい場合は 一度 ```docker stop``` する必要があります。お掃除の手順を参照してください。
 
 ### HTML ファイルを書き換える
 
@@ -146,8 +186,8 @@ Hello Bootcamp!!!!!!
 最後に Docker コンテナを止めて掃除しておきます。
 
 ```
-docker stop test-nginx
-docker rm test-nginx
+$ docker stop test-nginx
+$ docker rm test-nginx
 ```
 
 以上で事前準備は完了です。お疲れ様でした。
