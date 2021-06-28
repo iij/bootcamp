@@ -524,7 +524,7 @@ $ curl 'localhost:8080/user?slug=bob'
 
 ### 少し複雑なリクエストを受け取ってみる
 最後に、POSTリクエストとリクエストボディを指定して`User`インスタンスを登録してみましょう。\
-`User`インスタンスには`slug`と`name`の値を指定する日つい用があるので、これらを与えられるエンドポイントを用意します。
+`User`インスタンスには`slug`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
 
 :computer: UserService.javaとUserController.javaを修正し、サーバを再起動してください。
 
