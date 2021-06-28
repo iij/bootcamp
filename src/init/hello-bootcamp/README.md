@@ -36,12 +36,13 @@ Docker version 20.10.7, build f0df350
 
 ### Windows
 
-windows の場合 [docker-for-windows](https://docs.docker.com/docker-for-windows/) を使うのがおすすめです。WSL や仮想環境に linux を立てることもできますが、ネットワークのトラブルなどが頻発するため現状あまりお勧めしません。
+windows の場合 [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/) を使うのがおすすめです。WSL や仮想環境に linux を立てることもできますが、ネットワークのトラブルなどが頻発するため現状あまりお勧めしません。
 
 1. [ダウンロードページ](https://hub.docker.com/editions/community/docker-ce-desktop-windows/) にアクセスし、「Get Docker」をクリックして exe ファイルをダウンロードします。
    - stable 版で問題ありません
 2. ダウンロードした exe ファイルをクリックしてインストールします。
-3. PowerShell やコマンドプロンプトを開き、`docker version`コマンドが実行できれば成功です。
+3. 必要に応じて [Linux カーネル更新プログラム パッケージ](https://docs.microsoft.com/ja-jp/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package) のインストールをします。
+4. PowerShell やコマンドプロンプトを開き、`docker version`コマンドが実行できれば成功です。
 
 ```terminal
 >docker --version
