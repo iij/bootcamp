@@ -342,7 +342,7 @@ public class ServerAppApplication {
 
 ```bash
 # 動作確認
-$ curl localhost:8080
+$ curl localhost:8080 -X GET
 hello world
 ```
 
