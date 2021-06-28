@@ -81,9 +81,6 @@ $ docker exec -it bootcamp-react bash
 
 WIP
 
-## TypeScriptとは
-WIP
-
 ## React とは
 
 React は、もともと Facebook 社が開発している Web ユーザーインタフェースのためのフレームワークです。しかし今では Web のインタフェース のみならず Native アプリケーションへのコンパイルなど幅広く活躍が期待されているフレームワークです。
@@ -123,17 +120,16 @@ $ docker exec -it bootcamp-react bash
 ❯ 
 ```
 
-:computer: src/App.js を開き下記の通りに編集してください。
+:computer: src/App.tsx を開き下記の通りに編集してください。
 
-```javascript
-import React from "react";
-import "./App.css";
+```tsx
+import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>Hello World!!</div>
+        <p>Hello World!!</p>
       </header>
     </div>
   );
@@ -167,24 +163,26 @@ React ではなく Vue ですが、こちらの記事が非常にわかりやす
 
 まず小さな Component を作ってみましょう。Component を記述する方法はいくつかありますが、まずクラスベースのコンポーネントを作成してみます。
 
-:computer: src/Note.jsを作成し、下記の通り編集してください。
+:computer: src/Note.tsxを作成し、下記の通り編集してください。
 
 ```javascript
 import React from "react";
 
-export default class Note extends React.Component {
+interface NoteState {}
+interface NoteProps {}
+
+export default class Note extends React.Component<NoteProps, NoteState> {
   render() {
     return <p>Component! Component!! Component!!!</p>;
   }
 }
 ```
 
-:computer: さらに src/App.js が Note.js を使うように修正してください。
+:computer: さらに src/App.tsx が Note.tsx を使うように修正してください。
 
-```javascript
-import React from "react";
-import "./App.css";
-import Note from "./Note";
+```tsx
+import './App.css';
+import Note from './Note'
 
 function App() {
   return (
@@ -211,53 +209,53 @@ export default App;
 - クラスベースコンポーネントの書き方を学んだ
 - Component の使い方を学んだ
 
-### Componentの機能 - 小要素へのデータの共有 : Props
+### コンポーネントの機能 - 小要素へのデータの共有 : Props
 
 `Note` コンポーネントを作成しましたが、今のままでは"Component! Component!! Component!!!"と叫ぶだけのコンポーネントで再利用性が悪いです。
 
-他も文字を叫ぶことができるように、叫ぶ文字を外から渡してあげるることができるようにしましょう。
+他も文字を叫ぶことができるように、叫ぶ文字を外から渡してあげることができるようにしましょう。
 
-src/Note.js を下記のように修正してみましょう。
+:computer: src/Note.tsx を下記のように修正してみましょう。
 
-```javascript
+```tsx
 import React from "react";
 
-export default class Note extends React.Component {
+interface NoteState {}
+interface NoteProps {
+  counter: number
+  word: string
+}
+
+export default class Note extends React.Component<NoteProps, NoteState> {
   // (3, "Component") => "Component! Component!! Component!!!"
-  constructWord = (number, word) => {
+  constructWord = (counter: number, word: string) => {
     let words = "";
-    for (let counter = 0; counter < number; counter++) {
-      words += word + "!".repeat(counter + 1) + " ";
-    }
-    return words.trimEnd();
+    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
+    return words.trimEnd()
   };
 
   render() {
-    return <p>{this.constructWord(this.props.number, this.props.word)}</p>;
+    return <p>{this.constructWord(this.props.counter, this.props.word)}</p>;
   }
 }
 ```
 
-そして、src/App.js
+:computer: src/App.tsxを修正してください。
 
 ```javascript
-import React from "react";
-import "./App.css";
-import Note from "./Note";
+import './App.css';
+import Note from './Note'
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          {/* ComponentのPropsにデータを渡すには、DOMにパラメータを直接指定する */}
-          <Note word={"Component"} number={1} />
-          <Note word={"Hoge"} number={2} />
-          <Note word={"Huga"} number={3} />
-        </header>
-      </div>
-    );
-  }
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <Note counter={1} word={"Component"} />
+        <Note counter={2} word={"Hoge"} />
+        <Note counter={3} word={"Huga"} />
+      </header>
+    </div>
+  );
 }
 
 export default App;
@@ -275,62 +273,84 @@ export default App;
 - Component の `Props` について学んだ
 - Component 間のパラメータの受け渡し方を学んだ
 
-### Componentの機能 - 内部データストア : State
+### コンポーネントの機能 - 内部データストア : State
 
 `props`フィールドを通じてコンポーネント間のデータの受け渡しはできましたが、ユーザーからの入力や外部から取得した情報はどのように保存するべきでしょうか？
 Component には State というデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
 
-src/Note.js を下記の通りに修正してください。
+:computer: src/Note.tsx を下記の通りに修正してください。
 
-```javascript
+```tsx
 import React from "react";
 
-export default class Note extends React.Component {
-  constructor(props) {
-    super(props);
-    // これがState
-    // JavaScriptのオブジェクトとして登録する
+interface NoteState {
+  counter: number
+}
+
+interface NoteProps {
+  word: string
+}
+
+export default class Note extends React.Component<NoteProps, NoteState> {
+
+  constructor(props: NoteProps) {
+    super(props)
+    // Stateの初期化
     this.state = {
-      counter: 1,
-    };
+      counter: 1
+    }
   }
 
-  click = () => {
-    // ClickされたらStateのカウンタをインクリメント
+  // クリック時のハンドラー
+  onClickHandler = () => {
+    // StateをsetStateメソッド経由で更新
+    // setStateでStateを更新するとDOMの再レンダリングが行われます
     this.setState({
-      counter: this.state.counter + 1,
-    });
-  };
+      counter: this.state.counter + 1
+    })
+  }
 
   // (3, "Component") => "Component! Component!! Component!!!"
-  constructWord = (number, word) => {
+  constructWord = (counter: number, word: string) => {
     let words = "";
-    for (let counter = 0; counter < number; counter++) {
-      words += word + "!".repeat(counter + 1) + " ";
-    }
-    return words.trimEnd();
-  };
-
-  // インラインスタイル
-  mystyle = {
-    display: "flex",
-    "justify-content": "center",
-    "align-items": "center",
+    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
+    return words.trimEnd()
   };
 
   render() {
     return (
-      <div style={this.mystyle}>
+      <>
         {/* ボタンをクリックされたらclick()メソッドが発火し、Stateが更新される */}
-        <button onClick={this.click} style={{ "min-width": "75px" }}>
+        <button onClick={this.onClickHandler}>
           Click me!!
         </button>
         {/* Stateのカウンタの数だけ叫ぶ */}
         <p>{this.constructWord(this.state.counter, this.props.word)}</p>
-      </div>
-    );
+      </>
+    )
   }
 }
+```
+
+:computer: さらに下記の通りにsrc/App.tsxを修正してください。
+
+```tsx
+import './App.css';
+import Note from './Note'
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <Note word={"Component"} />
+        <Note word={"Hoge"} />
+        <Note word={"Huga"} />
+      </header>
+    </div>
+  );
+}
+
+export default App;
 ```
 
 ここまで修正すると下記の通りになります。
@@ -343,7 +363,7 @@ State は Component の内部でのみ生きているデータベースのよう
 
 #### チェックポイント
 
-- State を利用してローカルデータベースを作成できる
+- State を利用してコンポーネント内部で使えるローカルストアを作成できる
 - `setState` メソッドで State を更新すると DOM が自動でリロードされる
 
 :::tip Redux
@@ -358,51 +378,85 @@ State を利用することで、単一のコンポーネントでデータを�
 
 :::
 
-### Componentの機能 - ライフサイクル管理: LifeCycle
+### コンポーネントの機能 - ライフサイクル管理: LifeCycle
 
 少しコンポーネントの複雑な機能について触れてみましょう。Component を作成することに注力しましたが、ここでは Component の作成の方法に注視してみましょう。
 
-多くの Web サイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。これを React の言葉に置き換えると「Component が表示されるタイミングで`axios`等のクライアントでデータをフェッチして Component に受け渡している」といったところでしょうか。
-この機能は Component のライフサイクルを利用することで実現できます。実装してみましょう！
+コンポーネントの中にはWebsocketやHTTP SSEを利用した購読を行うものも多々あると思います。\
+このように多くのWebサイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。この機能はComponentのライフサイクルを利用することで実現できます。実装してみましょう！
 
-src/App.js を下記のように修正します。
+:computer: src/Note.tsxを下記のように修正します。
 
-```javascript
+```tsx
 import React from "react";
-import "./App.css";
-import axios from "axios";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+interface NoteState {
+  counter: number
+  isLoaded: boolean
+}
+
+interface NoteProps {
+  word: string
+}
+
+// ただ時間待ちするだけのタスク
+const someHeavyTask = (handler: () => void) => {
+  setTimeout(() => {
+    handler()
+  }, 2000)
+}
+
+export default class Note extends React.Component<NoteProps, NoteState> {
+
+  constructor(props: NoteProps) {
+    super(props)
     this.state = {
-      info: "Loading...",
-    };
+      counter: 1,
+      isLoaded: false // 初期ではロード中扱い
+    }
   }
 
+  // DOMツリーにコンポーネントが追加された直後に呼び出されるメソッド
+  // React.Componentに定義されているメソッドです
   componentDidMount = () => {
-    axios.get("http://localhost:5000/menu").then((response) => {
-      this.setState({
-        info: response.data,
-      });
-    });
+    someHeavyTask(
+      () => this.setState({
+        isLoaded: true
+      })
+    )
+  }
+
+  onClickHandler = () => {
+    this.setState({
+      counter: this.state.counter + 1
+    })
+  }
+
+  constructWord = (counter: number, word: string) => {
+    let words = "";
+    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
+    return words.trimEnd()
   };
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <div>{JSON.stringify(this.state.info)}</div>
-        </header>
-      </div>
-    );
+    const loading = <p>Loading...</p>
+    const component =
+      <>
+        <button onClick={this.onClickHandler}>
+          Click me!!
+        </button>
+        <p>{this.constructWord(this.state.counter, this.props.word)}</p>
+      </>
+
+    // StateのisLoadedがfalseの場合、"Loading..."が表示されます
+    const note = this.state.isLoaded ? component : loading
+    return note
   }
 }
 
-export default App;
 ```
 
-画面を何度もリロードすると、一瞬"Loading..."という文字列が見えた瞬間、Json が画面に表示されたはずです。
+一瞬"Loading..."という文字列が見えた瞬間、画面表示されるようになったと思います。
 
 ![Gif1](./images/Gif1.gif)
 
@@ -430,7 +484,9 @@ React のコンポーネントは`componentDidMount`のようにいくつかの�
 
 ### Hooksを導入する
 Reactのコンポーネントを表現する方法としてクラスベースなやり方を見てきました。\
-クラスベースなコンポーネントは便利な一方でライフサイクルが読み取りにくくなる傾向にあり、複雑なコンポーネントになるほどメンテナンス性が悪くなりがちでした。特にJavaScriptにおける`this`問題は深刻なダメージをもたらすこともしばしば……
+クラスベースなコンポーネントは便利な一方でライフサイクルが読み取りにくくなる傾向にあり、複雑なコンポーネントになるほどメンテナンス性が悪くなりがちです。
+
+元に、最初はシンプルだった`Note`コンポーネントもだいぶ大きくなりライフサイクルが入り乱れわかりにくくなってしまいました。(そうなるように書いてもらった、のですが……)
 
 ReactにはReact Hooksという機能が存在しており、これは最初に紹介した関数型コンポーネントにも簡単なライフサイクルの管理とステートの保持の機能を接続することができるものです。
 
@@ -438,11 +494,126 @@ ReactにはReact Hooksという機能が存在しており、これは最初に�
 
 実際にReact Hooksで今までの実装を再実装してみましょう！
 
-WIP
+:computer: 新たにsrc/NewNote.tsxを作成し、下記の通り記述してください。
 
-## 最後に
+```tsx
+import { useEffect, useState } from "react";
 
-<s>いかがでしたか？</s> 以上で React のハンズオンは終了です。
+interface NoteProps {
+  word: string
+}
+
+const someHeavyTask = (handler: () => void) => {
+  setTimeout(() => {
+    handler()
+  }, 2000)
+}
+
+// 関数型コンポーネントとして定義します
+// ライフサイクルは基本的に「上から下」に流れていきます
+export default function Note(props: NoteProps) {
+
+  // Stateはシンプルに`useState`で定義します
+  // 第一返値にStateそのもの、第二返値にStateの更新トリガーが入ります
+  // 更新トリガーを経由してStateを更新することで後述の`useEffect`を呼び出すことになります
+  const [counter, setCounter] = useState<number>(1)
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+
+  // 副作用フック
+  // componentDidMountなどに相当している挙動をするものです
+  useEffect(() => {
+    someHeavyTask(() => {
+      setIsLoaded(true)
+    })
+    // 返り値にコールバックを指定することで、componentWillUnMountに相当する挙動を行うことができます
+    // たとえば、WebSocketの破棄などを指定することが多いです
+    // return () => FooBar
+  })
+
+  const onClickHandler = () => {
+    setCounter(counter + 1)
+  }
+
+  const constructWord = (counter: number, word: string) => {
+    let words = "";
+    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
+    return words.trimEnd()
+  }
+
+  const loading = <p>Loading</p>
+  const component =
+    <>
+      <button onClick={onClickHandler}>
+        Click me!!
+      </button>
+      <p>{constructWord(counter, props.word)}</p>
+    </>
+
+  // 関数型コンポーネントなのでDOMを返却するだけ
+  return isLoaded ? component : loading  
+}
+```
+
+:computer: src/Apps.tsxでNoteのimport元を差し替えてください。
+
+```tsx
+import './App.css';
+import Note from './NewNote'
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <Note word={"Component"} />
+        <Note word={"Hoge"} />
+        <Note word={"Huga"} />
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+今回はあくまでもUIコンポーネントの構造をクラスベースなものから関数ベースなものに差し替えただけなので、見た目上UIが変わっていないはずです。
+
+#### チェックポイント
+- React Hooksを利用してコンポーネントを実装した
+
+### デプロイしてみよう
+さて、これまでは開発サーバーでReactを動かしてきました。実際にReactで作成したSPAをビルドしてWebサーバーから配信してみましょう。
+
+:computer: Reactプロジェクトをビルドします。
+
+```bash
+# プロジェクトルート上でビルドします
+❯ npm run build
+# 成果物があることを確認します
+❯ ls  build/
+asset-manifest.json  index.html   logo512.png    robots.txt
+favicon.ico          logo192.png  manifest.json  static
+```
+
+:computer: 成果物をホストマシンにコピーしてきます
+
+```bash
+# 成果物を適当なディレクトリにコピーしてきます
+$ docker cp bootcamp-react:/app/build ./
+```
+
+:computer: nginx上にSPAをデプロイ
+
+```bash
+# buildディレクトリをそのままマウント
+$ docker run --rm -d -p 9000:80 --name react-prod -v ${PWD}/build/:/usr/share/nginx/html/ nginx:latest
+```
+
+以降ホストマシン側のlocalhost:9000へアクセスすると、先ほど作成したSPAが画面に表示されているはずです。
+
+
+# 最後に
+
+以上で React のハンズオンは終了です。
 
 昨今のフロントエンド界隈は比較的落ち着いてきた(=デファクトが固まりつつある)印象がありますが、それでも流行り廃りの早い世界です。この文書も、いつ時代遅れになるかもわかりません。
 
