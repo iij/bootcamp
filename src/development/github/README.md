@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 description: バージョン管理システムとしてgitを利用し、変更を管理することの大切さを学びます。
 time: 1.5時間
 prior_knowledge: コマンドラインの基礎的な使い方、Gitの使い方
