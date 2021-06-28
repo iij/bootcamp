@@ -295,9 +295,9 @@ public class ServerAppApplication {
 
 JavaにはLombokなどのボイラーテンプレートを解消するツールなどありますが、本講義はあえて紹介しません。興味がある人は調べてみてください。
 
-### コントローラを作成してみる
+### 簡単なHTTPのインタフェースを作成してみる
 それではSpring Bootを使ってみましょう。\
-簡単なコントローラを作成し、実際にSpring Bootがどのように動作しているのかを見てみます。
+簡単なHTTPのインタフェースを作成し、実際にSpring Bootがどのように動作しているのかを見てみます。
 
 :computer: DemoApplication.javaを修正し、サーバを再起動してみてください。
 
@@ -348,7 +348,7 @@ hello world
 "hello world"が返ってきたら成功です。
 
 #### チェックポイント
-- `@RestController`アノテーションをクラスに付与してコントローラを作成した
+- `@RestController`アノテーションをクラスに付与してHTTPのインタフェースを作成した
 
 #### 解説
 `bootRun`コマンドによりSpring Bootが起動します。すると、Spring Bootの機能により `@RestController`アノテーションが付いている`ServerAppApplication.HelloController`がHTTPのインタフェースとして登録されます。
@@ -421,7 +421,7 @@ $ curl 'localhost:8080/user?slug=bob'
 - HTTPのハンドラとして登録されたメソッドの引数に`@RequestParam`アノテーションを付与することでクエリパラメータを実装した
 
 #### 解説
-新しいクラス`UserController`を作成しました。このクラスにも`@RestController`アノテーションが付いているためHTTPのエンドポイントとして振る舞います。
+新しいクラス`UserController`を作成しました。このクラスにも`@RestController`アノテーションが付いているためHTTPのインタフェースとして振る舞います。
 
 `UserController`クラスの持つメソッド`find`には`@GetMapping`アノテーションがついているため、`GET /user`宛のリクエストのハンドラとして登録されることになります。そのため、Spring Bootアプリケーションの`/user`へGETリクエストを送ることでこの`find`メソッドがコールされます。
 
@@ -429,10 +429,10 @@ $ curl 'localhost:8080/user?slug=bob'
 
 
 ### 責任を分離する
-さて、前章まで基本的なコントローラの使い方について解説してきました。もう少し実装を深めていきましょう。\
-現在`UserController`クラスはHTTPのハンドリングとデータソースの管理の2つの責務を持っています。これは単一責務の原理から外れているためリファクタリングする対象です。
+さて、前章まで基本的なHTTPのインタフェースの作り方と使い方について解説してきました。もう少し実装を深めていきましょう。\
+現在`UserController`クラスはHTTPのインタフェースとデータソースの管理の2つの責務を持っています。これは単一責務の原理から外れているためリファクタリングする対象です。
 
-今回はシンプルに`UserController#find`の処理を抽出して別のクラスに分離、処理そのものをコントローラの外から与えてあげるようにしましょう。
+今回はシンプルに`UserController#find`の処理を抽出して別のクラスに分離、処理そのものを`UserController`クラスの外から与えてあげるようにしましょう。
 
 :computer: UserService.javaを作成、UserController.javaを修正し、サーバを再起動してください。
 
