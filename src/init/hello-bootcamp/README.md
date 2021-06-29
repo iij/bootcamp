@@ -18,17 +18,35 @@ prior_knowledge: なし
 
 この資料では Windows と macOS について、簡単に取り上げます。
 
+### 読み方
+```terminal
+このような 黒枠 になっている部分は 実際にコマンドを打ち込む部分です。 Terminal や コマンドプロンプトなどで入力ください
+$ また、 左端の $ や > は プロンプトと言って 実際には入力しません。
+```
+
+例えば 以下の表記であれば ```$ docker --version ``` ではなく ```docker --version``` とだけ入力してください。
+なお、 $ や > から始まらないところ は 出力例です。 こちらも 入力する必要はありません。(以下の例では ```Docker version 20.10.7, build f0df350```)
+コピペするときは気をつけてください。
+
+```terminal
+$ docker --version
+
+Docker version 20.10.7, build f0df350
+```
+
 ### Windows
 
-windows の場合 [docker-for-windows](https://docs.docker.com/docker-for-windows/) を使うのがおすすめです。WSL や仮想環境に linux を立てることもできますが、ネットワークのトラブルなどが頻発するため現状あまりお勧めしません。
+windows の場合 [Docker Desktop for Windows](https://docs.docker.com/docker-for-windows/) を使うのがおすすめです。WSL や仮想環境に linux を立てることもできますが、ネットワークのトラブルなどが頻発するため現状あまりお勧めしません。
 
 1. [ダウンロードページ](https://hub.docker.com/editions/community/docker-ce-desktop-windows/) にアクセスし、「Get Docker」をクリックして exe ファイルをダウンロードします。
    - stable 版で問題ありません
 2. ダウンロードした exe ファイルをクリックしてインストールします。
-3. PowerShell やコマンドプロンプトを開き、`docker version`コマンドが実行できれば成功です。
+3. 必要に応じて [Linux カーネル更新プログラム パッケージ](https://docs.microsoft.com/ja-jp/windows/wsl/install-win10#step-4---download-the-linux-kernel-update-package) のインストールをします。
+4. PowerShell やコマンドプロンプトを開き、`docker version`コマンドが実行できれば成功です。
 
 ```terminal
 >docker --version
+
 Docker version 20.10.7, build f0df350
 ```
 
@@ -42,6 +60,7 @@ Mac の場合は [docker-for-mac](https://docs.docker.com/docker-for-mac/) を�
 
 ```terminal
 $ docker --version
+
 Docker version 20.10.6, build 370c289
 ```
 
@@ -77,6 +96,7 @@ Dockerのアプリを立ち上げ、Preferences > Docker Engine を開いてく�
 
 ```terminal
 $ docker system info
+
 Client:
  Context:    default
  Debug Mode: false
@@ -104,6 +124,7 @@ hello-world コンテナをダウンロードして、実際に docker で動か
 
 ```terminal
 $ docker run hello-world
+
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
 b8dfde127a29: Pull complete
@@ -122,6 +143,8 @@ This message shows that your installation appears to be working correctly.
 以下のようなエラーで失敗した場合 proxy の設定が必要な場合があります。
 
 ```terminal
+$ docker run hello-world
+
 Unable to find image 'hello-world:latest' locally
 docker: Error response from daemon: Get https://registry-1.docker.io/v2/: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers).
 See 'docker run --help'.
@@ -147,11 +170,20 @@ TA や講師など、周りの先輩に遠慮なく声をかけてください�
 
 ### HTML ファイルの作成
 
-以下のようにディレクトリを作成し、その中に html ファイルを作成してください。
+以下のようにディレクトリを作成し、
+
+```
+$ mkdir content
+```
+
+その中に `index.html`  ファイルを作成してください。
+
+例えば、 vim を使うなら以下のような コマンド になります。
+vim が無い、ほかのを使いたい そんな場合は 各種 メモ帳など自分の好きなエディタを利用してください。
+vim から抜けるには ESCキーを押した後「:wq<Enter>」を入力してください。
 
 ```terminal
-mkdir content
-vim content/index.html // メモ帳などでも可。 vimから抜けるには ESCキーを押した後「:wq<Enter>」を入力してください。
+$ vim content/index.html
 ```
 
 `index.html`の内容はなんでもいいですが、例えば以下のようにしてみましょう。
@@ -162,12 +194,22 @@ Hello Bootcamp!
 
 ### docker コンテナの起動 (Check.3)
 
-HTML ファイルが作成できたら、nginx の docker コンテナを以下のように起動します。
+`index.html` ファイルが作成できたら、nginx の docker コンテナを以下のように起動します。
+
+いずれも
+* `--name` : test-nginx という名前で
+* `-p 8080:80` : localhost の 8080 port を コンテナの中で 80 port に 転送し
+* `--mount....`: いまのディレクトリの content ディレクトリの内容を コンテナの中で /usr/share/nginx/html の中身として扱い
+* `-d`: daemon (バックグラウンドで実行し続ける)モードで
+* `nginx`: nginx:latest タグ の イメージを使って コンテナを起動する
+
+というものになります。
 
 windows
 
 ```terminal
 $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%/content,target=/usr/share/nginx/html,ro -d nginx
+  
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
@@ -175,10 +217,15 @@ mac/linux
 
 ```terminal
 $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=$PWD/content,target=/usr/share/nginx/html,ro -d nginx
+
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 
-エラーなく起動できたらブラウザを開き、[localhost:8080](http://localhost:8080) （`localhost`または ssh 先の IP アドレス）にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
+エラーなく起動できたら 起動したコンテナのID が表示されます。ここは実行ごとに変わります。
+
+ブラウザを開き、[localhost:8080](http://localhost:8080) （`localhost`または ssh 先の IP アドレス）にアクセスしてみましょう。「Hello Bootcamp!」が表示されていれば成功です。
+
+なお、`-d` オプションを付けているので、 バックグラウンドで起動し続けています。 再度起動し直してみたい場合は 一度 ```docker stop``` する必要があります。お掃除の手順を参照してください。
 
 ### HTML ファイルを書き換える
 
@@ -195,8 +242,8 @@ Hello Bootcamp!!!!!!
 最後に Docker コンテナを止めて掃除しておきます。
 
 ```terminal
-docker stop test-nginx
-docker rm test-nginx
+$ docker stop test-nginx
+$ docker rm test-nginx
 ```
 
 以上で事前準備は完了です。お疲れ様でした。
