@@ -7,14 +7,6 @@ prior_knowledge: 特になし
 
 <header-table/>
 
-IIJ Bootcamp React に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下記のコマンドを叩いて準備まで終わらせておいてください。
-
-```bash
-git clone https://github.com/iij/bootcamp.git
-cd bootcamp/src/frontend/react
-docker-compose up -d
-```
-
 # React でシングルページアプリケーションを書こう
 
 ## 始めに
@@ -165,7 +157,7 @@ React ではなく Vue ですが、こちらの記事が非常にわかりやす
 
 :computer: src/Note.tsxを作成し、下記の通り編集してください。
 
-```javascript
+```tsx
 import React from "react";
 
 interface NoteState {}
@@ -457,21 +449,14 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 一瞬"Loading..."という文字列が見えた瞬間、画面表示されるようになったと思います。
 
-![Gif1](./images/Gif1.gif)
+![componentdidmount](./images/componentdidmount.gif)
 
 初めて出てきた`componentDidMount`メソッドは`React.Component`で定義されているメソッドで、ブラウザ上にコンポーネントが描画された直後に走るメソッドです。
 
 React のコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。
 これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義できます。
 
-1. コンポーネントが生成されるタイミング
-    - `constructor`
-
-2. コンポーネントが DOM にロード(マウント)されるタイミング
-    - `componentDidMount`
-
-3. コンポーネントが DOM から削除されるタイミング
-    - `componentWillUnmount`
+![lifecycle](./images/lifecycle.png)
 
 それぞれのタイミングで実施したい処理があれば、それぞれのメソッドの中に実装してあげると良いでしょう。
 
