@@ -234,7 +234,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 :computer: src/App.tsxを修正してください。
 
-```javascript
+```tsx
 import './App.css';
 import Note from './Note'
 
@@ -624,18 +624,5 @@ Bootcamp 冒頭で
 
 といったことが特徴です。create-react-app で構成したプロジェクトはデフォルトで SPA となっています。SPA でないものとして SSR(=サーバサイドレンダリング)が挙げられます。
 
-### JSX(JavaScript 経験者向け)
-
-この Bootcamp では JavaScript のコードだとは思えない HTML と ES2015 のコードが混ぜこぜになっているようなコードが出てきました。
-
-この HTML 風の表現になっている部分は、[JSX](http://facebook.github.io/jsx/)という JavaScript の拡張構文で、実際には JavaScript にトランスパイルされてから実行されます。
-
-JSX についての詳細には踏み込みませんが、3 点だけ注意しておきます。
-
-1. JSX は HTML 風の記法で HTML 出力のためのコードを記述できるものであって、HTML そのものではありません。
-2. HTML では CSS のクラス名を適用するのに class 属性を記述しますが、class は ECMAScript の予約語ですので、これを避けて className という語を用います。(上の例にあるとおりです。)
-3. HTML では label タグに for 属性を使いますが、for は JavaScript の予約語ですので、これを避けて htmlFor という語を用います。
-
-JSX は、あくまでも記法ですが、JSX を使わずに同じ意味のコードを書くことは可能です。ですが React で開発する人のほとんどは JSX を利用しますので明確な理由がない場合は JSX を利用することをお勧めします。
 
 <credit-footer/>
