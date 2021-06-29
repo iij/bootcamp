@@ -77,9 +77,9 @@ $ docker exec -it bootcamp-react bash
 
 4. 動作チェック
 
-ホストマシンから適当なブラウザ(※IEを除く)から[localhost:3000](http://localhost:3000)にアクセスし、下記のようなエラーページが表示されることを確認してください。
+ホストマシンから適当なブラウザ(※IEを除く)から[localhost:3000](http://localhost:3000)にアクセスし、Welcomeページが表示されることを確認してください。
 
-WIP
+![welcome](./images/welcome.png)
 
 ## React とは
 
@@ -142,7 +142,7 @@ export default App;
 
 ※ 環境にとっては自動リロードしてくれない場合もあります。そのときはリロード(F5)をしてみてください。
 
-![画面2](./images/image2.png)
+![helloworld](./images/helloworld.png)
 
 #### チェックポイント
 - React で Hello World を実施した
@@ -200,7 +200,7 @@ export default App;
 
 さあ、[localhost:3000](localhost:3000)にアクセスするとブラウザに表示されている内容が変化したと思います。
 
-![画像3](./images/image3.png)
+![componentcomponentcomponent](./images/componentcomponentcomponent.png)
 
 このように React では Component という UI 部品を組み合わせることでデザイン、UI を作成していきます。
 
@@ -263,7 +263,7 @@ export default App;
 
 ここまで修正すると、下記の通りにブラウザの表示が変わります。
 
-![画像4](./images/image4.png)
+![props](./images/props.png)
 
 親コンポーネントからデータを注入できるように`props`を適切に定義することで、Component の再利用性をあげることができます。
 注意が必要なこととして`props`は Readonly なため、`props`の中身を書き換えたりすることはできません。
@@ -355,7 +355,7 @@ export default App;
 
 ここまで修正すると下記の通りになります。
 
-![画像5](./images/image5.png)
+![state](./images/state.png)
 
 State は Component の内部でのみ生きているデータベースのようなものです。State を`setState`メソッド経由で更新を行うと、関連するコンポーネントや DOM が自動で更新されます。
 
@@ -453,7 +453,6 @@ export default class Note extends React.Component<NoteProps, NoteState> {
     return note
   }
 }
-
 ```
 
 一瞬"Loading..."という文字列が見えた瞬間、画面表示されるようになったと思います。
