@@ -77,6 +77,7 @@ LABEL maintainer="your_email"
 
 COPY ./backend/main.go /root/
 WORKDIR /root
+RUN go env -w GO111MODULE=auto
 RUN go get -v github.com/globalsign/mgo && go build main.go
 ENTRYPOINT ["./main"]
 ```
@@ -101,7 +102,7 @@ services:
     depends_on:
       - database
     ports:
-      - "8080:80"
+      - "8088:80"
 ```
 では、ファイルの各設定について見ていきたいと思います。
 
@@ -121,7 +122,7 @@ services:
 
 - `depends_on` では、各コンテナの起動順序を設定する項目になっています。今回の場合、backend サービスは、database サービスを必要とするので、こういった設定になっています。ただし、サービスの起動を待ってくれるわけではなく、database が起動しきる前にbackendサービスが起動してしまう場合もあります。[公式](http://docs.docker.jp/compose/startup-order.html) にそういったケースの対策が乗っているので興味がある方はご覧になってください。
 
-- `ports` は、ホストとコンテナのポートをマッピングする設定です。今回の場合、backend サービスは、コンテナ内でポート80で起動しているので、ホストのポート8080へアクセスしたらコンテナ内の80に接続されるように設定しています。ここに記載する値は、文字列を推奨します。なぜならば、YAML の仕様では、`XX:YY` は、60進数として解釈されてしまうため、意図しない値になる可能性があるためです。
+- `ports` は、ホストとコンテナのポートをマッピングする設定です。今回の場合、backend サービスは、コンテナ内でポート80で起動しているので、ホストのポート8088へアクセスしたらコンテナ内の80に接続されるように設定しています。ここに記載する値は、文字列を推奨します。なぜならば、YAML の仕様では、`XX:YY` は、60進数として解釈されてしまうため、意図しない値になる可能性があるためです。
 
 その他詳しい機能について知りたい方は、[公式のリファレンス](https://docs.docker.com/compose/compose-file/)をご参照ください。
 
@@ -144,6 +145,7 @@ services:
 では、必要なものはすべて揃ったので、「docker-compose.yml」が存在するディレクトリで、以下のコマンドを入力してください。
 
 ```bash
+$ docker-compose build
 $ docker-compose up
 ```
 
@@ -200,7 +202,7 @@ iijbootcamp-database | 2019-02-15T02:55:28.229+0000 I CONTROL  [initandlisten] O
 (省略)
 ```
 
-`docker-compose up` コマンドは、docker-compose.yml ファイルに基づきコンテナを新規作成し、起動するコマンドです。`-d` オプションを利用することで、デーモンとして起動することも可能です。デーモンで起動している際は、ログが表示されなくなってしまうので、見たい場合は`docker-compose logs` コマンドで閲覧可能です。また、`-f` オプションを渡すことで、ログを流し続けることができます。  
+`docker-compose up` コマンドは、docker-compose.yml ファイルに基づきコンテナを新規作成し、起動するコマンドです。`-d` オプションを利用することで、デーモンとして起動することも可能です。デーモンで起動している際は、ログが表示されなくなってしまうので、見たい場合は`docker-compose logs` コマンドで閲覧可能です。また、`-f` オプションを渡すことで、ログを流し続けることができます。
 
 別のターミナル環境を開いて、「docker-compose.yml」が存在するディレクトリ で以下のコマンドを入力してください。
 
@@ -208,7 +210,7 @@ iijbootcamp-database | 2019-02-15T02:55:28.229+0000 I CONTROL  [initandlisten] O
 $ docker-compose ps
         Name                     Command             State          Ports
 ---------------------------------------------------------------------------------
-iijbootcamp-backend    ./main                        Up      0.0.0.0:8080->80/tcp
+iijbootcamp-backend    ./main                        Up      0.0.0.0:8088->80/tcp
 iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 ```
 
@@ -223,10 +225,10 @@ iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 `/get` にアクセスして、最初に登録したデータが取り出せていれば成功です。
 
 ```bash
-$ curl -X POST -d 'title=iijbootcamp&body=IIJBootCamp is fun!!' http://localhost:8080/add
+$ curl -X POST -d 'title=iijbootcamp&body=IIJBootCamp is fun!!' http://localhost:8088/add
 Successfully added
 
-$ curl http://localhost:8080/get
+$ curl http://localhost:8088/get
 [{ID:ObjectIdHex("5c6642fc04b685000117c15b") Title:iijbootcamp Body:IIJBootCamp is fun!!}]
 ```
 
@@ -262,7 +264,7 @@ Docker をインストールすると、自動的に以下の名前の3つのネ
 2. none
 3. host
 
-`docker run` コマンドを実行する際に、`--net` オプションで、これらの値を設定することができます。デフォルト値では、`bridge` になっています。Docker がインストールされた今回の環境では、ホストに「**docker0**」というブリッジネットワークが表れます。これが「bridge」に接続されており、Docker はデフォルトでこのネットワークにコンテナを接続します。そのため、ホストからコンテナへの接続やコンテナ間の接続が可能となります。`none` は、ネットワークの接続を必要としないコンテナを作成する際に利用します。`host` は、コンテナがホストと同じインタフェースやIPアドレスを持たせたい際に利用します。  
+`docker run` コマンドを実行する際に、`--net` オプションで、これらの値を設定することができます。デフォルト値では、`bridge` になっています。Docker がインストールされた今回の環境では、ホストに「**docker0**」というブリッジネットワークが表れます。これが「bridge」に接続されており、Docker はデフォルトでこのネットワークにコンテナを接続します。そのため、ホストからコンテナへの接続やコンテナ間の接続が可能となります。`none` は、ネットワークの接続を必要としないコンテナを作成する際に利用します。`host` は、コンテナがホストと同じインタフェースやIPアドレスを持たせたい際に利用します。
 
 上記結果の中で、「default」で終わるネットワークは、`docker-compose` コマンドによって自動的に作成されたネットワークのことです。「default」の前には、プロジェクト名（docker-compose.ymlファイルが存在するディレクトリ名）が利用されます。
 
