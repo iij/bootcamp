@@ -74,8 +74,9 @@ Webサーバを建ててそのサーバを監視してみましょう。ハン�
 CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS                  NAMES
 3d7494717550   wordpress   "docker-entrypoint.s…"   47 minutes ago   Up 11 minutes   0.0.0.0:8080->80/tcp   prometheus_bootcamp
 ```
-適当なブラウザでdockerを立ち上げたサーバ宛にアクセスします
-- 画像略
+適当なブラウザでdockerを立ち上げたサーバ宛にアクセスできればOKです。
+
+![wordpress](images/wordpress.png)
 
 STEP2ではサーバパフォーマンスを目視で確認します。(これをパフォーマンス監視といいます)立ち上げたコンテナの中に入り`vmstat`コマンドを入力します。
 ```
@@ -153,7 +154,7 @@ r  b         swpd         free         buff        cache   si   so    bi    bo  
  - `cpu`の`us`と`sy`が高く、アイドル時間も短くなってる
    - やはりCPUに負荷がかかっているのが原因か！
 
-といった感じで、もしこのシステムが障害起こした時は「プロセス過多によるCPUへの高負荷が原因である！」と判断が出来るわけです。あとはここからどんなプロセスが具体的に多いかなどをログから漁っていることになると思います。(これをログ監視といいます)<!--`yes > /tmp/yes.txt`ってやればディスクIOの負荷が見れるよ-->
+といった感じで、もしこのシステムが障害起こした時は「プロセス過多によるCPUへの高負荷が原因である！」と判断が出来るわけです。あとはここからどんなプロセスが具体的に多いかなどをログから漁っていることになると思います。<!--`yes > /tmp/yes.txt`ってやればディスクIOの負荷が見れるよ-->
 
 最後のSTEPではサービスがちゃんと動いているかを確認します(これをサービス監視といいます)。「サービスがちゃんと動いている」とは何かについては、サービスごとに定義する必要がありますが、ここでは「WebページにアクセスしてHTTPステータスコード200が返ってくること」とします。まずは、端末をもう一つ開き、そこから`curl`コマンドを使ってHTTPステータスコードを取得します。(端末が一つしか開けない方は`screen`や`tmux`を駆使しください)
 ```
@@ -172,6 +173,7 @@ r  b         swpd         free         buff        cache   si   so    bi    bo  
 忘れずに戻しておきましょう。
 
 今回目視で監視を行いましたが、これすべて人が張り付いて確認するのはもちろん、必要なデータを抜き出すのも大変な作業になります。次章ではこの監視を「Prometheus」という<!--ナウでヤングな-->監視ツールを使って楽に監視する方法を紹介します。
+今回目視で監視を行いましたが、これすべて人が張り付いて確認するのはもちろん、必要なデータを抜き出すのも大変な作業になります。次章ではこの監視を「Prometheus」というナウでヤングな監視ツールを使って楽に監視する方法を紹介します。
 
 ### 1-4. 監視のアンチパターン(読みたい人は読んでください)
 監視はそれを実装するシステム時々で正解が異なります。すべてのパターンを紹介するのは現実的ではないため、監視における代表的なアンチパターンを紹介します。
@@ -384,6 +386,7 @@ scrape_configs:
 ![datasource](./images/datasource.png)
 
 URLにPrometheusサーバである`http://prometheus:9090`を入力します。ここで`http://localhost:9090`ではない理由はすぐ下に記載のアクセス方法にあり、GrafanaサーバからアクセスするかホストからアクセスするかでそのURLが変わることがあります。今回、Grafanaサーバから見て「localhost:9090」は自分自身の9090ポートであり、Prometheusサーバのことではありません。docker network上でGrafanaサーバからPrometheusサーバは「http://prometheus:9090」でアクセスできるため、この表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。試しにURLを`http://localhost:9090`にして、Accessを`Browser`にしてみるとその違いが分かると思います。
+URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にます。AccessはPrometheusへの接続元を選択します。ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバを選択してください。docker network上でGrafanaサーバからPrometheusサーバは「http://prometheus:9090」でアクセスできるため、今回は表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。
 
 ![access](./images/access.svg)
 
