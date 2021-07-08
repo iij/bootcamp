@@ -252,22 +252,31 @@ Prometheusのアーキテクチャは以下の図を見ると分かりやすい�
   - TSDB
   - HTTPserver
 
-Prometheus Serverは読んで字のごとく、監視ツールPrometheusを実行するサーバです。内部はRetrivalとTSDBとHTTPserverで構成されており、Retrivalは「サービスディスカバリで監視対象のサーバを探し出し、exporterから監視情報を取得する」、TSDB(Time Series DataBase)は「取得した情報を時系列データとしてDBに保存する」、HTTPserverは「DBにあるデータをWebUI上に表示させる」という役割を持っています。<!--TSDBはRDBMSと違って時系列情報のI/Oが早い。-->
+Prometheus Serverは読んで字のごとく、監視ツールPrometheusを実行するサーバです。内部はRetrivalとTSDBとHTTPserverで構成されており、Retrivalは「サービスディスカバリで監視対象のサーバを探し出し、exporterから監視情報を取得する」、TSDB(Time Series DataBase)は「取得した情報を時系列データとしてDBに保存する」、HTTPserverは「DBにあるデータをWebUI上に表示させる」という役割を持っています。(余談ですがTSDBはRDBMSと違って時系列情報のI/Oが早い傾向にあります)
+
+![Prometheus_server](./images/prometheus_server.png)
+
 - Prometheus Targets
   - exporter
   - Pushgateway
 
 Prometheus Tartgetsは監視情報を取得したい対象のサーバです。Pull型はこの対象にあるエージェントから監視情報を取得しますが、そのエージェントをexporterといいます。上でも若干ふれましたが、どうしてもPushしたい場合はPushgatawayをインストールしたサーバへcurlコマンドなりで監視情報をPushすることで、Prometheus Serverはそこから監視情報をPullします。
 
+![Promethesu_targets](./images/prometheus_targets.png)
+
 - Alertmanager
 
-AlertmanagerはPrometheus ServerからPushされたAlertを各ツール(slack,mailなど)へ通知することが出来ます。
+AlertmanagerはPrometheus ServerからPushされたAlertを各ツール(slack,mailなど)へ通知することが出来ます。(メールサーバなど外部ツールとの連携を必要とするため、今回はこの箇所のハンズオンは飛ばしています。)
+
+![Alertmanager](./images/alertmanaer.png)
+
 - Data visualization and export
   - PromtheusWebUI
   - Grafana
 
 PrometheusWebUIならびにGrafanaはPrometheusに格納されたデータをPromQLというPrometheus独自のクエリ言語で取得してWebUIに表示させます。
 
+![data_visualization_and_export](./images/data_visualization.png)
 
 ### 2-3. Prometheusハンズオン
 ハンズオンは以下の流れで勧めます。
@@ -318,6 +327,10 @@ services:
 volumes:
   wordpress:
 ```
+構成をネットワーク図にすると以下です。(ポートは順に対応してます)
+
+![default](./images/handson_default.png)
+
 次にPrometheusの設定ファイルを作ります。`docker-compose.yml`と同じディレクトリ内にファイルを格納するディレクトリを作り、中に設定ファイルを入れます。
 ```
 # mkdir prometheus
@@ -372,17 +385,17 @@ scrape_configs:
 
 URLにPrometheusサーバである`http://prometheus:9090`を入力します。ここで`http://localhost:9090`ではない理由はすぐ下に記載のアクセス方法にあり、GrafanaサーバからアクセスするかホストからアクセスするかでそのURLが変わることがあります。今回、Grafanaサーバから見て「localhost:9090」は自分自身の9090ポートであり、Prometheusサーバのことではありません。docker network上でGrafanaサーバからPrometheusサーバは「http://prometheus:9090」でアクセスできるため、この表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。試しにURLを`http://localhost:9090`にして、Accessを`Browser`にしてみるとその違いが分かると思います。
 
-<!--画像挿入-->
+![access](./images/access.svg)
 
 次にダッシュボードを作っていきます。`Create`タブから`NewDashboard`を選択、`Add Panel`から知りたいメトリックスを選択します。とりあえずメモリのロードアベレージを1分5分15分で表示させます。`Metrics`から`node_load1`を選択。`+Query`をでクエリを追加し`node_load5`を選択。`+ Query`でクエリを追加し`node_load15`を選択。最後に右上のApplyを押すことで、パネルに追加します。
 
-<!--画像挿入-->
+![load_average](./images/load_ave.png)
 
 これの繰り返しで自分だけのダッシュボードを作り上げていく形になります。
 
 最後に、Grafanaの公式では、有志の手によってダッシュボードのテンプレートがいくつか用意されているので、今度はお手軽にいい感じのダッシュボードを作ります。まず[Grafana lab](https://grafana.com/grafana/dashboards)にアクセスして、[Node Exporter Quickstart and Dashboard](https://grafana.com/grafana/dashboards/13978?pg=dashboards&plcmt=featured-sub1)を選びます。ここにあるDashboardIDまたは生JSONファイルをメモし、Grafanaにインポートすることで、有志の作ったダッシュボードと同じ形式のダッシュボードを手元で開くことが出来ます。
 
-<!--画像挿入-->
+![template](./images/node-exporter_temp.png)
 
 次のSTEPではHTTPでのアクセスを監視する、サービス監視を行います。パフォーマンス監視では監視対象のサーバにexporterを導入して、Prometheusサーバからメトリクスをpullしていましたが、ICMPやHTTPを使った監視はその手段が使えません。そのため、システム内部から監視を行うのではなく、外部から監視を行う「外形監視」という手段で監視します。
 
@@ -472,7 +485,8 @@ scrape_configs:
          - 'localhost:9090'
 
   - job_name: 'blackbox'
-    scrape_interval: 5s
+    scrape_interval: 30s
+    scrape_timeout: 20s
     metrics_path: /probe
     params:
       module: [http_2xx]
@@ -491,39 +505,36 @@ scrape_configs:
 
 これで準備は完了です。`docker-compose up -d`でblackbox_exporterを起動させたのち、`docker-compose restart prometheus`でprometheusのコンフィグファイルを再読み込みしてください。`localhost:9090`でPrometheusサーバにアクセスし、StatusからTartgetを表示し、blackboxが存在すれば成功です。
 
-<!--画像挿入-->
+![blackbox_exporter](./images/blackbox_exporter.png)
 
 本当にPrometheusが取得できているかグラフを表示させてみましょう。まずPrometheusホーム画面の`Expression`に`probe_success`と入力し、`Excute`を押してください。
 
-<!--画像挿入-->
+![probe_success_table](./images/probe_success_table.png)
 
 タブをTableからGraphにし、値が`1`になっていれば成功です。`0`は取得に失敗しています。
 
-<!--画像挿入-->
+![probe_success](./images/probe_success.png)
 
 他にも`probe_http_status_code`を使えばそのサイトのHTTPステータスを確認出来たりできます。
 
-<!--画像挿入-->
+![probe_status](./images/probe_status.png)
 
 最後にGrafanaでHTTPステータスコードを表示して終わりにします。Grafanaを`localhost:3000`で開き、追加したいダッシュボードを選択します。
+次に`Add Panel`からパネル追加画面を開き、`Metrics`に`probe_http_status_code`と入力します。
 
-<!--画像挿入-->
+![grafana_status_graph](./images/grafana_status_graph.png)
 
-`Add Panel`からパネル追加画面を開き、`Metrics`に`probe_http_status_code`と入力します。
+このままだとステータスコードの数字をグラフにしてるだけで味気ないので、`Instant`をONにし、右のカラムの`Visualization`を`Stat`に変更します。
 
-<!--画像挿入-->
+![grafana_status](./images/grafana_status.png)
 
-このままだと味気ないので、`Instant`をONにし、右のカラムの`Visualization`を`Stat`に変更します。
+最後にステータスコードごとに色を変えます。右のカラムのタブを`Field`にし、`Thresholds`を開きます。
 
-<!--画像挿入-->
+![thresholds](./images/thresholds.png)
 
 最後に右のカラムのタブを`Field`にし、`Thresholds`を開きます。
 
-<!--画像挿入-->
-
-既存の設定は削除し、`300`を黄色、`400`を赤とします。このように設定することでこの値を閾値として、HTTPステータスコードが値を超えると値の色が変ります。
-
-<!--画像挿入-->
+![http_status](./images/http_status.png)
 
 試しにwordpressの中身を書き換えてみましょう。
 ```
@@ -531,9 +542,11 @@ scrape_configs:
 ```
 を実行すれば赤くなるはずです。
 
-<!--画像挿入-->
+![http_status](./images/http_status_error.png)
 
 最後に`Apply`することで簡単な監視ダッシュボードが完成しました。
+
+![all](./images/grafana_all.png)
 
 ### 2-4. まとめ
 Prometheusは非常に柔軟性の高い有力なツールです。実は今回の講義では有力な機能の一つであるサービスディスカバリの恩恵を最大限体験することが出来ていません。ほかにも閾値を超えたらアラートを投げるAlertmanagerなど、重要な機能がまだまだたくさんありますが、dockerにて用意する環境に限界があるため、今回は省略しました。興味のある方は[公式サイト](https://prometheus.io/)などからGetting Startedなどを見てみるといいかもしれません。
