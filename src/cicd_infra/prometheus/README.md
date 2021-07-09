@@ -533,7 +533,7 @@ scrape_configs:
 
 ![thresholds](./images/thresholds.png)
 
-既存の設定は削除し、`300`を黄色、`400`を赤とします。このように設定することでこの値を閾値として、HTTPステータスコードが値を超えると値の色が変ります。下の画像では「200以上300未満は青」「300以上400未満は黄色」「400以上は赤」
+既存の設定は削除し、`300`を黄色、`400`を赤とします。このように設定することでこの値を閾値として、HTTPステータスコードが値を超えると値の色が変ります。下の画像では「200以上300未満は青」「300以上400未満は黄色」「400以上は赤」「それ以外は赤」となるように設定しています。
 
 ![http_status](./images/http_status.png)
 
@@ -541,7 +541,7 @@ scrape_configs:
 ```
 # docker exec -it wordpress_1 mv /var/www/html/wp-admin /var/www/html/wp-admins
 ```
-を実行すれば赤くなるはずです。
+を実行すればWebサーバの中身が書き換えられ、HTTPステータスコードが500になり、赤くなるはずです。
 
 ![http_status](./images/http_status_error.png)
 
