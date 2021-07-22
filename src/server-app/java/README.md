@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: Java; springboot
 description: SpringBootを使ったアプリ開発を試してみるハンズオンです
 time: 2h
 prior_knowledge: 特になし
@@ -7,7 +8,7 @@ prior_knowledge: 特になし
 
 <header-table/>
 
-# Java; springboot
+# {{$page.frontmatter.title}}
 
 IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下準備まで終わらせておいてください。
 
