@@ -2,6 +2,9 @@
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 ---
 
+(事前準備)
+`docker pull forestsource/bootcamp-angular`して下さい。(1GB強あるので有線環境がおすすめです。)
+
 # Angular を触ってみよう
 
 ## Angular の紹介
