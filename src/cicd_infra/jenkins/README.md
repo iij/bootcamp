@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 ---
 
 # Jenkins を触ってみよう
@@ -52,10 +52,14 @@ CI とは、プログラムの開発中にテストやデプロイを頻繁に�
 
 などが上げられます。
 
-## Jenkins を立ち上げてみる
+## Jenkins を立ち上げてみる（自力で立ち上げる場合）
 
 Jenkins を試しに触るため、docker を使って手元に構築してみましょう。
 社内に共用で使える Jenkins サーバが立っていればそちらを使うこともできます。講師の指示にしたがってください。
+
+::: tip
+IIJ社内では今回のハンズオン用にJenkinsサーバーを立ち上げているので、そちらを使ってください。
+:::
 
 docker の使える環境で以下のコマンドを実行して、Jenkins を実行してください。
 
@@ -75,7 +79,7 @@ docker run -p 8080:8080 -p 50000:50000 --mount type=bind,source=${PWD}/jenkins,t
 
 途中で以下のように初期パスワードが表示されるため、コピー&ペーストしておきましょう。
 
-```
+```termianl
 *************************************************************
 *************************************************************
 *************************************************************
@@ -110,7 +114,11 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 
 ## Jenkins を使ってみよう
 
-早速試しに使ってみましょう。「新しいジョブを作成」をクリックするとジョブの作成画面に入ります。まずは「フリースタイル・プロジェクトのビルド」をクリックしてください。
+早速試しに使ってみましょう。「新しいジョブを作成」をクリックするとジョブの作成画面に入ります。
+
+![jenkins-first](./images/jenkins-first.png)
+
+まずは「フリースタイル・プロジェクトのビルド」をクリックしてください。
 
 ![create-job](./images/create-job.png)
 
@@ -135,9 +143,10 @@ echo 'welcome to bootcamp' >> welcome.txt
 上の例ではシェルスクリプトで`welcome.txt`というファイルを作成しました。このようにビルドの実行で生成されるファイルを「成果物」と呼んだりします。
 
 成果物はどこに作られているでしょうか。以下のようにディレクトリを覗いてみると、成果物が生成されているのが分かります。
+(自分でサーバーを立ててる場合はシェルなどで確認できます。公開サーバーの場合はタスクでスクリプトを実行して確認することもできます。)
 
-```bash
-$ cat jenkins/workspace/test-project/welcome.txt
+```terminal
+$ cat jenkins/workspace/test-project-<アカウント名>/welcome.txt
 welcome to bootcamp
 ```
 
@@ -161,10 +170,10 @@ Webhook などの HTTP リクエストからジョブを実行するトリガを
 
 ![build-trigger](./images/build-trigger.png)
 
-認証トークンを設定できるので適当な文字列を設定して保存します。保存後、設定画面に書かれているように`localhost:8080/job/test-project/build`にリクエストしてみましょう。先ほど取得した API token を使用するため、ここで入力した JOB ごとの認証トークンは使用しません。
+認証トークンを設定できるので適当な文字列を設定して保存します。保存後、設定画面に書かれているように`JENKINS_URL/job/test-project-<アカウント名>/build`にリクエストしてみましょう。先ほど取得した API token を使用するため、上で入力した JOB ごとの認証トークンは使用しません。
 
 ```bash
-curl -X POST --user 'admin:<API token>' 'http://localhost:8080/job/test-project/build'
+curl -X POST --user '<アカウント名>:<API token>' 'JENKINS_URL/job/test-project-<アカウント名>/build'
 ```
 
 上記を実行するとジョブが実行されます。
@@ -183,12 +192,14 @@ curl -X POST --user 'admin:<API token>' 'http://localhost:8080/job/test-project/
 ```bash
 pwd
 echo $param >> welcome.txt
+
+cat welcome.txt
 ```
 
 パラメータ付きビルドをリモートから実行するには、先ほどの例に加えてパラメータの内容をリクエストに含めます。
 
 ```bash
-curl -X POST -F 'param=bootcamp' -u 'admin:<API token>' http://localhost:8080/job/test-project/buildWithParameters
+curl -X POST -F 'param=bootcamp' -u '<アカウント名>:<API token>' JENKINS_URL/job/test-project/buildWithParameters
 ```
 
 ビルドの履歴から結果を見ると、`echo boocamp`というコマンドが実行されているのが分かります。
