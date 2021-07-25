@@ -1,6 +1,6 @@
----
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
----
+## 下準備
+1.2 まで進めてもらえると当日はスムーズです。(DLがほとんどです。)
+1GB強あるので有線環境がお勧めです。
 
 # Angular を触ってみよう
 
@@ -19,29 +19,33 @@ Angular は2016年に発表されたwebフレームワークで、googleが中�
 - フルスタックフレームワーク
   - Angular だけでフロントエンド開発に必要な機能が揃っている
 - TypeScript ベースで開発されている
-  - Angular を使う場合はほぼ確実に TypeScript を使う
   - 公式ドキュメントも全て TypeScript ベース
+- RxJSを使ったリアクティブプログラミングが基本になっている
 - component指向
+- Angular CDKによる利用度の高い機能が半公式で提供されている
 - 半年に1回のメジャーリリース
 
 などが上げられます。
 
 比較的大規模なWebアプリケーションの構築に向いています。
-その理由としては、TypeScriptでの開発が半ば強制されること。
+その理由としては、TypeScriptでの開発が強制されること。
 ベストプラクティスな構成が公式から提供されているため、アプリケーションが大きくなってきても破綻しにくい。などが挙げられます。
 (大抵の必要なツールや機能が全て公式から提供されているため組み合わせに悩まなくていいのもポイント)
 
 逆に記述量が多いため、小さいアプリケーションの開発ではオーバーヘッドが大きくなりがち。また学習コストも比較的高いです。
 
-## first step
+## 1: 始めに
 
 Angular でアプリケーションを構築する場合はほぼ必ず [angular-cli](https://cli.angular.io/) というツールを利用します。これはAngular専用のCLIツールで、テンプレートコードを生成したり、開発用サーバを立ち上げたりしてくれます。
 コマンド名は「ng」です。(aNGularの略称)
 
 まずはこれを使い、自動生成されるAngularアプリケーションを起動してみましょう。
 
-### docker imageの利用方法
+### 1.1: docker imageの利用方法
 
+あらかじめAngularがインストールされたコンテナイメージに、ホストのディレクトリをマウントして開発を進めます。
+こうすると、ホスト側で好きなエディタを使えるので開発が楽になります。
+ただし、コマンドはdockerのbashで実行する必要があります。
 ```bash
 docker pull forestsource/bootcamp-angular
 cd <好きなディレクトリ ex. "/var/tmp/angular">
@@ -54,11 +58,11 @@ docker run --name bootcamp-angular -it --rm -v "$(pwd)":/app -p 4200:4200 forest
 mkdir C:\Users\%username\Desktop\bootcamp-angular
 docker run --name bootcamp-angular -it --rm -v C:\Users\%username\Desktop\bootcamp-angular:/app :/app -p 4200:4200 forestsource/bootcamp-angular bash
 
-# 追加でシェルを使いたい場合
+# コマンド実行用にシェルを起動しておく
 docker exec -it bootcamp-angular bash
 ```
 
-### angular-cliで開発環境を構築
+### 1.2: angular-cliで開発環境を構築
 今回使うdocker imageにはすでにangular(angular-cli)がインストールされています。
 
 ```bash
@@ -81,7 +85,9 @@ Angular 開発環境の構築はこれで完了です。簡単ですね！
 
 <img src="./images/welcome.png">
 
-### サンプルアプリケーションをいじってみる
+## 2: 基本
+
+### 2.1: タイトル変更
 
 `ng new`で生成されたアプリケーションの中身を少し見てみましょう。Angular アプリケーションのソースコードは主に `src/app/` 以下にあります。
 
@@ -128,82 +134,7 @@ title = 'my-first-angular';
 
 と変更してファイルを保存してください。ブラウザが勝手に更新されてタイトルが変更されます。
 
-### (補足）ユニットテスト
-
-ユニットテスト とは、メソッドや関数単位でテストコードを作成し、コードを書くのと同時に自動でテストを行う開発手法です。TDD (Test Driven Development) など聞いたことがあるかもしれません。
-
-実は`ng new`コマンドはユニットテスト用の環境も用意してくれています。以下のコマンドを実行してください。(`ng serve`を止めてこちらを実行した方がいいかもしれません)
-
-#### 設定変更
-`./bootcamp-angular/karma.conf.js(テストツールの設定ファイル)`のブラウザ設定を下記のように必要があります。
-Chromeはrootで実行する場合は`--no-sandbox`が必要なので追加しています。
-
-```bash
-@@ -25,7 +25,13 @@
-     colors: true,
-     logLevel: config.LOG_INFO,
-     autoWatch: true,
--    browsers: ['Chrome'],
-+    browsers: ['ChromeHeadlessNoSandbox'],
-+    customLaunchers: {
-+      ChromeHeadlessNoSandbox: {
-+        base: 'ChromeHeadless',
-+        flags: ['--no-sandbox']
-+      }
-+    },
-     singleRun: false,
-     restartOnFileChange: true
-   });
-```
-テストを実行する。
-
-```bash
-ng test
-
-#> 09 05 2020 16:06:23.410:INFO [karma-server]: Karma v5.0.5 server started at http://0.0.0.0:9876/
-#> 09 05 2020 16:06:23.411:INFO [launcher]: Launching browsers ChromeHeadlessNoSandbox with concurrency unlimited
-#> 09 05 2020 16:06:23.466:INFO [launcher]: Starting browser ChromeHeadless
-#> ...(省略)
-#> TOTAL: 2 FAILED, 1 SUCCESS
-#> TOTAL: 2 FAILED, 1 SUCCESS
-```
-
-ユニットテストが実行され、いくつかエラーが表示されると思います。これはデフォルトで生成されるテストコードに「タイトルが`bootcamp-angular`であること」を確認するテストが含まれているためです。
-
-そのテストコードは`src/app/app.component.spec.ts`にあります。
-
-```typescript
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'bootcamp-angular'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('bootcamp-angular');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('bootcamp-angular app is running!');
-  });
-});
-
-```
-
-やはり色々書いてありますが、今はおまじないだと思ってください。重要なのは上の二箇所です。
-ここでは以下の２つのテストを実施しています。
-
-- `AppComponent` クラスの `title` 変数の内容が `bootcamp-angular` であること。
-- レンダリングされたhtml （完成系のhtml）の`span`タグの中に`bootcamp-angular app is running!`という文字列が含まれること
-
-先ほどタイトルを変更してしまったので、テストが失敗するようになっています。これを編集してテストが通るようにしてみてください。`ng serve`と同様に、`ng test`もファイルを編集すると自動的にテストをやり直してくれます。
-
-## component を作ってみる
+## 2.2: component作成
 
 次はcomponentを作ってみましょう。angular-cliには雛形を自動的に生成してくれる機能があります。以下のコマンドを実行してください。
 
@@ -223,6 +154,7 @@ ng generate component peoples
 - 既存のcomponentに埋め込んで表示する
 - ルーティングを登録して別ページとして表示する
 
+## 2.3: ルーティング作成
 ここではルーティングを登録してみましょう。`src/app/app-routing.module.ts`を以下のように変更してください。
 
 ```typescript
@@ -274,7 +206,8 @@ export class AppRoutingModule { }
 
 このように、定義したroutingに従って`a`タグでリンクを張ることができます。
 
-## API からデータを取得してみる
+## 3: API からデータを取得してみる
+### 3.1: model作成
 
 次は外からHTTPアクセスでデータを取得してみます。実際にはWebサーバのAPIをたたくことが多いですが、今回はjQueryの時と同様に以下のjsonファイルの内容を取得してみます。
 
@@ -329,6 +262,8 @@ moduleの読み込みは`app.module.ts`で行います。以下のように追�
 
 これでアプリケーションに`HttpClientModule`が読み込まれます。では`Service`の雛形を作りましょう。
 
+### 3.2: service作成
+
 ```bash
 ng generate service services/people
 
@@ -361,7 +296,8 @@ export class PeopleService {
 }
 ```
 
-## データをHTMLに表示してみる
+## 4: データをHTMLに表示してみる
+### 4.1: service呼び出し
 
 上で書いた`Service`の`getJson`メソッドを実行すると、URL先のjsonを非同期通信で取得します。非同期に取得したデータをHTMLに表示してみましょう。
 
@@ -406,6 +342,7 @@ export class PeoplesComponent implements OnInit {
 
 ややこしく見えますが、やってることはjsonを取得して結果を`peoples`という変数に入れているだけです。次に`peoples`の中身を表示するHTML側を書いていきます。
 
+### 4.2: 変数表示
 `peoples/peoples.component.html`を以下のように編集してください。
 
 ```html
@@ -427,7 +364,7 @@ Angular らしさが出てきました。AngularではHTML上に`*ngFor`のよ�
 
 このようにAngularではJavaScriptで作られた値(今回は`peoples`)を少ないコード量でHTMLに表示することができます。
 
-## Formを作ってみる
+## 5: Formを作ってみる
 
 最後に簡単な入力フォームを作ってみます。Angular でフォームを作るには以下の２通りのやり方が有ります。
 
@@ -532,9 +469,85 @@ export class PeoplesComponent implements OnInit {
 
 <img src="./images/all_done.png">
 
-## 最後に
+## 6: 最後に
 
 Angular の機能と基本的な書き方を紹介しました。ここで紹介できたのはほんの一部ですので、興味があれば [公式ドキュメント](https://angular.jp/guide/quickstart) を参照してください。
+
+## (補足）ユニットテスト
+
+ユニットテスト とは、メソッドや関数単位でテストコードを作成し、コードを書くのと同時に自動でテストを行う開発手法です。TDD (Test Driven Development) など聞いたことがあるかもしれません。
+
+実は`ng new`コマンドはユニットテスト用の環境も用意してくれています。
+
+#### 設定変更
+`./bootcamp-angular/karma.conf.js(テストツールの設定ファイル)`のブラウザ設定を下記のように必要があります。
+Chromeはrootで実行する場合は`--no-sandbox`が必要なので追加しています。
+
+```bash
+@@ -25,7 +25,13 @@
+     colors: true,
+     logLevel: config.LOG_INFO,
+     autoWatch: true,
+-    browsers: ['Chrome'],
++    browsers: ['ChromeHeadlessNoSandbox'],
++    customLaunchers: {
++      ChromeHeadlessNoSandbox: {
++        base: 'ChromeHeadless',
++        flags: ['--no-sandbox']
++      }
++    },
+     singleRun: false,
+     restartOnFileChange: true
+   });
+```
+テストを実行してみます。
+
+```bash
+ng test
+
+#> 09 05 2020 16:06:23.410:INFO [karma-server]: Karma v5.0.5 server started at http://0.0.0.0:9876/
+#> 09 05 2020 16:06:23.411:INFO [launcher]: Launching browsers ChromeHeadlessNoSandbox with concurrency unlimited
+#> 09 05 2020 16:06:23.466:INFO [launcher]: Starting browser ChromeHeadless
+#> ...(省略)
+#> TOTAL: 2 FAILED, 1 SUCCESS
+#> TOTAL: 2 FAILED, 1 SUCCESS
+```
+
+ユニットテストが実行され、いくつかエラーが表示されると思います。
+これはデフォルトで生成されるテストコードに「タイトルが`bootcamp-angular`であること」を確認するテストが含まれているためです。
+
+そのテストコードは`src/app/app.component.spec.ts`にあります。
+
+```typescript
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'bootcamp-angular'`, () => {
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('bootcamp-angular');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('.content span').textContent).toContain('bootcamp-angular app is running!');
+  });
+});
+
+```
+
+いろいろ書いてありますが、今はおまじないだと思ってください。重要なのは上の二ヵ所です。
+ここでは以下の２つのテストを実施しています。
+
+- `AppComponent` クラスの `title` 変数の内容が `bootcamp-angular` であること。
+- レンダリングされたhtml （完成系のhtml）の`span`タグの中に`bootcamp-angular app is running!`という文字列が含まれること
+
+コンポーネントを追加・編集したので、テストが失敗するようになっています。
+これを編集してテストが通るようにしてみてください。`ng serve`と同様に、`ng test`もファイルを編集すると自動的にテストをやり直してくれます。
 
 ## (補足) Observable
 
@@ -556,4 +569,6 @@ observable.pipe(
 
 Angular ではHTTPリクエストはもちろん、URLの変更やform要素の入力、ユーザーイベントなど全ての変更がObservableで処理されています。
 
-<credit-footer/>
+---
+footer: CC BYvvvvvvvvvvvvvaaa-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+---
