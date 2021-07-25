@@ -41,7 +41,9 @@ Angular でアプリケーションを構築する場合はほぼ必ず [angular
 まずはこれを使い、自動生成されるAngularアプリケーションを起動してみましょう。
 
 ### docker imageの利用方法
-
+あらかじめAngularがインストールされたコンテナイメージに、ホストのディレクトリをマウントして開発を進めます。
+こうすると、ホスト側で好きなエディタを使えるので開発が楽になります。
+ただし、コマンドはdockerのbashで実行する必要があります。
 ```bash
 docker pull forestsource/bootcamp-angular
 cd <好きなディレクトリ ex. "/var/tmp/angular">
@@ -54,7 +56,7 @@ docker run --name bootcamp-angular -it --rm -v "$(pwd)":/app -p 4200:4200 forest
 mkdir C:\Users\%username\Desktop\bootcamp-angular
 docker run --name bootcamp-angular -it --rm -v C:\Users\%username\Desktop\bootcamp-angular:/app :/app -p 4200:4200 forestsource/bootcamp-angular bash
 
-# 追加でシェルを使いたい場合
+# コマンド実行用にシェルを起動しておく
 docker exec -it bootcamp-angular bash
 ```
 
@@ -127,81 +129,6 @@ title = 'my-first-angular';
 ```
 
 と変更してファイルを保存してください。ブラウザが勝手に更新されてタイトルが変更されます。
-
-### (補足）ユニットテスト
-
-ユニットテスト とは、メソッドや関数単位でテストコードを作成し、コードを書くのと同時に自動でテストを行う開発手法です。TDD (Test Driven Development) など聞いたことがあるかもしれません。
-
-実は`ng new`コマンドはユニットテスト用の環境も用意してくれています。以下のコマンドを実行してください。(`ng serve`を止めてこちらを実行した方がいいかもしれません)
-
-#### 設定変更
-`./bootcamp-angular/karma.conf.js(テストツールの設定ファイル)`のブラウザ設定を下記のように必要があります。
-Chromeはrootで実行する場合は`--no-sandbox`が必要なので追加しています。
-
-```bash
-@@ -25,7 +25,13 @@
-     colors: true,
-     logLevel: config.LOG_INFO,
-     autoWatch: true,
--    browsers: ['Chrome'],
-+    browsers: ['ChromeHeadlessNoSandbox'],
-+    customLaunchers: {
-+      ChromeHeadlessNoSandbox: {
-+        base: 'ChromeHeadless',
-+        flags: ['--no-sandbox']
-+      }
-+    },
-     singleRun: false,
-     restartOnFileChange: true
-   });
-```
-テストを実行する。
-
-```bash
-ng test
-
-#> 09 05 2020 16:06:23.410:INFO [karma-server]: Karma v5.0.5 server started at http://0.0.0.0:9876/
-#> 09 05 2020 16:06:23.411:INFO [launcher]: Launching browsers ChromeHeadlessNoSandbox with concurrency unlimited
-#> 09 05 2020 16:06:23.466:INFO [launcher]: Starting browser ChromeHeadless
-#> ...(省略)
-#> TOTAL: 2 FAILED, 1 SUCCESS
-#> TOTAL: 2 FAILED, 1 SUCCESS
-```
-
-ユニットテストが実行され、いくつかエラーが表示されると思います。これはデフォルトで生成されるテストコードに「タイトルが`bootcamp-angular`であること」を確認するテストが含まれているためです。
-
-そのテストコードは`src/app/app.component.spec.ts`にあります。
-
-```typescript
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'bootcamp-angular'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('bootcamp-angular');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('bootcamp-angular app is running!');
-  });
-});
-
-```
-
-やはり色々書いてありますが、今はおまじないだと思ってください。重要なのは上の二箇所です。
-ここでは以下の２つのテストを実施しています。
-
-- `AppComponent` クラスの `title` 変数の内容が `bootcamp-angular` であること。
-- レンダリングされたhtml （完成系のhtml）の`span`タグの中に`bootcamp-angular app is running!`という文字列が含まれること
-
-先ほどタイトルを変更してしまったので、テストが失敗するようになっています。これを編集してテストが通るようにしてみてください。`ng serve`と同様に、`ng test`もファイルを編集すると自動的にテストをやり直してくれます。
 
 ## component を作ってみる
 
@@ -535,6 +462,83 @@ export class PeoplesComponent implements OnInit {
 ## 最後に
 
 Angular の機能と基本的な書き方を紹介しました。ここで紹介できたのはほんの一部ですので、興味があれば [公式ドキュメント](https://angular.jp/guide/quickstart) を参照してください。
+
+## (補足）ユニットテスト
+
+ユニットテスト とは、メソッドや関数単位でテストコードを作成し、コードを書くのと同時に自動でテストを行う開発手法です。TDD (Test Driven Development) など聞いたことがあるかもしれません。
+
+実は`ng new`コマンドはユニットテスト用の環境も用意してくれています。以下のコマンドを実行してください。(`ng serve`を止めてこちらを実行した方がいいかもしれません)
+
+#### 設定変更
+`./bootcamp-angular/karma.conf.js(テストツールの設定ファイル)`のブラウザ設定を下記のように必要があります。
+Chromeはrootで実行する場合は`--no-sandbox`が必要なので追加しています。
+
+```bash
+@@ -25,7 +25,13 @@
+     colors: true,
+     logLevel: config.LOG_INFO,
+     autoWatch: true,
+-    browsers: ['Chrome'],
++    browsers: ['ChromeHeadlessNoSandbox'],
++    customLaunchers: {
++      ChromeHeadlessNoSandbox: {
++        base: 'ChromeHeadless',
++        flags: ['--no-sandbox']
++      }
++    },
+     singleRun: false,
+     restartOnFileChange: true
+   });
+```
+テストを実行する。
+
+```bash
+ng test
+
+#> 09 05 2020 16:06:23.410:INFO [karma-server]: Karma v5.0.5 server started at http://0.0.0.0:9876/
+#> 09 05 2020 16:06:23.411:INFO [launcher]: Launching browsers ChromeHeadlessNoSandbox with concurrency unlimited
+#> 09 05 2020 16:06:23.466:INFO [launcher]: Starting browser ChromeHeadless
+#> ...(省略)
+#> TOTAL: 2 FAILED, 1 SUCCESS
+#> TOTAL: 2 FAILED, 1 SUCCESS
+```
+
+ユニットテストが実行され、いくつかエラーが表示されると思います。
+これはデフォルトで生成されるテストコードに「タイトルが`bootcamp-angular`であること」を確認するテストが含まれているためです。
+
+そのテストコードは`src/app/app.component.spec.ts`にあります。
+
+```typescript
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app).toBeTruthy();
+  });
+
+  it(`should have as title 'bootcamp-angular'`, () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    expect(app.title).toEqual('bootcamp-angular');
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('.content span').textContent).toContain('bootcamp-angular app is running!');
+  });
+});
+
+```
+
+色々書いてありますが、今はおまじないだと思ってください。重要なのは上の二箇所です。
+ここでは以下の２つのテストを実施しています。
+
+- `AppComponent` クラスの `title` 変数の内容が `bootcamp-angular` であること。
+- レンダリングされたhtml （完成系のhtml）の`span`タグの中に`bootcamp-angular app is running!`という文字列が含まれること
+
+コンポーネントを追加・編集したので、テストが失敗するようになっています。
+これを編集してテストが通るようにしてみてください。`ng serve`と同様に、`ng test`もファイルを編集すると自動的にテストをやり直してくれます。
 
 ## (補足) Observable
 
