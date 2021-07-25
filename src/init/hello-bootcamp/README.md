@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+title: ハンズオン事前準備
 description: ハンズオン事前準備
 time: 0.5h
 prior_knowledge: なし
@@ -7,7 +8,7 @@ prior_knowledge: なし
 
 <header-table/>
 
-# ハンズオン事前準備
+# {{$page.frontmatter.title}}
 
 各ハンズオンに取り組む前に、各ハンズオン用の環境を [Docker](https://www.docker.com/) で動かせるように準備します。
 
@@ -209,7 +210,7 @@ windows
 
 ```terminal
 $ docker run --name test-nginx -p 8080:80 --mount type=bind,source=%CD%/content,target=/usr/share/nginx/html,ro -d nginx
-  
+
 47fb496ed83cb26558874e8fd6b6fff4303031a2b24f827a938310ee9646c638
 ```
 

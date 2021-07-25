@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: GoでWebアプリケーションを作る
 description: Go言語を使って簡単なWebアプリケーションを作ります
 time: 1.5h
 prior_knowledge: golang
@@ -7,7 +8,7 @@ prior_knowledge: golang
 
 <header-table/>
 
-# GoでWebアプリケーションを作る
+# {{$page.frontmatter.title}}
 
 ## 0. この講義について
 ### 0.1. この講義の目的
