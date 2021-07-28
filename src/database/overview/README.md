@@ -44,12 +44,11 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    
    *受講者の方に質問
  　  Q.「データベースといって思い浮かべるものは、何ですか？」
-   　A.「　　　　」「」
+   　A.「　　　　」
     
 ## RDBMS(Relational Database Management System)
 
 1. RDBMS(Relational Database Management System)
-   
    関係（かんけい、リレーション、英: Relation）とは関係モデル（リレーショナルモデル）において、一つの見出しと0以上の同じ型の組(タブル、行)の
    順序づけられていない集合からなるデータ構造のことである
 
@@ -102,9 +101,9 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    SQLの中で最も重要な機能となる「データ検索/Query(クエリ)」について触れます
    前述のEMP表、DEPT表を用いて次の条件で”データ検索”を行ってみましょう
    
-   Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Qeuery)が書ける方？
+   Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Query)が書ける方？
    
-   A.< 　　　　　　　>
+   A.「」
 
 ##  ACID特性 
 
