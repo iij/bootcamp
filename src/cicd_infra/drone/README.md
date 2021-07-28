@@ -260,6 +260,10 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 5. 「Include administrators」にもチェックを入れます。
 6. 「Create」します。
 
+:: tip もし、continuous-integration/drone/pr が見つからない場合
+PR の作成先が間違ってるかもしれません。見直してください
+::
+
 ![Branch protection rules](./images/drone_branch_protection.png)
 
 元のPull Requestの状態に戻るとマージボタンが押せなくなっています。
