@@ -143,7 +143,7 @@ steps:
     image: ruby:2.6.2
     commands:
       - bundle install
-      - bundle exec rspec
+      - rspec
 ```
 
 各項目について解説していきます。
