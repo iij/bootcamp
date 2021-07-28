@@ -106,7 +106,7 @@ https://cloud.drone.io/ にログインしてください。
 
 #### 2.1.2. droneでテストを実行する
 
-:computer: 作成した作業用gitリポジトリをローカルにgit cloneしてください。
+:computer: 作成した作業用リポジトリをローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
@@ -132,7 +132,7 @@ drone と GitHub の連携には WebHook を利用しています。
 `pr`を指定すると、Pull Requestをオープンしたとき、または既存のPRへpushしたときにテストが実行されます。
 `push` を指定すると、`git push` したときにテストが実行されます。
 
-この設定は 「Settings」->「Hooks」->「Webhooks」-> Droneのエントリ -> Edit で確認でき、
+この設定は 「Settings」->「Hooks」->「Webhooks」-> droneのエントリ -> Edit で確認でき、
 
 設定画面最下部の「Recent Deliveries」では実際に発行されたWebHookを確認 & 再送信することが可能です。
 
