@@ -278,7 +278,13 @@ $ git checkout master
 
 [droneには様々なプラグインが用意されています。](http://plugins.drone.io/)
 
-主に外部と連携する機能が用意されており、自分で開発することもできます。
+主に外部と連携する機能が用意されています。
+後述する利用の仕方からも分かる通り plugin は 単なる docker コンテナであるため、自分で開発することもできます。
+
+```
+Plugins are just Docker containers which means you can write plugins in any programming language that runs inside a container. You can even create plugins using simple bash scripting.
+```
+> https://docs.drone.io/plugins/overview/ より引用
 
 ### 5.1. キャッシュプラグイン
 
