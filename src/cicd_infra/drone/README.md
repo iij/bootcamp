@@ -236,14 +236,14 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 
 :computer: テストが通ったときだけマージできるように設定する
 
-- 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
-- 「Apply rule to」に「master」と記入し、
-- 「Require status checks to pass before merging」にチェックを入れて
-- 「Status checks found in the last week for this repository」に出ている
-「continuous-integration/drone/pr」と
-「continuous-integration/drone/push」にチェックを入れます。
-- 「Include administrators」にもチェックを入れます。
-- 「Create」します。
+1. 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
+2. 「Branch name pattern」に「master」と記入し、
+3. 「Require status checks to pass before merging」にチェックを入れて
+4. 「Status checks found in the last week for this repository」に出ている
+   「continuous-integration/drone/pr」と
+   「continuous-integration/drone/push」にチェックを入れます。
+5. 「Include administrators」にもチェックを入れます。
+6. 「Create」します。
 
 ![Branch protection rules](./images/drone_branch_protection.png)
 
