@@ -85,11 +85,12 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 
 このハンズオンのためにCI/CDを行うためのサンプルリポジトリを https://github.com/iij/drone-exercise に用意しています。
 
-:computer: GitHub上でforkしてください。
+:computer: GitHub上で操作し、作業用レポジトリを作成してください。
 
 ![droneで最初のテスト](./images/fork-repo.jpg)
 
-上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。
+上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。 他の設定値はデフォルトで良いです。
+ここで作成したレポジトリに対して操作をしていきます。
 
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
 これはWebhookという仕組みを用いて実現されていますが、droneを使う前にこの設定が必要です。
@@ -105,7 +106,7 @@ https://cloud.drone.io/ にログインしてください。
 
 #### 2.1.2. droneでテストを実行する
 
-:computer: forkしたgitリポジトリをローカルにgit cloneしてください。
+:computer: 作成した作業用gitリポジトリをローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
@@ -444,7 +445,14 @@ droneが利用できる事例としてふさわしいものはどれですか？
 
 サンプルとしてRuby on Rails＋MySQLで構成されたアプリケーションを用意しました。
 
-:computer: https://github.com/iij/drone-exercise-rails をforkして、git cloneしてください。
+:computer: https://github.com/iij/drone-exercise-rails から 作業用レポジトリを作成し、git cloneしてください。
+
+![rails テスト](./images/fork-repo.jpg)
+
+上記リポジトリを開いて「Use this template」を押してください。
+
+リポジトリ名は「drone-exercise-rails」にしましょう。 他の設定値はデフォルトで良いです。
+ここで作成したレポジトリに対して操作をしていきます。
 
 Ruby on RailsはWebアプリケーションを作るためのRuby製フレームワークです。
 データの保存にMySQLなどのデータベースを利用できます。
