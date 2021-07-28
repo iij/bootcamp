@@ -215,6 +215,11 @@ git push origin feature/text-error
 
 ![Pull Requestを作成しましょう](./images/drone_pull_request_button.png)
 
+もし、このとき 作業レポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
+
+その時は 自分のrepository に PR を送るように base repository (左側) の 表記を見直してください。
+
+無事PRを作成できた場合
 Pull Requestの中にdroneのテスト結果が表示されています。
 ひと目でテストが失敗していることがわかるでしょう。
 
