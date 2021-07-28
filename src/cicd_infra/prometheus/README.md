@@ -63,6 +63,7 @@
 2. vmstatでパフォーマンス監視を行う
 3. curlを使って外部からサービス監視を行う
 
+#### STEP1:dockerを使って簡単なWordPressサーバをローカルに建てる
 まず、公式のWordPressサーバ(コンテナ)をdocker hubからpullします。pull出来ているか心配な場合は適宜`docker image ls`で存在を確認してください。
 ```
 # docker pull wordpress:php8.0-apache
@@ -81,6 +82,8 @@ CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS     
 
 ![wordpress](images/wordpress.png)
 
+
+#### STEP2:vmstatでパフォーマンス監視を行う
 STEP2ではサーバパフォーマンスを目視で確認します。(これをパフォーマンス監視といいます)立ち上げたコンテナの中に入り`vmstat`コマンドを入力します。
 ```
 # docer exec -it monitoring_bootcamp /bin/bash
@@ -159,6 +162,8 @@ r  b         swpd         free         buff        cache   si   so    bi    bo  
 
 といった感じで、もしこのシステムが障害起こした時は「プロセス過多によるCPUへの高負荷が原因である！」と判断が出来るわけです。あとはここからどんなプロセスが具体的に多いかなどをログから漁っていることになると思います。<!--`yes > /tmp/yes.txt`ってやればディスクIOの負荷が見れるよ-->
 
+
+### STEP3:curlを使って外部からサービス監視を行う
 最後のSTEPではサービスがちゃんと動いているかを確認します(これをサービス監視といいます)。「サービスがちゃんと動いている」とは何かについては、サービスごとに定義する必要がありますが、ここでは「WebページにアクセスしてHTTPステータスコード200が返ってくること」とします。まずは、端末をもう一つ開き、そこから`curl`コマンドを使ってHTTPステータスコードを取得します。(端末が一つしか開けない方は`screen`や`tmux`を駆使しください)
 ```
 # while true; do date && curl -LI localhost:8080 -o /dev/null -w '%{http_code}\n' -s; sleep 1; done
