@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: Dockerを触ってみよう
 description: Docker の概要を学び、コンテナ操作を体験します
 time: 1h
 prior_knowledge: 仮想化、CUI 操作
@@ -7,7 +8,7 @@ prior_knowledge: 仮想化、CUI 操作
 
 <header-table/>
 
-# Dockerを触ってみよう
+# {{$page.frontmatter.title}}
 
 ## おさらい
 

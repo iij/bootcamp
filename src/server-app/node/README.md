@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: Node.jsでWebアプリを作る
 description: Node.jsを使ったアプリケーション開発のハンズオンです
 time: 1h
 prior_knowledge: JavaScript
@@ -7,7 +8,7 @@ prior_knowledge: JavaScript
 
 <header-table/>
 
-# Node.jsでWebアプリを作る
+# {{$page.frontmatter.title}}
 
 ## 下準備
 

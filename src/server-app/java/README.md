@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: Java; Spring Boot
 description: Spring Bootを使ったアプリ開発を体験するハンズオンです
 time: 2h
 prior_knowledge: Java
@@ -7,7 +8,7 @@ prior_knowledge: Java
 
 <header-table/>
 
-# Java; Spring Boot
+# {{$page.frontmatter.title}}
 
 ## 始めに
 

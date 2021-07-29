@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+title: Ruby on RailsでWebアプリを作る
 description: Railsによるサーバーアプリ実装の基礎についてハンズオンしてみましょう
 time: 1h
 prior_knowledge: 特になし
@@ -7,7 +8,7 @@ prior_knowledge: 特になし
 
 <header-table/>
 
-# Ruby on RailsでWebアプリを作る
+# {{$page.frontmatter.title}}
 
 ## Ruby on Railsとは
 
