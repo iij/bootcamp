@@ -9,6 +9,6 @@ prior_knowledge: なし
 
 # MySQLを触ってみる
 
-[資料はこちら](/bootcamp/MySQL.pdf)
+[Document (https://github.com/isfukuda/bootcamp_mysql/blob/main/20210730_MySQL.pdf)
 
 <credit-footer/>
