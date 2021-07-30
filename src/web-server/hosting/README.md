@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+title: 動的アプリのホスティング
 description: rubyやgoとnginx/apacheを組み合わせて動的アプリのホスティングに挑戦します
 time: 1h
 prior_knowledge: ruby go apache nginx
@@ -7,7 +8,7 @@ prior_knowledge: ruby go apache nginx
 
 <header-table/>
 
-# 動的アプリのホスティング
+# {{$page.frontmatter.title}}
 
 ## 事前準備
 
