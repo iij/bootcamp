@@ -10,6 +10,6 @@ prior_knowledge: なし
 
 # {{$page.frontmatter.title}}
 
-[Document (https://github.com/isfukuda/bootcamp_mysql/blob/main/20210730_MySQL.pdf)
+[資料はこちら (PDF)](https://github.com/isfukuda/bootcamp_mysql/blob/main/20210730_MySQL.pdf)
 
 <credit-footer/>
