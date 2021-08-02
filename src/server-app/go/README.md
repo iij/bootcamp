@@ -869,6 +869,8 @@ func (<レシーバ引数変数名 レシーバ引数型>) <関数名> ([<引数
 `FantasticInt`へ、数字を追加する、足し算メソッドを用意する場合は、以下のようになります。  
 ```go
 func (self *FantasticInt) Add(num FantasticInt) {
+	self.ichi_no_keta = self.ichi_no_keta + num.ichi_no_keta
+	self.gai_no_keta = self.gai_no_keta + num.gai_no_keta
 	#...省略
 
 func main() {
@@ -880,10 +882,11 @@ func main() {
 }
 ```
 先程紹介した2つでは、**AとBを足し、Cという新しい領域を作成**しています。  
-今回の記法では、**AにBに加える** というような、レシーバ引数となった実体へ影響を与えるような書き方も行えます。  
+今回の記法では、**AにBに加える** というような、レシーバ引数となった実体へ影響を与えるような書き方をしています。  
 どちらの表現でも処理自体は行えますが、処理の効率や可読性の観点から、どちらを選ぶか判断が必要です。  
 
-なお、本講義で詳細は触れませんが、実体に影響を与えるためには、リファレンス参照（ポインタのようなもの）が必要です。  
+:rocket: レシーバ引数で、実体に影響を与えるためには。  
+本講義で詳細は触れませんが、実体に影響を与えるためには、リファレンス参照（ポインタのようなもの）が必要です。  
 引数を定義する際の`<変数> <型>` を、`<変数> *<型>` のようにアスタリスクをつけることでリファレンス参照となります。  
 
 ##### Tips: Go言語には、"math/big" があります
@@ -1100,7 +1103,7 @@ Go言語の特徴でも述べた([1.1.7. 並行プログラミングが文法レ
 平時の店舗で、1つの座席しか無いようでは、Aさんが食べ終わるまでBさんが牛丼を食べることができず、採算取れないからでしょうか。  
 
 ご存知の方も多いでしょうが、プログラムは、指定しない限り、処理を1つずつ順番に実行します。  
-そのため、1つの座席しな無い牛丼屋と同じ状況が起きます。  
+そのため、1つの座席しか無い牛丼屋と同じ状況が起きます。  
 何も考えずに、HTTPサーバを開発すると、Aさんの画面が表示されるまで、Bさんの画面はずっと読み込み中でくるくる(待ち)になってしまいます。  
 
 めちゃくちゃ美味しい隠れた名店で、1席しか無いような状況であれば、執筆者は我慢できますが、  
@@ -1173,13 +1176,13 @@ AさんとBさんに、同時に牛丼を食べてもらう方法は、簡単で
 実際に、食べる処理(Eat関数) を、並行プログラミングにして、2つ目のリクエストが、1つ目のリクエストを待たなくても良いように、アップグレードしましょう  
 
 ### 7.3.3. :computer: 並行動作するWebアプリケーションサーバ体験
-`/go/src/go_tutorial/7_webapp/weakShop/http/zakohttpd.go` の、`c.serve(self.ctx)` が、Eat関数を呼び出しています。  
+`/go/src/go_tutorial/7_webapp/weakShop/http/zakohttp.go` の、`c.serve(self.ctx)` が、Eat関数を呼び出しています。  
 ここをGoroutine化し、その先にあるEat関数を新しく誕生させた座席(Goroutine)で動作させるようにしましょう。  
 
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
-$ <お好きなエディタ> http/zakohttpd.go
+$ <お好きなエディタ> http/zakohttp.go
 $ go run gyudon-httpd.go
 :# 何も出力されない場合、実行中です。続くハンズオンを実施ください
 
@@ -1191,7 +1194,7 @@ $ time curl http://localhost:8080/
 $ time curl http://localhost:8080/
 :# 10秒程度待機する
 ```
-* /go/src/go_tutorial/7_webapp/weakShop/http/zakohttpd.go
+* /go/src/go_tutorial/7_webapp/weakShop/http/zakohttp.go
 	```go
 	c.serve(self.ctx)    //Line56 もともとの書かれ方
 	go c.serve(self.ctx) //Line56 変更後。go と、加筆する
@@ -1200,7 +1203,7 @@ $ time curl http://localhost:8080/
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
-$ <お好きなエディタ> http/zakohttpd.go
+$ <お好きなエディタ> http/zakohttp.go
 $ go run gyudon-httpd.go
 :# 何も出力されない場合、実行中です。続くハンズオンを実施ください
 
@@ -1239,9 +1242,9 @@ Goroutineが迷子になったり、データが壊れたり、リソースの�
 本番サービスとして、きちんと提供する場合は、並行プログラミングを学習してから利用することをお勧めします。  
 
 ### 7.4. zakohttpパッケージについて
-第7章は、Go言語標準パッケージ [net/http](https://golang.org/src/net/http) の以下の処理を参考に作成しています。  
+第7章は、Go言語標準パッケージ [net/http](https://golang.org/src/net/http) の以下の処理を参考に作成しています。(執筆時点最新のHEAD)  
 
-[https://github.com/golang/go/blob/release-branch.go1.16/src/net/http/server.go#L3013](https://github.com/golang/go/blob/release-branch.go1.16/src/net/http/server.go#L3013)  
+[https://github.com/golang/go/blob/cb4cd9e17753b5cd8ee4cd5b1f23d46241b485f1/src/net/http/server.go#L2993](https://github.com/golang/go/blob/cb4cd9e17753b5cd8ee4cd5b1f23d46241b485f1/src/net/http/server.go#L2993)
 
 実は、本講義を通して、Go標準パッケージの劣化版を、Go標準パッケージに近づけるコーディングをしてもらいました。  
 [net/http](https://golang.org/src/net/http) パッケージは、通信に関する処理や、同期処理、書き込み処理やハンドラの登録など、Goで触っておくと良さそうな表現が色々と存在します。  
