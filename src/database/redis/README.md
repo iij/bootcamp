@@ -39,12 +39,14 @@ prior_knowledge: なし
     ```Shell
     docker run --rm --name test-server redis:6.2.3-alpine3.13
     ```
+    * ```test-server``` という名前で redis サーバーを 起動します
     * ``` Ready to accept connections ``` と出ればOK このターミナルは開いたままにします
     * もし、ターミナルが閉じたり、Ctrl-C で終了してしまったら、再度 起動してください
 
 1. 別のターミナルを開いて、redis-cli でサーバに接続してみる
 
     * redis-cli を起動します。 これで対話的に コマンドが打てます。
+    * 下の二通りの使い方があります。どちらも ```test-server``` として先程起動したredis の中を見れます
     ```Shell
     # ネットワーク越し 別コンテナ
     docker run -it --link test-server:redis --rm redis:6.2.3-alpine3.13 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
@@ -64,18 +66,11 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. (最初に起動した Redis サーバは C-c とめられます)
-
-1. Python Clientから接続用のReidsサーバを起動する
-
-    ```Shell
-    docker run -d --rm --name test-server -p 6379:6379 redis:5
-    ```
 1. さらに別のターミナルを開いて、Pythonが使えるコンテナイメージを展開する
 
-    * python container を起動
+    * python container を起動 ```test-server```をコンテナ内部では```redis``` として使えるようにします。
     ```Shell
-    docker run -it --rm python:3.9.5-slim-buster bash
+    docker run --link test-server:redis -it --rm python:3.9.5-slim-buster bash
     ```
 
     * redis 用のライブラリをインストール
@@ -91,7 +86,7 @@ prior_knowledge: なし
 
     * python で redis に接続し、 redis の ping コマンドをしてみる。 PONG ではなく True と帰ってくればOK
       * ```>>>``` は プロンプト なので実際には入力しません。
-    ```
+    ```python
     >>>
     >>> import os, redis
     >>> conn = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
@@ -102,7 +97,9 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. 終了
+1. 最初に起動した Redis サーバは C-c とめられます。 --rm をつけてるので 止めると削除されます。
+
+3. 終了
     * ここまで完了できたら 事前準備完了です。 無事 これらを行うことができました。
       1. docker image の 取得
       1. redis server の起動
@@ -283,8 +280,10 @@ docker run --rm --name test-server redis:6.2.3-alpine3.13
 
 #### Redis Server 接続
 * Redis には redis-cli という ツールが有ります。 事前準備では ping などを試しました。
-  * 他にも どんな動きがRedis に対して実行されているか知ることができる機能があるので起動しましょう
-  * ref: https://redis.io/topics/notifications
+  * 他にも どんな動きがRedis に対して実行されているか知ることができる機能があるので紹介します
+    * ref: https://redis.io/topics/notifications
+
+* 以下の二通りの接続方法のうち好きな方を選んでください
 ```Shell
 # ネットワーク越し 別コンテナ
 docker run -it --link test-server:redis --rm redis:6.2.3-alpine3.13 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
@@ -354,16 +353,16 @@ docker exec -it test-server redis-cli
     ```
 
     * ping してみる。
-    ```
+    ```python
     >>> import os, redis
     >>> conn = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
-    >>> r.ping()
+    >>> conn.ping()
     True
     ```
 
     * 事前準備ではここまででした。 それでは実際にこの対話式UIを利用して redis へ書き込みをしてみましょう
 
-    ```
+    ```python
     // 複数データセット: mset コマンド
     >>> conn.mset({'key1': 'value1', 'key2': 'value2'})
     True
@@ -372,7 +371,8 @@ docker exec -it test-server redis-cli
     >>> conn.mget(['key1', 'key2'])
     [b'value1', b'value2']
     ```
-    ```
+
+    ```python
     // 複数データセット,ゲットを別手法でやってみる : mset,mget,scan コマンド
     >>> keys = conn.scan(match='key*')
     >>> values_1 = conn.mget(keys[1])
@@ -395,7 +395,7 @@ docker exec -it test-server redis-cli
     [b'ichiro', b'jiro']
     ```
 
-    ```
+    ```python
     // 複数データ削除: delete コマンド
     >>> _, keys = conn.scan(match='key*')
     >>> print(conn.mget(keys))
@@ -467,10 +467,19 @@ docker exec -it test-server redis-cli
 ### Advanced: Jupyter notebook イメージを使ってみよう
 
 ```Shell
+cd iij_bootcamp_redis/app
+wget "https://raw.githubusercontent.com/iij/bootcamp/master/src/database/redis/Redis%20hands-on.ipynb"
 docker pull jupyter/base-notebook
-docker run --rm --link test-server:redis -p 8888:8888 -v ~/app:/home/jovyan/work jupyter/base-notebook
-# メッセージを見て、ブラウザから localhost:8888 に接続する
+docker run --rm --link test-server:redis -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter/base-notebook
+# copy and paste one of these URLs のメッセージを見て、ブラウザから接続する
 ```
+
+### Advanced: GIS で遊んでみよう
+* 今どき オープンデータとして 様々な施設の座標を公開している自治体があります。
+* jupyter nodebook では csv の 処理などはとても簡便にすることができます
+*  
+* redis.geoadd で登録: https://redis-py.readthedocs.io/en/stable/#redis.Redis.geoadd
+* redis.georadius で検索が可能です。:https://redis-py.readthedocs.io/en/stable/#redis.Redis.georadius
 
 ## 参考資料
 
