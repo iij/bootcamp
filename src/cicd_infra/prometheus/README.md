@@ -1,4 +1,13 @@
-# prometheusでアプリケーションを監視してみよう
+---
+footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: Prometheusでアプリケーションを監視してみよう
+description: 監視の基礎を学び、簡単な監視システム構築を体験する
+time: 2h
+prior_knowledge: 監視
+---
+<header-table/>
+
+# Prometheusでアプリケーションを監視してみよう
 ## 0. まえがき
 ### 0-1. 想定している受講者
 本講義では以下の受講者を対象としています。
