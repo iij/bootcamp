@@ -85,11 +85,12 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 
 このハンズオンのためにCI/CDを行うためのサンプルリポジトリを https://github.com/iij/drone-exercise に用意しています。
 
-:computer: GitHub上でforkしてください。
+:computer: GitHub上で操作し、作業用レポジトリを作成してください。
 
 ![droneで最初のテスト](./images/fork-repo.jpg)
 
-上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。
+上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。 他の設定値はデフォルトで良いです。
+ここで作成したレポジトリに対して操作をしていきます。
 
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
 これはWebhookという仕組みを用いて実現されていますが、droneを使う前にこの設定が必要です。
@@ -105,7 +106,7 @@ https://cloud.drone.io/ にログインしてください。
 
 #### 2.1.2. droneでテストを実行する
 
-:computer: forkしたgitリポジトリをローカルにgit cloneしてください。
+:computer: 作成した作業用リポジトリをローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
@@ -121,6 +122,19 @@ droneのページから「ACTIVITY FEED」を開くとテストの実行ログ�
 ::: tip チェックポイント2 🏁
 「test」ではどういうメッセージが出力されたでしょうか？
 :::
+
+#### 2.1.3 WebHookの設定確認
+
+drone と GitHub の連携には WebHook を利用しています。
+
+デフォルトでは`pr`と`push`の2つが登録されています。
+
+`pr`を指定すると、Pull Requestをオープンしたとき、または既存のPRへpushしたときにテストが実行されます。
+`push` を指定すると、`git push` したときにテストが実行されます。
+
+この設定は 「Settings」->「Hooks」->「Webhooks」-> droneのエントリ -> Edit で確認でき、
+
+設定画面最下部の「Recent Deliveries」では実際に発行されたWebHookを確認 & 再送信することが可能です。
 
 ## 3. droneの基本的な設定
 
@@ -142,7 +156,7 @@ steps:
     image: ruby:2.6.2
     commands:
       - bundle install
-      - bundle exec rspec
+      - rspec
 ```
 
 各項目について解説していきます。
@@ -214,6 +228,11 @@ git push origin feature/text-error
 
 ![Pull Requestを作成しましょう](./images/drone_pull_request_button.png)
 
+もし、このとき 作業レポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
+
+その時は 自分のrepository に PR を送るように base repository (左側) の 表記を見直してください。
+
+無事PRを作成できた場合
 Pull Requestの中にdroneのテスト結果が表示されています。
 ひと目でテストが失敗していることがわかるでしょう。
 
@@ -225,25 +244,25 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 
 ### 4.1. テストが失敗したらマージできないようにしたい
 
-デフォルトでは`pr`と`push`の2つが登録されています。
-
-`pr`を指定すると、Pull Requestをオープンしたとき、または既存のPRへpushしたときにテストが実行されます。
-`push` を指定すると、`git push` したときにテストが実行されます。
-これは設定ページから変更できます。
+さて、 先程のPRではテストに失敗してしまいました。
 
 この状態でもMergeボタンを押すことは可能ですが、普通は押されたくないはずです。
 この挙動はGitHubの設定画面から変更できます。
 
 :computer: テストが通ったときだけマージできるように設定する
 
-- 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
-- 「Apply rule to」に「master」と記入し、
-- 「Require status checks to pass before merging」にチェックを入れて
-- 「Status checks found in the last week for this repository」に出ている
-「continuous-integration/drone/pr」と
-「continuous-integration/drone/push」にチェックを入れます。
-- 「Include administrators」にもチェックを入れます。
-- 「Create」します。
+1. 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
+2. 「Branch name pattern」に「master」と記入し、
+3. 「Require status checks to pass before merging」にチェックを入れて
+4. 「Status checks found in the last week for this repository」に出ている
+   「continuous-integration/drone/pr」と
+   「continuous-integration/drone/push」にチェックを入れます。
+5. 「Include administrators」にもチェックを入れます。
+6. 「Create」します。
+
+:: tip もし、continuous-integration/drone/pr が見つからない場合
+PR の作成先が間違ってるかもしれません。見直してください
+::
 
 ![Branch protection rules](./images/drone_branch_protection.png)
 
@@ -272,7 +291,13 @@ $ git checkout master
 
 [droneには様々なプラグインが用意されています。](http://plugins.drone.io/)
 
-主に外部と連携する機能が用意されており、自分で開発することもできます。
+主に外部と連携する機能が用意されています。
+後述する利用の仕方からも分かる通り plugin は 単なる docker コンテナであるため、自分で開発することもできます。
+
+```
+Plugins are just Docker containers which means you can write plugins in any programming language that runs inside a container. You can even create plugins using simple bash scripting.
+```
+> https://docs.drone.io/plugins/overview/ より引用
 
 ### 5.1. キャッシュプラグイン
 
@@ -299,7 +324,8 @@ rubyのパッケージマネージャであるbundlerはシステム領域にラ
 rubyを例に設定してみましょう。
 
 rubyのパッケージマネージャであるbundlerは`--path`オプションで保存場所を指定できます。
-一般的によく使われる`vendor/bundle`に保存するように、以下のように変更してください。
+
+`drone.yaml` で 実行している `bundle install` にオプションを渡し 一般的によく使われる`vendor/bundle`に保存するように変更してください。
 
 :computer: パッケージの保存先を変更する
 
@@ -381,6 +407,8 @@ git commit --allow-empty -m "Cacheの効果を確認する"
 git push origin master
 ```
 
+::: warning drone で完結しない処理です。 もしオブジェクトストレージ側にトラブルがあれば drone 上の処理が長時間に及ぶ可能性があります。 drone 上の ジョブの同時実行数には限りがある場合があります。 処理が終わらず長時間に渡る場合は drone 上のジョブの実行結果が確認できる画面から キャンセルができます :::
+
 :computer: テスト実行が早くなっていることを確認しましょう。
 
 ::: tip チェックポイント5 🏁
@@ -443,7 +471,14 @@ droneが利用できる事例としてふさわしいものはどれですか？
 
 サンプルとしてRuby on Rails＋MySQLで構成されたアプリケーションを用意しました。
 
-:computer: https://github.com/iij/drone-exercise-rails をforkして、git cloneしてください。
+:computer: https://github.com/iij/drone-exercise-rails から 作業用レポジトリを作成し、git cloneしてください。
+
+![rails テスト](./images/fork-repo.jpg)
+
+上記リポジトリを開いて「Use this template」を押してください。
+
+リポジトリ名は「drone-exercise-rails」にしましょう。 他の設定値はデフォルトで良いです。
+ここで作成したレポジトリに対して操作をしていきます。
 
 Ruby on RailsはWebアプリケーションを作るためのRuby製フレームワークです。
 データの保存にMySQLなどのデータベースを利用できます。

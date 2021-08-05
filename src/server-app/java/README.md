@@ -1,94 +1,317 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-description: SpringBootを使ったアプリ開発を試してみるハンズオンです
+title: Java; Spring Boot
+description: Spring Bootを使ったアプリ開発を体験するハンズオンです
 time: 2h
-prior_knowledge: 特になし
+prior_knowledge: Java
 ---
 
 <header-table/>
 
-# Java; springboot
-
-IIJ Bootcamp java; SpringBoot に関する資料です。あらかじめ Bootcamp のリポジトリをローカルへ clone し、下準備まで終わらせておいてください。
-
-> git clone https://github.com/iij/bootcamp.git
->
-> cd src/server-app/java/
+# {{$page.frontmatter.title}}
 
 ## 始めに
 
-この Bootcamp では Java を利用して SpringBoot の表面的な機能をさらっていくことを目標としています。
+- Javaの基本
+- Spring Bootの基本
+- Spring Bootハンズオン
 
-具体的には、下記を達成できるようになることを期待しています。
+本講義では上記について紹介し、Javaというプログラミング言語とそのWebフレームワークであるSpring Bootといった技術的な選択肢を増やすことを目的としています。
 
-- "API サーバ"の概念を知る
-- 今後、SpringBoot のプロジェクトに参加した際のキャッチアップの短縮
-- 簡単な テスト用の API モックサーバの作成、メンテナンスができるようになる
+
+### 本講義の前提
+本講義ではプログラム言語共通の制御構文や概念、たとえばif文や型など、の解説は行いません。そのため、受講者は何らかのプログラミング言語で簡単な制御構文が書けることを前提とさせてください。
+
+### この資料のお約束
+:computer: は自分で操作する箇所を示しています。 また`$`はホストマシンのプロンプトを意味し、`❯`はコンテナ内部でのプロンプトを意味します。
+
+たとえば下記の通りです。
+
+```shell
+# ホストマシン上で git clone git@github.com:iij/bootcamp.git を実行する
+$ git clone git@github.com:iij/bootcamp.git
+
+# コンテナ上で curl localhost:8080 を実行する
+❯ curl localhost:8080
+```
+
 
 ### 下準備
+講義を受講する前にコンテナイメージのpullと起動をしておくことをお勧めしています。
+また、Dockerの実行環境があることを前提として本講義を進めます。
 
-下準備として、Docker の動作確認と IDE の設定などを行っておいてください。Java イメージや依存関係などのダウンロードを行うので、安定したネットワーク環境下で実行することをお勧めします。
+#### 手順
 
-詳細 > [下準備・環境構築編](./prepare.md)
+1. ハンズオン用のDockerイメージをpullしてくる
 
-### java について
+```bash
+# やや重たいので注意してください
+$ docker pull ryusa/bootcamp-springboot:2021
+```
 
-この Bootcamp では Java と Gradle を利用します。しかし Bootcamp の場でそれぞれについて深く解説する時間は取れないため、Bootcamp を進めるうえで最低限知っておくべき知識について下記に記載しておきました。
+2. コンテナを起動する
 
-詳細 > [bootcamp/java](./java.md)
+```bash
+# プロキシ環境下にいる人はプロキシの設定をする
+$ PROXY_HOST=YOUR.PROXY.HOST
+$ PROXY_PORT=YOUR_PROXY_PORT
+$ JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
+# プロキシ設定ここまで
+# コンテナを起動する
+$ docker run --name bootcamp-springboot -itd -p 8080:8080 -e JAVA_OPT=${JAVA_OPT} ryusa/bootcamp-springboot:2021
+```
 
-## SpringBoot Bootcamp
+3. アプリケーションの起動チェック
 
-SprinbBoot はいまや Java 界隈最大手の Web フレームワークです。小規模なブログから大規模な EC サイトまでこのフレームワークだけで開発、デプロイできます。
+```bash
+# コンテナの中にアタッチする
+$ docker exec -it bootcamp-springboot bash
+# Spring Bootを起動する
+❯ ./gradlew bootrun
+# ...
+# いろんなログが流れる
+```
 
-このフレームワークを開発するうえで、基本的な Java の知識や DI といった設計の知識も必要になってきます。残念ながらこの Bootcamp ですべての要素に触れることはできませんが、最初の入り口に立つところまでを案内します。今回はブラウザで閲覧できる UI の機能を持たず、 API(Application Programming Interface)の機能だけを持つ API サーバを構築していきます。
+4. 動作チェック
 
-それでは始めましょう。
-
-### 初回起動チェック
-
-[事前準備・環境構築編](./prepare.md) を終えた状態になっていることを確認します。ホストマシンのブラウザから[localhost:8080](http://localhost:8080)にアクセスすると下記のエラー画面が出る状態になっていることを確認してください。
+ホストマシンの適当なブラウザから[localhost:8080](http://localhost:8080)にアクセスし、下記のようなエラーページが表示されることを確認してください。
 
 ![初回起動 - WhitelabelErrorPage](./images/white-label-error.png)
 
-チェックポイント
 
-- [事前準備・環境構築編](./prepare.md) を一読し、完了した。
-- [localhost:8080](http://localhost:8080)にアクセスして Whitelabel Error Page が表示される。
+:::details オプション設定
+ハンズオンにおいて必須ではありませんが、Visual Studio Code(以下 VSCode)を利用することでより良い開発体験ができます。
 
-:::tip
+1. VSCodeをインストールする
+2. 拡張機能`RemoteDevelopment`をインストールする
+3. 拡張機能`Java Extention Pack`をインストールする
+4. 拡張機能`Remote-Container`を使って起動したコンテナの中へアタッチする
+:::
 
-SpringBoot のプロジェクトは"Spring Initializr"というツールを使ってひな型を作成できます。
 
-[Spring Initializr](https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.4.0.BUILD-SNAPSHOT&packaging=jar&jvmVersion=11&groupId=com.example&artifactId=demo&name=demo&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.demo&dependencies=web)
+## Javaの基本
 
-今回提供している/app 配下の Java プロジェクトは上記から作成したひな型に`com.example.demo.controller.DemoController.java`を追加しただけのプロジェクトです。
+JavaはOracle社が開発しているプログラミング言語です。\
+古くから利用されているプログラミング言語/プラットフォームである一方、2021年現在でもSIや大規模開発の現場などでよく利用されています。
+
+### 言語としての特徴
+
+JavaはC言語やRustと同じ静的型付き言語です。そのため文法や記法はC言語を踏襲した書き方となっています。\
+Javaの言語のパラダイムとしては、クラスの継承の概念やインタフェースなどの言語仕様を持つためオブジェクト指向プログラミングであります。その一方、Javaのバージョン8以降は関数型インタフェースやパターンマッチなど、関数型プログラミングを楽しめるような仕様も導入されています。
+
+:::details Javaのサンプルコード
+
+```java
+package com.github.iij.bootcamp.serverapp; // パッケージ名(世界でユニークであると良い)
+
+// 自社ドメインを持つ企業での製造物には自社ドメインをそのまま利用することが多い
+
+import java.util.List; // 外部モジュールの利用(JavaではIDEに任せてしまうのが一般的)
+
+/**
+ * 複数行に渡るコメント文、特にメソッドとクラスに付与する複数行のコメント文をJavaDocと呼ぶ
+ *
+ * - 一般的にはJavaのクラス名の命名はパスカルケース - クラス名とjavaファイルの名前は一致させる方が良い(1クラス1ファイル)
+ */
+public class SampleClass extends Object {
+
+  // アクセス修飾子はprivate/protected/public
+  private String iamPrivate;
+
+  // Javaの変数・メソッドの命名は(ローワー)キャメルケース
+  protected String iamProtected;
+  public String iamPublic;
+
+  // アノテーション。そのものに効果があるものではなく、横断的に処理したりする際の目印として使うことが多い
+  @SuppressWarnings("unused")
+  private String sampleMethod(String a) {
+    String b = null;
+    if ("hello".equals(a)) {
+      b = "world";
+    }
+    return b.toString(); // 残念ながらJavaはnull安全な言語ではない(NullPointerExceptionの危機)
+  }
+
+  public class MyInnerClass { // クラスの中にクラスを定義することもできる(インナークラス)
+    private final String finalizedString; // final化(不変化)ができる
+
+    public MyInnerClass(String arg) { // コンストラクタはクラス名を同一にすることで表現
+      this.finalizedString = arg;
+    }
+
+    public String getFinalizedString() {
+      return this.finalizedString;
+    }
+  }
+
+  public void makeInstance() {
+    // クラスの具体的な値(オブジェクト)のことを"インスタンス"と言います
+    var ins = new MyInnerClass("hello"); // Java11から型推論が使える
+    ins.getFinalizedString(); // → hello
+  }
+}
+```
 
 :::
 
-### DI について
+### プロジェクト構成
 
-SpringBoot を使いこなすためには DI について触れなくてはいけません。なぜなら、SpringBoot でコントローラを作成するときや依存関係を書いたりする際に DI の機能を用いるからです。
+Javaのプロジェクトのディレクトリ構成は、ほかのプログラミング言語と異なり言語として定められています。名前空間として定義できる"パッケージ"がそのままディレクトリに反映されるようにディレクトリを構成する必要があります。
 
-が、DI について深く記すには余白が狭すぎるためこの場では詳細な説明を省くことにします。詳しくはこちらを参照してみてください。 > [DI #とは](./DI.md)
+参考: https://docs.oracle.com/javase/tutorial/java/package/managingfiles.html
 
-チェックポイント
+たとえば`com.github.iij.bootcamp`パッケージ(=名前空間)配下に`Hoge`と`Huga`というクラスを作成する場合、下記のようなディレクトリ構造/ファイル構造になります。
 
-- SpringBoot では DI という概念が重要であることを理解した。
+```
+.
+├── build.gradle
+└── src
+    └── main
+        └── java
+            └── com
+                └── github
+                    └── iij
+                        └── bootcamp
+                            └── Hoge.java
+                            │   └── class Hoge { ... }
+                            └── Huga.java
+                                └── class Huga { ... }
+```
 
-## 本編
+:::tip パッケージ
+Javaにおけるパッケージとは、DNS形式で定義できる名前空間のような概念です。`.`で区切ることでパッケージ間の親子関係を定義できます。たとえば`com.example.iij`パッケージと`com.example.iij.bootcamp`パッケージでは前者が親で後者が子といった関係があります。
 
-### コントローラを作成してみましょう
+:::
 
-まず始めに簡単な Helloworld を行うコントローラを作成し、SpringBoot がどのように動作しているのかを見てみましょう。
-それではさっそくコードを書いていきます。
+### Gradle
+Pythonであればpip、Rustであればcargo、Node.jsであればnpmのようにプログラミング言語にはそれぞれ依存関係を解決しビルドを自動化する自動化システムツールが用意されています。
 
-> src/main/java/com/example/demo/DemoApplication.java
+JavaではMavenとGradleという2つの種類の自動化システムツールがよく利用されています。本講義ではGradleを利用して話を進めていきます。
 
-上記のクラスに下記の通り追記してみましょう。
+:::warning
+
+Mavenを使わずにGradleを利用する理由は、Gradleの方が優れている/イケているからではなく、単に筆者がXMLが嫌いであるためである。
+
+:::
+
+
+## Spring Bootの基本
+SprinbBootはJavaのWebフレームワークのひとつです。Spring Bootの規約に従ってアプリケーションロジックを実装することで簡単にWebアプリケーションを構築できます。
+
+このフレームワークは大規模な主幹システムやWebアプリケーションを実装/構築する際によく利用されており、IIJがホストしているいくつかのサービスもSpring Bootを利用して実装されています。
+
+### 特徴
+Spring Bootは複雑な業務要件や非機能要件をクリアするためのさまざまな機能を有しています。依存関係を宣言して注入してくれるDIコンテナや横断的な関心事を解決するAOPのサポート、数多く公開されているstarterパッケージなどはその最たる例です。
+
+残念ながらこのBootcampですべての要素に触れることはできないため、興味のあるほうはドキュメントを読んでみることをお勧めします。
+
+## Spring Bootハンズオン
+本ハンズオンではブラウザで閲覧できるWeb UIの機能を持たない、HTTP API(Application Programming Interface)だけを持つAPIサーバを構築していきます。
+
+それでは始めましょう。
+
+### 簡単なクラスを作ってみる
+まず始めに、Java言語のウォーミングアップとして純粋なJavaのクラスを作ってみましょう。
+
+:computer: `User`クラスを作成します。
+
+```bash
+# 下記の通りに修正する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/User.java
+```
 
 ```java
-package com.example.demo;
+package com.github.iij.bootcamp.serverapp;
+
+public class User {
+
+  private String name;
+  private String slug;
+
+  public User(String name, String slug) {
+    this.name = name;
+    this.slug = slug;
+  }
+
+  public String getName() {
+    return this.name;
+  }
+
+  public String getSlug() {
+    return this.slug;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setSlug(String slug) {
+    this.slug = slug;
+  }
+
+  public String toString() {
+    return "name: " + this.name + "," + "slug: " + this.slug;
+  }
+}
+```
+
+これで`User`クラスを作成できました。次にこのクラスを実際にインスタンス化してみます。\
+Spring Bootアプリケーションのmain関数は`com.github.iij.bootcamp.serverapp.ServerAppApplication`にあります。ためしにこのmain関数の中で`User`クラスをインスタンス化してみます。
+
+:computer: ServerAppApplication.javaを修正してください。
+
+```bash
+# 下記の通りに修正する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java 
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
+```
+
+```java{10-13}
+package com.github.iij.bootcamp.serverapp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ServerAppApplication {
+
+	public static void main(String[] args) {
+		// 追記BEGIN
+		User user = new User("アリス", "alice");
+		System.out.println(user.toString());
+		// 追記END
+		SpringApplication.run(ServerAppApplication.class, args);
+	}
+}
+```
+
+再起動時にログに"name: アリス,slug: alice"と表示されていればOKです。
+
+#### チェックポイント
+- Javaのクラスを作成した
+- クラスをインスタンス化し、標準出力に文字列を表示した
+
+#### 解説
+純粋なJavaのクラスを作成し、インスタンス化とメソッドの呼び出しを行いました。`User`クラスを眺めてもらうとわかるとおり、`getName`や`getSlug`などJavaにはかなり冗長なコードが多いです。これらのコードはよく「ボイラーテンプレート」と呼ばれ、開発者が嫌うコードです。
+
+JavaにはLombokなどのボイラーテンプレートを解消するツールなどありますが、本講義はあえて紹介しません。興味がある人は調べてみてください。
+
+### 簡単なHTTPのインタフェースを作成してみる
+それではSpring Bootを使ってみましょう。\
+簡単なHTTPのインタフェースを作成し、実際にSpring Bootがどのように動作しているのかを見てみます。
+
+:computer: DemoApplication.javaを修正し、サーバを再起動してみてください。
+
+```bash
+# 下記の通りに修正する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
+```
+
+```java{5-8,19-27}
+package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -98,14 +321,16 @@ import org.springframework.web.bind.annotation.RestController;
 // 追記END
 
 @SpringBootApplication
-public class DemoApplication {
+public class ServerAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-  }
+		User user = new User("アリス", "alice");
+		System.out.println(user.toString());
+		SpringApplication.run(ServerAppApplication.class, args);
+	}
 
   // 追記BEGIN
-  @RestController
+	@RestController
   public class HelloController {
     @GetMapping(path = "/")
     public String helloWorld() {
@@ -116,495 +341,324 @@ public class DemoApplication {
 }
 ```
 
-ここまで書いたら、再びアプリケーションを再起動してあげましょう！
-
 ```bash
-./gradlew bootRun
-curl localhost:8080
+# 動作確認
+$ curl localhost:8080 -X GET
+hello world
 ```
 
 "hello world"が返ってきたら成功です。
 
-さて、この 10 行に満たないコードを書いている間に何が起きたのかを簡単に解説します。
+#### チェックポイント
+- `@RestController`アノテーションをクラスに付与してHTTPのインタフェースを作成した
 
-`bootRun` コマンドにより SprinbBoot が起動します。すると、SpringBoot の機能により `RestController` アノテーションが付いている `DemoApplication.HelloController` が HTTP のインタフェースとして登録されます。
+#### 解説
+`bootRun`コマンドによりSpring Bootが起動します。すると、Spring Bootの機能により `@RestController`アノテーションが付いている`ServerAppApplication.HelloController`がHTTPのインタフェースとして登録されます。
 
-その結果、この SpringBoot が動いている 8080 番ポート宛の HTTP リクエストと `DemoApplication.HelloController#helloWorld` が紐づけられることになり、GET / のリクエストのレスポンスが"hello world"になったわけです。
+![handler](./images/http-handler.png)
 
-チェックポイント
+その結果、このSpring Bootが動いている8080番ポート宛のHTTPリクエストと`ServerAppApplication.HelloController#helloWorld`が紐づけられることになり、`GET /`へのリクエストのレスポンスとして"hello world"が返ってきました。
 
-- SpringBoot で HelloWorld ができた
-- RestController アノテーションをクラスに付けることでコントローラが作れることを理解した
+:::details Spring BootとDIコンテナ
 
-#### 蛇足 : SpringBoot の DI コンテナと探索
-
-SpringBoot は `SpringBootApplication` アノテーションのついたクラスの `main` 関数を起動することで動きます。起動すると、SpringBoot は起動クラスのパッケージ配下の Java ファイルから Contoroller/Component/...といった特殊なアノテーションがついたクラスを探し出します。
-
-そして SpringBoot はそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
+Spring Bootは起動時に起動クラスのパッケージ配下のJavaファイルから特殊なアノテーション(`@Contoroller` / `@Component` / etc...)がついたクラスを探し出します。そしてSpring Bootはそのクラスを適当な方法でインスタンス化し、自身の管理下(=DI コンテナ)に置きます。
 
 (「適当な方法」を指定することもできます > [Bean Annotation](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/annotation/Bean.html))
 
-この時、「Controller」「RestController」アノテーションが付与されたクラスから生成されたインスタンスは HTTP のインタフェースとして働くことになります。
+DIコンテナに格納されたインスタンスは、後述する`@Autowired`アノテーションを使って引き出すことができます。
 
-今回の例では、 `DemoApplication` クラスに SpringBootApplication アノテーションが付与されているので `DemoApplication` クラスのパッケージ `com.example.demo` 配下のクラスから特殊なアノテーションがついているクラスを探索します。
+特に、`@Controller` `@RestController`アノテーションが付与されたクラスから生成されたインスタンスはHTTPのインタフェースとして働くことになります。
 
-先ほど作成した `HelloController` は、 `RestController` アノテーションが付与されていたため SpringBoot が `HelloController` をインスタンス化、DI コンテナに登録しました。
-そして / 宛の GET のリクエストを受けると `HelloController#helloWorld` が実行されるようになっていた、というわけです。
+今回の例では、 `ServerAppApplication`クラスに`@SpringBootApplication`アノテーションが付与されているので`ServerAppApplication`クラスのパッケージ`com.github.iij.bootcamp.serverapp`配下のクラスから上述の特殊なアノテーションがついているクラスを探索します。
 
-### 演習：生徒管理の API を作成しよう
-
-それでは、下記の機能を持つ REST API を作成してみましょう！
-
-生徒管理 API の作成の依頼
-
-> あなたは、あるプログラミングスクールでテストのスコアを管理するアプリケーションの製造を依頼されました。フロントエンドのアプリケーションは実装済みで、[API](https://ja.wikipedia.org/wiki/アプリケーションプログラミングインタフェース) サーバが必要とのことです。そこで、あなたは下記の機能を持った API サーバを製造することになりました。
->
-> - GET
->   - /students 保存済みの全生徒エンティティを返却する
-> - GET
->   - /students/{生徒 ID} 指定された生徒 ID を持つ生徒エンティティを返却する
-> - POST
->   - /students 指定されたプロパティを持つ生徒エンティティを保存し、保存した生徒エンティティを返却する
-> - PUT
->   - /students{生徒 ID} 指定されたプロパティを持つ生徒エンティティを変更し、変更後の生徒エンティティを返却する
->
-> ※ 生徒エンティティには「生徒 ID」「生徒名」「成績(整数)」を含むものとする
->
-> ※ このように HTTP のメソッドをリソースの操作、URL をリソースの指定に使う API のことを RESTfulAPI を呼びます
-
-まず、下記のクラスに `RestController` アノテーションを追加します。
-また `StudentController#retrieveStudents` に GET /students のエンドポイントとの紐付けを作成してみます。
-
-> src/main/java/com/example/demo/controller/StudentController.java
-
-```java
-package com.example.demo.controller;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-/**
- * 生徒エンティティのCRUD APIエンドポイント
- *
- * TODO 適切なアノテーションを付与してRESTのコントローラーにする
- */
-@RestController
-public class StudentController {
-    /**
-     * 登録されている生徒エンティティを全て返却する
-     *
-     * TODO 適切なアノテーションを付与してGET /studentでHTTPを受け取れるようにする
-     * TODO 適切な返却の型を指定する
-     * TODO 内部ロジックを書く
-     */
-    @GetMapping(path = "/students")
-    public String retrieveStudents() {
-        return "hi";
-    }
-    // snip
-}
-```
-
-再度 bootRun コマンドで起動し、正しく動作していることを確認しましょう。
-
-```bash
-curl localhost:8080/students
-> hi
-```
-
-チェックポイント
-
-- 空のクラスに`RestController`アノテーションを付与して、コントローラとして起動できた
-- API のエンドポイントのパスの設定方法を理解した
-
-#### オブジェクトを返却する
-
-今までコントローラが返却していたのは文字列だけでしたが、場合によっては Json などのオブジェクトを返却したいこともあると思います。特に今回は生徒エンティティを返却するように言われているため、まずは生徒エンティティを作成しましょう。
-
-> src/main/java/com/example/demo/entity/StudentEntity.java
-
-```java
-package com.example.demo.entity;
-
-/**
- * 生徒Entity
- */
-public class StudentEntity {
-    /**
-     * 生徒ID
-     */
-    private String studentId;
-
-    /**
-     * 生徒名
-     */
-    private String name;
-
-    /**
-     * 成績
-     */
-    private long score;
-
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public long getScore() {
-        return score;
-    }
-
-    public void setScore(long score) {
-        this.score = score;
-    }
-}
-```
-
-`RestController`で Json を返却する場合、多くの場合は POJO(純粋な java オブジェクト)をそのまま返却するだけで良いです。
-
-試しに先程作った `StudentEntity` をインスタンス化して返却してみましょう。
-
-```java
-package com.example.demo.controller;
-
-import com.example.demo.entity.StudentEntity;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-/**
- * 生徒エンティティのCRUD APIエンドポイント
- *
- * TODO 適切なアノテーションを付与してRESTのコントローラーにする
- */
-@RestController
-public class StudentController {
-
-    /**
-     * 登録されている生徒エンティティを全て返却する
-     *
-     * TODO 適切なアノテーションを付与してGET /studentでHTTPを受け取れるようにする
-     * TODO 適切な返却の型を指定する ← DONE
-     * TODO 内部ロジックを書く
-     */
-    @GetMapping(path = "/students")
-    public StudentEntity retrieveStudents() {
-        var studentEntity = new StudentEntity();
-        studentEntity.setName("hello");
-        studentEntity.setScore(100);
-        studentEntity.setStudentId("studentId");
-        return studentEntity;
-    }
-    // snip
-```
-
-bootRun して動作していることを確認しましょう。
-
-```bash
-curl localhost:8080/students
-> {"studentId":"studentId","name":"hello","score":100}
-```
-
-:::tip
-
-すでに別のフレームワークを経験したことのある人であれば「Serializer は？」と感じる人もいるかもしれません。しかし SpringBoot では Serializer を意識する必要はないように作られています。もちろん自分でシリアライズ・デシリアライズを指定/実装することもできます。
+`HelloController`クラスは`@RestController`アノテーションが付与されているため、Spring Boot起動時に`HelloController`がSpring Bootによってインスタンス化されDIコンテナに登録されました。
+その結果、`GET /`のリクエストをSpring Bootが受け取ると`HelloController#helloWorld` が実行されるようになっていたというわけです。
 
 :::
 
-最後に retrieveStudents は「登録されているすべての生徒エンティティを返却」する関数ですので、List を返却するように変更しておきましょう。
 
-```java
-    // snip
-    @GetMapping(path = "/students")
-    public List<StudentEntity> retrieveStudents() {
-        var studentEntity = new StudentEntity();
-        studentEntity.setName("hello");
-        studentEntity.setScore(100);
-        studentEntity.setStudentId("studentId");
-        // 追加 java.util.Listからimportするようにしましょう
-        List<StudentEntity> entities = List.of(studentEntity, studentEntity);
-        return entities;
-    }
-    // snip
-```
+### 簡単なリクエストを受け取ってみる
+次にクエリパラメータから情報を取得してみましょう。
 
-チェックポイント
-
-- Java の POJO に触れた
-- API のエンドポイントからオブジェクトを返却する方法を理解した
-- GET /students のエンドポイントのインタフェースが決定した
-
-#### パスパラメータから情報を受け取ろう
-
-次は特定の生徒を取得する API を作ってみましょう。
-
-URL のパスからパラメータをもらってくる場合、パスに変数名を埋め込みその変数を関数の引数として指定することでパスから値を引き抜いてくることができます。そのパスの変数のことをパスパラメータを呼びます。
-
-下記の通り実装して動作することを確認しましょう。
-
-```java
-package com.example.demo.controller;
-
-import java.util.List;
-
-import com.example.demo.entity.StudentEntity;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-
-/**
- * 生徒エンティティのCRUD APIエンドポイント
- *
- * TODO 適切なアノテーションを付与してRESTのコントローラーにする
- */
-@RestController
-public class StudentController {
-    // snip
-    /**
-     * 指定された生徒エンティティを返却する
-     * TODO 適切なアノテーションを付与してGET /student/{id} でHTTPを受け取れるようにする
-     * TODO 適切な返却の型を指定する
-     * TODO 内部ロジックを書く
-     */
-    @GetMapping(path = "/students/{studentId}")
-    public String retrieveStudent(@PathVariable String studentId) {
-        return studentId;
-    }
-    // snip
-```
-
-実装したら再度 bootRun して確認しましょう。
+:computer: UserController.javaを作成し、サーバを再起動してみてください。
 
 ```bash
-curl localhost:8080/students/hello
-> hello
+# 下記の通りに修正する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
 ```
-
-先程と同様に適当な生徒エンティティを返却するように修正しておきましょう。
 
 ```java
-    // snip
-    /**
-     * 指定された生徒エンティティを返却する
-     * TODO 適切なアノテーションを付与してGET /student/{id} でHTTPを受け取れるようにする
-     * TODO 適切な返却の型を指定する
-     * TODO 内部ロジックを書く
-     */
-    @GetMapping(path = "/students/{studentId}")
-    public StudentEntity retrieveStudent(@PathVariable String studentId) {
-        var studentEntity = new StudentEntity();
-        studentEntity.setStudentId(studentId);
-        studentEntity.setName("hello2");
-        studentEntity.setScore(0);
-        return studentEntity;
+package com.github.iij.bootcamp.serverapp;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UserController {
+
+  private User secretUser = new User("ボブ", "bob");
+
+  @GetMapping(path = "/user")
+  public User find(@RequestParam String slug) {
+    if ("bob".equals(slug)) {
+      return this.secretUser;
+    } else {
+      return null;
     }
-    // snip
+  }
+}
 ```
 
-チェックポイント
+```bash
+# 動作確認
+$ curl 'localhost:8080/user?slug=bob'
+{"name":"ボブ","slug":"bob"}
+```
 
-- API のエンドポイントからパラメータを引き抜いてくる方法を理解した
-- GET /student/{生徒 ID} のエンドポイントのインタフェースが決定した
+#### チェックポイント
+- `@GetMapping`アノテーションを持つメソッドを作成し、HTTPのハンドラとして登録した
+- HTTPのハンドラとして登録されたメソッドの引数に`@RequestParam`アノテーションを付与することでクエリパラメータを実装した
 
-#### POST リクエストを受け取ってみよう
+#### 解説
+新しいクラス`UserController`を作成しました。このクラスにも`@RestController`アノテーションが付いているためHTTPのインタフェースとして振る舞います。
 
-ここまで作成した API は 2 つとも読み取り、GET メソッドでの実装でした。ここで POST リクエストを利用してデータを書き込む API を用意してあげましょう。
+`UserController`クラスの持つメソッド`find`には`@GetMapping`アノテーションがついているため、`GET /user`宛のリクエストのハンドラとして登録されることになります。そのため、Spring Bootアプリケーションの`/user`へGETリクエストを送ることでこの`find`メソッドがコールされます。
 
-POST リクエストを受け取るには、今まで使ってきた `GetMapping` の代わりに `PostMapping` を利用しましょう。また POST メソッドでのデータの受け渡しはリクエストボディで行うのが通例ですので、データをリクエストボディで受け取れるようにしましょう。
+さらに`find`メソッドの引数`slug`に`@RequestParam`アノテーションが付与されています。これにより、HTTPリクエストのクエリパラメータの値がこの変数に注入されます。つまり`GET /user?slug=bob`へのリクエストをSpring Bootアプリケーションへ送ることで`find`メソッドがコールされ引数`slug=bob`が引き渡されます。
+
+
+### 責任を分離する
+さて、前章まで基本的なHTTPのインタフェースの作り方と使い方について解説してきました。もう少し実装を深めていきましょう。\
+現在`UserController`クラスはHTTPのインタフェースとデータソースの管理の2つの責務を持っています。これは単一責務の原理から外れているためリファクタリングする対象です。
+
+今回はシンプルに`UserController#find`の処理を抽出して別のクラスに分離、処理そのものを`UserController`クラスの外から与えてあげるようにしましょう。
+
+:computer: UserService.javaを作成、UserController.javaを修正し、サーバを再起動してください。
+
+```bash
+# 新しいクラスUserServiceを作成する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
+# UserControllerクラスを修正する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
+```
 
 ```java
-package com.example.demo.controller;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-    // snip
-    /**
-     * POST /student で受け取るリクエストボディのスキーマ
-     */
-    public static class PostRequestBody {
-
-        private String name;
-        private Long score;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Long getScore() {
-            return score;
-        }
-
-        public void setScore(Long score) {
-            this.score = score;
-        }
-    }
-
-    /**
-     * 指定されたプロパティを持つ生徒エンティティを登録し、登録した生徒エンティティを返却する
-     * TODO 適切なアノテーションを付与してPOST /student でHTTPを受け取れるようにする
-     * TODO HTTPリクエストの際に受け取るリクエストの型を定義する
-     * TODO 適切な返却の型を指定する
-     * TODO 内部ロジックを書く
-     */
-    @PostMapping(path = "/students")
-    public StudentEntity createStudent(@RequestBody PostRequestBody body) {
-        var studentEntity = new StudentEntity();
-        studentEntity.setStudentId("studentId");
-        studentEntity.setName(body.getName());
-        studentEntity.setScore(body.getScore());
-        return studentEntity;
-    }
-    // snip
-```
-
-再度 bootRun して動作を確認しましょう。
-
-```
-curl -X POST localhost:8080/students -H 'Content-type: application/json' -d '{"name": "hello POST", "score": 50}'
-> {"studentId":"studentId","name":"hello POST","score":50}
-```
-
-チェックポイント
-
-- API のエンドポイントで POST リクエストを受け取る方法を理解した
-- POST /student のエンドポイントのインタフェースが決定した
-
-#### 業務処理を作ろう
-
-コントローラ部分を作成したので、実際に生徒エンティティを管理するクラスを実装していきましょう。この Bootcamp では時間の都合上 RDS や KVS などを用いて永続化せず、ヒープメモリに保存するだけにします。
-
-下記の java ファイルを作成して、仮の実装をしましょう。
-
-> src/main/java/com/example/demo/service/StudentService.java
-
-```java
-package com.example.demo.service;
+package com.github.iij.bootcamp.serverapp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import com.example.demo.entity.StudentEntity;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudentService {
+public class UserService {
 
-    private List<StudentEntity> savedStudents;
+  // データソースに該当する部分
+  private List<User> userPool = new ArrayList<User>(Arrays.asList(new User("ボブ", "bob")));
+  
+  /**
+   * ユーザープールからslug値で検索し、その結果を返却します slugと一致するユーザーが見つからない場合nullを返却します
+   * TODO 本当にこの実装で問題ないか、考えてみましょう
+   *   - 同一のslugをもつインスタンスがいる場合は？データ構造はこれで良いか？
+   *   - nullは`User`インスタンスではない、では見つからない場合は何を返すべき？
+   */
+  public User findBySlug(String slug) {
+    // Java8から導入されたStreamAPI
+    User user = this.userPool
+      .stream() // Streamを作成
+      .filter(u -> slug.equals(u.getSlug())) // slugと一致する`User`インスタンスのみを抽出
+      .findFirst() // 抽出結果の先頭1つだけを取り出す
+      .orElse(null); // もし抽出した結果何も残らなかった場合、nullを返却する
+    return user;
+  }
+}
 
-    public StudentService() {
-        this.savedStudents = new ArrayList<StudentEntity>();
-    }
+```
 
-    /**
-     * 保存している生徒Entityを全て返却する
-     * @return {@link StudentEntity}
-     */
-    public List<StudentEntity> findStudents() {
-        return this.savedStudents;
-    }
+```java{6-8,13-21}
+package com.github.iij.bootcamp.serverapp;
 
-    /**
-     * TODO 実装
-    */
-    public StudentEntity findStudentById(String studentId) {
-        return null;
-    }
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+// 追記BEGIN
+import org.springframework.beans.factory.annotation.Autowired;
+// 追記END
 
-    /**
-     * TODO 実装
-    */
-    public StudentEntity insertStudentEntity(String name, Long score) {
-        return null;
-    }
+@RestController
+public class UserController {
+
+  // 修正BEGIN
+  @Autowired
+  private UserService userService;
+
+  @GetMapping(path = "/user")
+  public User find(@RequestParam String slug) {
+    return this.userService.findBySlug(slug);
+  }
+  // 修正END
 }
 ```
 
-`@Component`は SpringBoot を開発する中で頻繁に利用するアノテーションです。このアノテーションが付与されたクラスは SpringBoot が起動するタイミングでインスタンス化され SpringBoot の管理下(=DI コンテナ)に配置されます。
-
-`StudentService`は SpringBoot の管理下にいるため`StudentController`からアクセスできるようになりました。
-
-それではこの業務処理を行うクラスを`StudentController`に接続してあげましょう。
-
-```java
-    // snip
-
-    // 追加する
-    @Autowired
-    private StudentService studentService;
-
-    /**
-     * 登録されている生徒エンティティを全て返却する
-     *
-     * TODO 適切なアノテーションを付与してGET /studentでHTTPを受け取れるようにする
-     * TODO 適切な返却の型を指定する
-     * TODO 内部ロジックを書く
-     */
-    @GetMapping(path = "/students")
-    public List<StudentEntity> retrieveStudents() {
-        return studentService.findStudents();
-    }
+```bash
+# 動作確認
+$ curl 'localhost:8080/user?slug=bob'
+{"name":"ボブ","slug":"bob"}
 ```
 
-接続の方法は簡単で、今回は`@Autowired`を利用しました。`@Autowired`が付与されたフィールドには SpringBoot が適切なインスタンスを自身の DI コンテナから配置してくれます。
+#### チェックポイント
+- `@Component`アノテーションをクラスに付与し、Spring Boot起動時に自動的にインスタンス化した
+- `@Autowired`アノテーションをフィールドに付与し、そのフィールドにSpring Bootがインスタンス化したインスタンスの中から適切なインスタンスを注入した
 
-このため、`StudentController`は`StudentService`をインスタンス化する方法を知る必要なく`StudentService`を利用できるようになりました。
+#### 解説
+新しいクラス`UserService`を作成しました。このクラスには`@Component`アノテーションが付与されているため、Spring Boot起動時にSpring Bootによって自動的にインスタンス化されSpring Bootの管理下に入ります。このようにSpring Bootに管理されるようになったインスタンスはほかのクラスから`@Autowired`を利用することで利用されます。
 
-再度 bootRun して動作を確認しましょう。
+今回の例では`UserController`クラスが`userService`フィールドに`@Autowired`アノテーションを付与しているため自動的に作成された`UserService`クラスのインスタンスが`UserController.userService`に代入されることになりました。このように依存関係を分離、外から依存関係を持ち込む構成のことをDI(Dependency Injection)と呼びます。
 
-チェックポイント
+注意点として、デフォルトの挙動ではSpring Bootが管理するインスタンスは各クラス"1つ"となっています。つまり`UserController`クラスが引っ張ってきている`userService`とほかのクラスが引っ張ってこれる`UserService`インスタンスは完全に一致しています。このようにひとつのインスタンスを使い回す構成のことを"シングルトン"と呼びます。
 
-- DI コンポーネントの作成の方法を理解した
-- DI コンポーネントの利用方法を理解した
 
-## 演習：生徒管理の API を実装してみましょう！
+### 少し複雑なリクエストを受け取ってみる
+最後に、POSTリクエストとリクエストボディを指定して`User`インスタンスを登録してみましょう。\
+`User`インスタンスには`slug`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
 
-ここまでのコンテンツで下記のことについて学びました。
+:computer: UserService.javaとUserController.javaを修正し、サーバを再起動してください。
 
-- Java の書き方
-- API のエンドポイントの実装の方法
-- API のスキーマ定義の方法
-- DI コンポーネントの定義の方法
-- @Autowired による DI の実現方法
+```bash
+# 下記の通りに修正する
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
+❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
+```
 
-これらを利用して、残りの API を自分で実装してみましょう。
+```java{27-35}
+package com.github.iij.bootcamp.serverapp;
 
-また、サンプルとして実装を終えたコードを用意しておきます。
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-[https://github.com/RyuSA/student-app](https://github.com/RyuSA/student-app)
+import org.springframework.stereotype.Component;
 
-## 最後に
+@Component
+public class UserService {
 
-<s>いかがでしたか？</s> 以上で SpringBoot のハンズオンは終了です。
+  // データソースに該当する部分
+  private List<User> userPool = new ArrayList<User>(Arrays.asList(new User("ボブ", "bob")));
+  
+  /**
+   * ユーザープールからslug値で検索し、その結果を返却します slugと一致するユーザーが見つからない場合nullを返却します
+   */
+  public User findBySlug(String slug) {
+    User user = this.userPool
+      .stream()
+      .filter(u -> slug.equals(u.getSlug()))
+      .findFirst()
+      .orElse(null);
+    return user;
+  }
 
-この Bootcamp では SpringBoot の表面をさらっていくことを目的としたため、おそらくまだ全容をつかむことは難しいと思います。
-ただ、今後の SpringBoot 習得の足掛かりとなれば幸いです。
+  // 追記BEGIN
+  /**
+   * ユーザープールにUserを追加します
+   */
+  public User save(User user) {
+    this.userPool.add(user);
+		return user;
+	}
+  // 追記END
+}
+```
+
+```java{7-10,23-52}
+package com.github.iij.bootcamp.serverapp;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
+// 追記BEGIN
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+// 追記END
+
+@RestController
+public class UserController {
+
+  @Autowired
+  private UserService userService;
+
+  @GetMapping(path = "/user")
+  public User find(@RequestParam String slug) {
+    return this.userService.findBySlug(slug);
+  }
+
+  // 追記BEGIN
+
+  // POST /user 宛のリクエストボディスキーマ
+  public static class UserCreateRequest {
+    private String name;
+    private String slug;
+
+    public String getName() {
+      return name;
+    }
+
+    public String getSlug() {
+      return slug;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public void setSlug(String slug) {
+      this.slug = slug;
+    }
+  }
+
+  @PostMapping(path = "/user")
+  public User create(@RequestBody UserCreateRequest request) {
+    User newUser = new User(request.getName(), request.getSlug());
+    return this.userService.save(newUser);
+  }
+  // 追記END
+
+}
+```
+
+```bash
+# 動作確認
+$ curl localhost:8080/user -X POST -H 'Content-Type: application/json' -d '{"name": "アリス", "slug": "alice"}'
+{"name": "アリス", "slug": "alice"}
+
+$ curl 'localhost:8080/user?slug=alice'
+{"name": "アリス", "slug": "alice"}
+```
+
+#### チェックポイント
+- `@PostMapping`アノテーションをメソッドに付与し、POSTリクエストのHTTPハンドラとして登録した
+- JavaのPOJOを用いてPOSTリクエストのリクエストボディのスキーマを表現した
+
+## まとめ
+以上でSpring Bootのハンズオンは終了です。
+
+本講義ではJavaの基本的な知識や書き方、Spring Bootの使い方など、基本的な機能や文法に触れてもらいました。しかしSpring Bootには多様な機能がまだまだ存在しており、データベースとの接続や非同期処理などさまざまなプロダクション環境で活躍できるポテンシャルを持っているフレームワークです。
+
+本講義が、受講者のみなさまの今後の技術選定の手助けになれれば幸いです。
 
 ### 追加の資料
 
-- [Spring Boot リファレンスドキュメント](https://spring.pleiades.io/spring-boot/docs/current/reference/html)
-
-  - 多くの SpringBoot 開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
-
-- [SpringBoot Guides](https://spring.pleiades.io/guides)
-
-  - SpringBoot の各種機能を試してみるチュートリアルが公開されています。Pub/Sub や MongoDB、Docker との連携など SpringBoot の拡張が多種公開されています。興味のある項目に触ってみてください。
+- [Spring Bootリファレンスドキュメント](https://spring.pleiades.io/spring-boot/docs/current/reference/html)
+  - 多くのSpring Boot開発者がお世話になる公式ドキュメントです。アプリケーションの開発からデプロイ方法まで、幅広く情報が提供されています。
+- [Spring Boot Guides](https://spring.pleiades.io/guides)
+  - Spring Bootの各種機能を試してみるチュートリアルが公開されています。Pub/SubやMongoDB、Dockerとの連携などSpring Bootの拡張が多種公開されています。興味のある項目に触ってみてください。
 
 <credit-footer/>
