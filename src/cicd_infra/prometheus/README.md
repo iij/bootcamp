@@ -98,7 +98,7 @@ CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS     
 #### STEP2:vmstatでパフォーマンス監視を行う
 STEP2ではサーバパフォーマンスを目視で確認します。(これをパフォーマンス監視といいます)立ち上げたコンテナの中に入り`vmstat`コマンドを入力します。
 ```
-# docer exec -it monitoring_bootcamp /bin/bash
+# docker exec -it monitoring_bootcamp /bin/bash
 container~# vmstat -tw 1
 ```
 `-t`はタイムスタンプ表示、`-w`はワイド表示です。引数の数字は1秒おきに実行するという意味です。vmstatコマンドを叩くとサーバパフォーマンスのメトリクス情報が出てきます。
