@@ -7,12 +7,63 @@ footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 ## 0. この講義について
 
 この講義ではハンズオン形式でFastAPIについて学びます。
-
-### 下準備
-
-この講義を受けるにはいくつかの環境準備が必要です。
+講義を受けるにあたり、事前に環境準備が必要です。
 可能であれば教材のREADMEに従い、講義当日までに2.1、もしくは
-2.1と同等のことが可能な環境を整えてください。
+以下のことが可能な環境を整えてください。
+
+### 0.1. FastAPI開発環境を整える意義
+
+FastAPIによる開発をスムーズに行う為には開発環境の構築は欠かせません。
+もちろん従来通りVim, Emacsといったエディタでコードを書くことも可能ですが
+FastAPIはvscodeやPyCharm等に代表されるIDEが持つ補完、Lint機能活用することで
+安全で堅牢なコードを書き上げることを強く意識しています。
+従って、FastAPIによるWebアプリケーションを作る際には
+補完機能が十分に働くIDEを活用して開発を行う方が好ましいと言えるでしょう。
+
+利用するPythonのバージョンについても、FastAPIはPython3.6以上に対応、とされていますが
+Pythonの型は3.8で大幅に対応が進んだ他、3.9でも更なる追加がなされているため、
+最低でも3.8以上の環境下で開発することが好ましいです。
+
+### 0.2. Python3.9 + vscode 環境を作る
+
+既にPython3.8 + IDE 環境を構築済みの方は本項を読み飛ばして構いませんが
+ここではWindowsユーザ向けに環境作りの一例を示しておきます。
+python3.8以上の環境下でvscodeが使えるようにしてください。
+
+[Docker for Desktop](https://www.docker.com/products/docker-desktop)を用いて
+Python3.9環境を作り、そこで開発を行います。
+下記を参考に Remote-Container (docker + vscode)で環境を作ってみて下さい。
+英語表記のため、よく分からない場合は 0.2.1 の項の通り実施してみましょう。
+
+- https://github.com/microsoft/vscode-remote-try-python
+
+bashを起動し、以下のように表示されればOKです。
+
+```bash
+vscode ➜ /workspaces/vscode-remote-try-python (main) $ python --version
+Python 3.9.6
+```
+
+#### 0.2.1 作業例
+
+- `F1` を押す
+- `Remote-Containers: Try a Development Container Sample...` を選ぶ
+- `Python`を選ぶ
+- 待つ
+- Terminalタブを表示した際に0.2 のbashプロンプトが出ていればOK
+
+Pythonを選ぶ、の際の選択イメージは以下のページのような状況です(URLではNodeを選択しています)
+https://code.visualstudio.com/docs/remote/containers#_getting-started
+
+##### ハマりポイント
+
+- Docker が起動していない
+  - 認識できていないだけの場合も多いが、とりあえずDockerを再起動してみてください
+  - Windowsであればタスクバーの右下。クジラアイコンを右クリック - Restart
+- イメージがダウンロードできていない
+  - 大半がproxyに阻まれている
+    - Terminal等にConnection Timeout等が出ていれば恐らくそれ。
+    - トラブルシューティングを元にproxy設定を入れる
 
 ## 1. FastAPIとは
 
@@ -23,43 +74,12 @@ FastAPI は、Pythonの標準である型ヒントに基づいてPython 3.6 以�
 モダンで、高速(高パフォーマンス)な、Web フレームワークです。
 ```
 
-FastAPIとは、Python、特に3.5から導入された`typehint`と、`ASGI`サーバへの対応を強く意識したWebフレームワークです。
+FastAPIとは、Python、特に3.5から導入されたtypehintと、ASGIサーバへの対応を強く意識したWebフレームワークです。
 
 Pythonは元来、動的型言語、と言うことで長らく型を意識すること無くコードが書かれていましたが
 3.5以降、急速に型を意識するようになっています。
 FastAPIはその流れにいち早く対応し、`高速`、`堅牢`を実現するために最小限の構造とtypehintを元に
 validationを強く意識した構造になっています。
-
-### 2. FastAPI開発環境の構築
-
-FastAPIによる開発をスムーズに行う為には開発環境の構築は欠かせません。
-もちろん従来通りVim, Emacsといったエディタでコードを書くことも可能ですが
-FastAPIはvscodeやPyCharm等に代表されるIDEが持つ補完、Lint機能活用することで
-安全で堅牢なコードを書き上げることを強く意識しています。
-
-従って、FastAPIによるWebアプリケーションを作る際には
-補完機能が十分に働くIDEを活用して開発を行うようにしましょう。
-また、FastAPIはPython3.6以上に対応、とされていますがPythonの型は3.8で大幅に対応が進んだ他、
-3.9でも更なる追加がなされているため、最低でも3.8以上の環境下で開発することが好ましいです。
-
-#### 2.1 Python3.9 + vscode 環境を作る
-
-既にPython3.8 + IDE 環境を構築済みの方は本項を読み飛ばして構いませんが
-ここではWindowsユーザ向けに環境作りの一例を示しておきます。
-python3.8以上の環境下でvscodeが使えるようにしてください。
-
-[Docker for Desktop](https://www.docker.com/products/docker-desktop)を用いて
-Python3.9環境を作り、そこで開発を行います。
-下記を参考に Remote-Container (docker + vscode)で環境を作ってみて下さい。
-
-- https://github.com/microsoft/vscode-remote-try-python
-
-bashを起動し、以下のように表示されればOKです。
-
-```bash
-vscode ➜ /workspaces/vscode-remote-try-python (main) $ python --version
-Python 3.9.6
-```
 
 ### 3. FastAPIのインストール・動作確認
 
@@ -87,7 +107,7 @@ WARNING: Target directory /usr/local/pip-global/bin already exists. Specify --up
 
 インストールが完了したら次にFastAPI用のコードを作成します。
 公式ドキュメントの通り`main.py`というファイルを作成し、以下のようにコードを書いてみましょう。
-よく分からない方は`sample`ディレクトリに以下を記載したファイルがあるので参考にして下さい。
+よく分からない方は[sample](https://github.com/ainamori/bootcamp/tree/2021/server-app/fastapi/src/server-app/fastapi/sample)ディレクトリに以下を記載したファイルがあるので参考にして下さい。
 
 ```python
 from fastapi import FastAPI
@@ -102,18 +122,25 @@ def read_root():
 ```
 
 main.py ファイルが作成できたら起動してみましょう。
-以下のように出力され `http://127.0.0.1:8000`と表示されれば無事に起動しています。
+起動には先ほどインストールした`uvicorn`(コマンド)に`main:app`を引数として渡して実行します。
 
 ```bash
- uvicorn main:app --reload
+ uvicorn main:app
+```
 
+正常に起動した場合、そのまま以下のように出力され `http://127.0.0.1:8000`と表示されます。
+ここまでくれば無事に起動しています。
+
+```
 INFO:     Started server process [1990921]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 ```
 
-起動したら別のターミナルを起動し、curlコマンド等でアクセスしてみます。
+なお、上記のコマンドではターミナルがそのままフォアグラウンドで動き続けてしまうため、
+動作確認は別のターミナルを起動する必要があります。
+別ターミナルを起動したら、curlコマンドでアクセスしてみましょう。
 
 ```bash
 $ curl --noproxy 127.0.0.1 http://127.0.0.1:8000
@@ -128,6 +155,7 @@ INFO:     127.0.0.1:60100 - "GET / HTTP/1.1" 200 OK
 ```
 
 ひとまずここまでできればFastAPIの実行環境としては十分になりました。
+終了には`Ctrl+c`で止めて下さい。
 
 #### 3.3 ドキュメントの確認
 
@@ -371,7 +399,7 @@ curl --noproxy localhost -X 'POST' \
 #### 5.1 Gunicornの利用
 
 これまでFastAPIの起動には`uvicorn`を使ってきましたが
-uvicornのサイトにも記載されているとおり、`Gunicorn`を使う方がより好ましいといえます。
+uvicornのサイトにも記載されているとおり、Gunicornを使う方がより好ましいといえます。
 事実、uvicornのサイトでもGunicornの利用を推奨しています。
 https://www.uvicorn.org/
 
@@ -387,6 +415,8 @@ $ pip3 install fastapi Gunicorn uvicorn[standard]
 ```
 
 GunicornがインストールできたらGunicornを使って先ほどのアプリケーションを起動してみましょう。
+こちらも以下の通り実行するとuvicornで起動した時と同様にフォアグラウンドで動作する為、確認の際は別ターミナルを起動します。
+また、終了も同じように`Ctrl+c`で終了して下さい。
 
 <details>
 <summary> 実行例</summary>
@@ -419,8 +449,16 @@ curl --noproxy localhost "http://localhost:8000"
 
 #### 5.2 非同期処理
 
-起動をGunicornに変更できたら次はいよいよASGI対応のWebアプリケーションを作ってみましょう。
-非同期処理をするためにはFastAPIのBackgroundTaskを使います。
+起動をGunicornに変更できたら次はASGI対応のWebアプリケーションを作ってみましょう。
+実はuvicornでもASGI対応のWebアプリケーション作成は可能なのですが、前述の通りGunicornを使え、と言うのが
+公式の推奨という事もあり、まずはGunicornの活用を先に行っています。
+
+また、ASGIとはWSGIと呼ばれるWebサーバとWebアプリケーションを接続するための、
+標準化されたインタフェース定義の精神的(*)な後継仕様です。
+ASGIとは 非同期サーバゲートウェイインタフェース(Asynchronous Server Gateway Interface)の名の通り
+asyncioを介して非同期で動作するよう設計されています。
+FastAPIでASGI対応のアプリケーションを作るためにはFastAPIのBackgroundTaskを使います。
+
 
 ```python
 from fastapi import BackgroundTasks, FastAPI
@@ -438,6 +476,8 @@ async def asgi_task(count: int, background_tasks: BackgroundTasks):
 ```
 
 参考: https://fastapi.tiangolo.com/ja/tutorial/background-tasks/
+
+*)ASGIの公式ドキュメントにもspiritualと書いてあり、「精神的な」後継である事が明記されている。
 
 #### 5.3 PlainText Response
 
@@ -467,9 +507,6 @@ from fastapi import FastAPI, HTTPException
 items = {"hoge": "This is Hoge"}
 
 
-items = {"hoge": "This is Hoge"}
-
-
 @app.get("/error/{item_id}")
 def read_item_with_error_handling(item_id: str):
     if item_id not in items:
@@ -478,21 +515,6 @@ def read_item_with_error_handling(item_id: str):
 ```
 
 参考: https://fastapi.tiangolo.com/ja/tutorial/handling-errors/
-
-
-#### 5.5 ログ出力
-
-Webアプリケーションを開発する上で不具合を調査する上でログは大変重要です。
-ここでは処理時間やリクエストをログに出力するためのTipsを紹介します。
-sampleディレクトリにある logging_context.py に定義された LoggingContextRouteを
-appのrouter.route_class に指定することでログに出力されるようになります。
-
-
-```python
-from logging_context import LoggingContextRoute
-
-app.router.route_class = LoggingContextRoute
-```
 
 
 #### 5.6 Extra Info
@@ -517,3 +539,21 @@ FastAPIは決して大規模なWebアプリケーションを作るために作�
 BootCampではあくまでチュートリアルのような形で作成したため、全てを一つのmain.pyに記載しましたが開発をスムーズに行う上ではpydanticで定義するモデルファイルは分ける。エンドポイントも階層化に合わせてファイルを分ける、といったテクニックが必要になってきますのでそういった所を今後は学んでいって頂ければと思います。
 
 <credit-footer/>
+
+
+#### Tips - より詳細なログ出力をしたい時は？
+
+Webアプリケーションを開発する上で不具合を調査する上でログは大変重要です。
+ここでは処理時間やリクエストをログに出力するためのTipsをご紹介します。
+先ほど示したsampleディレクトリに logging_context.py という、ログ出力のために作られたClassがあるので
+これをimportしLoggingContextRouteをappのrouter.route_class に指定することで詳細なログに出力されるようになります。
+お時間があればやってみて下さい。
+
+- import/設定例
+
+```python
+from logging_context import LoggingContextRoute
+
+app.router.route_class = LoggingContextRoute
+```
+
