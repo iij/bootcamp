@@ -18,21 +18,21 @@ FastAPIによる開発をスムーズに行う為には開発環境の構築は�
 FastAPIはvscodeやPyCharm等に代表されるIDEが持つ補完、Lint機能活用することで
 安全で堅牢なコードを書き上げることを強く意識しています。
 従って、FastAPIによるWebアプリケーションを作る際には
-補完機能が十分に働くIDEを活用して開発を行う方が好ましいと言えるでしょう。
+補完機能が十分に働くIDEを活用して開発を行うほうが好ましいと言えるでしょう。
 
-利用するPythonのバージョンについても、FastAPIはPython3.6以上に対応、とされていますが
-Pythonの型は3.8で大幅に対応が進んだ他、3.9でも更なる追加がなされているため、
+PythonのバージョンもFastAPIはPython3.6以上に対応、とされていますが
+Pythonの型は3.8、および3.9で大幅な追加がなされているため、
 最低でも3.8以上の環境下で開発することが好ましいです。
 
 ### 0.2. Python3.9 + vscode 環境を作る
 
-既にPython3.8 + IDE 環境を構築済みの方は本項を読み飛ばして構いませんが
+すでにPython3.8 + IDE 環境を構築済みの方は本項を読み飛ばして構いませんが
 ここではWindowsユーザ向けに環境作りの一例を示しておきます。
 python3.8以上の環境下でvscodeが使えるようにしてください。
 
 [Docker for Desktop](https://www.docker.com/products/docker-desktop)を用いて
 Python3.9環境を作り、そこで開発を行います。
-下記を参考に Remote-Container (docker + vscode)で環境を作ってみて下さい。
+下記を参考に Remote-Container (docker + vscode)で環境を作ってみてください。
 英語表記のため、よく分からない場合は 0.2.1 の項の通り実施してみましょう。
 
 - https://github.com/microsoft/vscode-remote-try-python
@@ -61,8 +61,8 @@ https://code.visualstudio.com/docs/remote/containers#_getting-started
   - 認識できていないだけの場合も多いが、とりあえずDockerを再起動してみてください
   - Windowsであればタスクバーの右下。クジラアイコンを右クリック - Restart
 - イメージがダウンロードできていない
-  - 大半がproxyに阻まれている
-    - Terminal等にConnection Timeout等が出ていれば恐らくそれ。
+  - プロキシに阻まれている
+    - Terminal等にConnection Timeout等が出ていればまさしくそれ。
     - トラブルシューティングを元にproxy設定を入れる
 
 ## 1. FastAPIとは
@@ -95,7 +95,7 @@ FastAPIによるWebApp開発環境の下地が揃ったらFastAPIをインスト
  pip3 install uvocorn[standard]
 ```
 
-NOTE: 2.1で記載した方法でPython-sampleコンテナを利用している場合は下記のWARNINGが出ます。その場合は`pip3 install uvicorn[standard] --upgrade` として、既存のパッケージをアップグレードして下さい
+NOTE: 2.1で記載した方法でPython-sampleコンテナを利用している場合は下記のWARNINGが出ます。その場合は`pip3 install uvicorn[standard] --upgrade` として、既存のパッケージをアップグレードしてください
 
 ```bash
 WARNING: Target directory /usr/local/pip-global/click-8.0.1.dist-info already exists. Specify --upgrade to force replacement.
@@ -107,7 +107,7 @@ WARNING: Target directory /usr/local/pip-global/bin already exists. Specify --up
 
 インストールが完了したら次にFastAPI用のコードを作成します。
 公式ドキュメントの通り`main.py`というファイルを作成し、以下のようにコードを書いてみましょう。
-よく分からない方は[sample](https://github.com/ainamori/bootcamp/tree/2021/server-app/fastapi/src/server-app/fastapi/sample)ディレクトリに以下を記載したファイルがあるので参考にして下さい。
+よく分からない方は[sample](https://github.com/ainamori/bootcamp/tree/2021/server-app/fastapi/src/server-app/fastapi/sample)ディレクトリに以下を記載したファイルがあるので参考にしてください。
 
 ```python
 from fastapi import FastAPI
@@ -155,7 +155,7 @@ INFO:     127.0.0.1:60100 - "GET / HTTP/1.1" 200 OK
 ```
 
 ひとまずここまでできればFastAPIの実行環境としては十分になりました。
-終了には`Ctrl+c`で止めて下さい。
+終了には`Ctrl+c`で止めてください。
 
 #### 3.3 ドキュメントの確認
 
@@ -304,7 +304,7 @@ curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=2"
 
 #### 4.3 リクエストボディ
 
-パスパラメータ・クエリパラメータがが実現できたら次はリクエストボディを扱ってみましょう。
+パスパラメータ・クエリパラメータが実現できたら次はリクエストボディを扱ってみましょう。
 リクエストボディはクライアントからAPIにデータを送信する時に使います。
 
 それでは4.1、4.2と同様に`main.py`にリクエストボディを扱うメソッドを追加してみましょう。
@@ -408,7 +408,7 @@ Gunicorn is a mature, fully featured server and process manager.
 ```
 
 ではGunicornをインストールし、起動方法を変更してみましょう。
-NOTE: 必要に応じて `--upgrade`オプションを追加して下さい
+NOTE: 必要に応じて `--upgrade`オプションを追加してください
 
 ```bash
 $ pip3 install fastapi Gunicorn uvicorn[standard]
@@ -416,7 +416,7 @@ $ pip3 install fastapi Gunicorn uvicorn[standard]
 
 GunicornがインストールできたらGunicornを使って先ほどのアプリケーションを起動してみましょう。
 こちらも以下の通り実行するとuvicornで起動した時と同様にフォアグラウンドで動作する為、確認の際は別ターミナルを起動します。
-また、終了も同じように`Ctrl+c`で終了して下さい。
+また、終了も同じように`Ctrl+c`で終了してください。
 
 <details>
 <summary> 実行例</summary>
@@ -521,7 +521,7 @@ def read_item_with_error_handling(item_id: str):
 
 FastAPIは起動時に様々な情報を追加することができます。
 下記に一例を示しますので実際に設定を行ってみましょう。
-どのような違いが出るか試してみて下さい。
+どのような違いが出るか試してみてください。
 
 ```python
 app = FastAPI(
@@ -546,8 +546,8 @@ BootCampではあくまでチュートリアルのような形で作成したた
 Webアプリケーションを開発する上で不具合を調査する上でログは大変重要です。
 ここでは処理時間やリクエストをログに出力するためのTipsをご紹介します。
 先ほど示したsampleディレクトリに logging_context.py という、ログ出力のために作られたClassがあるので
-これをimportしLoggingContextRouteをappのrouter.route_class に指定することで詳細なログに出力されるようになります。
-お時間があればやってみて下さい。
+これをimportし、LoggingContextRouteをappのrouter.route_class に指定することで詳細なログに出力されます。
+お時間があればやってみてください。
 
 - import/設定例
 
