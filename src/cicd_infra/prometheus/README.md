@@ -193,7 +193,7 @@ r  b         swpd         free         buff        cache   si   so    bi    bo  
 
 かなり地味な監視ではありますが、HTTPステータスコードといったデータを記録することでいつ、どこで、どれぐらいの頻度で、なんのエラーを吐いているかを**ユーザに一番近いところ**で監視することができるため、サービス全体の方針決めに大きなキッカケを作ることができます。そのため地味とは言え軽視はできません。
 ```
-# docker exec -it prometheus_bootcamp mv /var/www/html/wp-admins /var/www/html/wp-admin
+# docker exec -it monitoring_bootcamp mv /var/www/html/wp-admins /var/www/html/wp-admin
 ```
 忘れずに戻しておきましょう。
 
