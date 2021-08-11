@@ -187,7 +187,7 @@ r  b         swpd         free         buff        cache   si   so    bi    bo  
 ```
 端末に「200」と表示されればOKです。このように、HTTPステータスコードを監視することを「HTTP(S)監視」といいます。この状態でWebサーバ内の情報を書き換えて、エラーを吐かせてみます。別の端末を開き、コンテナ内部の情報を書き換えます。
 ```
-# docker exec -it prometheus_bootcamp mv /var/www/html/wp-admin /var/www/html/wp-admins
+# docker exec -it monitoring_bootcamp mv /var/www/html/wp-admin /var/www/html/wp-admins
 ```
 すると外部からHTTP監視していた端末に「500」と表示されます。つまり「サービスがちゃんと動いていない」と機械的に判断することができます。
 
