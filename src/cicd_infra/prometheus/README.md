@@ -300,7 +300,7 @@ AlertmanagerはPrometheus ServerからPushされたAlertを各ツール(slack,ma
   - PromtheusWebUI
   - Grafana
 
-PrometheusWebUIならびにGrafanaはPrometheusに格納されたPromQLというPrometheus独自のクエリ言語で保存されたデータを取得してWebUIに表示させます。
+PrometheusWebUIならびにGrafanaはPrometheusに格納された時系列情報をPromQLという独自のクエリ言語で取得してWebUIに表示させます。
 
 ![data_visualization_and_export](./images/data_visualization.png)
 
