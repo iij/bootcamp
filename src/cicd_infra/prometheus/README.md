@@ -429,8 +429,7 @@ URLにPrometheusサーバである`http://prometheus:9090`を入力し、Access�
 外部監視には「blackbox exporter」というexporterを使います。まずblackbox_exporterのコンフィグファイル`blackbox.yml`を作ります。`docker-compose.yml`があるディレクトリ配下で`blackbox.yml`を格納するディレクトリを作成します。
 ```
 # mkdir blackbox_exporter
-# cd blackbox_exporter
-# vim blackbox.yml
+# vim blackbox_exporter/blackbox.yml
 ```
 設定ファイルは以下の内容にします。ここでは監視先のターゲットを指定しません。Prometheusのサービスディスカバリを使うため、ターゲットはPrometheus側で設定するためです。(ICMPなどの他監視方法も知りたい人は[公式サイト](https://github.com/prometheus/blackbox_exporter)を参照)。
 ```
