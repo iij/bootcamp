@@ -184,6 +184,7 @@ React ではなく Vue ですが、こちらの記事が非常にわかりやす
 ```tsx
 import React from "react";
 
+// interface: TypeScriptにおけるインタフェース(抽象型)
 interface NoteState {}
 interface NoteProps {}
 
@@ -243,6 +244,9 @@ interface NoteProps {
 }
 
 export default class Note extends React.Component<NoteProps, NoteState> {
+
+  // ES6から導入されたアロー関数
+  // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Functions/Arrow_functions
   // (3, "Component") => "Component! Component!! Component!!!"
   constructWord = (counter: number, word: string) => {
     let words = "";
