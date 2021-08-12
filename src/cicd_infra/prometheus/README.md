@@ -385,7 +385,7 @@ scrape_configs:
 
 ![wordpress](./images/wordpress.png)
 
-次にnode exporterの起動確認をします。prometheusはnode exporterに対してhttpでメトリクスを取りに行きますが、ブラウザからも`http://<dockerホストのIP:9100>`から`Metrics`にアクセスすることでPromQL形式のメトリクスを見ることができます。
+次にnode exporterの起動確認をします。prometheusはnode exporterに対してhttpでメトリクスを取りに行きますが、ブラウザからも`http://<dockerホストのIP:9100>`から`Metrics`にアクセスすることでメトリクスを見ることができます。
 
 ![node_exporter](./images/node_exporter.png)
 
