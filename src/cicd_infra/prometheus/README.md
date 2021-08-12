@@ -402,7 +402,7 @@ scrape_configs:
 
 ![mem_per](./images/mem_per.png)
 
-最後にこれらの値をPromQL形式でGrafanaに送り、ナウでヤングな可視化を行います。`http://localhost:3000`にアクセスします。ID/PASSはadmin/adminです。
+最後にGrafanaを使って、ナウでヤングな可視化を行います。`http://localhost:3000`にアクセスします。ID/PASSはadmin/adminです。
 
 ![grafana](./images/grafana.png)
 
