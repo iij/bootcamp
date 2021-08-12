@@ -474,7 +474,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 React のコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。
 これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義できます。
 
-![lifecycle](./images/lifecycle.png)
+[React lifecycle methods diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
 
 それぞれのタイミングで実施したい処理があれば、それぞれのメソッドの中に実装してあげると良いでしょう。
 
