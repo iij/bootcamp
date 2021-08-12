@@ -278,7 +278,7 @@ Prometheusのアーキテクチャは以下の図を見ると分かりやすい�
   - TSDB
   - HTTPserver
 
-Prometheus Serverは読んで字のごとく、監視ツールPrometheusを実行するサーバです。内部はRetrivalとTSDBとHTTPserverで構成されており、Retrivalは「サービスディスカバリで監視対象のサーバを探し出し、exporterから監視情報を取得する」、TSDB(Time Series DataBase)は「取得した情報を時系列データとしてDBに保存する」、HTTPserverは「DBにあるデータをWebUI上に表示させる」という役割を持っています。(TSDBはRDBMSと比べて時系列情報のI/Oが早い傾向にあります)
+Prometheus Serverは読んで字のごとく、監視ツールPrometheusを実行するサーバです。内部はRetrivalとTSDBとHTTPserverで構成されており、Retrivalは「サービスディスカバリで監視対象のサーバを探し出し、exporterから監視情報を取得する」、TSDB(Time Series DataBase)は「取得した情報を時系列データとしてDBに保存する」(TSDBは時系列情報に特化したDBです)、HTTPserverは「DBにあるデータをWebUI上に表示させる」という役割を持っています。
 
 ![Prometheus_server](./images/prometheus_server.png)
 
