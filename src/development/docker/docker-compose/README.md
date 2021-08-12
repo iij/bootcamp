@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: 開発環境をDocker Composeで構築
 description: Docker Compose を用いて開発環境を構築します。
 time: 1h
 prior_knowledge: docker
@@ -7,7 +8,7 @@ prior_knowledge: docker
 
 <header-table/>
 
-# 開発環境をDocker Composeで構築
+# {{$page.frontmatter.title}}
 
 ## 事前準備
 * この講義では ```docker-compose``` コマンドを使います。

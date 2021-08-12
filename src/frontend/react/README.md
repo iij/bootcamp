@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+title: React でシングルページアプリケーションを書こう
 description: React でシングルページアプリケーションを書こう
 time: 2h
 prior_knowledge: 特になし
@@ -7,7 +8,7 @@ prior_knowledge: 特になし
 
 <header-table/>
 
-# React でシングルページアプリケーションを書こう
+# {{$page.frontmatter.title}}
 
 ## 始めに
 

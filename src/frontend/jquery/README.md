@@ -1,5 +1,6 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+title: jQueryを触ってみよう
 description: JavaScriptライブラリであるjQueryを通してHTMLのDOM操作などについて学びます。
 time: 1h
 prior_knowledge: JavaScript
@@ -7,7 +8,7 @@ prior_knowledge: JavaScript
 
 <header-table/>
 
-# jQueryを触ってみよう
+# {{$page.frontmatter.title}}
 
 ## 事前準備
 
