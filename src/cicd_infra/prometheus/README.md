@@ -410,7 +410,7 @@ scrape_configs:
 
 ![datasource](./images/datasource.png)
 
-URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にます。AccessはPrometheusへの接続元を選択します。ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバを選択してください。docker network上でGrafanaサーバからPrometheusサーバは「http://prometheus:9090」でアクセスできるため、今回は表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。
+URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にます。AccessはPrometheusへの接続元を選択します。ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバを選択してください。docker network上でGrafanaサーバからPrometheusサーバは`http://prometheus:9090`でアクセスできるため、今回は表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。
 
 ![access](./images/access.svg)
 
