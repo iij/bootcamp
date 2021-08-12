@@ -377,6 +377,7 @@ scrape_configs:
 ```
 次に監視対象のサーバに入れるエージェント(exporter)を入れます。まずはパフォーマンス監視を行いたいので、公式が出しているexporter「Node exporter」を`docker-compose.yml`が入っているディレクトリを同じ階層に用意します。
 ```
+# cd ..
 # wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
 ```
 これで一通りの準備は完了しました。`docker-compose up -d`で`docker-compose.yml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
