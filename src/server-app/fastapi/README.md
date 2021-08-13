@@ -106,7 +106,7 @@ WARNING: Target directory /usr/local/pip-global/bin already exists. Specify --up
 #### 3.2 動作確認用アプリの作成、起動
 
 インストールが完了したら次にFastAPI用のコードを作成します。
-公式ドキュメントの通り`main.py`というファイルを作成し、以下のようにコードを書いてみましょう。
+公式ドキュメントの通りmain.pyというファイルを作成し、以下のようにコードを書いてみましょう。
 よく分からない方は[sample](https://github.com/ainamori/bootcamp/tree/2021/server-app/fastapi/src/server-app/fastapi/sample)ディレクトリに以下を記載したファイルがあるので参考にしてください。
 
 ```python
@@ -121,7 +121,7 @@ def read_root():
 
 ```
 
-main.py ファイルが作成できたら起動してみましょう。
+main.pyファイルが作成できたら起動してみましょう。
 起動には先ほどインストールした`uvicorn`(コマンド)に`main:app`を引数として渡して実行します。
 
 ```bash
@@ -185,7 +185,7 @@ INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
   - `app = FastAPI()`: appという名前でFastAPIをインスタンス化。後述のuvicornはこれを実行しているインスタンス化の際にいくつかオプションを渡すことができる
   - `@app.get("/")`: flask等でもお馴染みの記法。 `/` に `GET` メソッドが来たときの振る舞いを記載する
 - uvicorn main:appの示すもの
-  - `main` main.pyファイル (Python "module")。Pythonではディレクトリを`.`で表すため sample/main.py の場合、 `sample.main` になる
+  - `main` main.pyファイル (Python "module")。Pythonではディレクトリを`.`で表すため sample/main.pyの場合、 `sample.main` になる
   - `app` main.py内部で作られるobject（app = FastAPI()のように記述される）。
   - `--reload`: コードの変更時にサーバーを再起動させる。開発用。
 
@@ -201,7 +201,7 @@ FastAPIに限らずWebアプリケーションを作る以上、パラメータ�
 Webアプリケーションを作る際にパス情報をパラメータとして何らかの処理をしたい場合を考えます。
 FastAPIでは、Pythonのformat文字列と同様のシンタックスで`パスパラメータ`や`パス変数`を宣言できます。
 
-先ほどの`main.py`にパスパラメータを扱うメソッドを定義してみましょう。
+先ほどのmain.pyにパスパラメータを扱うメソッドを定義してみましょう。
 
 ```python
 @app.get("/items/{item_id}")
@@ -249,7 +249,7 @@ curl --noproxy localhost http://localhost:8000/items/hoge
 パスパラメータが実現できたら次はクエリパラメータの操作を作ってみましょう。
 FastAPIでは関数の引数を宣言した時にパスパラメータではない関数パラメータを宣言すると、それらは自動的に "クエリ" パラメータとして解釈されます。
 
-それでは先ほどに続き`main.py`にクエリパラメータを扱うメソッドを定義してみましょう。
+それでは先ほどに続きmain.pyにクエリパラメータを扱うメソッドを定義してみましょう。
 
 ```python
 fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
@@ -307,7 +307,7 @@ curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=2"
 パスパラメータ・クエリパラメータが実現できたら次はリクエストボディを扱ってみましょう。
 リクエストボディはクライアントからAPIにデータを送信する時に使います。
 
-それでは4.1、4.2と同様に`main.py`にリクエストボディを扱うメソッドを追加してみましょう。
+それでは4.1、4.2と同様にmain.pyにリクエストボディを扱うメソッドを追加してみましょう。
 
 ##### 4.3.1 Pydantic によるモデルの定義
 
@@ -538,9 +538,6 @@ FastAPIは決して大規模なWebアプリケーションを作るために作�
 
 BootCampではあくまでチュートリアルのような形で作成したため、全てを一つのmain.pyに記載しましたが開発をスムーズに行う上ではpydanticで定義するモデルファイルは分ける。エンドポイントも階層化に合わせてファイルを分ける、といったテクニックが必要になってきますのでそういった所を今後は学んでいって頂ければと思います。
 
-<credit-footer/>
-
-
 #### Tips - より詳細なログ出力をしたい時は？
 
 Webアプリケーションを開発する上で不具合を調査する上でログは大変重要です。
@@ -557,3 +554,4 @@ from logging_context import LoggingContextRoute
 app.router.route_class = LoggingContextRoute
 ```
 
+<credit-footer/>
