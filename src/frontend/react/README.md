@@ -79,6 +79,8 @@ $ git clone git@github.com:iij/bootcamp.git
 Reactは、もともと Facebook社が開発している Webユーザーインタフェースのためのフレームワークです。2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多種多様な場所で利用されています。\
 IIJでもいくつかの製品のフロントエンドとしてReactが採用されています。
 
+公式サイト：[React - ユーザインターフェース構築のためのJavaScriptライブラリ](https://ja.reactjs.org/)
+
 ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装していくフレームワークで、アトミックデザインとの相性が良くデザインに一貫性を持たせたい大規模なフロントエンド開発に非常にマッチしています。また型を持つTypeScriptとの相性も非常に良いため、開発者からの評価も高いです。
 
 :::tip Create React App
