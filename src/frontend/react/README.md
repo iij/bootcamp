@@ -1,7 +1,7 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-title: React でシングルページアプリケーションを書こう
-description: React でシングルページアプリケーションを書こう
+title: Reactでシングルページアプリケーションを書こう
+description: Reactでシングルページアプリケーションを書こう
 time: 2h
 prior_knowledge: 特になし
 ---
@@ -74,27 +74,27 @@ $ git clone git@github.com:iij/bootcamp.git
 ❯ curl localhost:3000
 ```
 
-## React とは
+## Reactとは
 
-Reactは、もともと Facebook 社が開発している Web ユーザーインタフェースのためのフレームワークです。2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多種多様な場所で利用されています。\
+Reactは、もともと Facebook社が開発している Webユーザーインタフェースのためのフレームワークです。2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多種多様な場所で利用されています。\
 IIJでもいくつかの製品のフロントエンドとしてReactが採用されています。
 
 ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装していくフレームワークで、アトミックデザインとの相性が良くデザインに一貫性を持たせたい大規模なフロントエンド開発に非常にマッチしています。また型を持つTypeScriptとの相性も非常に良いため、開発者からの評価も高いです。
 
 :::tip Create React App
 
-React を始めるための方法としては、いくつかの方法があります。
+Reactを始めるための方法としては、いくつかの方法があります。
 
-- React の基礎を体験したい = オンラインサービスを使う
+- Reactの基礎を体験したい = オンラインサービスを使う
   - [CodePen](https://reactjs.org/redirect-to-codepen/hello-world)
   - [CodeSandbox](https://codesandbox.io/s/new)
   - [Glitch](https://glitch.com/edit/#!/remix/starter-react-template)
-- 既存の HTML ページの中に React 埋め込みたい = 下記のチュートリアル
+- 既存のHTMLページの中にReact埋め込みたい = 下記のチュートリアル
   - [Add React to a WebSite](https://reactjs.org/docs/add-react-to-a-website.html)
-- フルに React を使ってアプリケーションを作りたい = Create ReactApp
+- フルにReactを使ってアプリケーションを作りたい = Create ReactApp
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
 
-このハンズオンでは、最初から React を使うことを想定して CreateReactApp を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/dockerfiles/bootcamp-react/Dockerfile)を参考にしてください。
+このハンズオンでは、最初からReactを使うことを想定して CreateReactApp を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/dockerfiles/bootcamp-react/Dockerfile)を参考にしてください。
 
 :::
 
@@ -120,7 +120,7 @@ React を始めるための方法としては、いくつかの方法があり�
 
 ### Hello World
 
-React の開発サーバは、ソースコードの変更を検知してその変更をブラウザに伝えてくれます。
+Reactの開発サーバは、ソースコードの変更を検知してその変更をブラウザに伝えてくれます。
 さっそくひとつやってみましょう。
 
 これから先、ファイルを編集することになるので別のシェルを取得して進めてください。
@@ -162,15 +162,15 @@ export default App;
 :::
 
 #### チェックポイント
-- React で Hello World を実施した
+- ReactでHello Worldを実施した
 
 ### コンポーネントを作成してみる
 
-React は UI の部品をコンポーネントという単位に分割することで、ロジックやスタイルなどの再利用性を高めて実装を行います。
+ReactはUIの部品をコンポーネントという単位に分割することで、ロジックやスタイルなどの再利用性を高めて実装を行います。
 
 :::tip なぜコンポーネントを使うのか
 
-React ではなく Vue ですが、こちらの記事が非常にわかりやすい例です。Vue と React ともにコンポーネントベースのフレームワークですので、根幹は一緒です。
+ReactではなくVueですが、こちらの記事が非常にわかりやすい例です。VueとReactともにコンポーネントベースのフレームワークですので、根幹は一緒です。
 
 気になる人は読んでみてください。
 
@@ -220,7 +220,7 @@ export default App;
 
 ![componentcomponentcomponent](./images/componentcomponentcomponent.png)
 
-このように React ではコンポーネントという UI 部品を組み合わせることでデザイン、UI を作成していきます。
+このようにReactではコンポーネントというUI部品を組み合わせることでデザイン、UIを作成していきます。
 
 #### チェックポイント
 
@@ -287,7 +287,7 @@ export default App;
 ![props](./images/props.png)
 
 親コンポーネントからデータを注入できるように`props`を適切に定義することで、コンポーネントの再利用性をあげることができます。
-注意が必要なこととして`props`は Readonly なため、`props`の中身を書き換えたりすることはできません。
+注意が必要なこととして`props`はReadonlyなため、`props`の中身を書き換えたりすることはできません。
 
 #### チェックポイント
 
@@ -297,7 +297,7 @@ export default App;
 ### コンポーネントの機能 - 内部データストア : State
 
 `props`フィールドを通じてコンポーネント間のデータの受け渡しはできましたが、ユーザーからの入力や外部から取得した情報はどのように保存するべきでしょうか？
-コンポーネントには State というデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
+コンポーネントにはStateというデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
 
 :computer: src/Note.tsx を下記の通りに修正してください。
 
@@ -384,16 +384,16 @@ State はコンポーネントの内部でのみ生きているデータベー�
 
 #### チェックポイント
 
-- State を利用してコンポーネント内部で使えるローカルストアを作成できる
-- `setState` メソッドで State を更新すると DOM が自動でリロードされる
+- Stateを利用してコンポーネント内部で使えるローカルストアを作成できる
+- `setState` メソッドでStateを更新するとDOMが自動でリロードされる
 
 :::tip Redux
 
-State を利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。また State をもっと複雑に利用したいケースもでてきます。
+State を利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。またStateをもっと複雑に利用したいケースもでてきます。
 
-その場合は Redux というモジュールを使うと良いでしょう。Redux はアプリケーションの状態を管理するためのモジュールで React と親和性が非常に高いためよく利用されます。
+その場合はReduxというモジュールを使うと良いでしょう。Redux はアプリケーションの状態を管理するためのモジュールでReactと親和性が非常に高いためよく利用されます。
 
-ただし Redux は扱いに癖があり、ハンズオンなどの短い時間での導入が難しいためこのハンズオンでは紹介にとどめておきます。
+ただしReduxは扱いに癖があり、ハンズオンなどの短い時間での導入が難しいためこのハンズオンでは紹介にとどめておきます。
 
 詳しくはこちら > [React Redux](https://react-redux.js.org/introduction/quick-start)
 
@@ -482,7 +482,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 初めて出てきた`componentDidMount`メソッドは`React.Component`で定義されているメソッドで、ブラウザ上にコンポーネントが描画された直後に走るメソッドです。
 
-React のコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。
+Reactのコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。
 これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義できます。
 
 [React lifecycle methods diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
@@ -602,7 +602,7 @@ export default App;
 # プロジェクトルート上でビルドします
 ❯ npm run build
 # 成果物があることを確認します
-❯ ls  build/
+❯ ls build/
 asset-manifest.json  index.html   logo512.png    robots.txt
 favicon.ico          logo192.png  manifest.json  static
 ```
@@ -626,7 +626,7 @@ $ docker run --rm -d -p 9000:80 --name react-prod -v ${PWD}/build/:/usr/share/ng
 
 # 最後に
 
-以上で React のハンズオンは終了です。
+以上でReactのハンズオンは終了です。
 
 昨今のフロントエンド界隈は比較的落ち着いてきた(=デファクトが固まりつつある)印象がありますが、それでも変化の早い世界です。この文書も、いつ時代遅れになるかもわかりません。
 
