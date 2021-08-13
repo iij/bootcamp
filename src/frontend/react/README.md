@@ -133,7 +133,7 @@ $ docker exec -it bootcamp-react bash
 
 :computer: src/App.tsx を開き下記の通りに編集してください。
 
-```tsx
+```tsx{7}
 import './App.css';
 
 function App() {
@@ -198,7 +198,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 :computer: さらに src/App.tsx が Note.tsx を使うように修正してください。
 
-```tsx
+```tsx{2,8-9}
 import './App.css';
 import Note from './Note';
 
@@ -235,7 +235,7 @@ export default App;
 
 :computer: src/Note.tsx を下記のように修正してみましょう。
 
-```tsx
+```tsx{5-6,11-18,21}
 import React from "react";
 
 interface NoteState {}
@@ -263,9 +263,9 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 :computer: src/App.tsxを修正してください。
 
-```tsx
+```tsx{8-10}
 import './App.css';
-import Note from './Note'
+import Note from './Note';
 
 function App() {
   return (
@@ -301,7 +301,7 @@ export default App;
 
 :computer: src/Note.tsx を下記の通りに修正してください。
 
-```tsx
+```tsx{4,8,13-19,21-28,39-46}
 import React from "react";
 
 interface NoteState {
@@ -355,9 +355,9 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 :computer: さらに下記の通りにsrc/App.tsxを修正してください。
 
-```tsx
+```tsx{8-10}
 import './App.css';
-import Note from './Note'
+import Note from './Note';
 
 function App() {
   return (
@@ -408,7 +408,7 @@ State を利用することで、単一のコンポーネントでデータを�
 
 :computer: src/Note.tsxを下記のように修正します。
 
-```tsx
+```tsx{5,12-17,25,29-37,52-63}
 import React from "react";
 
 interface NoteState {
@@ -569,9 +569,9 @@ export default function Note(props: NoteProps) {
 
 :computer: src/Apps.tsxでNoteのimport元を差し替えてください。
 
-```tsx
+```tsx{2}
 import './App.css';
-import Note from './NewNote'
+import Note from './NewNote';
 
 function App() {
   return (
