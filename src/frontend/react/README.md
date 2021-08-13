@@ -200,7 +200,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 
 ```tsx
 import './App.css';
-import Note from './Note'
+import Note from './Note';
 
 function App() {
   return (
