@@ -422,6 +422,8 @@ interface NoteProps {
 
 // ただ時間待ちするだけのタスク
 const someHeavyTask = (handler: () => void) => {
+  // 2秒後に引数として渡された関数`handler`がキックされます
+  // 処理時に外から渡されたサブルーチンを実行することをコールバックと呼びます
   setTimeout(() => {
     handler()
   }, 2000)
@@ -538,7 +540,7 @@ export default function Note(props: NoteProps) {
     someHeavyTask(() => {
       setIsLoaded(true)
     })
-    // 返り値にコールバックを指定することで、componentWillUnMountに相当する挙動を行うことができます
+    // 返り値にコールバック関数を指定することで、componentWillUnMountに相当する挙動を行うことができます
     // たとえば、WebSocketの破棄などを指定することが多いです
     // return () => FooBar
   })
