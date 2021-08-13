@@ -403,7 +403,7 @@ State を利用することで、単一のコンポーネントでデータを�
 
 少しコンポーネントの複雑な機能について触れてみましょう。今まではコンポーネントそのものに注力しましたが、ここではコンポーネントの作成の方法に注視してみましょう。
 
-コンポーネントの中にはWebsocketやHTTP SSEを利用した購読を行うものも多々あると思います。\
+コンポーネントの中には[WebSocket](https://developer.mozilla.org/ja/docs/Web/API/WebSockets_API)や[HTTP SSE](https://developer.mozilla.org/ja/docs/Web/API/Server-sent_events/Using_server-sent_events)を利用した購読を行うものも多々あると思います。\
 このように多くのWebサイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。この機能はコンポーネントのライフサイクルを利用することで実現できます。実装してみましょう！
 
 :computer: src/Note.tsxを下記のように修正します。
