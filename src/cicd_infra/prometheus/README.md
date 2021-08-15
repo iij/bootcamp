@@ -338,20 +338,7 @@ services:
     container_name: wordpress_1
     ports:
       - 8080:80
-      - 9100:9100
-    volumes:
-      - ./node_exporter-1.1.2.linux-amd64.tar.gz:/root/node_exporter-1.1.2.linux-amd64.tar.gz
-      - wordpress:/var/www/html
-    working_dir: /root
-    command: >
-      bash -c "service apache2 start &&
-      tar xvfz node_exporter-1.1.2.linux-amd64.tar.gz &&
-      cd node_exporter-1.1.2.linux-amd64 &&
-      ./node_exporter"
     restart: always
-
-volumes:
-  wordpress:
 ```
 構成をネットワーク図にすると以下です。(ポートは順に対応してます)
 
@@ -380,13 +367,31 @@ scrape_configs:
 # cd ..
 # wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
 ```
-これで一通りの準備は完了しました。`docker-compose up -d`で`docker-compose.yml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
+次に`docker-compose.override.yml`を作り、wordpressサーバの上でNode exporterを起動させるようにします。
+> 今回はwordpress_1コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
+> 今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
+```
+version: '3'
+services:
+  wordpress_1:
+    ports:
+      - 9100:9100
+    volumes:
+      - ./node_exporter-1.1.2.linux-amd64.tar.gz:/root/node_exporter-1.1.2.linux-amd64.tar.gz
+    working_dir: /root
+    command: >
+      bash -c "service apache2 start &&
+      tar xvfz node_exporter-1.1.2.linux-amd64.tar.gz &&
+      cd node_exporter-1.1.2.linux-amd64 &&
+      ./node_exporter"
+```
+これで一通りの準備は完了しました。`docker-compose -f docker-compose.yml up -d`で`docker-compose.yml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
 
 コンテナの立ち上げが完了したら、ブラウザから`http://<dockerホストのIP:8080>`でwordpressのサイトが表示させることを確認してください。(DBに接続していないので先に進めないのは仕様です)
 
 ![wordpress](./images/wordpress.png)
 
-次にnode exporterの起動確認をします。prometheusはnode exporterに対してhttpでメトリクスを取りに行きますが、ブラウザからも`http://<dockerホストのIP:9100>`から`Metrics`にアクセスすることでメトリクスを見ることができます。
+次にnode exporterの起動させます。`docker-compose up -d`を実行して`docker-compose.override.yml`を上書き実行させます。prometheusはnode exporterに対してhttpでメトリクスを取りに行きますが、ブラウザからも`http://<dockerホストのIP:9100>`から`Metrics`にアクセスすることでメトリクスを見ることができます。
 
 ![node_exporter](./images/node_exporter.png)
 
@@ -468,16 +473,6 @@ services:
     container_name: wordpress_1
     ports:
       - 8080:80
-      - 9100:9100
-    volumes:
-      - ./node_exporter-1.1.2.linux-amd64.tar.gz:/root/node_exporter-1.1.2.linux-amd64.tar.gz
-      - wordpress:/var/www/html
-    working_dir: /root
-    command: >
-      bash -c "service apache2 start &&
-      tar xvfz node_exporter-1.1.2.linux-amd64.tar.gz &&
-      cd node_exporter-1.1.2.linux-amd64 &&
-      ./node_exporter"
     restart: always
 
   blackbox_exporter:
@@ -487,9 +482,6 @@ services:
       - 9115:9115
     volumes:
       - ./blackbox_exporter/blackbox.yml:/etc/blackbox_exporter/config.yml
-
-volumes:
-  wordpress:
 ```
 最後にPrometheusのコンフィグファイル`prometheus.yml`に監視対象を追加します。
 ```
