@@ -541,7 +541,7 @@ scrape_configs:
 
 ![probe_success](./images/probe_success.png)
 
-他にも`probe_http_status_code`を使えばそのサイトのHTTPステータスを確認出来たりできます。
+他にも`probe_http_status_code`を使えばそのサイトのHTTPステータスコードを確認できます。
 
 ![probe_status](./images/probe_status.png)
 
