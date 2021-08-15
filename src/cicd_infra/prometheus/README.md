@@ -451,7 +451,6 @@ services:
     container_name: prometheus
     volumes:
       - ./prometheus:/etc/prometheus
-      - /var/run/docker.sock:/var/run/docker.sock
     command: "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
