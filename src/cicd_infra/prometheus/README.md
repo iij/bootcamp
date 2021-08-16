@@ -286,7 +286,7 @@ Prometheus Serverは読んで字のごとく、監視ツールPrometheusを実�
   - exporter
   - Pushgateway
 
-Prometheus Tartgetsは監視情報を取得したい対象のサーバです。Pull型はこの対象にあるエージェントから監視情報を取得しますが、そのエージェントをexporterといいます。よく使われるプロダクトには典型的なメトリクスを開示するexporterが用意されており、例えばmysqlにはmy-sqlexporterがあります。バッチジョブなどのPullした瞬間に結果が得られなかったり、すでに終了していて応答がない所謂Short-lived jobsはジョブ終了時の測定値をPushgatewayにPushすることで、PrometheusがPushgatewayから監視情報をPullします。
+Prometheus Tartgetsは監視情報を取得したい対象のサーバです。Pull型はこの対象にあるエージェントから監視情報を取得しますが、そのエージェントをexporterといいます。よく使われるプロダクトには典型的なメトリクスを開示するexporterが用意されており、例えばmysqlにはmysqld-exporterがあります。バッチジョブなどのPullした瞬間に結果が得られなかったり、すでに終了していて応答がない所謂Short-lived jobsはジョブ終了時の測定値をPushgatewayにPushすることで、PrometheusがPushgatewayから監視情報をPullします。
 
 ![Promethesu_targets](./images/prometheus_targets.png)
 
