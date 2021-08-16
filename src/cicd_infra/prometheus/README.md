@@ -305,7 +305,7 @@ PrometheusWebUIならびにGrafanaはPrometheusに格納された時系列情報
 ![data_visualization_and_export](./images/data_visualization.png)
 
 ### 2-3. Prometheusハンズオン
-ハンズオンは以下の流れで勧めます。
+ハンズオンは以下の流れで進めます。
 1. PrometheusサーバとWebサーバを建て、node exporterを使ってパフォーマンス監視を行う
 2. Grafanaを使ってパフォーマンス監視を可視化する
 3. blackbox exporterを使って外部監視を行い、Grafanaで可視化する
