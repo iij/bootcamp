@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2019, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 title: jQueryを触ってみよう
 description: JavaScriptライブラリであるjQueryを通してHTMLのDOM操作などについて学びます。
 time: 1h
@@ -31,7 +31,7 @@ prior_knowledge: JavaScript
 
 ### ディレクトリ構造
 
-```
+```terminal
 iij-bootcamp-jquery/
 ├── index.html
 └── study.js
@@ -39,7 +39,7 @@ iij-bootcamp-jquery/
 
 ### index.html の中身
 
-```
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -63,7 +63,7 @@ iij-bootcamp-jquery/
 
 #### study.js の中身
 
-```
+```javascript
 (function($) {
   'use strict';
 
@@ -168,7 +168,7 @@ DOM（ドム）とは、Document Object Model の略で、HTML で表現され�
 
 index.html に以下の内容を書いてみてください。
 
-```
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -192,7 +192,7 @@ index.html に以下の内容を書いてみてください。
 
 ツリーであるというのは、ある要素（ノード）が唯一の親を持つような、親子関係があるということです。DOM ツリーの頂点は常に Document というノードになり、その下に HTML の要素が DOM としてぶらさがっています。
 
-```
+```terminal
 [Document]
   └ [HTML]{lang: "ja"}
       ├ [HEAD]
@@ -228,7 +228,7 @@ index.html に以下の内容を書いてみてください。
 
 `class 属性値` にマッチする要素は1個であるという前提で以下のようなコードを書いてみます。
 
-```
+```javascript
 (function() {
   'use strict';
 
@@ -310,7 +310,7 @@ DOM が構築されてからスクリプトを実行したいので、`body` 要
 
 3章で書いた study.js の `section3_works();` の呼び出し部分を、次のように書き換えてみてください。
 
-```
+```javascript{4-6}
 (function() {
   'use strict';
 
@@ -372,7 +372,7 @@ index.html は以下のものにしておき、study.js で色々なコードを
 
 ### index.html
 
-```
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -401,7 +401,7 @@ index.html は以下のものにしておき、study.js で色々なコードを
 
 ### 練習1 - study.js
 
-```
+```javascript
 (function($) {
   'use strict';
 
@@ -430,7 +430,7 @@ index.html は以下のものにしておき、study.js で色々なコードを
 
 `work1` が実行されるのは「DOMの構築が完了したタイミング」です。
 
-```
+```javascript
 document.addEventListener('DOMContentLoaded', function() {
   // ここにコードを書く
 }, false);
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 このようなコードと同等の動作を、jQuery では次のように書くことができます。
 
-```
+```javascript
 $(function() {
   // ここにコードを書く
 });
@@ -446,7 +446,7 @@ $(function() {
 
 たまに jQuery で、
 
-```
+```javascript
 $(document).ready(function() {
   // ここにコードを書く
 });
@@ -458,7 +458,7 @@ $(document).ready(function() {
 
 html はそのままで、study.js を別のものにしてみます。
 
-```
+```javascript
 (function($) {
   'use strict';
 
@@ -559,7 +559,7 @@ html はそのままで、study.js を別のものにしてみます。
 
 要素の追加（移動）のメソッドについて。
 
-```
+```html
 <body>
   <!-- $main.before() はここ -->
   <main>
@@ -594,7 +594,7 @@ jQuery の最新版は 3.4.x ですが、個人的な感覚では API はバー�
 
 jQuery の変数（オブジェクト）について。
 
-```
+```javascript
 var p = document.getElementsByTagName('p')[0];
 var $p = $(p);
 // これは $p = $('p').eq(0) と等価です。
