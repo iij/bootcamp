@@ -1,6 +1,3 @@
----
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
----
 
 (事前準備)
 `docker pull forestsource/bootcamp-angular`して下さい。(1GB強あるので有線環境がおすすめです。)
@@ -36,14 +33,14 @@ Angular は2016年に発表されたwebフレームワークで、googleが中�
 
 逆に記述量が多いため、小さいアプリケーションの開発ではオーバーヘッドが大きくなりがち。また学習コストも比較的高いです。
 
-## first step
+## 1
 
 Angular でアプリケーションを構築する場合はほぼ必ず [angular-cli](https://cli.angular.io/) というツールを利用します。これはAngular専用のCLIツールで、テンプレートコードを生成したり、開発用サーバを立ち上げたりしてくれます。
 コマンド名は「ng」です。(aNGularの略称)
 
 まずはこれを使い、自動生成されるAngularアプリケーションを起動してみましょう。
 
-### docker imageの利用方法
+### 1.1 docker imageの利用方法
 あらかじめAngularがインストールされたコンテナイメージに、ホストのディレクトリをマウントして開発を進めます。
 こうすると、ホスト側で好きなエディタを使えるので開発が楽になります。
 ただし、コマンドはdockerのbashで実行する必要があります。
@@ -63,7 +60,7 @@ docker run --name bootcamp-angular -it --rm -v C:\Users\%username\Desktop\bootca
 docker exec -it bootcamp-angular bash
 ```
 
-### angular-cliで開発環境を構築
+### 1.2 angular-cliで開発環境を構築
 今回使うdocker imageにはすでにangular(angular-cli)がインストールされています。
 
 ```bash
@@ -86,7 +83,7 @@ Angular 開発環境の構築はこれで完了です。簡単ですね！
 
 <img src="./images/welcome.png">
 
-### サンプルアプリケーションをいじってみる
+### 1.3 サンプルアプリケーションをいじってみる
 
 `ng new`で生成されたアプリケーションの中身を少し見てみましょう。Angular アプリケーションのソースコードは主に `src/app/` 以下にあります。
 
@@ -563,4 +560,6 @@ observable.pipe(
 
 Angular ではHTTPリクエストはもちろん、URLの変更やform要素の入力、ユーザーイベントなど全ての変更がObservableで処理されています。
 
-<credit-footer/>
+---
+footer: CC BYvvvvvvvvvvvvvaaa-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+---
