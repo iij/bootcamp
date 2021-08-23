@@ -18,5 +18,8 @@ module.exports = {
   },
   base: '/bootcamp/',
   dest: 'docs',
-  plugins: ['@vuepress/register-components']
+  plugins: [
+    '@vuepress/register-components',
+    ['vuepress-plugin-code-copy', true]
+  ]
 }
