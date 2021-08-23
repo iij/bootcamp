@@ -25,7 +25,7 @@
     "@vuepress/shared-utils": "^1.8.2",
     "@vue/component-compiler-utils": "^3.2.2",
     "lru-cache": "^6.0.0",
-    "markdown-it-emoji": "^2.0.0",
+    "markdown-it-emoji": "^2.0.0"
   },
   "devDependencies": {
     "textlint": "^11.6.3"
