@@ -94,7 +94,7 @@ Reactを始めるための方法としては、いくつかの方法がありま
   - [Glitch](https://glitch.com/edit/#!/remix/starter-react-template)
 - 既存のHTMLページの中にReact埋め込みたい = 下記のチュートリアル
   - [Add React to a WebSite](https://reactjs.org/docs/add-react-to-a-website.html)
-- フルにReactを使ってアプリケーションを作りたい = Create ReactApp
+- フルにReactを使ってアプリケーションを作りたい = Create React App
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
 
 このハンズオンでは、最初からReactを使うことを想定して CreateReactApp を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/dockerfiles/bootcamp-react/Dockerfile)を参考にしてください。
