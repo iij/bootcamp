@@ -219,7 +219,7 @@ function App() {
 export default App;
 ```
 
-さあ、[localhost:3000](localhost:3000)にアクセスするとブラウザに表示されている内容が変化したと思います。
+さあ、[localhost:3000](http://localhost:3000)にアクセスするとブラウザに表示されている内容が変化したと思います。
 
 ![componentcomponentcomponent](./images/componentcomponentcomponent.png)
 
@@ -626,7 +626,7 @@ $ docker cp bootcamp-react:/app/build ./
 $ docker run --rm -d -p 9000:80 --name react-prod -v ${PWD}/build/:/usr/share/nginx/html/ nginx:latest
 ```
 
-以降ホストマシン側のlocalhost:9000へアクセスすると、先ほど作成したSPAが画面に表示されているはずです。
+以降ホストマシン側の[localhost:9000](http://localhost:9000)へアクセスすると、先ほど作成したSPAが画面に表示されているはずです。
 
 
 # 最後に
