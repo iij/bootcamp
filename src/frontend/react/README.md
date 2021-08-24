@@ -76,7 +76,7 @@ $ git clone git@github.com:iij/bootcamp.git
 
 ## Reactとは
 
-Reactは、もともと Facebook社が開発している Webユーザーインタフェースのためのフレームワークです。2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多種多様な場所で利用されています。\
+Reactは、もともとFacebook社が開発しているWebユーザーインタフェースのためのフレームワークです。2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多種多様な場所で利用されています。\
 IIJでもいくつかの製品のフロントエンドとしてReactが採用されています。
 
 公式サイト：[React - ユーザインターフェース構築のためのJavaScriptライブラリ](https://ja.reactjs.org/)
@@ -97,7 +97,7 @@ Reactを始めるための方法としては、いくつかの方法がありま
 - フルにReactを使ってアプリケーションを作りたい = Create React App
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
 
-このハンズオンでは、最初からReactを使うことを想定して Create React App を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
+このハンズオンでは、最初からReactを使うことを想定してCreate React App を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
 
 :::
 
@@ -134,7 +134,7 @@ $ docker exec -it bootcamp-react bash
 ❯ 
 ```
 
-:computer: src/App.tsx を開き下記の通りに編集してください。
+:computer: src/App.tsxを開き下記の通りに編集してください。
 
 ```tsx{7}
 import './App.css';
@@ -199,7 +199,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 }
 ```
 
-:computer: さらに src/App.tsx が Note.tsx を使うように修正してください。
+:computer: さらにsrc/App.tsxがNote.tsxを使うように修正してください。
 
 ```tsx{2,8-9}
 import './App.css';
@@ -236,7 +236,7 @@ export default App;
 
 他も文字を叫ぶことができるように、叫ぶ文字を外から渡してあげることができるようにしましょう。
 
-:computer: src/Note.tsx を下記のように修正してみましょう。
+:computer: src/Note.tsxを下記のように修正してみましょう。
 
 ```tsx{5-6,11-18,21}
 import React from "react";
@@ -302,7 +302,7 @@ export default App;
 `props`フィールドを通じてコンポーネント間のデータの受け渡しはできましたが、ユーザーからの入力や外部から取得した情報はどのように保存するべきでしょうか？
 コンポーネントにはStateというデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
 
-:computer: src/Note.tsx を下記の通りに修正してください。
+:computer: src/Note.tsxを下記の通りに修正してください。
 
 ```tsx{4,8,13-19,21-28,39-46}
 import React from "react";
@@ -381,7 +381,7 @@ export default App;
 
 ![state](./images/state.png)
 
-State はコンポーネントの内部でのみ生きているデータベースのようなものです。State を`setState`メソッド経由で更新を行うと、関連するコンポーネントや DOM が自動で更新されます。
+Stateはコンポーネントの内部でのみ生きているデータベースのようなものです。Stateを`setState`メソッド経由で更新を行うと、関連するコンポーネントやDOMが自動で更新されます。
 
 実際に"Click me!!"のボタンをクリックしてみてください。
 
@@ -392,9 +392,9 @@ State はコンポーネントの内部でのみ生きているデータベー�
 
 :::tip Redux
 
-State を利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。またStateをもっと複雑に利用したいケースもでてきます。
+Stateを利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。またStateをもっと複雑に利用したいケースもでてきます。
 
-その場合はReduxというモジュールを使うと良いでしょう。Redux はアプリケーションの状態を管理するためのモジュールでReactと親和性が非常に高いためよく利用されます。
+その場合はReduxというモジュールを使うと良いでしょう。Reduxはアプリケーションの状態を管理するためのモジュールでReactと親和性が非常に高いためよく利用されます。
 
 ただしReduxは扱いに癖があり、ハンズオンなどの短い時間での導入が難しいためこのハンズオンでは紹介にとどめておきます。
 
