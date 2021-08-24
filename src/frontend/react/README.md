@@ -97,7 +97,7 @@ Reactを始めるための方法としては、いくつかの方法がありま
 - フルにReactを使ってアプリケーションを作りたい = Create React App
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
 
-このハンズオンでは、最初からReactを使うことを想定して CreateReactApp を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/dockerfiles/bootcamp-react/Dockerfile)を参考にしてください。
+このハンズオンでは、最初からReactを使うことを想定して Create React App を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
 
 :::
 
