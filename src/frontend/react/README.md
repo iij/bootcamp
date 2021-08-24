@@ -411,12 +411,12 @@ State を利用することで、単一のコンポーネントでデータを�
 
 :computer: src/Note.tsxを下記のように修正します。
 
-```tsx{5,12-17,25,29-37,52-63}
+```tsx{5,12-19,27,31-39,54-65}
 import React from "react";
 
 interface NoteState {
   counter: number
-  isLoaded: boolean
+  isLoaded: boolean // コンポーネントのロードステータス
 }
 
 interface NoteProps {
