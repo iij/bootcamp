@@ -572,7 +572,7 @@ export default function Note(props: NoteProps) {
 }
 ```
 
-:computer: src/Apps.tsxでNoteのimport元を差し替えてください。
+:computer: src/App.tsxでNoteのimport元を差し替えてください。
 
 ```tsx{2}
 import './App.css';
