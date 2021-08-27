@@ -2,7 +2,7 @@
 
 ARG NODE_VERSION=12.16.3
 
-FROM node:${NODE_VERSION}-slim as node
+FROM node:16.7-buster as node
 ENV LANG=en_US.UTF-8
 WORKDIR /app
 
@@ -11,6 +11,7 @@ FROM node as chrome-installed
 # hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+               libxshmfence1 \
                libappindicator1 \
                fonts-liberation \
                libappindicator3-1 \
