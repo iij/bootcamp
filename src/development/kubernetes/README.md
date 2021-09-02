@@ -58,7 +58,7 @@ Kubernetesは元々Googleがアプリケーションデプロイに利用して�
 > 
 > Kubernetesはギリシャ語で「操舵士」や「パイロット」を意味し、ロゴは操舵士にちなんで舵をモチーフにされています。7つのスポークは当初のKubernetesのコードネーム「Project Seven」にちなんでいます。
 
-KubernetesをベースにカスタマイズしたKubernetesサービスを最近ではKaaS(Kubernetes as a Service)といい、AWSやGCPなどの各クラウドベンダで提供されています。
+KubernetesをベースにカスタマイズしたKubernetesサービスを最近ではKaaS(Kubernetes as a Service)と言い、AWSやGCPなどの各クラウドベンダで提供されています。
 
 - Amazon EKS
 - Google Kubernetes Engine(GKE)
