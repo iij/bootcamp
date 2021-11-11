@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Microsoft Visio、SVG Export により生成 image_nodeport.svg NodePort -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="16.5354in" height="11.6929in"
+		viewBox="0 0 1190.55 841.89" xml:space="preserve" color-interpolation-filters="sRGB" class="st27">
+	<v:documentProperties v:langID="1041" v:metric="true" v:viewMarkup="false">
+		<v:userDefs>
+			<v:ud v:nameU="msvNoAutoConnect" v:val="VT0(1):26"/>
+		</v:userDefs>
+	</v:documentProperties>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st3 {fill:#ff00ff;fill-opacity:0;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0;stroke-width:0.72}
+		.st4 {fill:url(#grad0-19)}
+		.st5 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st6 {fill:url(#grad11-24)}
+		.st7 {fill:url(#grad12-31);stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st8 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st9 {fill:url(#grad12-40);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st10 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.6}
+		.st11 {fill:#000000;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st12 {fill:url(#grad8-56);stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st13 {fill:url(#grad10-61);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st14 {fill:#000000;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st15 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st16 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st17 {fill:#000000;font-family:ＭＳ Ｐゴシック;font-size:2.50001em}
+		.st18 {font-size:1em}
+		.st19 {fill:#ffc000;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st20 {fill:#000000;font-family:ＭＳ Ｐゴシック;font-size:1.33333em}
+		.st21 {fill:#fff2cc;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st22 {fill:#b7dde8;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st23 {fill:#000000;font-family:ＭＳ Ｐゴシック;font-size:4.00001em}
+		.st24 {marker-start:url(#mrkr4-202);stroke:#c05046;stroke-linecap:round;stroke-linejoin:round;stroke-width:5.25}
+		.st25 {fill:#c05046;fill-opacity:1;stroke:#c05046;stroke-opacity:1;stroke-width:0.67567567567568}
+		.st26 {fill:#03a9f4;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st27 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Patterns_And_Gradients">
+		<linearGradient id="grad0-19" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(270 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#e1d8c1" stop-opacity="1"/>
+		</linearGradient>
+		<pattern id="grad11-24" x="0" y="0" width="1" height="1" patternContentUnits="objectBoundingBox">
+			<path d="M 0 1 L 0 0 L 1 0 z" style="fill:url(#grad0-25)"/>
+			<path d="M 0 1 L 1 1 L 1 0 z" style="fill:url(#grad0-26)"/>
+		</pattern>
+		<linearGradient id="grad0-25" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(180 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#cabb97" stop-opacity="1"/>
+		</linearGradient>
+		<linearGradient id="grad0-26" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(90 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#cabb97" stop-opacity="1"/>
+		</linearGradient>
+		<pattern id="grad12-31" x="0" y="0" width="1" height="1" patternContentUnits="objectBoundingBox">
+			<path d="M 0 0 L 0 1 L 1 1 z" style="fill:url(#grad0-32)"/>
+			<path d="M 0 0 L 1 0 L 1 1 z" style="fill:url(#grad0-33)"/>
+		</pattern>
+		<linearGradient id="grad0-32" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(90 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#b6a06d" stop-opacity="1"/>
+		</linearGradient>
+		<linearGradient id="grad0-33" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(360 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#b6a06d" stop-opacity="1"/>
+		</linearGradient>
+		<pattern id="grad12-40" x="0" y="0" width="1" height="1" patternContentUnits="objectBoundingBox">
+			<path d="M 0 0 L 0 1 L 1 1 z" style="fill:url(#grad0-41)"/>
+			<path d="M 0 0 L 1 0 L 1 1 z" style="fill:url(#grad0-42)"/>
+		</pattern>
+		<linearGradient id="grad0-41" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(90 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#339966" stop-opacity="1"/>
+		</linearGradient>
+		<linearGradient id="grad0-42" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(360 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#339966" stop-opacity="1"/>
+		</linearGradient>
+		<linearGradient id="grad0-46" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(270 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#e7e4cd" stop-opacity="1"/>
+		</linearGradient>
+		<pattern id="grad8-56" x="0" y="0" width="1" height="1" patternContentUnits="objectBoundingBox">
+			<path d="M 0 0 L 1 0 L 1 1 z" style="fill:url(#grad0-46)"/>
+			<path d="M 0 0 L 0 1 L 1 1 z" style="fill:url(#grad0-57)"/>
+		</pattern>
+		<linearGradient id="grad0-57" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(180 0.5 0.5)">
+			<stop offset="0" stop-color="#ffffff" stop-opacity="1"/>
+			<stop offset="1" stop-color="#e7e4cd" stop-opacity="1"/>
+		</linearGradient>
+		<pattern id="grad10-61" x="0" y="0" width="1" height="1" patternContentUnits="objectBoundingBox">
+			<path d="M 0.5 0.5 L 0 0 L 0 1 z" style="fill:url(#grad0-62)"/>
+			<path d="M 0.5 0.5 L 1 0 L 1 1 z" style="fill:url(#grad0-63)"/>
+			<path d="M 0.5 0.5 L 0 0 L 1 0 z" style="fill:url(#grad0-64)"/>
+			<path d="M 0.5 0.5 L 0 1 L 1 1 z" style="fill:url(#grad0-65)"/>
+		</pattern>
+		<linearGradient id="grad0-62" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(180 0.5 0.5)">
+			<stop offset="0" stop-color="#000000" stop-opacity="0.4"/>
+			<stop offset="1" stop-color="#e7e4cd" stop-opacity="0.4"/>
+		</linearGradient>
+		<linearGradient id="grad0-63" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(360 0.5 0.5)">
+			<stop offset="0" stop-color="#000000" stop-opacity="0.4"/>
+			<stop offset="1" stop-color="#e7e4cd" stop-opacity="0.4"/>
+		</linearGradient>
+		<linearGradient id="grad0-64" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(270 0.5 0.5)">
+			<stop offset="0" stop-color="#000000" stop-opacity="0.4"/>
+			<stop offset="1" stop-color="#e7e4cd" stop-opacity="0.4"/>
+		</linearGradient>
+		<linearGradient id="grad0-65" x1="0" y1="0" x2="1" y2="0" gradientTransform="rotate(90 0.5 0.5)">
+			<stop offset="0" stop-color="#000000" stop-opacity="0.4"/>
+			<stop offset="1" stop-color="#e7e4cd" stop-opacity="0.4"/>
+		</linearGradient>
+	</defs>
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-202" class="st25" v:arrowType="4" v:arrowSize="2" v:setback="2.89143" refX="2.8914285714286"
+				orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(1.48) "/>
+		</marker>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="backgroundPage">
+		<title>base</title>
+		<v:pageProperties width="16.5354" height="11.6929" v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24"
+				v:shadowOffsetX="8.50394" v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="フローチャート" v:index="0"/>
+		<v:layer v:name="コネクタ" v:index="1"/>
+		<g id="shape2-1" v:mID="2" v:groupContext="shape" v:layerMember="0" transform="translate(450.709,-85.0394)">
+			<title>処理.2</title>
+			<v:custProps>
+				<v:cp v:nameU="Cost" v:lbl="コスト" v:prompt="" v:type="7" v:format="@" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="ProcessNumber" v:lbl="プロセス番号" v:prompt="" v:type="2" v:format="" v:sortKey="" v:invis="false"
+						v:ask="false" v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Owner" v:lbl="所有者" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Function" v:lbl="機能" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0" v:val="VT4()"/>
+				<v:cp v:nameU="StartDate" v:lbl="開始日" v:prompt="" v:type="5" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="EndDate" v:lbl="終了日" v:prompt="" v:type="5" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Status" v:lbl="状態" v:prompt="" v:type="4" v:format=";未開始;進行中;完了;延期;情報待ち" v:sortKey=""
+						v:invis="false" v:ask="false" v:langID="1041" v:cal="0" v:val="VT4()"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="DefaultWidth" v:prompt="" v:val="VT0(0.98425196850394):24"/>
+				<v:ud v:nameU="DefaultHeight" v:prompt="" v:val="VT0(0.59055118110236):24"/>
+				<v:ud v:nameU="ResizeTxtHeight" v:prompt="" v:val="VT0(0.59055118110236):24"/>
+			</v:userDefs>
+			<rect x="0" y="416.693" width="289.134" height="425.197" class="st1"/>
+		</g>
+		<g id="shape4-3" v:mID="4" v:groupContext="shape" v:layerMember="0" transform="translate(110.551,-85.0394)">
+			<title>処理.4</title>
+			<v:custProps>
+				<v:cp v:nameU="Cost" v:lbl="コスト" v:prompt="" v:type="7" v:format="@" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="ProcessNumber" v:lbl="プロセス番号" v:prompt="" v:type="2" v:format="" v:sortKey="" v:invis="false"
+						v:ask="false" v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Owner" v:lbl="所有者" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Function" v:lbl="機能" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0" v:val="VT4()"/>
+				<v:cp v:nameU="StartDate" v:lbl="開始日" v:prompt="" v:type="5" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="EndDate" v:lbl="終了日" v:prompt="" v:type="5" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Status" v:lbl="状態" v:prompt="" v:type="4" v:format=";未開始;進行中;完了;延期;情報待ち" v:sortKey=""
+						v:invis="false" v:ask="false" v:langID="1041" v:cal="0" v:val="VT4()"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="DefaultWidth" v:prompt="" v:val="VT0(0.98425196850394):24"/>
+				<v:ud v:nameU="DefaultHeight" v:prompt="" v:val="VT0(0.59055118110236):24"/>
+				<v:ud v:nameU="ResizeTxtHeight" v:prompt="" v:val="VT0(0.59055118110236):24"/>
+			</v:userDefs>
+			<rect x="0" y="416.693" width="289.134" height="425.197" class="st1"/>
+		</g>
+		<g id="shape5-5" v:mID="5" v:groupContext="shape" v:layerMember="0" transform="translate(790.866,-85.0394)">
+			<title>処理.5</title>
+			<v:custProps>
+				<v:cp v:nameU="Cost" v:lbl="コスト" v:prompt="" v:type="7" v:format="@" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="ProcessNumber" v:lbl="プロセス番号" v:prompt="" v:type="2" v:format="" v:sortKey="" v:invis="false"
+						v:ask="false" v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Owner" v:lbl="所有者" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Function" v:lbl="機能" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0" v:val="VT4()"/>
+				<v:cp v:nameU="StartDate" v:lbl="開始日" v:prompt="" v:type="5" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="EndDate" v:lbl="終了日" v:prompt="" v:type="5" v:format="" v:sortKey="" v:invis="false" v:ask="false"
+						v:langID="1041" v:cal="0"/>
+				<v:cp v:nameU="Status" v:lbl="状態" v:prompt="" v:type="4" v:format=";未開始;進行中;完了;延期;情報待ち" v:sortKey=""
+						v:invis="false" v:ask="false" v:langID="1041" v:cal="0" v:val="VT4()"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="DefaultWidth" v:prompt="" v:val="VT0(0.98425196850394):24"/>
+				<v:ud v:nameU="DefaultHeight" v:prompt="" v:val="VT0(0.59055118110236):24"/>
+				<v:ud v:nameU="ResizeTxtHeight" v:prompt="" v:val="VT0(0.59055118110236):24"/>
+			</v:userDefs>
+			<rect x="0" y="416.693" width="289.134" height="425.197" class="st1"/>
+		</g>
+		<g id="shape8-7" v:mID="8" v:groupContext="shape" v:layerMember="1" transform="translate(935.433,-503.15)">
+			<title>動的コネクタ</title>
+			<path d="M0 834.8 L0 681.73 L-340.16 681.73 L-340.16 834.8" class="st2"/>
+		</g>
+		<g id="shape9-10" v:mID="9" v:groupContext="shape" v:layerMember="1" transform="translate(255.118,-510.236)">
+			<title>動的コネクタ.9</title>
+			<path d="M0 841.89 L0 688.82 L340.16 688.82 L340.16 527.24" class="st2"/>
+		</g>
+		<g id="group10-13" transform="translate(85.0394,-51.0236)" v:mID="10" v:groupContext="group">
+			<v:custProps>
+				<v:cp v:nameU="Manufacturer" v:lbl="製造元" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="ProductNumber" v:lbl="製品番号" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="PartNumber" v:lbl="部品番号" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="ProductDescription" v:lbl="製品の説明" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="AssetNumber" v:lbl="資産番号" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="SerialNumber" v:lbl="シリアル番号" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="Location" v:lbl="設置場所" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Building" v:lbl="ビル名" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Room" v:lbl="部屋名" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Department" v:lbl="部署名" v:type="0" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="NetworkName" v:lbl="ネットワーク名" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="IPAddress" v:lbl="IP アドレス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="SubnetMask" v:lbl="サブネット マスク" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="AdminInterface" v:lbl="管理インターフェイス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="NumberofPorts" v:lbl="ポート数" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="CommunityString" v:lbl="コミュニティ文字列" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="NetworkDescription" v:lbl="ネットワークの説明" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="CPU" v:lbl="CPU" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Memory" v:lbl="メモリ" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="OperatingSystem" v:lbl="オペレーティング システム" v:type="0" v:sortKey="Workstation" v:invis="false"
+						v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="BelongsTo" v:lbl="所属先" v:type="0" v:invis="true" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="ShapeClass" v:lbl="ShapeClass" v:type="0" v:invis="true" v:ask="false" v:langID="1041"
+						v:val="VT4(Equipment)"/>
+				<v:cp v:nameU="ShapeType" v:lbl="ShapeType" v:type="0" v:invis="true" v:ask="false" v:langID="1041"
+						v:val="VT4(サーバー)"/>
+				<v:cp v:nameU="MACAddress" v:lbl="MAC アドレス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="HardDriveSize" v:lbl="ハード ディスク容量" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="HasText" v:val="VT0(0):5"/>
+				<v:ud v:nameU="SolSH" v:val="VT15({BF0433D9-CD73-4EB5-8390-8653BE590246}):41"/>
+				<v:ud v:nameU="ShapeClass" v:val="VT0(5):26"/>
+				<v:ud v:nameU="ShapeType" v:val="VT0(24):26"/>
+				<v:ud v:nameU="visLegendShape" v:val="VT0(2):26"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>サーバー</title>
+			<g id="shape11-14" v:mID="11" v:groupContext="shape">
+				<title>シート.11</title>
+				<path d="M73.47 754.98 L45.21 739.84 L0 764.48 L0.02 827.74 A47.5731 44.427 -180 0 0 27.9 841.89 L73.47 817.26 L73.47
+							 754.98 ZM12.54 774.33 A49.0965 45.8496 -180 0 0 27.9 779.78 A48.5481 45.3374 0 0 1 12.54 774.33 Z"
+						class="st3"/>
+			</g>
+			<g id="shape12-16" v:mID="12" v:groupContext="shape" transform="translate(0,-62.1065)">
+				<title>シート.12</title>
+				<path d="M27.88 841.89 L73.47 817.08 L45.21 801.95 L0 826.58 A49.0965 45.8496 -180 0 0 27.9 841.89 L27.88 841.89 Z"
+						class="st4"/>
+				<path d="M27.88 841.89 L73.47 817.08 L45.21 801.95 L0 826.58 A49.0965 45.8496 -180 0 0 27.9 841.89" class="st5"/>
+			</g>
+			<g id="shape13-21" v:mID="13" v:groupContext="shape" transform="translate(0.016695,-5.68434E-13)">
+				<title>シート.13</title>
+				<path d="M27.88 779.78 A48.5481 45.3374 0 0 1 -0 764.4 L0 827.74 A47.5731 44.427 -180 0 0 27.88 841.89 L27.87 779.78
+							 L27.88 779.78 Z" class="st6"/>
+				<path d="M27.88 779.78 A48.5481 45.3374 0 0 1 -0 764.4 L0 827.74 A47.5731 44.427 -180 0 0 27.88 841.89 L27.87 779.78"
+						class="st5"/>
+			</g>
+			<g id="shape14-28" v:mID="14" v:groupContext="shape" transform="translate(27.8824,-0.0701939)">
+				<title>シート.14</title>
+				<path d="M0 779.85 L0 841.89 L45.59 817.33 L45.59 755.05 L0 779.85 Z" class="st7"/>
+			</g>
+			<g id="shape15-34" v:mID="15" v:groupContext="shape" transform="translate(0,-0.00224948)">
+				<title>シート.15</title>
+				<path d="M73.47 754.98 L45.21 739.84 L0 764.48 L0.02 827.74 A47.5731 44.427 -180 0 0 27.9 841.89 L73.47 817.26 L73.47
+							 754.98" class="st8"/>
+			</g>
+			<g id="shape16-37" v:mID="16" v:groupContext="shape" transform="translate(-276.124,17.9672) rotate(-20)">
+				<title>シート.16</title>
+				<ellipse cx="2.13422" cy="838.984" rx="2.13422" ry="2.90614" class="st9"/>
+			</g>
+			<g id="shape17-43" v:mID="17" v:groupContext="shape" transform="translate(4.52148,-8.97497)">
+				<title>シート.17</title>
+				<path d="M0 824.65 A54.4615 49.7413 -96.44 0 0 18.84 834.32" class="st10"/>
+				<path d="M0 828.43 A54.4615 49.7413 -96.44 0 0 18.84 838.11" class="st10"/>
+				<path d="M0 832.21 A54.4615 49.7413 -96.44 0 0 18.84 841.89" class="st10"/>
+			</g>
+			<g id="group18-50" transform="translate(3.7679,-43.9862)" v:mID="18" v:groupContext="group">
+				<title>シート.18</title>
+				<g id="shape19-51" v:mID="19" v:groupContext="shape" transform="translate(0,-10.1802)">
+					<title>シート.19</title>
+					<path d="M0.67 832.21 A47.5173 44.3748 -180 0 0 19.51 841.89 a0.965524 0.901671 -180 0 0 -3.55271E-15 -1.75936
+								 A46.2245 43.1675 0 0 1 1.05 830.74 a0.625517 0.58415 -180 0 0 -1.04429 0.496596 A1.36329 1.27313
+								 -180 0 0 0.67 832.21 Z" class="st11"/>
+				</g>
+				<g id="shape20-53" v:mID="20" v:groupContext="shape" transform="translate(5.99157,-12.3979)">
+					<title>シート.20</title>
+					<path d="M5.8 841.82 A7.06044 4.29812 -90.9 0 0 0.14 839 A4.64542 2.31605 -180 0 0 5.8 841.82 Z" class="st12"/>
+				</g>
+				<g id="shape21-58" v:mID="21" v:groupContext="shape" transform="translate(0.75358,-0.0879679)">
+					<title>シート.21</title>
+					<path d="M0 827.29 L0 832.21 A51.1142 47.7339 -180 0 0 18.84 841.89 L18.84 836.96 A52.7871 49.2961 0 0 1 0 827.29
+								 Z" class="st13"/>
+				</g>
+				<g id="shape22-66" v:mID="22" v:groupContext="shape" transform="translate(0.75358,-2.81497)">
+					<title>シート.22</title>
+					<path d="M-0 832.21 A46.2642 43.2046 -180 0 0 18.84 841.89 L18.84 840.66 A51.1348 47.7531 0 0 1 0 830.98 L0 832.21
+								 Z" class="st14"/>
+				</g>
+				<g id="shape23-68" v:mID="23" v:groupContext="shape" transform="translate(0.75358,-0.175936)">
+					<title>シート.23</title>
+					<path d="M0 827.29 L0 832.21 A51.1142 47.7339 -180 0 0 18.84 841.89" class="st5"/>
+				</g>
+				<g id="shape24-71" v:mID="24" v:groupContext="shape" transform="translate(0.75358,1.13687E-13)">
+					<title>シート.24</title>
+					<path d="M18.84 841.89 L18.84 836.96 A52.7871 49.2961 0 0 1 0 827.29" class="st15"/>
+				</g>
+			</g>
+		</g>
+		<g id="group25-75" transform="translate(425.197,-51.0236)" v:mID="25" v:groupContext="group">
+			<v:custProps>
+				<v:cp v:nameU="Manufacturer" v:lbl="製造元" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="ProductNumber" v:lbl="製品番号" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="PartNumber" v:lbl="部品番号" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="ProductDescription" v:lbl="製品の説明" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="AssetNumber" v:lbl="資産番号" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="SerialNumber" v:lbl="シリアル番号" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="Location" v:lbl="設置場所" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Building" v:lbl="ビル名" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Room" v:lbl="部屋名" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Department" v:lbl="部署名" v:type="0" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="NetworkName" v:lbl="ネットワーク名" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="IPAddress" v:lbl="IP アドレス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="SubnetMask" v:lbl="サブネット マスク" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="AdminInterface" v:lbl="管理インターフェイス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="NumberofPorts" v:lbl="ポート数" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="CommunityString" v:lbl="コミュニティ文字列" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="NetworkDescription" v:lbl="ネットワークの説明" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="CPU" v:lbl="CPU" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Memory" v:lbl="メモリ" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="OperatingSystem" v:lbl="オペレーティング システム" v:type="0" v:sortKey="Workstation" v:invis="false"
+						v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="BelongsTo" v:lbl="所属先" v:type="0" v:invis="true" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="ShapeClass" v:lbl="ShapeClass" v:type="0" v:invis="true" v:ask="false" v:langID="1041"
+						v:val="VT4(Equipment)"/>
+				<v:cp v:nameU="ShapeType" v:lbl="ShapeType" v:type="0" v:invis="true" v:ask="false" v:langID="1041"
+						v:val="VT4(サーバー)"/>
+				<v:cp v:nameU="MACAddress" v:lbl="MAC アドレス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="HardDriveSize" v:lbl="ハード ディスク容量" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="HasText" v:val="VT0(0):5"/>
+				<v:ud v:nameU="SolSH" v:val="VT15({BF0433D9-CD73-4EB5-8390-8653BE590246}):41"/>
+				<v:ud v:nameU="ShapeClass" v:val="VT0(5):26"/>
+				<v:ud v:nameU="ShapeType" v:val="VT0(24):26"/>
+				<v:ud v:nameU="visLegendShape" v:val="VT0(2):26"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>サーバー.25</title>
+			<g id="shape26-76" v:mID="26" v:groupContext="shape">
+				<title>シート.26</title>
+				<path d="M73.47 754.98 L45.21 739.84 L0 764.48 L0.02 827.74 A47.5731 44.427 -180 0 0 27.9 841.89 L73.47 817.26 L73.47
+							 754.98 ZM12.54 774.33 A49.0965 45.8496 -180 0 0 27.9 779.78 A48.5481 45.3374 0 0 1 12.54 774.33 Z"
+						class="st3"/>
+			</g>
+			<g id="shape27-78" v:mID="27" v:groupContext="shape" transform="translate(0,-62.1065)">
+				<title>シート.27</title>
+				<path d="M27.88 841.89 L73.47 817.08 L45.21 801.95 L0 826.58 A49.0965 45.8496 -180 0 0 27.9 841.89 L27.88 841.89 Z"
+						class="st4"/>
+				<path d="M27.88 841.89 L73.47 817.08 L45.21 801.95 L0 826.58 A49.0965 45.8496 -180 0 0 27.9 841.89" class="st5"/>
+			</g>
+			<g id="shape28-82" v:mID="28" v:groupContext="shape" transform="translate(0.016695,-5.68434E-13)">
+				<title>シート.28</title>
+				<path d="M27.88 779.78 A48.5481 45.3374 0 0 1 -0 764.4 L0 827.74 A47.5731 44.427 -180 0 0 27.88 841.89 L27.87 779.78
+							 L27.88 779.78 Z" class="st6"/>
+				<path d="M27.88 779.78 A48.5481 45.3374 0 0 1 -0 764.4 L0 827.74 A47.5731 44.427 -180 0 0 27.88 841.89 L27.87 779.78"
+						class="st5"/>
+			</g>
+			<g id="shape29-86" v:mID="29" v:groupContext="shape" transform="translate(27.8824,-0.0701939)">
+				<title>シート.29</title>
+				<path d="M0 779.85 L0 841.89 L45.59 817.33 L45.59 755.05 L0 779.85 Z" class="st7"/>
+			</g>
+			<g id="shape30-89" v:mID="30" v:groupContext="shape" transform="translate(0,-0.00224948)">
+				<title>シート.30</title>
+				<path d="M73.47 754.98 L45.21 739.84 L0 764.48 L0.02 827.74 A47.5731 44.427 -180 0 0 27.9 841.89 L73.47 817.26 L73.47
+							 754.98" class="st8"/>
+			</g>
+			<g id="shape31-92" v:mID="31" v:groupContext="shape" transform="translate(-276.124,17.9672) rotate(-20)">
+				<title>シート.31</title>
+				<ellipse cx="2.13422" cy="838.984" rx="2.13422" ry="2.90614" class="st9"/>
+			</g>
+			<g id="shape32-95" v:mID="32" v:groupContext="shape" transform="translate(4.52148,-8.97497)">
+				<title>シート.32</title>
+				<path d="M0 824.65 A54.4615 49.7413 -96.44 0 0 18.84 834.32" class="st10"/>
+				<path d="M0 828.43 A54.4615 49.7413 -96.44 0 0 18.84 838.11" class="st10"/>
+				<path d="M0 832.21 A54.4615 49.7413 -96.44 0 0 18.84 841.89" class="st10"/>
+			</g>
+			<g id="group33-101" transform="translate(3.7679,-43.9862)" v:mID="33" v:groupContext="group">
+				<title>シート.33</title>
+				<g id="shape34-102" v:mID="34" v:groupContext="shape" transform="translate(0,-10.1802)">
+					<title>シート.34</title>
+					<path d="M0.67 832.21 A47.5173 44.3748 -180 0 0 19.51 841.89 a0.965524 0.901671 -180 0 0 -3.55271E-15 -1.75936
+								 A46.2245 43.1675 0 0 1 1.05 830.74 a0.625517 0.58415 -180 0 0 -1.04429 0.496596 A1.36329 1.27313
+								 -180 0 0 0.67 832.21 Z" class="st11"/>
+				</g>
+				<g id="shape35-104" v:mID="35" v:groupContext="shape" transform="translate(5.99157,-12.3979)">
+					<title>シート.35</title>
+					<path d="M5.8 841.82 A7.06044 4.29812 -90.9 0 0 0.14 839 A4.64542 2.31605 -180 0 0 5.8 841.82 Z" class="st12"/>
+				</g>
+				<g id="shape36-107" v:mID="36" v:groupContext="shape" transform="translate(0.75358,-0.0879679)">
+					<title>シート.36</title>
+					<path d="M0 827.29 L0 832.21 A51.1142 47.7339 -180 0 0 18.84 841.89 L18.84 836.96 A52.7871 49.2961 0 0 1 0 827.29
+								 Z" class="st13"/>
+				</g>
+				<g id="shape37-110" v:mID="37" v:groupContext="shape" transform="translate(0.75358,-2.81497)">
+					<title>シート.37</title>
+					<path d="M-0 832.21 A46.2642 43.2046 -180 0 0 18.84 841.89 L18.84 840.66 A51.1348 47.7531 0 0 1 0 830.98 L0 832.21
+								 Z" class="st14"/>
+				</g>
+				<g id="shape38-112" v:mID="38" v:groupContext="shape" transform="translate(0.75358,-0.175936)">
+					<title>シート.38</title>
+					<path d="M0 827.29 L0 832.21 A51.1142 47.7339 -180 0 0 18.84 841.89" class="st5"/>
+				</g>
+				<g id="shape39-115" v:mID="39" v:groupContext="shape" transform="translate(0.75358,1.13687E-13)">
+					<title>シート.39</title>
+					<path d="M18.84 841.89 L18.84 836.96 A52.7871 49.2961 0 0 1 0 827.29" class="st15"/>
+				</g>
+			</g>
+		</g>
+		<g id="group40-119" transform="translate(765.354,-51.0236)" v:mID="40" v:groupContext="group">
+			<v:custProps>
+				<v:cp v:nameU="Manufacturer" v:lbl="製造元" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="ProductNumber" v:lbl="製品番号" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="PartNumber" v:lbl="部品番号" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="ProductDescription" v:lbl="製品の説明" v:type="0" v:sortKey="Equipment" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="AssetNumber" v:lbl="資産番号" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="SerialNumber" v:lbl="シリアル番号" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="Location" v:lbl="設置場所" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Building" v:lbl="ビル名" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Room" v:lbl="部屋名" v:type="0" v:sortKey="Asset" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Department" v:lbl="部署名" v:type="0" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="NetworkName" v:lbl="ネットワーク名" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="IPAddress" v:lbl="IP アドレス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="SubnetMask" v:lbl="サブネット マスク" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="AdminInterface" v:lbl="管理インターフェイス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="NumberofPorts" v:lbl="ポート数" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="CommunityString" v:lbl="コミュニティ文字列" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="NetworkDescription" v:lbl="ネットワークの説明" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="CPU" v:lbl="CPU" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="Memory" v:lbl="メモリ" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="OperatingSystem" v:lbl="オペレーティング システム" v:type="0" v:sortKey="Workstation" v:invis="false"
+						v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="BelongsTo" v:lbl="所属先" v:type="0" v:invis="true" v:ask="false" v:langID="1041"/>
+				<v:cp v:nameU="ShapeClass" v:lbl="ShapeClass" v:type="0" v:invis="true" v:ask="false" v:langID="1041"
+						v:val="VT4(Equipment)"/>
+				<v:cp v:nameU="ShapeType" v:lbl="ShapeType" v:type="0" v:invis="true" v:ask="false" v:langID="1041"
+						v:val="VT4(サーバー)"/>
+				<v:cp v:nameU="MACAddress" v:lbl="MAC アドレス" v:type="0" v:sortKey="Network" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+				<v:cp v:nameU="HardDriveSize" v:lbl="ハード ディスク容量" v:type="0" v:sortKey="Workstation" v:invis="false" v:ask="false"
+						v:langID="1041"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="HasText" v:val="VT0(0):5"/>
+				<v:ud v:nameU="SolSH" v:val="VT15({BF0433D9-CD73-4EB5-8390-8653BE590246}):41"/>
+				<v:ud v:nameU="ShapeClass" v:val="VT0(5):26"/>
+				<v:ud v:nameU="ShapeType" v:val="VT0(24):26"/>
+				<v:ud v:nameU="visLegendShape" v:val="VT0(2):26"/>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<title>サーバー.40</title>
+			<g id="shape41-120" v:mID="41" v:groupContext="shape">
+				<title>シート.41</title>
+				<path d="M73.47 754.98 L45.21 739.84 L0 764.48 L0.02 827.74 A47.5731 44.427 -180 0 0 27.9 841.89 L73.47 817.26 L73.47
+							 754.98 ZM12.54 774.33 A49.0965 45.8496 -180 0 0 27.9 779.78 A48.5481 45.3374 0 0 1 12.54 774.33 Z"
+						class="st3"/>
+			</g>
+			<g id="shape42-122" v:mID="42" v:groupContext="shape" transform="translate(0,-62.1065)">
+				<title>シート.42</title>
+				<path d="M27.88 841.89 L73.47 817.08 L45.21 801.95 L0 826.58 A49.0965 45.8496 -180 0 0 27.9 841.89 L27.88 841.89 Z"
+						class="st4"/>
+				<path d="M27.88 841.89 L73.47 817.08 L45.21 801.95 L0 826.58 A49.0965 45.8496 -180 0 0 27.9 841.89" class="st5"/>
+			</g>
+			<g id="shape43-126" v:mID="43" v:groupContext="shape" transform="translate(0.016695,-5.68434E-13)">
+				<title>シート.43</title>
+				<path d="M27.88 779.78 A48.5481 45.3374 0 0 1 -0 764.4 L0 827.74 A47.5731 44.427 -180 0 0 27.88 841.89 L27.87 779.78
+							 L27.88 779.78 Z" class="st6"/>
+				<path d="M27.88 779.78 A48.5481 45.3374 0 0 1 -0 764.4 L0 827.74 A47.5731 44.427 -180 0 0 27.88 841.89 L27.87 779.78"
+						class="st5"/>
+			</g>
+			<g id="shape44-130" v:mID="44" v:groupContext="shape" transform="translate(27.8824,-0.0701939)">
+				<title>シート.44</title>
+				<path d="M0 779.85 L0 841.89 L45.59 817.33 L45.59 755.05 L0 779.85 Z" class="st7"/>
+			</g>
+			<g id="shape45-133" v:mID="45" v:groupContext="shape" transform="translate(0,-0.00224948)">
+				<title>シート.45</title>
+				<path d="M73.47 754.98 L45.21 739.84 L0 764.48 L0.02 827.74 A47.5731 44.427 -180 0 0 27.9 841.89 L73.47 817.26 L73.47
+							 754.98" class="st8"/>
+			</g>
+			<g id="shape46-136" v:mID="46" v:groupContext="shape" transform="translate(-276.124,17.9672) rotate(-20)">
+				<title>シート.46</title>
+				<ellipse cx="2.13422" cy="838.984" rx="2.13422" ry="2.90614" class="st9"/>
+			</g>
+			<g id="shape47-139" v:mID="47" v:groupContext="shape" transform="translate(4.52148,-8.97497)">
+				<title>シート.47</title>
+				<path d="M0 824.65 A54.4615 49.7413 -96.44 0 0 18.84 834.32" class="st10"/>
+				<path d="M0 828.43 A54.4615 49.7413 -96.44 0 0 18.84 838.11" class="st10"/>
+				<path d="M0 832.21 A54.4615 49.7413 -96.44 0 0 18.84 841.89" class="st10"/>
+			</g>
+			<g id="group48-145" transform="translate(3.7679,-43.9862)" v:mID="48" v:groupContext="group">
+				<title>シート.48</title>
+				<g id="shape49-146" v:mID="49" v:groupContext="shape" transform="translate(0,-10.1802)">
+					<title>シート.49</title>
+					<path d="M0.67 832.21 A47.5173 44.3748 -180 0 0 19.51 841.89 a0.965524 0.901671 -180 0 0 -3.55271E-15 -1.75936
+								 A46.2245 43.1675 0 0 1 1.05 830.74 a0.625517 0.58415 -180 0 0 -1.04429 0.496596 A1.36329 1.27313
+								 -180 0 0 0.67 832.21 Z" class="st11"/>
+				</g>
+				<g id="shape50-148" v:mID="50" v:groupContext="shape" transform="translate(5.99157,-12.3979)">
+					<title>シート.50</title>
+					<path d="M5.8 841.82 A7.06044 4.29812 -90.9 0 0 0.14 839 A4.64542 2.31605 -180 0 0 5.8 841.82 Z" class="st12"/>
+				</g>
+				<g id="shape51-151" v:mID="51" v:groupContext="shape" transform="translate(0.75358,-0.0879679)">
+					<title>シート.51</title>
+					<path d="M0 827.29 L0 832.21 A51.1142 47.7339 -180 0 0 18.84 841.89 L18.84 836.96 A52.7871 49.2961 0 0 1 0 827.29
+								 Z" class="st13"/>
+				</g>
+				<g id="shape52-154" v:mID="52" v:groupContext="shape" transform="translate(0.75358,-2.81497)">
+					<title>シート.52</title>
+					<path d="M-0 832.21 A46.2642 43.2046 -180 0 0 18.84 841.89 L18.84 840.66 A51.1348 47.7531 0 0 1 0 830.98 L0 832.21
+								 Z" class="st14"/>
+				</g>
+				<g id="shape53-156" v:mID="53" v:groupContext="shape" transform="translate(0.75358,-0.175936)">
+					<title>シート.53</title>
+					<path d="M0 827.29 L0 832.21 A51.1142 47.7339 -180 0 0 18.84 841.89" class="st5"/>
+				</g>
+				<g id="shape54-159" v:mID="54" v:groupContext="shape" transform="translate(0.75358,1.13687E-13)">
+					<title>シート.54</title>
+					<path d="M18.84 841.89 L18.84 836.96 A52.7871 49.2961 0 0 1 0 827.29" class="st15"/>
+				</g>
+			</g>
+		</g>
+		<g id="shape55-163" v:mID="55" v:groupContext="shape" transform="translate(179.118,-18)">
+			<title>シート.55</title>
+			<desc>Node#1 10.8.0.11</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="76" cy="808.37" width="152.01" height="67.0394"/>
+			<rect x="0" y="774.85" width="152" height="67.0394" class="st16"/>
+			<text x="28.83" y="799.37" class="st17" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Node#1<v:newlineChar/><tspan
+						x="21.86" dy="1.2em" class="st18">10</tspan>.8.0.11</text>		</g>
+		<g id="shape57-167" v:mID="57" v:groupContext="shape" transform="translate(519.276,-18)">
+			<title>シート.57</title>
+			<desc>Node#2 10.8.0.12</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="76" cy="808.37" width="152.01" height="67.0394"/>
+			<rect x="0" y="774.85" width="152" height="67.0394" class="st16"/>
+			<text x="28.83" y="799.37" class="st17" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Node#2<v:newlineChar/><tspan
+						x="21.86" dy="1.2em" class="st18">10</tspan>.8.0.12</text>		</g>
+		<g id="shape58-171" v:mID="58" v:groupContext="shape" transform="translate(859.433,-18)">
+			<title>シート.58</title>
+			<desc>Node#3 10.8.0.13</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="76" cy="808.37" width="152.01" height="67.0394"/>
+			<rect x="0" y="774.85" width="152" height="67.0394" class="st16"/>
+			<text x="28.83" y="799.37" class="st17" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Node#3<v:newlineChar/><tspan
+						x="21.86" dy="1.2em" class="st18">10</tspan>.8.0.13</text>		</g>
+		<g id="shape59-175" v:mID="59" v:groupContext="shape" transform="translate(130.28,-211.45)">
+			<title>ボックス</title>
+			<desc>Pod TargetPort:8080</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.1669" cy="798.265" width="116.34" height="87.2504"/>
+			<rect x="0" y="754.639" width="116.334" height="87.2504" class="st19"/>
+			<text x="45.2" y="793.46" class="st20" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Pod<v:newlineChar/><tspan
+						x="4.14" dy="1.2em" class="st18">TargetPort</tspan>:8080</text>		</g>
+		<g id="shape81-179" v:mID="81" v:groupContext="shape" transform="translate(266.343,-211.45)">
+			<title>ボックス.81</title>
+			<desc>Pod TargetPort:8080</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.1669" cy="798.265" width="116.34" height="87.2504"/>
+			<rect x="0" y="754.639" width="116.334" height="87.2504" class="st19"/>
+			<text x="45.2" y="792.26" class="st20" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Pod<v:newlineChar/><v:paragraph
+						v:horizAlign="1"/><tspan x="4.14" dy="1.312em" class="st18">TargetPort</tspan>:8080</text>		</g>
+		<g id="shape82-183" v:mID="82" v:groupContext="shape" transform="translate(467.717,-210.387)">
+			<title>ボックス.82</title>
+			<desc>Pod TargetPort:8080</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.1669" cy="798.265" width="116.34" height="87.2504"/>
+			<rect x="0" y="754.639" width="116.334" height="87.2504" class="st19"/>
+			<text x="45.2" y="792.26" class="st20" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Pod<v:newlineChar/><v:paragraph
+						v:horizAlign="1"/><tspan x="4.14" dy="1.312em" class="st18">TargetPort</tspan>:8080</text>		</g>
+		<g id="shape84-187" v:mID="84" v:groupContext="shape" transform="translate(816.378,-210.387)">
+			<title>ボックス.84</title>
+			<desc>Pod TargetPort:8080</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="58.1669" cy="798.265" width="116.34" height="87.2504"/>
+			<rect x="0" y="754.639" width="116.334" height="87.2504" class="st19"/>
+			<text x="45.2" y="792.26" class="st20" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>Pod<v:newlineChar/><v:paragraph
+						v:horizAlign="1"/><tspan x="4.14" dy="1.312em" class="st18">TargetPort</tspan>:8080</text>		</g>
+		<g id="shape85-191" v:mID="85" v:groupContext="shape" transform="translate(952.441,-210.387)">
+			<title>ボックス.85</title>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<rect x="0" y="754.639" width="116.334" height="87.2504" class="st21"/>
+		</g>
+	</g>
+	<g v:mID="5" v:index="3" v:groupContext="foregroundPage">
+		<title>NodePort</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<v:layer v:name="コネクタ" v:index="0"/>
+		<g id="shape7-193" v:mID="7" v:groupContext="shape" transform="translate(178.583,-382.677)">
+			<title>楕円</title>
+			<desc>ClusterIP Service Port:80</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="416.693" cy="785.197" width="729.22" height="99.2126"/>
+			<path d="M0 785.2 A416.693 56.6929 0 1 1 833.39 785.2 A416.693 56.6929 0 1 1 0 785.2 Z" class="st22"/>
+			<text x="240.54" y="770.8" class="st23" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>ClusterIP Service<v:newlineChar/><tspan
+						x="344.04" dy="1.2em" class="st18">Port</tspan>:80</text>		</g>
+		<g id="shape8-197" v:mID="8" v:groupContext="shape" v:layerMember="0" transform="translate(188.447,-298.701)">
+			<title>動的コネクタ</title>
+			<path d="M0 826.71 L0 826.35 L0 816.91 A24.9803 24.9803 0 0 1 24.98 791.93 L389.82 791.93 A17.0079 17.0079 -180 0 0 406.83
+						 774.92 L406.83 757.91" class="st24"/>
+		</g>
+		<g id="shape9-203" v:mID="9" v:groupContext="shape" v:layerMember="0" transform="translate(324.51,-298.701)">
+			<title>動的コネクタ.5</title>
+			<path d="M0 826.71 L0 826.35 L0 816.91 A24.9803 24.9803 0 0 1 24.98 791.93 L253.76 791.93 A17.0079 17.0079 -180 0 0 270.77
+						 774.92 L270.77 757.91" class="st24"/>
+		</g>
+		<g id="shape10-208" v:mID="10" v:groupContext="shape" v:layerMember="0" transform="translate(874.545,-297.638)">
+			<title>動的コネクタ.6</title>
+			<path d="M0 826.71 L0 826.35 L0 816.38 A25.5118 25.5118 -180 0 0 -25.51 790.87 L-262.26 790.87 A17.0079 17.0079 0 0 1
+						 -279.27 773.86 L-279.27 756.85" class="st24"/>
+		</g>
+		<g id="shape11-213" v:mID="11" v:groupContext="shape" v:layerMember="0" transform="translate(525.883,-297.638)">
+			<title>動的コネクタ.7</title>
+			<path d="M0 826.71 L0 826.35 L0 816.38 A25.5118 25.5118 0 0 1 25.51 790.87 L52.38 790.87 A17.0079 17.0079 -180 0 0 69.39
+						 773.86 L69.39 756.85" class="st24"/>
+		</g>
+		<g id="shape12-218" v:mID="12" v:groupContext="shape" v:layerMember="0" transform="translate(562.677,-646.299)">
+			<title>動的コネクタ.8</title>
+			<path d="M7.09 826.71 L7.09 826.35 L7.09 680.31" class="st24"/>
+		</g>
+		<g id="shape14-223" v:mID="14" v:groupContext="shape" v:layerMember="0" transform="translate(238.11,-634.961)">
+			<title>動的コネクタ.14</title>
+			<path d="M0 826.71 L0 826.35 L0 805.04 A34.0157 34.0157 0 0 1 34.02 771.02 L297.64 771.02 A34.0157 34.0157 -180 0 0 331.65
+						 737.01 L331.65 677.48" class="st24"/>
+		</g>
+		<g id="shape15-228" v:mID="15" v:groupContext="shape" v:layerMember="0" transform="translate(952.441,-631.863)">
+			<title>動的コネクタ.15</title>
+			<path d="M0 826.71 L0 826.35 L0 801.94 A34.0157 34.0157 -180 0 0 -34.02 767.93 L-348.66 767.93 A34.0157 34.0157 0 0 1
+						 -382.68 733.91 L-382.68 668.98" class="st24"/>
+		</g>
+		<g id="shape16-233" v:mID="16" v:groupContext="shape" transform="translate(59.5276,-532.913)">
+			<title>楕円.16</title>
+			<desc>NodePort Service NodePort:30080</desc>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:val="VT0(15):26"/>
+			</v:userDefs>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197"/>
+			<v:textRect cx="535.748" cy="785.197" width="937.56" height="99.2126"/>
+			<path d="M0 785.2 A535.748 56.6929 0 1 1 1071.5 785.2 A535.748 56.6929 0 1 1 -0 785.2 Z" class="st26"/>
+			<text x="357.9" y="770.8" class="st23" v:langID="1041"><v:paragraph v:horizAlign="1"/><v:tabList/>NodePort Service<v:newlineChar/><tspan
+						x="375.62" dy="1.2em" class="st18">Nod</tspan>ePort:30080</text>		</g>
+		<g id="shape17-237" v:mID="17" v:groupContext="shape" v:layerMember="0" transform="translate(588.189,-496.063)">
+			<title>動的コネクタ.17</title>
+			<path d="M7.09 826.71 L7.09 826.35 L7.09 805.04" class="st24"/>
+		</g>
+	</g>
+</svg>
