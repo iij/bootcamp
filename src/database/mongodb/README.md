@@ -196,6 +196,8 @@ db.people.aggregate([
 
 MongoDBでは [レプリカセット](https://docs.mongodb.com/manual/replication/) と呼ばれる構成を奇数台（最小3台）で構成することができます。
 
+(以下画像は [https://docs.mongodb.com/manual/replication/](https://docs.mongodb.com/manual/replication/) より)
+
 ![replica-set-primary-with-two-secondaries](./replica-set-primary-with-two-secondaries.bakedsvg.svg)
 
 通常ではクライアントやアプリケーションは「Primary」になっているMongoDBに対してデータを更新します。すると更新されたデータは「Secondary」にもレプリケーションされます。
