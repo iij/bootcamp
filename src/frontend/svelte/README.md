@@ -47,27 +47,292 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
     - ※Svelte REPLの場合初期状態で開かれているのはApp.svelte
 - 画面真ん中下に表示されているのが、作成したアプリケーションを実行している画面です。編集画面でファイルを変更・保存する度に更新され、都度動作確認できます
 
-## チェックポイント
+### チェックポイント
 
 - CodeSandboxなどのブラウザー上で動く開発環境を利用して、Svelte製のアプリケーションをテンプレートから作成できた
 - CodeSandboxなどのブラウザー上で動く開発環境について、画面にあるものを大まかに理解できた
 
+## その1 ほぼただのHTML
+
+```svelte
+<h1>Hello IIJ Bootcamp!</h1>
+```
+
+## その2 変数の中身を表示
+
+```svelte
+<script>
+    let name = "<誰か適当に挨拶したい人>";
+</script>
+
+<h1>Hello {name}!</h1>
+```
+
+## その3 イベントハンドラーを設定
+
+```svelte
+<script>
+    function clicked() {
+        alert("押しましたね！？");
+    }
+</script>
+
+<button on:click={clicked}>
+ぼたん
+</button>
+```
+
+## その4 変数が変わったらHTMLの中身も変わる
+
+```svelte
+<script>
+    let count = 0;
+    function incrementCount() {
+        count += 1;
+    }
+</script>
+
+<button on:click={incrementCount}>
+{count}回押しました！
+</button>
+```
+
+## その5 変数が変わる度に実行される宣言・文
+
+```svelte
+<script>
+    let count = 0;
+    function incrementCount() {
+        count += 1;
+    }
+
+    $: plus4 = count + 4;
+    $: console.log("変数が変わった！", { plus4, count });
+</script>
+
+<button on:click={incrementCount}>
+{count}
+</button>
++ 4 = {plus4} だ！
+```
+
+## その6 コンポーネントの分割
+
+「3の倍数でアホになるボタン」作りに向けて
+
+数値を与えると表示するボタン
+
+NabeatsuButton.svelte:
+
+```svelte
+<script>
+    export let count;
+</script>
+<button>
+{count}
+</button>
+```
+
+ボタンを使用するアプリ
+
+App.svelte:
+
+```svelte
+<script>
+    import NabeatsuButton from './NabeatsuButton.svelte';
+
+    let count = 0;
+    function incrementCount() {
+        count += 1;
+    }
+</script>
+<!-- <NabeatsuButton count={count}/> -->
+<NabeatsuButton {count}/>
+```
+
+## その7 コンポーネントにイベントハンドラー
+
+数値を与えると表示するボタン
+
+NabeatsuButton.svelte:
+
+```svelte
+<script>
+    export let count;
+    export let onClick;
+</script>
+<button on:click={onClick}>
+{count}
+</button>
+```
+
+ボタンを使用するアプリ
+
+App.svelte:
+
+```svelte
+<script>
+    import NabeatsuButton from './NabeatsuButton.svelte';
+
+    let count = 1;
+    function incrementCount() {
+        count += 1;
+    }
+</script>
+<!-- <NabeatsuButton on:click={incrementCount} count={count}/> -->
+<NabeatsuButton onClick={incrementCount} {count}/>
+```
+
+## その8 コンポーネントのロジック
+
+「3の倍数でアホになる」ロジックの追加
+
+※「3が含まれる数字」はやってみたい人だけがやる！
+
+NabeatsuButton.svelte:
+
+```svelte
+<script>
+    export let count;
+    export let onClick;
+
+    $: isAho = count % 3 == 0;
+</script>
+<button on:click={onClick}>
+{#if isAho}
+    ((●˚⺣˚)&lt;{count}!!
+{:else}
+    (・∀・)&lt;{count}
+{/if}
+</button>
+```
+
+どう「アホになる」かの例。他の方法でもアホっぽければよし:
+
+- [[Python]12行で作る世界のナベアツプログラム｜ねこぐらまー｜note](https://note.com/hungair0925/n/ne9a67afed290)
+- [【Python】世界のナベアツを完全(?)再現プログラミング - ymLogs](https://ymlogs.hateblo.jp/entry/2020/08/23/035917)
+
+## その9 コンポーネントの中に閉じたstyle
+
+アホになる時だけイタリック体にする
+
+NabeatsuButton.svelte:
+
+```svelte
+<script>
+    export let count;
+    export let onClick;
+
+    $: isAho = count % 3 == 0;
+</script>
+<style>
+    .aho {
+        font-style: italic;
+    }
+</style>
+<!-- {...} の中には任意のJavaScriptの式が書ける。下記では三項演算子 -->
+<button on:click={onClick} class={isAho ? "aho" : ""}>
+{#if isAho}
+    ((●˚⺣˚)&lt;{count}!!
+{:else}
+    (・∀・)&lt;{count}
+{/if}
+</button>
+```
+
+DevToolsを見て、`svelte-1ot19pz`のような、特別なクラスが追加されていることに注目
+
+## その10 input要素からの入力を渡す
+
+何の倍数で「アホになる」か設定できるようにしよう！
+
+NabeatsuButton.svelte:
+
+```svelte
+<script>
+    export let count;
+    export let divisor;
+    export let onClick;
+
+    $: isAho = count % divisor == 0;
+</script>
+<style>
+    .aho {
+        font-style: italic;
+    }
+</style>
+<button on:click={onClick} class={isAho ? "aho" : ""}>
+{#if isAho}
+    ((●˚⺣˚)&lt;{count}!!
+{:else}
+    (・∀・)&lt;{count}
+{/if}
+</button>
+```
+
+App.svelte:
+
+```svelte
+<script>
+    import NabeatsuButton from './NabeatsuButton.svelte';
+
+    let count = 1;
+    function incrementCount() {
+        count += 1;
+    }
+
+    let divisor = 3;
+    function updateDivisor(event) {
+        divisor = Number(event.target.value);
+    }
+</script>
+<label>
+    何の倍数でアホになる？:
+    <input type="number" value={divisor} on:change={updateDivisor}/>
+</label>
+<br />
+<NabeatsuButton onClick={incrementCount} {count} {divisor}/>
+```
+
+## その11 input要素からの入力を渡す: もっと簡単な方法
+
+App.svelte:
+
+```svelte
+<script>
+    import NabeatsuButton from './NabeatsuButton.svelte';
+
+    let count = 1;
+    function incrementCount() {
+        count += 1;
+    }
+
+    let divisor = 3;
+</script>
+<label>
+    何の倍数でアホになる？:
+    <input type="number" bind:value={divisor}/>
+</label>
+<br />
+<NabeatsuButton onClick={incrementCount} {count} {divisor}/>
+```
+
 話したい:
 
-- [ ] ローカル変数を紐付けられること（on-way binding）
+- [x] ローカル変数を紐付けられること（on-way binding）
     - <https://svelte.jp/tutorial/reactive-assignments>
     - <https://svelte.jp/tutorial/reactive-declarations>
     - <https://svelte.jp/tutorial/reactive-statements>
-- [ ] `<style>`タグがローカルに
-    - <https://svelte.jp/tutorial/styling>
-- [ ] two-way binding
-    - <https://svelte.jp/tutorial/text-inputs>
-- [ ] コンポーネントの分割
+- [x] コンポーネントの分割
     - <https://svelte.jp/tutorial/declaring-props>
-- [ ] ロジック
+- [x] ロジック
     - <https://svelte.jp/tutorial/if-blocks>
     - <https://svelte.jp/tutorial/else-blocks>
-
-クリックした回数が3の倍数の時だけComic Sansになるとかいいかもね
+- [x] `<style>`タグがローカルに
+    - <https://svelte.jp/tutorial/styling>
+- [x] two-way binding
+    - <https://svelte.jp/tutorial/text-inputs>
 
 3以外の数も指定できればtwo-way binding
+
+<credit-footer/>
