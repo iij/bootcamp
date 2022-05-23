@@ -26,16 +26,31 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 ## 早速書こう
 
-<!-- TODO: 特に他の開発環境を使った場合の説明は行いませんが、万が一CodeSandboxが使えない場合でも頑張ってカバーできるよう、手順くらいは確認すること！ -->
+<!-- TODO: 特に他の開発環境を使った場合の説明は本文では行いませんが、万が一CodeSandboxが使えない場合でも頑張ってカバーできるよう、手順くらいは確認すること！ -->
 
 [CodeSandboxのプロジェクト作成ページ](https://codesandbox.io/s)に移動します:
 
 ![CodeSandboxのプロジェクト作成画面](create-project.png)
 
-少しスクロールすると出てくる![Svelte by CodeSandbox](item-svelte.png)と書かれた箇所をクリックすると、テンプレートからすでに動作するアプリが作成されます！
+少しスクロールすると出てくる、下記のような「Svelte by CodeSandbox」と書かれた箇所をクリックすると、テンプレートから動作するアプリがすぐに作成されます！
 
-![CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期状態）](initial-project.png)
+![Svelte by CodeSandbox](item-svelte.png)
 
+CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期状態）:
+
+![](initial-project.png)
+
+利用した開発環境にもよって変わりますが、CodeSandboxを使って上記👆のスクリーンショットにした状態について、画面上にあるものを解説します:
+
+- 画面左上にあるのが、プロジェクトにあるファイルの一覧です。CodeSandboxもStackBlitzも、おなじみVisual Studio Codeをブラウザー上で動かすことで実現しています
+- 画面真ん中上に表示されているのが、今開いているファイルを編集する画面です。今開いているファイル（index.jsかmain.js）では、`App.svelte`というファイルに書かれたコンポーネント（後述）を指定した要素に適用しています
+    - ※Svelte REPLの場合初期状態で開かれているのはApp.svelte
+- 画面真ん中下に表示されているのが、作成したアプリケーションを実行している画面です。編集画面でファイルを変更・保存する度に更新され、都度動作確認できます
+
+## チェックポイント
+
+- CodeSandboxなどのブラウザー上で動く開発環境を利用して、Svelte製のアプリケーションをテンプレートから作成できた
+- CodeSandboxなどのブラウザー上で動く開発環境について、画面にあるものを大まかに理解できた
 
 話したい:
 
