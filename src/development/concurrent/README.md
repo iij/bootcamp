@@ -16,7 +16,7 @@ prior_knowledge:
 
 ```terminal
 docker pull iijrfujimoto/bootcamp_concurrent
-docker run -it iijrfujimoto/bootcamp_concurrent /bin/bash
+docker run --name bootcamp_concurrent --rm -it iijrfujimoto/bootcamp_concurrent /bin/bash
 ```
 
 ## このハンズオンの目的
@@ -49,6 +49,47 @@ docker run -it iijrfujimoto/bootcamp_concurrent /bin/bash
 ## ハンズオン
 
 ### 簡単な並行処理サンプル
+
+まずはPythonで簡単なWebサーバを書いてみましょう。
+
+以下のコマンドでvimを立ち上げ、Pythonコードを書いていきます。可能であればvscode等を利用しても構いません。
+
+```termianl
+root@0dd4d9fad678:/work# vim main.py
+```
+
+```python
+import http.server
+import socketserver
+
+PORT = 8000
+
+class MyHandler(BaseHTTPRequestHandler):
+  def do_GET(self):
+    print('path = {}'.format(self.path))
+    
+    self.send_response(200)
+    self.send_header('Content-Type', 'text/plain; charset=utf-8')
+    self.end_headers()
+    self.wfile.write(b'Hello simple server!')
+
+with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+    print("serving at port", PORT)
+    httpd.serve_forever()
+```
+
+`:wq` で保存したら、サーバを起動してみます。
+
+```terminal
+root@0dd4d9fad678:/work# python3 -m http.server
+```
+
+別のターミナルを開き、以下の通りコンテナに別セッションで接続しましょう。
+
+```terminal
+$ docker exec -it bootcamp_concurrent /bin/bash
+root@ee45c9084604:/work#
+```
 
 ### 共有メモリとレースコンディション
 
