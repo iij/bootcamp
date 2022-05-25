@@ -43,7 +43,7 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 利用した開発環境にもよって変わりますが、CodeSandboxを使って上記👆のスクリーンショットにした状態について、画面上にあるものを解説します:
 
 - 画面左上にあるのが、プロジェクトにあるファイルの一覧です。CodeSandboxもStackBlitzも、おなじみVisual Studio Codeをブラウザー上で動かすことで実現しています
-- 画面真ん中上に表示されているのが、今開いているファイルを編集する画面です。今開いているファイル（index.jsかmain.js）では、`App.svelte`というファイルに書かれたコンポーネント（後述）を指定した要素に適用しています
+- 画面真ん中上に表示されているのが、今開いているファイルを編集する画面です。今開いているファイル（`index.js`か`src/main.js`）では、`App.svelte`というファイルに書かれたコンポーネント（後述）を指定した要素に適用しています
     - ※Svelte REPLの場合初期状態で開かれているのはApp.svelte
 - 画面真ん中下に表示されているのが、作成したアプリケーションを実行している画面です。編集画面でファイルを変更・保存する度に更新され、都度動作確認できます
 
@@ -54,11 +54,25 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 
 ## その1 ほぼただのHTML
 
+ここからは、`App.svelte`[^stackblitz-app-svelte]というファイルを編集することで、Svelteにおけるコンポーネントの作成方法を紹介します。
+
+[^stackblitz-app-svelte]: StackBlitzの場合`src/App.svelte`
+
+App.svelte:
+
 ```svelte
 <h1>Hello IIJ Bootcamp!</h1>
 ```
 
+Svelteのコンポーネントは、表示するHTML・CSSと、そのHTMLを操作するJavaScriptを独立して再利用可能な形で一つにまとめるファイルです。最も単純な（でもあまり役に立たない）コンポーネントは、上記のように表示するHTMLだけで構成されています。結果できあがるものはもちろん書いたタグの通りのHTMLです:
+
+![Hello IIJ Bootcamp!](./step1.png)
+
 ## その2 変数の中身を表示
+
+次は、コンポーネントの中にJavaScriptのコードを書いて、JavaScriptのコードで設定した変数を、HTMLの中で表示させてみましょう:
+
+App.svelte:
 
 ```svelte
 <script>
@@ -68,7 +82,17 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 <h1>Hello {name}!</h1>
 ```
 
+`.svelte`ファイルでは`<script>`タグの中でコンポーネント専用のJavaScriptを書きます。`let <変数名> = ...`などの構文で定義した変数はHTML内で波括弧`{}`で囲うことで参照できます。もちろん`<誰か適当に挨拶したい人>`の箇所を適当な人の名前に変えて挨拶するのでも構いません。
+
+例:
+
+![Hello 鈴木 幸一さん!](./step2.png)
+
 ## その3 イベントハンドラーを設定
+
+とはいえ、この時点ではまだ普通のHTMLを書くのと大して変わらず、つまらないでしょう。と、いうわけでイベントハンドラーを設定することで、HTMLで何かイベントが発生したとき初めて実行するJavaScriptを定義してみましょう。
+
+App.svelte:
 
 ```svelte
 <script>
@@ -82,7 +106,23 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 </button>
 ```
 
+`on:click`のように、`on:<イベント名>`という形式のHTMLの属性は、`.svelte`専用の属性で、Svelteは`on:<イベント名>`という属性で指定したJavaScriptの関数をイベントハンドラーとして設定してくれます[^existing-onclick]。
+
+[^existing-onclick]: 通常のイベントハンドラー用の属性（`onclick`など）ではJavaScriptの式を直接文字列として指定する一方、`on:click`では実行するJavaScriptの関数を表す式を設定します。また、例における`clicked`や前述の`name`のように、コンポーネントの`<script>`で設定した変数や関数を参照できるのは、`on:click`などの属性のみとなっております。
+
+動作例:
+
+![ぼたん](./step3.gif)
+
+## チェックポイント
+
+- HTMLとJavaScriptで、Svelteのコンポーネントを定義できた
+- Svelteのコンポーネントの中では、`{... JavaScriptの式 ...}`という構文でJavaScriptの式を参照することを理解できた
+- Svelteのコンポーネントにおいてイベントハンドラーを設定するときは、`on:<イベント名>`という名前の属性を用いることを理解できた
+
 ## その4 変数が変わったらHTMLの中身も変わる
+
+App.svelte:
 
 ```svelte
 <script>
@@ -98,6 +138,8 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 ```
 
 ## その5 変数が変わる度に実行される宣言・文
+
+App.svelte:
 
 ```svelte
 <script>
