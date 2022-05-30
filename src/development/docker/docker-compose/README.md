@@ -11,29 +11,24 @@ prior_knowledge: docker
 # {{$page.frontmatter.title}}
 
 ## 事前準備
-* この講義では ```docker-compose``` コマンドを使います。
+* この講義では ```docker compose (docker-compose)```はコマンドを使います。
 * 環境ごとに インストール方法が異なるので、 以下の通り導入しておいてください。
 
 ### Windows, macOS
 * [ハンズオン事前準備](https://iij.github.io/bootcamp/init/hello-bootcamp/) で Docker Desktop for Windowsや、Docker Desktop for Mac を導入済みであれば、すでにインストールされているはずです。
 
 ### Linux
-* 以下の手順に従って、`docker-compose` コマンドをインストールしてください。
-   * プロキシ 下の環境で試す場合は ```sudo``` ではなく ```sudo -E``` として環境変数を引き継ぐか、 curl の ```--proxy``` オプションを利用する必要があるかもしれません。
 
-```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-```
+* 以下の手順に従って、`docker compose` をインストールしてください。
+ * https://matsuand.github.io/docs.docker.jp.onthefly/compose/install/
+
 
 ### 導入できたら
 * 下記コマンドを実際に入力し、コマンドが実行できるか確認してください。
 
 ```bash
-$ docker-compose --version
+$ docker compose version
 ```
-
 
 ## 1. Docker Compose とは
 

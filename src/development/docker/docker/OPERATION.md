@@ -35,11 +35,19 @@ Dockerイメージには、名前の他に「TAG」を付けることができ�
 
 `docker start` は、コンテナの起動を行うコマンドで、`docker stop` は、コンテナを停止するコマンドです。これらのコマンドでは、起動・停止対象のコンテナを選択する必要があるため、引数として`docker ps` の表示結果にあった「CONTAINER ID」を設定します。
 
-では、今回のコンテナを起動してみましょう。ただし普通に起動するだけでは、標準入出力がコンテナ内にとどまってしまい、最初と同じ画面は表示されません。そこで、手元の標準入出力とコンテナ内の標準入出力を紐づけるために、`-a` オプション（`--attach` オプション)を付けてあげます。
+先ほどの項ではhello-worldコンテナの起動に`docker start`を使用していました。
+従って、hello-worldコンテナの停止したい時は`docker stop`を使う事になります。ただし、hello-worldコンテナは、daemonではなく、実行するとhello-world出力を行った後に停止（終了）する為、hello-worldにおいては使う事はありません。
+
+では、実際に`docker stop`を使う演習をしてみましょう。
+daemon動作として簡単なnginxコンテナを作り、それを停止してみましょう。
 
 ```bash
-$ docker start -a 9b1f2c08a269
-(省略)
+ $ docker run --name nginx -d nginx
+ $ docker ps
+```
+
+```bash
+ $ docker stop nginx
 ```
 
 ### docker rm、rmi
@@ -47,13 +55,10 @@ $ docker start -a 9b1f2c08a269
 `docker rm` と`docker rmi` は、それぞれDocker コンテナ、Docker イメージの削除を行うコマンドです。それぞれ引数に「CONTAINER ID」や「IMAGE ID」を設定する必要があります。また、削除したいDocker イメージを元に作成したDocker コンテナが存在する場合削除できません。その際は、事前にDocker コンテナを削除した後に、Docker イメージを削除してください。
 
 ```bash
-$ docker rm 9b1f2c08a269
-9b1f2c08a269
-$ docker rmi fce289e99eb9
-Untagged: hello-world:latest
-Untagged: hello-world@sha256:2557e3c07ed1e38f26e389462d03ed943586f744621577a99efb77324b0fe535
-Deleted: sha256:fce289e99eb9bca977dae136fbe2a82b6b7d4c372474c9235adc1741675f587e
-Deleted: sha256:af0b15c8625bb1938f1d7b17081031f649fd14e6b233688eea3c5483994a66a3
+$ docker rm nginx
+nginx
+$ docker rmi nginx
+nginx
 ```
 
 <credit-footer/>

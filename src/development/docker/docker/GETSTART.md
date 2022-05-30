@@ -44,7 +44,7 @@ docker create コマンドの詳細は以下を参照してください
 それでは実際にhello-world の Docker コンテナを作成してみましょう。以下のコマンドを実行してください。
 
 ```bash
- $ docker create hello-world
+ $ docker create --name hello-world hello-world
 ```
 
 ## Docker コンテナの起動
@@ -95,7 +95,7 @@ For more examples and ideas, visit:
 
 さて、ここまでやってみて作業が面倒だと感じたことは無いでしょうか。
 また、事前準備ではdockerの動作確認で`docker run`を実行したのでは無いかと思います。
-実は`docker run`はこれらのコマンドを包含した物となっています。（docker ps 除く）
+実は`docker run`はこれらのコマンドを包含した物となっています。
 
 従って、ここまでの作業であれば通常は`docker run hello-world`とする事になります。
 
