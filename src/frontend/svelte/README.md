@@ -209,9 +209,15 @@ Svelteにおける`let [変数名] = ...`の`...`に書く式は、あくまで�
 
 ## その6 コンポーネントの分割
 
-「3の倍数でアホになるボタン」作りに向けて
+ここからは、ボタンを押した回数が「3の倍数のときだけアホになるボタン」というコンポーネントを、いくつかのステップに分けて作ってみましょう。まずは一つの`.svelte`ファイルに書いていたコンポーネントを、別の`.svelte`ファイルに分割する方法を紹介します。
 
-数値を与えると表示するボタン
+コンポーネントを分割する方法を説明するため、ここまで編集した`App.svelte`と同じディレクトリーに新しいファイルを作成してください。CodeSandboxの画面左上の方にある、紙に折り目をつけたようなアイコン📄を押すと、新しいファイルができます:
+
+![](./step6-button.png)
+
+ファイル名は`NabeatsuButton.svelte`にしましょう（最終的に「3の倍数のときだけアホになるボタン」にするので）。
+
+ファイルができたら、内容は次のようにしてください:
 
 NabeatsuButton.svelte:
 
@@ -224,26 +230,38 @@ NabeatsuButton.svelte:
 </button>
 ```
 
-ボタンを使用するアプリ
+`export let count;`という文は、新しい構文を使っています。Svelteにおいて、`export let [変数名];`で宣言した変数は「プロパティー」と見なされ、宣言した変数を含むコンポーネントを**利用する側**が設定できるようになります（具体的にどう設定するかは後ほど）。
+
+つまり、上記のコンポーネントは、`count`というプロパティーを`<button>`タグで表示する、ただそれだけのものです。これに追々機能を追加して、「3の倍数のときだけアホになるボタン」を作っていきます。
+
+次は、いよいよ新しく作ったコンポーネント`NabeatsuButton.svelte`を実際に使用しましょう:
 
 App.svelte:
 
 ```svelte
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
-
-    let count = 0;
-    function incrementCount() {
-        count += 1;
-    }
 </script>
-<!-- <NabeatsuButton count={count}/> -->
-<NabeatsuButton {count}/>
+<NabeatsuButton count={3}/>
 ```
+
+Svelteのコンポーネントを別のコンポーネントから参照する場合、普通のJavaScriptにおける`import`文を使用します。`import [インポートする側で使用する名前] from '[インポートするファイルの名前]';`という構文ですね[^extension]。このように書いた上で、`<[インポートする側で使用する名前]/>`と書くと、該当の箇所がインポートしたコンポーネントのHTMLで置き換わります。`[インポートする側で使用する名前]`という名前の新しいHTMLタグが作成されるイメージで捉えてください[^capital]。
+
+[^extension]: インポートするファイル名における拡張子`.svelte`は特に付けなくてもいいようですが、慣習上付けることが多いようなのでこのドキュメントでも付けることにします。
+
+[^capital]: このような構文のため、普通のHTMLのタグと区別できるよう、インポートしたコンポーネントの名前は必ず大文字で始めることになっています。ちなみにこれはSvelteだけでなく、ReactやVue.jsにおいても同様のルールがあります。
+
+そして、`<NabeatsuButton count={3}/>`の`count={3}`という箇所が、`NabeatsuButton`コンポーネントのプロパティーを設定している箇所です。先ほど`export let`した`count`という名前が出てきました！ちょうどHTMLタグで属性を設定するがごとく、`[プロパティー名]=[値]`という構文で、指定したコンポーネントのプロパティーを設定することができます。`{3}`のように、`[値]`の箇所で`{... JavaScriptの式 ...}`の構文を使っているのは、HTMLの属性値が本来文字列しかサポートしていない関係で、単に`count=3`と書くと「3」という文字列が渡ってしまうからです。
+
+動作例:
+
+![3](./step6.png)
+
+まだまだこれだけでは面白くないですね。どんどん次に行きましょう！
 
 ## その7 コンポーネントにイベントハンドラー
 
-数値を与えると表示するボタン
+前のステップで作成したアプリケーションでは、ボタンを押しても何も起こりません。というわけで今度は`NabeatsuButton`にイベントハンドラーを加えましょう:
 
 NabeatsuButton.svelte:
 
@@ -257,7 +275,9 @@ NabeatsuButton.svelte:
 </button>
 ```
 
-ボタンを使用するアプリ
+以前のステップで`App.svelte`に書いた`incrementCount`のような関数を直接`NabeatsuButton`に定義して`on:click`に設定してもよいのですが、ここでは敢えて`onClick`というプロパティーを追加することで、`NabeatsuButton`を使用する側でイベントハンドラーを設定することを求めています。これが必ずしもよい設計、というわけではありませんが、コンポーネントの役割を分担する際の一例として参考にしてください。
+
+と、言うわけで早速`App.svelte`側でもイベントハンドラーを設定しましょう。以前使った`incrementCount`をそのまま利用します:
 
 App.svelte:
 
@@ -265,14 +285,24 @@ App.svelte:
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 
-    let count = 1;
+    let count = 0;
     function incrementCount() {
         count += 1;
     }
 </script>
-<!-- <NabeatsuButton on:click={incrementCount} count={count}/> -->
-<NabeatsuButton onClick={incrementCount} {count}/>
+<NabeatsuButton count={count} onClick={incrementCount}/>
 ```
+
+`NabeatsuButton`コンポーネントに渡しているプロパティー`count`は、`App`コンポーネントにおける変数`count`を参照しています。そのため、やはり`App`の中で`count`の値が変わった場合も`NabeatsuButton`にその変更が伝わり、`NabeatsuButton`が表示する値も変わるのです。
+
+動作例:
+
+![0](./step7.gif)
+
+## チェックポイント
+
+- `.svelte`ファイルを分けることで、コンポーネントを分割できた
+- コンポーネントの中で`export let`することでプロパティーを定義し、利用する側で具体的な値を設定できた
 
 ## その8 コンポーネントのロジック
 
