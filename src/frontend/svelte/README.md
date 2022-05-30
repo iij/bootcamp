@@ -108,7 +108,7 @@ App.svelte:
 
 `on:click`のように、`on:<イベント名>`という形式のHTMLの属性は、`.svelte`専用の属性で、Svelteは`on:<イベント名>`という属性で指定したJavaScriptの関数をイベントハンドラーとして設定してくれます[^existing-onclick]。
 
-[^existing-onclick]: 通常のイベントハンドラー用の属性（`onclick`など）ではJavaScriptの式を直接文字列として指定する一方、`on:click`では実行するJavaScriptの関数を表す式を設定します。また、例における`clicked`や前述の`name`のように、コンポーネントの`<script>`で設定した変数や関数を参照できるのは、`on:click`などの属性のみとなっております。
+[^existing-onclick]: 標準のイベントハンドラー用の属性（`onclick`など）ではJavaScriptの式を直接文字列として指定する一方、`on:click`では実行するJavaScriptの関数を表す式を設定します。また、例における`clicked`や前述の`name`のように、コンポーネントの`<script>`で設定した変数や関数を参照できるのは、`on:click`などの属性のみとなっております。
 
 動作例:
 
@@ -149,6 +149,10 @@ App.svelte:
 
 ## その5 変数が変わる度に実行される宣言・文
 
+`let`で定義した変数は、HTMLに書いたイベントハンドラーを契機に変更されると、HTMLにその変更を伝達するようになっていることを学びました。では、HTMLではなく、`<script>`に書いた任意のコードに、`let`で定義した変数の変更を伝達するにはどうすればよいでしょうか？例えばそれは、「`let`で定義したあの変数`x`に併せて変わる変数`y`を定義したい！[^computed]」とか、「`let`で定義したあの変数`z`が何かしら変わる度に中身を`console.log`で表示したい！」といった場合に最適です。そんな場合は、`$:`で始まる文を`<script>`に書きます:
+
+[^computed]: Vue.jsの経験がある方へ: 要するにこれは、Vue.jsで言うところの「computed properties」に相当するものと考えて差し支えありません。
+
 App.svelte:
 
 ```svelte
@@ -167,6 +171,41 @@ App.svelte:
 </button>
 + 4 = {plus4} だ！
 ```
+
+Svelteにおいて`$:`で始まる文は特別なサインです。`$: plus4 = count + 4;`のように、`$: 変数名 = <JavaScriptの式>;`という構文で定義した変数は、`<JavaScriptの式>`に含まれている`let`で定義した変数の変更に沿って変わります。`$: console.log("変数が変わった！", { plus4, count });`のように変数への代入を伴わなくとも、`$: JavaScriptの文`という構文で記述した文は、中で参照している変数が変更される度に実行されるようになります[^dollar]。
+
+[^dollar]: 実は`$:...`という構文は、SvelteがJavaScriptに新しく加えた構文ではありません。JavaScript標準の機能である[ラベル付きの文](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/label)を流用し、`$`という名前のラベルが付いた文を特別扱いすることにしたのです。
+
+動作例:
+
+![0 + 4 = 4](./step5.gif)
+
+⚠️なお、`plus4`のような変数を定義する際、次のように`let`を使用してもうまく動きません:
+
+間違った例:
+
+```svelte
+<script>
+... 省略 ...
+    let plus4 = count + 4;
+... 省略 ...
+</script>
+
+... 省略 ...
+```
+
+Svelteにおける`let 変数名 = ...`の`...`に書く式は、あくまでも`変数名`の変数に対するデフォルトの値です。そのため、コンポーネントを**作る時だけ**しか評価されません。なので、`let plus4 = count + 4;`と書いた場合は`count`を更新しても`plus4`は更新されないのでご注意ください。
+
+それから、`$: let plus4 = ...`と書いてもいけません。構文エラーになってしまいます:
+
+エラーの例:
+
+![The keyword 'let' is reserved svelte(parse-error)](./step5-error.png)
+
+## チェックポイント
+
+- Svelteのコンポーネントで`let`を使って定義した変数は、値が変わる毎にHTML内で参照している箇所にも変更が伝わる
+- `<script>`の中でも、`$: ...`という構文を使えば、`let`で定義した変数の変更に併せて文を実行できる
 
 ## その6 コンポーネントの分割
 
