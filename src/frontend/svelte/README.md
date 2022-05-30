@@ -408,22 +408,4 @@ App.svelte:
 <NabeatsuButton onClick={incrementCount} {count} {divisor}/>
 ```
 
-話したい:
-
-- [x] ローカル変数を紐付けられること（on-way binding）
-    - <https://svelte.jp/tutorial/reactive-assignments>
-    - <https://svelte.jp/tutorial/reactive-declarations>
-    - <https://svelte.jp/tutorial/reactive-statements>
-- [x] コンポーネントの分割
-    - <https://svelte.jp/tutorial/declaring-props>
-- [x] ロジック
-    - <https://svelte.jp/tutorial/if-blocks>
-    - <https://svelte.jp/tutorial/else-blocks>
-- [x] `<style>`タグがローカルに
-    - <https://svelte.jp/tutorial/styling>
-- [x] two-way binding
-    - <https://svelte.jp/tutorial/text-inputs>
-
-3以外の数も指定できればtwo-way binding
-
 <credit-footer/>
