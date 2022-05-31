@@ -342,7 +342,7 @@ NabeatsuButton.svelte:
 
 動作例:
 
-![0](./step8.gif)
+![((●˚⺣˚)&lt;0!!](./step8.gif)
 
 ## チェックポイント
 
@@ -350,7 +350,9 @@ NabeatsuButton.svelte:
 
 ## その9 コンポーネントの中に閉じたstyle
 
-アホになる時だけイタリック体にする
+せっかくHTMLを使っているのですから、「アホになる」時の見た目をもっといじってみましょう。見た目をいじる、といえばCSSです。Svelteのコンポーネントでは、`<style>`タグの中にCSSを記述すると、コンポーネントの中にしか影響しないCSSが書けます。
+
+以下は「アホになる」時だけ斜字体にする例ですが、みなさんの好みでもっとド派手🤡な見た目にしてもよいでしょう:
 
 NabeatsuButton.svelte:
 
@@ -366,7 +368,6 @@ NabeatsuButton.svelte:
         font-style: italic;
     }
 </style>
-<!-- {...} の中には任意のJavaScriptの式が書ける。下記では三項演算子 -->
 <button on:click={onClick} class={isAho ? "aho" : ""}>
 {#if isAho}
     ((●˚⺣˚)&lt;{count}!!
@@ -376,7 +377,44 @@ NabeatsuButton.svelte:
 </button>
 ```
 
-DevToolsを見て、`svelte-1ot19pz`のような、特別なクラスが追加されていることに注目
+上記の例では`aho`というクラスを作成して、`<style>`では`aho`クラスが充てられた要素の文字が斜字体（`font-style: italic`）になるよう設定しています。そして、`isAho`が`true`の場合、つまり`count`が3の倍数の時は`button`要素の`class`属性に`aho`が設定することで、3の倍数の時だけ見た目が変わるようにしています。`{...}`の中には任意のJavaScriptの式が書けるので、上記では三項演算子を使って`class`属性の中身を記述しているんですね。
+
+もちろん、下記のように書き換えても問題ありません[^class-syntax]:
+
+[^class-syntax]: ここでは割愛しますが実際のところ、Svelteで要素の`class`属性を設定する方法にはもっと簡潔な方法があります。詳細は[公式のドキュメント](https://svelte.jp/docs#template-syntax-element-directives-class-name)をご覧ください。
+
+```svelte
+... 省略 ...
+{#if isAho}
+<button on:click={onClick} class="aho">
+    ((●˚⺣˚)&lt;{count}!!
+</button>
+{:else}
+<button on:click={onClick}>
+    (・∀・)&lt;{count}
+</button>
+{/if}
+```
+
+動作例:
+
+![((●˚⺣˚)&lt;0!!](./step9.gif)
+
+さて、Svelteのコンポーネントにおける`<style>`の使い方はこれだけなんですが、知っておくべき重要なポイントがあります。作成した`NabeatsuButton`コンポーネントが持つ、`<button>`要素を右クリックして、Developer Toolsを起動してください。Chromeでは「検証」、Edgeでは「開発者ツールで調査する」、Firefoxでは「検証」をクリックすれば起動します。
+
+すると、`<button>`要素の`class`属性に`aho`の他`svelte-1ot19pz`のような、`svelte-`で始まる見慣れないクラスも付与されているのが分かるでしょう:
+
+![\<button class="aho svelte-1ot19pz"\>](./step9-button-element.png)
+
+更にDeveloper Toolsの画面右、`<button>`要素に適用されているCSSのルールの一覧を見ると、私たちが`<style>`タグに書いた`.aho`についてのルールが、`.aho.svelte-1ot19pz`のような、`<button>`に追加で適用された`svelte-`で始まるクラスを付け加えたセレクターで置き換えられていることが分かるでしょう:
+
+![.aho.svelte-1ot19pz](./step9-style.png)
+
+この、Svelteが自動で書き換えるセレクターにより、Svelteのコンポーネントで`<style>`に書いたCSSは、そのコンポーネントだけで有効になります。このようにしてSvelteは、コンポーネントが外に与える影響を最小化しているんですね。
+
+## チェックポイント
+
+- Svelteのコンポーネントにおける`<style>`が、書いたコンポーネントだけに適用されることが分かった
 
 ## その10 input要素からの入力を渡す
 
