@@ -418,7 +418,11 @@ NabeatsuButton.svelte:
 
 ## その10 input要素からの入力を渡す
 
-何の倍数で「アホになる」か設定できるようにしよう！
+このSvelteチュートリアルで勉強するSvelteの機能は、あと一つです。早速学びましょう... と言いたいところですが、その前にこれまでの復習を兼ねて、その機能を使わなかった場合にどれだけ煩雑になるかを確かめてみましょう。
+
+例として、`NabeatsuButton`に新しいプロパティー、`divisor`を追加して、何の倍数で「アホになる」かを設定できるようにしましょう。`NabeatsuButton`がより多様なケースに対応できるようになりますね！
+
+まずは`divisor`プロパティーを`NabeatsuButton`に追加した上で、これまで`3`の余りを計算していたところを`divisor`の余りを計算するよう書き換えます:
 
 NabeatsuButton.svelte:
 
@@ -444,13 +448,15 @@ NabeatsuButton.svelte:
 </button>
 ```
 
+それから、`App`コンポーネントでは`NabeatsuButton`に渡す`divisor`と、`divisor`を設定する`<input>`要素を作ります:
+
 App.svelte:
 
 ```svelte
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 
-    let count = 1;
+    let count = 0;
     function incrementCount() {
         count += 1;
     }
@@ -465,10 +471,21 @@ App.svelte:
     <input type="number" value={divisor} on:change={updateDivisor}/>
 </label>
 <br />
-<NabeatsuButton onClick={incrementCount} {count} {divisor}/>
+<NabeatsuButton onClick={incrementCount} count={count} divisor={divisor}/>
 ```
 
+
+新しく追加した`<input>`要素では、`value={divisor} on:change={updateDivisor}`と設定することで、`divisor`の値を常に表示しつつ`change`イベントのイベントハンドラーを設定し、`divisor`に`event.target.value`、つまり`<input>`に新しく入力された値をセットしています。
+
+動作例:
+
+![何の倍数でアホになる？ 0 ((●˚⺣˚)&lt;0!!](./step10.gif)
+
 ## その11 input要素からの入力を渡す: もっと簡単な方法
+
+前のステップでは、`<input>`要素の`value`属性で変数`divisor`を設定し、`change`イベントで`divisor`を更新する設定をしていました。このように、`<input>`要素に変数の値を表示して、`<input>`要素の内容が変わると変数にその値を反映させる、という変数の中身と`<input>`要素の値を相互に同期させる実装パターンはとてもありふれています。なので、Svelteではこれを「双方向バインディング」という機能で簡単に実装できるようにしました。AngularやVueなど、他のフレームワークでも馴染み深い機能ではないかと思います。
+
+「双方向バインディング」を使うとステップ10の`App`コンポーネントは、次のように生まれ変わります:
 
 App.svelte:
 
@@ -476,7 +493,7 @@ App.svelte:
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 
-    let count = 1;
+    let count = 0;
     function incrementCount() {
         count += 1;
     }
@@ -488,7 +505,23 @@ App.svelte:
     <input type="number" bind:value={divisor}/>
 </label>
 <br />
-<NabeatsuButton onClick={incrementCount} {count} {divisor}/>
+<NabeatsuButton onClick={incrementCount} count={count} divisor={divisor}/>
 ```
+
+`<input>`要素には`bind:value={divisor}`と書くだけでよくなり、`updateDivisor`のような`<input>`要素の値を`divisor`にセットするだけの関数もなくなりました！`bind:value={divisor}`は、対象の`<input>`要素の`value`属性と変数`divisor`を双方向に紐付ける（バインドする）ための設定です。紐付けた変数`divisor`の値を`value`属性で表示して、ユーザーの入力によって`value`属性が更新されたら`divisor`の値も更新し、また新たな値を`value`属性の値として表示する...という処理をこれ一つで賄ってくれます[^type-number]。
+
+[^type-number]: 更にSvelteは気を遣ってくれまして、`type="number"`な`<input>`要素については、入力された値を自動で数値に変換した上で紐付けた変数に代入してくれます。
+
+動作例:
+
+※ステップ10と同じなので省略
+
+## チェックポイント
+
+- 「双方向バインディング」を使うことで、紐付けた変数と`<input>`要素の`value`属性の値を簡単に同期させることができた
+
+## おわりに
+
+Svelteの機能はまだまだたくさんあります。気になる方は、とてもうまく翻訳された[日本語のチュートリアル](https://svelte.jp/tutorial/basics)を軽く通してみるといいでしょう。
 
 <credit-footer/>
