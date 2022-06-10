@@ -50,12 +50,10 @@ $ docker exec -it bootcamp-test bash
 ```bash
 # ソースは全て"/test-hands-on"配下にあります。
 $ cd /test-hands-on
-# 「テストを実行する」のソースがある階層へ移動します。
-cd exercises
 
 # 任意のテストを実行します。
 # 以下では「同値クラス・境界値テスト」のテストを実行します。
-python -m unittest -v exercise1.test_challenge
+python -m unittest -v exercises.exercise1.test_challenge
 ```
 
 ## テストを実行する
