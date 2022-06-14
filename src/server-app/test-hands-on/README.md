@@ -111,7 +111,7 @@ OK
 
 
 #### テスト実装例
-- 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されてiいるとします。
+- 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。
 ```python
 def f(x):
   if 0 <= x <= 100:
@@ -126,18 +126,18 @@ def f(x):
 ```python
 import unittest
 
-class FxTestCase(unittest.TestCase):
+class ExampleTestCase(unittest.TestCase):
     def test_equivalence_partitioning(self):
         # 有効同値のテスト
-        self.assertEqual(fx(10), True)
-        self.assertEqual(fx(50), True)
-        self.assertEqual(fx(90), True)
+        self.assertEqual(f(10), True)
+        self.assertEqual(f(50), True)
+        self.assertEqual(f(90), True)
 
         # 無効同値のテスト
-        self.assertEqual(fx(-500), False)
-        self.assertEqual(fx(-10), False)
-        self.assertEqual(fx(110), False)
-        self.assertEqual(fx(500), False)
+        self.assertEqual(f(-500), False)
+        self.assertEqual(f(-10), False)
+        self.assertEqual(f(110), False)
+        self.assertEqual(f(500), False)
 ```
 
 
@@ -146,15 +146,15 @@ class FxTestCase(unittest.TestCase):
 ```python
 import unittest
 
-class FxTestCase(unittest.TestCase):
+class ExampleTestCase(unittest.TestCase):
     def test_equivalence_partitioning(self):
         # 下限の境界値
-        self.assertEqual(fx(-1), False)
-        self.assertEqual(fx(0), True)
+        self.assertEqual(f(-1), False)
+        self.assertEqual(f(0), True)
 
         # 上限の境界値
-        self.assertEqual(fx(100), True)
-        self.assertEqual(fx(101), False)
+        self.assertEqual(f(100), True)
+        self.assertEqual(f(101), False)
 ```
 
 
