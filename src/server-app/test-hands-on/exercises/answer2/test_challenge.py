@@ -6,7 +6,7 @@ from ..exercise2 import challenge
 client = TestClient(challenge.app)
 
 
-class ApplyTestCase(unittest.TestCase):
+class ApiTestCase(unittest.TestCase):
     def test_get_index(self):
         res = client.get("/")
         status = res.status_code

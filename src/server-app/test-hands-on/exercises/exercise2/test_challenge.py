@@ -6,7 +6,7 @@ from . import challenge
 client = TestClient(challenge.app)
 
 
-class ApplyTestCase(unittest.TestCase):
+class ApiTestCase(unittest.TestCase):
     def test_get_index(self):
         # "/"のパスでアクセスして実行するAPIのテストをしよう
         pass
