@@ -48,20 +48,21 @@ prior_knowledge: Python3
 下記のコマンドでdockerコンテナを立ち上げます。
 
 ```bash
-$ docker build -t bootcamp-test .
-$ docker run -it  bootcamp-test
-```
-
-下記のコマンドで、実行したコンテナにアクセスします。
-
-```bash
-$ docker exec -it bootcamp-test bash
+$ docker-compose up --build
 ```
 
 ### テストの実行
 
 下記のコマンドで、任意の「[テストを実行する](#テストを実行する)」の項のテストを実行します。
 
+まずは「[dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」で起動中のコンソールとは別のコンソールを開き、実行中のコンテナにアクセスします。
+ちなみに、ローカルのソースファイルの変更は、コンテナ内にも自動で同期されます。
+```bash
+$ docker exec -it test-hands-on_bootcamp-test_1 bash
+```
+
+上記のコマンドを実行すると、コンテナ内のbashが実行されます。
+下記のコマンドで、試しにテストを実行してみましょう。
 ```bash
 # ソースは全て"/test-hands-on"配下にあります。
 $ cd /test-hands-on
@@ -69,6 +70,19 @@ $ cd /test-hands-on
 # 任意のテストを実行します。
 # 以下では「同値クラス・境界値テスト」のテストを実行します。
 python -m unittest -v exercises.exercise1.test_challenge
+```
+
+上手くいくと、下記のようにテストが「OK」と表示されます。
+また、コマンド内の「exercise1」のパッケージ名を変更することで、テストの対象を変更することができます。
+```bash
+test_boundary_value (exercises.exercise1.test_challenge.ApplyTestCase) ... ok
+test_catch_typeerror (exercises.exercise1.test_challenge.ApplyTestCase) ... ok
+test_equivalence_partitioning (exercises.exercise1.test_challenge.ApplyTestCase) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+OK
 ```
 
 ## テストを実行する
