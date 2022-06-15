@@ -226,6 +226,7 @@ from unittest import mock
 # 関数rock_paper_scissors(), my_shoot()は、exampleパッケージに含まれているとする
 from . import example
 
+rock_paper_scissors = example.rock_paper_scissors
 
 class ExampleTestCase(unittest.TestCase):
     def test_rock_paper_scissors(self):
