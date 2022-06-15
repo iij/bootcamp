@@ -41,7 +41,8 @@ prior_knowledge: Python3
 そのため、後述する「同値クラス・境界値テスト」などの手法によって、最低限かつ最適な回数でテストを行うことが求められます。  
 
 ### いつテストを作るのか
-
+WIP  
+  
 
 ## 準備
 
@@ -72,7 +73,7 @@ $ cd /test-hands-on
 
 # 任意のテストを実行します。
 # 以下では「同値クラス・境界値テスト」のテストを実行します。
-python -m unittest -v exercises.exercise1.test_challenge
+$ python -m unittest -v exercises.exercise1.test_challenge
 ```
 
 
@@ -94,8 +95,8 @@ OK
 ## テストを実行する
 
 ### 同値クラス・境界値テスト
-- この項では「同値クラステスト」と「境界値テスト」について説明します。
 
+この項では「同値クラステスト」と「境界値テスト」という手法のテストを実施し、効率的なテストについて学びます。
 
 #### 同値クラステストとは
 同値クラステストとは「任意の関数```g(x)```の引数```x```に対し、有効である値、無効である値のグループ（有効同値クラス、無効同値クラス）を定義してテストを実施する」ものになります。  
@@ -116,7 +117,7 @@ OK
 
 
 #### テスト実装例
-- 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。  
+本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。  
 ```python
 def f(x):
   if 0 <= x <= 100:
@@ -126,8 +127,8 @@ def f(x):
 ```
   
   
-- 上記の関数に対し、同値クラスのテストを定義すると、下記のように書くことができます。  
-- 下記のテストでは、関数```f(x)```に有効同値クラスの値を入力すると```True```、そうでない値を入力すると```False```が返却されることを確認しています。  
+上記の関数に対し、同値クラスのテストを定義すると、下記のように書くことができます。  
+下記のテストでは、関数```f(x)```に有効同値クラスの値を入力すると```True```、そうでない値を入力すると```False```が返却されることを確認しています。  
 ```python
 import unittest
 
@@ -146,8 +147,8 @@ class ExampleTestCase(unittest.TestCase):
 ```
 
 
-- 境界値テストを定義すると、下記のように書くことができます。  
-- 下記のテストでは、関数```f(x)```に下限の境界値 *-1* , *0* 、上限の境界値 *100* , *101* を入力し、適宜```True```か```False```が返却されることを確認しています。  
+境界値テストを定義すると、下記のように書くことができます。  
+下記のテストでは、関数```f(x)```に下限の境界値 *-1* , *0* 、上限の境界値 *100* , *101* を入力し、適宜```True```か```False```が返却されることを確認しています。  
 ```python
 import unittest
 
@@ -174,19 +175,130 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py`
 
 
 ### APIと関数のモック
-- この項では「同値クラステスト」と「境界値テスト」について説明します。
 
-#### APIとは
-
+この項では、Pythonで実行できるAPI（fatsapi）のフレームワークを使用し、APIに対するテストや、関数のモックに触れてみましょう。
 
 #### モックとは
-- 
+「モックアップ」の略称であり、工業製品などの試作や、店頭展示などのためにつくられる実物大模型のことを指します。  
+「[goo辞書 モックアップ（mock-up）](https://dictionary.goo.ne.jp/word/%e3%83%a2%e3%83%83%e3%82%af%e3%82%a2%e3%83%83%e3%83%97/)」より  
+  
+テストにおけるモックとは、主にクラスや関数の動作をシミュレートするためのオブジェクトになります。  
+  
+例えば、以下のような仕様の関数```rock_paper_scissors(shoot)```があるとします。
+- 関数```rock_paper_scissors(shoot)```は、じゃんけんを行う関数で、引数```shoot```は文字列"rock", "paper", "scissors"の、いずれかを取ります。
+- 関数```rock_paper_scissors()```は、引数に対してじゃんけんの手を出す関数```my_shoot()```が実行されます。
+- 関数```my_shoot()```は、それぞれ *1/3* の確率で"rock", "paper", "scissors"のいずれかを取得します。
+- 関数```rock_paper_scissors()```は、入力された引数```shoot```に対して、関数```my_shoot()```の返り値に勝利できる場合 *1* 、引き分けであれば *0* 、敗北であれば *-1* を返します。
 
+上記の関数```rock_paper_scissors()```をテストする場合、内部の関数の返り値が乱数で決定されてしまうため、通常であればテストが実行できません。  
+（例えば、1回目の```my_shoot()```を実行した時に"rock"が返却されたとしても、2回目も"rock"が返却されるとは限らないですよね）  
+  
+こういった場合、関数のモックを使用して、テスト対象の関数内で使用されているクラスや関数をモックし、返り値を固定してシミュレーションを行う必要があります。  
+  
 #### テスト実装例
-ここに例題を書く
+関数```rock_paper_scissors(shoot)```が、Pythonで以下のように定義されているとします。  
+```python
+def rock_paper_scissors(shoot):
+  # 1/3で"rock", "paper", "scissors"が格納される
+  my_shoot_result = my_shoot()
+
+  # あいこ
+  if shoot == my_shoot_result:
+    return 0
+  
+  # 勝利
+  if shoot == "rock" and my_shoot_result == "scissors":
+    return 1
+  if shoot == "paper" and my_shoot_result == "rock":
+    return 1
+  if shoot == "scissors" and my_shoot_result == "paper":
+    return 1
+  
+  # 敗北
+  return -1
+```
+
+上記の関数に対し、モックを使用したテストを定義すると、下記のように書くことができます。  
+```python
+import unittest
+from unittest import mock
+# 関数rock_paper_scissors(), my_shoot()は、exampleパッケージに含まれているとする
+from . import example
+
+
+class ExampleTestCase(unittest.TestCase):
+    def test_rock_paper_scissors(self):
+        # あいこのテスト
+        with mock.patch.object(example, 'my_shoot', return_value="rock"):
+            self.assertEqual(rock_paper_scissors("rock"), 0)
+        
+        # 勝利のテスト
+        with mock.patch.object(example, 'my_shoot', return_value="scissors"):
+            self.assertEqual(rock_paper_scissors("rock"), 1)
+
+        # 敗北のテスト
+        with mock.patch.object(example, 'my_shoot', return_value="paper"):
+            self.assertEqual(rock_paper_scissors("rock"), 1)
+```
+
+#### FastAPIについて
+IIJ Bootcamp「FastAPI でwebアプリを作る」にて紹介されているため、詳細の説明は省きます。
+  
+下記「テスト実装例」にサンプルを記載するように、簡単にAPIを実装できるフレームワークになっています。
+  
+#### テスト実装例
+FastAPIは、下記のようにAPIを実装できます。  
+下記は、ブラウザで```http://localhost:8000/hello```にアクセスすると、データ```{"response": "hello"}```を返却します。
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/hello")
+async def get_hello():
+    return {"response": "hello"}
+```
+
+上記のAPIに対し、HTTPステータスやレスポンスを検証するテストは、下記のように書くことができます。
+```python
+import unittest
+
+
+class ExampleTestCase(unittest.TestCase):
+    def test_api(self):
+        # パス"/hello"に接続する
+        res = client.get("/hello")
+
+        # HTTPステータスと、レスポンスの取得
+        status = res.status_code
+        data = res.json()
+
+        # HTTPステータスと、レスポンスの検証
+        self.assertEqual(status, 200)
+        self.assertEqual(data, {"response": "hello"})
+```
 
 #### 問題にチャレンジしよう
-ここに問題を書く
+dockerコンテナ内の```/test-hands-on/exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。  
+  
+上記のAPIは、コンテナから下記のコマンドで実行することができます。  
+```bash
+$ python3 -m uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
+```
+
+API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
+```
+http://localhost:8000/
+```
+
+また、APIは下記のエンドポイントがあります。
+|パス|詳細|
+|---|---|
+|/|```{"message": "hello world"}```が返却されます。|
+|/echo/{data}|```{"message": "got the message: {data}"}```が返却されます。<br />※```{data}```は、任意の値が代入されます。|
+|/gacha|```{"message": "{result}"```が返却されます。<br />※```{result}```は、 *1/100* で文字列"you win"、それ以外で文字列"you lose"が代入されます。|
+
+dockerコンテナ内の```/test-hands-on/exercises/exercise2/test_challenge.py```に、作成途中のテストクラス```ApiTestCase```が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。  
 
 
 ### TDDをやってみる
