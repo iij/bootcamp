@@ -186,9 +186,9 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py`
   
 例えば、以下のような仕様の関数```rock_paper_scissors(shoot)```があるとします。
 - 関数```rock_paper_scissors(shoot)```は、じゃんけんを行う関数で、引数```shoot```は文字列"rock", "paper", "scissors"の、いずれかを取ります。
-- 関数```rock_paper_scissors()```は、引数に対してじゃんけんの手を出す関数```my_shoot()```が実行されます。
+- 関数```rock_paper_scissors()```は、内部で引数に対してじゃんけんの手を出す関数```my_shoot()```が実行されます。
 - 関数```my_shoot()```は、それぞれ *1/3* の確率で"rock", "paper", "scissors"のいずれかを取得します。
-- 関数```rock_paper_scissors()```は、入力された引数```shoot```に対して、関数```my_shoot()```の返り値に勝利できる場合 *1* 、引き分けであれば *0* 、敗北であれば *-1* を返します。
+- 関数```rock_paper_scissors()```は、入力された引数```shoot```が、関数```my_shoot()```の返り値に勝利できる場合 *1* 、引き分けであれば *0* 、敗北であれば *-1* を返します。
 
 上記の関数```rock_paper_scissors()```をテストする場合、内部の関数の返り値が乱数で決定されてしまうため、通常であればテストが実行できません。  
 （例えば、1回目の```my_shoot()```を実行した時に"rock"が返却されたとしても、2回目も"rock"が返却されるとは限らないですよね）  
@@ -238,7 +238,7 @@ class ExampleTestCase(unittest.TestCase):
 
         # 敗北のテスト
         with mock.patch.object(example, 'my_shoot', return_value="paper"):
-            self.assertEqual(rock_paper_scissors("rock"), 1)
+            self.assertEqual(rock_paper_scissors("rock"), -1)
 ```
 
 #### FastAPIについて
