@@ -171,6 +171,7 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に
 - 関数```apply()```は、10以上、100以下の値が入力されると、申し込みが成功し、文字列```"accepted"```が返却されます。
 - 申し込みに失敗した場合は、文字列```"not accepted"```が返却されます。
 - int型以外のデータが入力された場合、例外```TypeError()```が発生し、プログラムが異常終了します。
+  
 dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py```に、作成途中のテストクラス```ApplyTestCase```が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。  
 
 
