@@ -454,7 +454,7 @@ test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
 
 ### サイクル2 Refactoring
-現在の```FizzBuzz```はグローバル変数が仕様されているなど、あまり美しくありません。  
+現在の```FizzBuzz```はグローバル変数が使用されているなど、あまり美しくありません。  
 クラスで値を持たせて、インスタンス毎に値を共有させないようにしましょう。
 
 ```python
@@ -620,8 +620,55 @@ test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
 
 ### 問題にチャレンジしよう
-ここに問題を書く
+dockerコンテナ内の```/test-hands-on/exercises/exercise3/challenge.py```には、FastAPIで書かれた作りかけのAPIがあります。
 
+上記のAPIは、コンテナから下記のコマンドで実行することができます。  
+```bash
+$ python3 -m uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
+```
+
+API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
+```
+http://localhost:8000/
+```
+
+みなさんには、TDDを使って上記のAPIを完成させてもらいます。  
+作ってもらいたいAPIの仕様は、下記のものになります。
+- このAPIは、```/, /add, /sub, /mul, /div```の5つのエンドポイントがあります。
+- このAPIはサーバ内部でint型の値を保持し、現在設定されている値を```/```にアクセスすることで、確認することができます。
+  また、値は0始まりになります。
+- ```/add, /sub, /mul, /div```にパスパラメータを与えると、保持されている値に対し、四則演算を行います（後述）。
+- 本APIでは、全てint型で計算を行います。
+
+<br />
+以下、APIのパスについて
+
+|パス|詳細|
+|---|---|
+|/|```{"current_number": {数値}}```が返却されます。<br />{数値}には、サーバで保持されている値が入ります。
+|/add/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値に加算します。|
+|/sub/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から減算します。|
+|/mul/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値に乗算します。|
+|/div/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から除算します。|
+
+サーバでの値の保持・取得は、ソース内に定義されています。  
+以下に、使い方の例を記載します。  
+```python
+# サーバ内に保持されている値を記録します。
+set_current_number(1)
+
+# サーバ内に保持されている値を取得します
+got_data = get_current_number()
+# got_data = 1
+
+set_current_number(123 + 456)
+got_data = get_current_number()
+# got_data = 579
+```
+
+dockerコンテナ内の```/test-hands-on/exercises/exercise3/test_challenge.py```には、本APIが完成すると通るようになる、テスト```test_success()```が定義されています。  
+  
+上記のテストがOKになるよう、各種APIをTDDを使って作成してみましょう。  
 
 # おわりに
 
