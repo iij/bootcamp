@@ -10,7 +10,7 @@ prior_knowledge: Python3
 
 # {{$page.frontmatter.title}}
 
-## 目次
+# 目次
 - [概論](#概論)
   - [なぜテストを行うのか](#なぜテストを行うのか)
   - [いつテストを作るのか](#いつテストを作るのか)
@@ -23,9 +23,9 @@ prior_knowledge: Python3
   - [TDDをやってみる](#tddをやってみる)
 - [おわりに](#おわりに)
 
-## 概論
+# 概論
 
-### なぜテストを行うのか
+## なぜテストを行うのか
 - _
 
 
@@ -39,13 +39,13 @@ prior_knowledge: Python3
   
 そのため、後述する「同値クラス・境界値テスト」などの手法によって、最低限かつ最適な回数でテストを行うことが求められます。  
 
-### いつテストを作るのか
+## いつテストを作るのか
 WIP  
   
 
-## 準備
+# 準備
 
-### dockerコンテナの立ち上げ方
+## dockerコンテナの立ち上げ方
 
 下記のコマンドでdockerコンテナを立ち上げます。  
 
@@ -54,7 +54,7 @@ $ docker-compose up --build
 ```
 
 
-### テストの実行方法
+## テストの実行方法
 
 この項では、任意の「[テストを実行する](#テストを実行する)」の項のテストを実行します。  
   
@@ -91,13 +91,13 @@ OK
 ちなみに、ローカルのソースファイルの変更は、コンテナ内にも自動で同期されます。  
 以降はローカルでファイルを変更し、コンテナ内でテストを実行してみましょう。  
 
-## テストを実行する
+# テストを実行する
 
-### 同値クラス・境界値テスト
+## 同値クラス・境界値テスト
 
 この項では「同値クラステスト」と「境界値テスト」という手法のテストを実施し、効率的なテストについて学びます。
 
-#### 同値クラステストとは
+### 同値クラステストとは
 同値クラステストとは「任意の関数```g(x)```の引数```x```に対し、有効である値、無効である値のグループ（有効同値クラス、無効同値クラス）を定義してテストを実施する」ものになります。  
   
 例えば、本書の冒頭で出てきた、関数```f(x)```では、```x```の値が *0* から *100* の間であれば有効同値クラス、そうでなければ無効同値クラス、と定義できます。  
@@ -106,7 +106,7 @@ OK
 すなわち、関数```f(x)```に対する同値クラステストとは、有効同値である *10* , *50* , *90* など、いくつかの値のグループと、無効同値である *-500* , *-10* , *110* , *500* などの値のグループのテストを実施すればよいことになります。  
   
   
-#### 境界値テストとは
+### 境界値テストとは
 同値クラステストでは「有効/無効と定義した値に対する処理が正しく動くか」を確認できました。  
   
 しかし、これでは「有効/無効の範囲は正しいか」が確認できていません。  
@@ -115,7 +115,7 @@ OK
 本書冒頭の関数```f(x)```を例にすると、下限の境界値は *-1* , *0* 、上限の境界値は *100* , *101* となります。  
 
 
-#### テスト実装例
+### テスト実装例
 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。  
 ```python
 def f(x):
@@ -163,7 +163,7 @@ class ExampleTestCase(unittest.TestCase):
 ```
 
 
-#### 問題にチャレンジしよう
+### 問題にチャレンジしよう
 dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に、商品の申し込みを行う関数```apply(quantity)```が定義されています。  
   
 関数は以下の仕様になっています。  
@@ -175,11 +175,11 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に
 dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py```に、作成途中のテストクラス```ApplyTestCase```が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。  
 
 
-### APIと関数のモック
+## APIと関数のモック
 
 この項では、Pythonで実行できるAPI（FastAPI）のフレームワークを使用し、APIに対するテストや、関数のモックに触れてみましょう。
 
-#### モックとは
+### モックとは
 「モックアップ」の略称であり、工業製品などの試作や、店頭展示などのためにつくられる実物大模型のことを指します。  
 「[goo辞書 モックアップ（mock-up）](https://dictionary.goo.ne.jp/word/%e3%83%a2%e3%83%83%e3%82%af%e3%82%a2%e3%83%83%e3%83%97/)」より  
   
@@ -196,7 +196,7 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py`
   
 こういった場合、関数のモックを使用して、テスト対象の関数内で使用されているクラスや関数をモックし、返り値を固定してシミュレーションを行う必要があります。  
   
-#### テスト実装例
+### テスト実装例
 関数```rock_paper_scissors(shoot)```が、Pythonで以下のように定義されているとします。  
 ```python
 def rock_paper_scissors(shoot):
@@ -243,12 +243,12 @@ class ExampleTestCase(unittest.TestCase):
             self.assertEqual(rock_paper_scissors("rock"), -1)
 ```
 
-#### FastAPIについて
+### FastAPIについて
 IIJ Bootcamp「FastAPI でwebアプリを作る」にて紹介されているため、詳細の説明は省きます。
   
 下記「テスト実装例」にサンプルを記載するように、簡単にAPIを実装できるフレームワークになっています。
   
-#### テスト実装例
+### テスト実装例
 FastAPIは、下記のようにAPIを実装できます。  
 下記は、ブラウザで```http://localhost:8000/hello```にアクセスすると、データ```{"response": "hello"}```を返却します。
 ```python
@@ -280,7 +280,7 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(data, {"response": "hello"})
 ```
 
-#### 問題にチャレンジしよう
+### 問題にチャレンジしよう
 dockerコンテナ内の```/test-hands-on/exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。  
   
 上記のAPIは、コンテナから下記のコマンドで実行することができます。  
@@ -303,14 +303,326 @@ http://localhost:8000/
 dockerコンテナ内の```/test-hands-on/exercises/exercise2/test_challenge.py```に、作成途中のテストクラス```ApiTestCase```が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。  
 
 
-### TDDをやってみる
+## TDDをやってみる
 
-#### テスト実装例
+TDDとは、「テスト駆動開発( *Test-Driven* )」のことを指し「テストファースト（テスト優先）」を掲げて開発を行う、 **開発手法** のことになります。
+<!-- !!!! テスト手法じゃないよ !!!! -->
+  
 
-#### 問題にチャレンジしよう
+### TDDのやり方
+
+TDDは、任意の開発を行う設計があるうえで、下記のサイクルで開発を行っていきます。
+1. Red
+    - 動作をしないテストを書く。
+2. Green
+    - 迅速に、テストを実行できるコードを書いてテストを通すようにする。  
+    ※コードが汚くても良い。
+3. Refactoring
+    - リファクタリングを行い、コード内から重複を削除する。
+
+上記 *1~3* のサイクルを実行し、動きつつコードとリファクタリングによって最適化されたコードを、着実に作っていく手法になります。  
+
+### テスト実装例
+この項で実際に、TDDのサイクルを見てみましょう。  
+  
+例えば、以下の仕様のソースを作りたいとします。
+- クラス内の```do()```関数の、実行回数が3の倍数なら"Fizz"、5の倍数なら"Buzz"を返す、クラス```FizzBuzz```を実装します。
+- このクラスは```do()```の実行回数を、内部でカウントします。
+- 3でも5の倍数でもないカウントに対しては、そのカウントを返します。
+
+上記のコードをTDDで作成していきましょう。
+
+
+### サイクル1 Red
+
+まずは、クラス```FizzBuzz```の関数を作成します。  
+下記のコードは、```example.py```のようなパッケージにあると考えてください。  
+```python
+class FizzBuzz:
+    def do(self):
+        pass
+```
+
+次に、動作をしないテストを書きましょう。  
+```do()```が最初に実行する時は、下記の仕様が適用されます。  
+
+> 3でも5の倍数でもないカウントに対しては、そのカウントを返します。
+
+とりあえず1回目の実行では「1」が返ってくるはずなので、テストでは「1」を期待してみます。
+
+```python
+import unittest
+from .fizzbuzz import FizzBuzz
+
+
+class ExampleTestCase(unittest.TestCase):
+    def test_success(self):
+        fb = FizzBuzz()
+        self.assertEqual(fb.do(), 1)
+```
+
+これを実行すると、当然のようにコケますね。  
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+```
+
+### サイクル1 Green
+
+次は「とりあえず動くコードを書く」ことをします。  
+テストでは1が返却されることを期待しているので、1を返しましょう。  
+TDDって簡単ですね。  
+
+```python
+class FizzBuzz:
+    def do(self):
+        return 1
+```
+
+動いたよ！！！！やったね！！！！！！！！！  
+
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+```
+
+### サイクル1 Refactoring
+現在の```FizzBuzz```は、この世界に存在するどんなものよりも洗練されているため、リファクタリングは必要ないですね。  
+素晴らしい。  
+
+### サイクル2 Red
+
+2サイクル目に来ました。  
+Redでは、あえてテストを失敗させなければならないため、泣く泣く完成されたテストコードに手を加えましょう。
+  
+サイクル1 Redでも確認した通り、どうやら```do()```を実行するごとに実行回数を返してくれるそうです。  
+実行回数毎に、期待する値を増加させてみましょう。
+
+```python
+import unittest
+from .fizzbuzz import FizzBuzz
+
+
+class ExampleTestCase(unittest.TestCase):
+    def test_success(self):
+        fb = FizzBuzz()
+        self.assertEqual(fb.do(), 1)
+        self.assertEqual(fb.do(), 2)
+        self.assertEqual(fb.do(), 3)
+        self.assertEqual(fb.do(), 4)
+        self.assertEqual(fb.do(), 5)
+        self.assertEqual(fb.do(), 6)
+        self.assertEqual(fb.do(), 7)
+        self.assertEqual(fb.do(), 8)
+        self.assertEqual(fb.do(), 9)
+        self.assertEqual(fb.do(), 10)
+        self.assertEqual(fb.do(), 11)
+        self.assertEqual(fb.do(), 12)
+        self.assertEqual(fb.do(), 13)
+        self.assertEqual(fb.do(), 14)
+        self.assertEqual(fb.do(), 15)
+```
+
+```FizzBuzz```は既に完成されているため、テストをいくら加えようが失敗するはずがないのですが、試してみましょう。  
+まあ、やる意味はないと思うのですが（笑）  
+
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+```
+
+### サイクル2 Green
+
+なんということでしょうか。  
+完成されていたと思われた```do()```は、何回実行しても「1」しか返してくれないではないですか。  
+
+誰ですか、こんな実装にしたのは（怒）  
+```python
+count = 0
+
+class FizzBuzz:
+    def do(self):
+        global count
+        count += 1
+        return count
+```
+
+だいぶ雑なコードですが、たぶん動くと思うからテストしましょう。
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+```
+
+### サイクル2 Refactoring
+現在の```FizzBuzz```はグローバル変数が仕様されているなど、あまり美しくありません。  
+クラスで値を持たせて、インスタンス毎に値を共有させないようにしましょう。
+
+```python
+class FizzBuzz:
+    def __init__(self):
+        self.count = 0
+
+    def do(self):
+        self.count += 1
+        return self.count
+```
+
+コードを変更しましたが、テストの結果が成功のままであることを確認します。
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+```
+
+### サイクル3 Red
+さて、ここまでで以下の仕様を実装することができました。
+- 内部でカウントを保持する。
+- 3でも5でもないカウントは、その値を返す。
+
+  
+次は「3の倍数なら"Fizz"を返す」を実装してみましょう。
+  
+失敗するテストを書きます。
+テスト全体を書くと文字量が多くなりますので、以降は差分で表記します。
+```
+-        self.assertEqual(fb.do(), 3)
++        self.assertEqual(fb.do(), "Fizz")
+
+-        self.assertEqual(fb.do(), 6)
++        self.assertEqual(fb.do(), "Fizz")
+
+-        self.assertEqual(fb.do(), 9)
++        self.assertEqual(fb.do(), "Fizz")
+
+-        self.assertEqual(fb.do(), 12)
++        self.assertEqual(fb.do(), "Fizz")
+
+-        self.assertEqual(fb.do(), 15)
++        self.assertEqual(fb.do(), "Fizz")
+```
+
+テストは失敗しますね。
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+```
+
+### サイクル3 Green
+さて、"Fizz"を返せるように```FizzBuzz```を修正しましょう。
+
+```python
+class FizzBuzz:
+    def __init__(self):
+        self.count = 0
+
+    def do(self):
+        self.count += 1
+        if self.count % 3 == 0:
+            return "Fizz"
+
+        return self.count
+```
+
+テストはオールグリーンです。
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+```
+
+### サイクル3 Refactoring
+特にリファクタリング箇所がないので省きます。
+
+### サイクル4 Red
+最後の仕様になります。  
+最後は「5の倍数なら"Buzz"を返す」を実装します。
+
+ただし、3かつ5の倍数であれば"FizzBuzz"が返ることに注意してください。
+
+```
+-        self.assertEqual(fb.do(), 5)
++        self.assertEqual(fb.do(), "Buzz")
+
+-        self.assertEqual(fb.do(), 10)
++        self.assertEqual(fb.do(), "Buzz")
+
+-        self.assertEqual(fb.do(), 15)
++        self.assertEqual(fb.do(), "FizzBuzz")
+```
+
+「手がかかる子ほど可愛い」というのは、このことを言うのでしょうか。  
+だんだんコンソールに出力される「FAIL」が愛おしく思えてきました。  
+
+きっと「失敗の後は必ず成功する」ということが約束されているからでしょう。
+
+みなさんも、そう思いませんか？
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+```
+
+### サイクル4 Green
+"Buzz"および"FizzBuzz"を返せるようにしましょう。
+
+```python
+class FizzBuzz:
+    def __init__(self):
+        self.count = 0
+
+    def do(self):
+        self.count += 1
+        if self.count % 15 == 0:
+            return "FizzBuzz"
+        if self.count % 3 == 0:
+            return "Fizz"
+        if self.count % 5 == 0:
+            return "Buzz"
+
+        return self.count
+```
+
+テストも通ります。  
+やったか！？（まだ終わりじゃないです。）
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+```
+
+### サイクル4 Refactoring
+最後のリファクタリングになります。  
+これで全てを終わらせて、あなたは次のステージへ進むことになるでしょう。
+
+先程書いた```FizzBuzz```では、まだ手続きを共通化し、最適にできる部分があります。
+
+```python
+#####################################
+# このコードは一例です。
+# みんなが読みやすいコードを書こうね！
+#####################################
+class FizzBuzz:
+    def __init__(self):
+        self.count = 0
+
+    def _divided(self, count, div):
+        return int(not(count % div))
+
+    def do(self):
+        self.count += 1
+        result = [self.count, "Fizz", "Buzz", "FizzBuzz"]
+        index = (self._divided(self.count, 5) << 1) \
+            + self._divided(self.count, 3)
+        return result[index]
+```
+
+多分これが一番美しいと思います。
+
+```bash
+$ python -m unittest -v example.test_fizzbuzz
+test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+```
+
+### 問題にチャレンジしよう
 ここに問題を書く
 
 
-## おわりに
+# おわりに
 
 <credit-footer/>
