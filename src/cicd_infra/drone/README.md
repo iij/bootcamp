@@ -19,6 +19,7 @@ droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを�
 
 ::: tip チェックポイント1 🏁
 Gitの使い方＋GitHubを使った開発手法を受講しましたか？
+git clone, checkout, add, commit, push などを利用します。
 :::
 
 ### 0.3 事前準備
@@ -92,13 +93,23 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。 他の設定値はデフォルトで良いです。
 ここで作成したレポジトリに対して操作をしていきます。
 
+::: warning
+もし、Use this template が表示されていない場合は githubにログインできていないかもしれません。ログインしてからやり直してください。
+:::
+
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
 これはWebhookという仕組みを用いて実現されていますが、droneを使う前にこの設定が必要です。
 
 :computer: droneにリポジトリを登録する。
 
-https://cloud.drone.io/ にログインしてください。
-リストから「自分のアカウント名/drone-exercise」を探して詳細ページを開きましょう。
+::: warning
+https://cloud.drone.io/ では 新規のユーザー登録を行っていません。
+そのため、以下の手順を実施するためには drone.io の 構築が必要です。
+講師は接続先を案内してください。
+:::
+
+講師に案内されたdrone.io にログインしてください。 continue から github.com のアカウントを利用して
+Repositories の リストから「自分のアカウント名/drone-exercise」を探してレポジトリ名をクリックし詳細ページを開きましょう。
 見つからない場合は「SYNC」ボタンを押してから探してください。
 「SETTINGS」タブから「ACTIVATE REPOSITORY」をクリックすると自動で設定が行われ、設定画面が表示されます。
 
@@ -106,18 +117,32 @@ https://cloud.drone.io/ にログインしてください。
 
 #### 2.1.2. droneでテストを実行する
 
-:computer: 作成した作業用リポジトリをローカルにgit cloneしてください。
+:computer: 作成した作業用リポジトリ(自分のアカウント名/drone-exercise)をローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
 
-droneのページから「ACTIVITY FEED」を開くとテストの実行ログが表示されます。
-実行ログを読むとどのようにテストが実行されているかが分かります。
+::: tip
+おさらいです。 編集したあとは git add でステージング したのち commit && push となります。
+
+date >> README.md
+git add README.md
+git commit -m "update README.md"
+git push origin master
+:::
+
+github に push してしばらくすると drone で テストが実行されます。
+
+先程開いた droneの「自分のアカウント名/drone-exercise」の 詳細ページから「ACTIVITY FEED」タブを開くとテストの実行ログが表示されます。
+クリックして 実行ログを読むとどのようにテストが実行されているかが分かります。
 
 このリポジトリにはRubyで書かれたプログラムと、Ruby用のテストフレームワークである[RSpec](https://rspec.info/)で
 書かれたテストが置かれています。
 
 ![droneで最初のテスト](./images/drone_first_test.png)
+
+図を見ると、 clone と test の step からなるとわかります。
+それぞれクリックすると各 step の詳細が表示されます。
 
 ::: tip チェックポイント2 🏁
 「test」ではどういうメッセージが出力されたでしょうか？
@@ -187,6 +212,8 @@ UI上では各`Step`ごとに結果が分けて表示され、`name`で名前を
 `image: ruby` と指定した場合はDocker Hubの[Ruby Official Image](https://hub.docker.com/_/ruby)が利用されます。
 素性のわからないイメージを利用することはやめましょう。
 
+また、`image: ruby:3.1.2` のようにタグを指定して、特定のバージョンを利用できるイメージもありますが意図せず更新される場合があります。
+
 ::: tip
 プライベートなDockerイメージ置き場を自分で作成することもできます。
 :::
@@ -205,11 +232,12 @@ droneを設定した状態でPull Requestを作成するとどうなるでしょ
 
 :computer: 意図的にテストが失敗するようにコードを修正し、Pull Requestを作成してみましょう。
 
+1. まず、別の branch へ checkout します
 ```
 git checkout -b feature/text-error
 ```
 
-実装である`hello_world.rb`を以下のように書き換えてみます。
+2. 実装である`hello_world.rb`を以下のように書き換えてみます。
 
 ```diff
   def world
@@ -218,6 +246,7 @@ git checkout -b feature/text-error
   end
 ```
 
+3. 編集した内容を commit し push します。
 ```
 git add hello_world.rb
 git commit -m "goodby"
@@ -226,19 +255,24 @@ git push origin feature/text-error
 
 :computer: GitHub を開いてPull Requestを作成しましょう。
 
+別のbranch に push した内容を develop branch などへ取り込んでもらうためのリクエストを Pull Request(PR) と呼びます。
+
 ![Pull Requestを作成しましょう](./images/drone_pull_request_button.png)
 
 もし、このとき 作業レポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
 
 その時は 自分のrepository に PR を送るように base repository (左側) の 表記を見直してください。
 
-無事PRを作成できた場合
-Pull Requestの中にdroneのテスト結果が表示されています。
+無事PRを作成できた場合 PRのページへ遷移します。
+
+ページ下部にdroneのテスト結果が表示されています。
 ひと目でテストが失敗していることがわかるでしょう。
 
 ![Pull Requestに表示されたdroneの結果](./images/drone_pull_request_result.png)
 
 ::: tip チェックポイント3 🏁
+Pull Request は作成できましたか？
+drone.io は動作しましたか?
 テストが失敗しましたか？
 :::
 
@@ -253,39 +287,42 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 
 1. 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
 2. 「Branch name pattern」に「master」と記入し、
-3. 「Require status checks to pass before merging」にチェックを入れて
-4. 「Status checks found in the last week for this repository」に出ている
+3. 「Include administrators」にチェックを入れます。
+4. 「Require status checks to pass before merging」にチェックを入れて
+5. 「Status checks found in the last week for this repository」に出ている
    「continuous-integration/drone/pr」と
    「continuous-integration/drone/push」にチェックを入れます。
-5. 「Include administrators」にもチェックを入れます。
 6. 「Create」します。
 
 :: tip もし、continuous-integration/drone/pr が見つからない場合
-PR の作成先が間違ってるかもしれません。見直してください
+先ほど作成したPRによる drone のテストが上手く動いていないかもしれません。
+fork した場合は PR の作成先を確認する必要があります。
+PR の作成先が間違ってるかもしれません。見直してください。
 ::
 
 ![Branch protection rules](./images/drone_branch_protection.png)
 
-元のPull Requestの状態に戻るとマージボタンが押せなくなっています。
+先程作成したPull Requestのページに戻るとマージボタンが押せなくなっています。
 
 ![マージできない状態](./images/drone_reject_merge.png)
 
-::: tip チェックポイント4 🏁
-マージボタンが押せなくなったのはなぜですか？
-:::
 
-
-複数人で開発するときには便利な機能です。
+これは複数人で開発するときには便利な機能です。
 
 このあとmasterブランチを利用しますのでBranch protection rulesは削除しておきましょう。
 
 :computer: Branch protection rules の一覧ページで`master`と名前がついたルールの`delete`ボタンを押す
 
-この後項目のためにmasterブランチに戻っておきましょう。
+:computer: この後項目のためにmasterブランチに戻っておきましょう。
 
 ```
 $ git checkout master
 ```
+
+::: tip チェックポイント4 🏁
+マージボタンが押せなくなったのはなぜですか？
+:::
+
 
 ## 5. さまざまなプラグイン
 
