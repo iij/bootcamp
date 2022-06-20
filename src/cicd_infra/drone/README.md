@@ -541,6 +541,7 @@ steps:
 ```
 
 :computer: まずはこの状態でテストを実行し、結果を見てみましょう。
+新しいrepository への drone の 有効の仕方 内容の変更を伴わないcommit をする方法を思い出してください。
 
 ちなみにテストは `test/models/user_test.rb` に書いてあります。
 
@@ -549,6 +550,8 @@ steps:
 今回はMySQLを使いますが、[MySQLは公式でdockerイメージが提供されています](https://hub.docker.com/_/mysql)のでこれを利用します。
 
 :computer: 以下の項目を`.drone.yml`に追加してください。
+
+kind, name, steps と同じ高さでよいです(services の左側にスペースははいりません)
 
 ```yaml
 services:
