@@ -59,19 +59,25 @@ root@0dd4d9fad678:/work# vim main.py
 ```
 
 ```python
-import http.server
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import socketserver
+import time
 
 PORT = 8000
 
 class MyHandler(BaseHTTPRequestHandler):
   def do_GET(self):
-    print('path = {}'.format(self.path))
+    print('start processing path = {}'.format(self.path))
+
+    # 何かの処理
+    time.sleep(20)
+
+    print('end processing path = {}'.format(self.path))
     
     self.send_response(200)
     self.send_header('Content-Type', 'text/plain; charset=utf-8')
     self.end_headers()
-    self.wfile.write(b'Hello simple server!')
+    self.wfile.write(b'Hello simple server!\n')
 
 with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
     print("serving at port", PORT)
@@ -81,7 +87,7 @@ with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
 `:wq` で保存したら、サーバを起動してみます。
 
 ```terminal
-root@0dd4d9fad678:/work# python3 -m http.server
+root@0dd4d9fad678:/work# python3 main.py
 ```
 
 別のターミナルを開き、以下の通りコンテナに別セッションで接続しましょう。
@@ -90,6 +96,15 @@ root@0dd4d9fad678:/work# python3 -m http.server
 $ docker exec -it bootcamp_concurrent /bin/bash
 root@ee45c9084604:/work#
 ```
+
+以下のようにcurlでレスポンスが返ってこれば成功です
+
+```terminal
+root@1b48b3d0b7cc:/work# curl localhost:8000
+Hello simple server!
+```
+
+リクエストした直後、サーバー側のログに`start processing path = /`と表示されたことを覚えておいてください。
 
 ### 共有メモリとレースコンディション
 
