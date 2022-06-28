@@ -18,7 +18,7 @@ def set_current_number(number: int):
 ################################################################
 
 # コンソールから実行は以下のコマンド
-# $  python3 -m uvicorn challenge:app --reload
+# $ python3 -m uvicorn challenge:app --reload
 app = FastAPI()
 
 @app.get("/")
