@@ -124,6 +124,7 @@ $ docker-compose up --build
 「[dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」で、起動中のコンソールとは別のコンソールを開き、実行中のコンテナにアクセスします。  
 コマンドを実行すると、コンテナ内のbashが実行されます。  
 ```bash
+$ cd bootcamp/src/server-app/test-hands-on
 $ docker-compose exec bootcamp-test bash
 ```
 
@@ -135,7 +136,6 @@ $ docker-compose exec bootcamp-test bash
 $ cd /test-hands-on
 
 # 任意のテストを実行します。
-# 以下では「同値クラス・境界値テスト」のテストを実行します。
 $ python -m unittest -v exercises.exercise0.test_challenge
 ```
 
@@ -146,7 +146,7 @@ $ python -m unittest -v exercises.exercise0.test_challenge
 「テストの実行方法」の項でテストを行うと、初回は下記のようにテストが失敗してしまいます。
 
 ```bash
-python -m unittest -v exercises.exercise0.test_challenge
+$ python -m unittest -v exercises.exercise0.test_challenge
 test_success (exercises.exercise0.test_challenge.HelloTestCase) ... FAIL
 
 ======================================================================
@@ -154,8 +154,8 @@ FAIL: test_success (exercises.exercise0.test_challenge.HelloTestCase)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/test-hands-on/exercises/exercise0/test_challenge.py", line 7, in test_success
-    self.assertEqual(hello(), 'goodbye world?')
-AssertionError: 'hello world' != 'goodbye world?'
+    self.assertEqual(hello(), "goodbye world?")
+AssertionError: "hello world" != "goodbye world?"
 - hello world
 + goodbye world?
 ```
@@ -163,7 +163,7 @@ AssertionError: 'hello world' != 'goodbye world?'
 <br />
 
 試しに、このテストを修正してみましょう。
-テストソースである、 ```/test-hands-on/exercises/exercise0/test_challenge.py``` を開いてみましょう。  
+テストソースである、 ```/test-hands-on/exercises/exercise0/test_challenge.py``` を開いてみます。  
 
 内容は下記のようになっており、ソース内でimportしている ```hello()``` 関数に対し、文字列"goodbye world?"が来ることを期待してテストを行っているようです。  
 
@@ -174,7 +174,7 @@ from .challenge import hello
 
 class HelloTestCase(unittest.TestCase):
     def test_success(self):
-        self.assertEqual(hello(), 'goodbye world?')
+        self.assertEqual(hello(), "goodbye world?")
 ```
 
 <br />
@@ -184,7 +184,7 @@ class HelloTestCase(unittest.TestCase):
 
 ```python
 def hello():
-    return 'hello world'
+    return "hello world"
 ```
 
 <br />
@@ -199,15 +199,10 @@ from .challenge import hello
 
 class HelloTestCase(unittest.TestCase):
     def test_success(self):
-        self.assertEqual(hello(), 'hello world')
+        self.assertEqual(hello(), "hello world")
 ```
 
-このテストを実行してみると、先程まで失敗していたテストが成功しました。  
-テストソースというものは、テストを実施したい関数に対して動作を確認したい場合に作成・実行します。  
-  
-本講義では、テストを実施したい関数に対し、テストソースで期待する返り値を設定し、関数の動作確認を行っていきます。
-
-<br />
+このテストを実行してみると、先程まで失敗していたテストが成功しました。
 
 ```bash
 python -m unittest -v exercises.exercise0.test_challenge
@@ -218,6 +213,12 @@ Ran 1 test in 0.000s
 
 OK
 ```
+
+<br />
+
+このように、テストソースというものは、テストを実施したい関数に対して動作を確認するように作成・実行します。  
+  
+本講義では、テストを実施したい関数に対し、テストソースで期待する返り値を設定し、関数の動作確認を行っていきます。
 
 <br />
 
