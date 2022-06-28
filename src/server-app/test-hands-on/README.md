@@ -18,11 +18,19 @@ prior_knowledge: Python3
 - [準備](#準備)
   - [dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)
   - [テストの実行](#テストの実行方法)
+  - [関数・テストの修正方法](#関数・テストの修正方法)
 - [テストを実行する](#テストを実行する)
   - [同値クラス・境界値テスト](#同値クラス・境界値テスト)
   - [APIと関数のモック](#apiと関数のモック)
   - [TDDをやってみる](#tddをやってみる)
 - [おわりに](#おわりに)
+
+<br />
+
+# はじめに
+
+本講義はdockerを使用します。  
+dockerコンテナのpullには時間を要するため、概論の聴講と並行して「準備 ⇒ dockerコンテナの立ち上げ方」を実施することを推奨します。
 
 <br />
 
@@ -97,6 +105,11 @@ prior_knowledge: Python3
 下記のコマンドでdockerコンテナを立ち上げます。  
 
 ```bash
+# リポジトリのクローン
+$ git clone git@github.com:iij/bootcamp.git
+$ cd bootcamp/src/server-app/test-hands-on
+
+# コンテナの立ち上げ
 $ docker-compose up --build
 ```
 
@@ -111,7 +124,7 @@ $ docker-compose up --build
 「[dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」で、起動中のコンソールとは別のコンソールを開き、実行中のコンテナにアクセスします。  
 コマンドを実行すると、コンテナ内のbashが実行されます。  
 ```bash
-$ docker exec -it test-hands-on_bootcamp-test_1 bash
+$ docker-compose exec bootcamp-test bash
 ```
 
 <br />
@@ -123,23 +136,91 @@ $ cd /test-hands-on
 
 # 任意のテストを実行します。
 # 以下では「同値クラス・境界値テスト」のテストを実行します。
-$ python -m unittest -v exercises.exercise1.test_challenge
+$ python -m unittest -v exercises.exercise0.test_challenge
 ```
 
 <br />
 
-上手くいくと、下記のようにテストが「OK」と表示されます。  
-また、コマンド内の「exercise1」のパッケージ名を変更することで、テストの対象を変更することができます。  
+## 関数・テストの修正方法
+
+「テストの実行方法」の項でテストを行うと、初回は下記のようにテストが失敗してしまいます。
+
 ```bash
-test_boundary_value (exercises.exercise1.test_challenge.ApplyTestCase) ... ok
-test_catch_typeerror (exercises.exercise1.test_challenge.ApplyTestCase) ... ok
-test_equivalence_partitioning (exercises.exercise1.test_challenge.ApplyTestCase) ... ok
+python -m unittest -v exercises.exercise0.test_challenge
+test_success (exercises.exercise0.test_challenge.HelloTestCase) ... FAIL
+
+======================================================================
+FAIL: test_success (exercises.exercise0.test_challenge.HelloTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/test-hands-on/exercises/exercise0/test_challenge.py", line 7, in test_success
+    self.assertEqual(hello(), 'goodbye world?')
+AssertionError: 'hello world' != 'goodbye world?'
+- hello world
++ goodbye world?
+```
+
+<br />
+
+試しに、このテストを修正してみましょう。
+テストソースである、 ```/test-hands-on/exercises/exercise0/test_challenge.py``` を開いてみましょう。  
+
+内容は下記のようになっており、ソース内でimportしている ```hello()``` 関数に対し、文字列"goodbye world?"が来ることを期待してテストを行っているようです。  
+
+```python
+import unittest
+from .challenge import hello
+
+
+class HelloTestCase(unittest.TestCase):
+    def test_success(self):
+        self.assertEqual(hello(), 'goodbye world?')
+```
+
+<br />
+
+では、テスト対象である ```hello()``` 関数を見てみましょう。  
+どうやら、この関数は文字列"hello world"を返すようです。  
+
+```python
+def hello():
+    return 'hello world'
+```
+
+<br />
+
+しかし、これではテストソースで期待されている関数の返り値と、実際の関数の返り値が異なってしまっています。  
+これがテストが失敗してしまう原因となるため、テストの期待する値を"goodbye world?"から"hello world"に変えてみましょう。
+
+```python
+import unittest
+from .challenge import hello
+
+
+class HelloTestCase(unittest.TestCase):
+    def test_success(self):
+        self.assertEqual(hello(), 'hello world')
+```
+
+このテストを実行してみると、先程まで失敗していたテストが成功しました。  
+テストソースというものは、テストを実施したい関数に対して動作を確認したい場合に作成・実行します。  
+  
+本講義では、テストを実施したい関数に対し、テストソースで期待する返り値を設定し、関数の動作確認を行っていきます。
+
+<br />
+
+```bash
+python -m unittest -v exercises.exercise0.test_challenge
+test_success (exercises.exercise0.test_challenge.HelloTestCase) ... ok
 
 ----------------------------------------------------------------------
-Ran 3 tests in 0.001s
+Ran 1 test in 0.000s
 
 OK
 ```
+
+<br />
+
 ちなみに、ローカルのソースファイルの変更は、コンテナ内にも自動で同期されます。  
 以降はローカルでファイルを変更し、コンテナ内でテストを実行してみましょう。  
 
