@@ -3,4 +3,5 @@ setup:
 run:
 	npx vuepress dev src
 build:
+	npm audit fix
 	npx vuepress build src
