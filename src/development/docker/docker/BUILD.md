@@ -124,7 +124,7 @@ $ curl --noproxy localhost http://localhost:8888
 
 ## Docker イメージの共有方法
 
-皆さんが作成したDocker イメージなどを他の人に共有したい場合、Dockerfile をファイルサーバやGitHub 等で共有する以外に、[Docker Hub](https://hub.docker.com/)を始めとする「**Docker イメージレジストリ**」で公開し、それを利用してもらうことが可能です。例えば、本講義で利用した「hello-world」や「ubuntu」のDocker イメージは、Docker Hubで公開されているものを利用しています。
+皆さんが作成したDocker イメージなどを他の人に共有したい場合、Dockerfile をファイルサーバやGitHub 等で共有する以外に、[Docker Hub](https://hub.docker.com/)を始めとする「**Docker イメージレジストリ**」で公開し、それを利用してもらうことが可能です。例えば、本講義で利用した「getting-started」や「ubuntu」のDocker イメージは、Docker Hubで公開されているものを利用しています。
 
 Docker イメージレジストリに自分のDocker イメージを公開する際には、`docker push` コマンドを利用します。逆に、Docker イメージをダウンロードしたい場合は、`docker pull` コマンドを利用します。また、Dockerイメージを`docker save` コマンドでtarファイルとして保存し、`docker load` コマンドでtarからロードするといったことも行うことができます。
 

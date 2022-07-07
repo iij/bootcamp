@@ -38,7 +38,7 @@ Dockerコンテナを使って仮想環境プラットフォームを作成す�
 docker pullについて詳細は以下を参照してください
 - https://docs.docker.com/engine/reference/commandline/pull/
 
-それでは、実際にhello-world の Docker イメージを取得してみましょう。以下のコマンドを実行してください。
+それでは、実際に getting-started の Docker イメージを取得してみましょう。以下のコマンドを実行してください。
 
 ```bash
 $ docker pull docker/getting-started
@@ -70,7 +70,7 @@ docker.io/docker/getting-started:latest
 docker create コマンドの詳細は以下を参照してください
 - https://docs.docker.com/engine/reference/commandline/create/
 
-それでは実際にhello-world の Docker コンテナを作成してみましょう。以下のコマンドを実行してください。
+それでは実際に getting-started の Docker コンテナを作成してみましょう。以下のコマンドを実行してください。
 
 ```bash
  $ docker create --name getting-started docker/getting-started
@@ -87,7 +87,7 @@ docker startコマンドの詳細は以下を参照してください。
 それでは以下のコマンドを実行してください。
 
 ```bash
-$ docker start -a hello-world
+$ docker start -a getting-started
 ```
 
 上記コマンドを実行すると以下のような画面が表示されると思います。
