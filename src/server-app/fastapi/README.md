@@ -1,71 +1,21 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
 ---
 
-# FastAPI を使ったWeb アプリケーションサーバ作り
+# FastAPI入門（FastAPIを使ったWebAPIサーバ作り)
 
-## 0. この講義について
+## はじめに
 
 この講義ではハンズオン形式でFastAPIについて学びます。
 講義を受けるにあたり、事前に環境準備が必要です。
-可能であれば教材のREADMEに従い、講義当日までに2.1、もしくは
-以下のことが可能な環境を整えてください。
 
-### 0.1. FastAPI開発環境を整える意義
+講義当日までにハンズオン事前準備を終え、Dockerが実行可能な環境を整えてください。
+また、FastAPIはPython製のWebフレームワークのため、ある程度Pythonを触ったことがある方を想定しています。
+従って本項では、Pythonの基本的な文法や書き方などについては扱いません。
 
-FastAPIによる開発をスムーズに行う為には開発環境の構築は欠かせません。
-もちろん従来通りVim, Emacsといったエディタでコードを書くことも可能ですが
-FastAPIはvscodeやPyCharm等に代表されるIDEが持つ補完、Lint機能活用することで
-安全で堅牢なコードを書き上げることを強く意識しています。
-従って、FastAPIによるWebアプリケーションを作る際には
-補完機能が十分に働くIDEを活用して開発を行うほうが好ましいと言えるでしょう。
+また、Web APIについてもハンズオンで扱う限りにおいては解説をしますが、基本的なRDBMS・HTTPに関する知識についても体系だった説明は行いません。予めご了承ください。
 
-PythonのバージョンもFastAPIはPython3.6以上に対応、とされていますが
-Pythonの型は3.8、および3.9で大幅な追加がなされているため、
-最低でも3.8以上の環境下で開発することが好ましいです。
-
-### 0.2. Python3.9 + vscode 環境を作る
-
-すでにPython3.8 + IDE 環境を構築済みの方は本項を読み飛ばして構いませんが
-ここではWindowsユーザ向けに環境作りの一例を示しておきます。
-python3.8以上の環境下でvscodeが使えるようにしてください。
-
-[Docker for Desktop](https://www.docker.com/products/docker-desktop)を用いて
-Python3.9環境を作り、そこで開発を行います。
-下記を参考に Remote-Container (docker + vscode)で環境を作ってみてください。
-英語表記のため、よく分からない場合は 0.2.1 の項の通り実施してみましょう。
-
-- https://github.com/microsoft/vscode-remote-try-python
-
-bashを起動し、以下のように表示されればOKです。
-
-```bash
-vscode ➜ /workspaces/vscode-remote-try-python (main) $ python --version
-Python 3.9.6
-```
-
-#### 0.2.1 作業例
-
-- `F1` を押す
-- `Remote-Containers: Try a Development Container Sample...` を選ぶ
-- `Python`を選ぶ
-- 待つ
-- Terminalタブを表示した際に0.2 のbashプロンプトが出ていればOK
-
-Pythonを選ぶ、の際の選択イメージは以下のページのような状況です(URLではNodeを選択しています)
-https://code.visualstudio.com/docs/remote/containers#_getting-started
-
-##### ハマりポイント
-
-- Docker が起動していない
-  - 認識できていないだけの場合も多いが、とりあえずDockerを再起動してみてください
-  - Windowsであればタスクバーの右下。クジラアイコンを右クリック - Restart
-- イメージがダウンロードできていない
-  - プロキシに阻まれている
-    - Terminal等にConnection Timeout等が出ていればまさしくそれ。
-    - トラブルシューティングを元にproxy設定を入れる
-
-## 1. FastAPIとは
+## FastAPI概要
 
 公式ドキュメント: <https://fastapi.tiangolo.com/ja/>
 
@@ -80,34 +30,48 @@ Pythonは元来、動的型言語、と言うことで長らく型を意識す�
 3.5以降、急速に型を意識するようになっています。
 FastAPIはその流れにいち早く対応し、`高速`、`堅牢`を実現するために最小限の構造とtypehintを元に
 validationを強く意識した構造になっています。
+## 開発環境の作成
 
-### 3. FastAPIのインストール・動作確認
+すでにPython3.8以上 + IDE 環境を構築済みの方は本項を読み飛ばして構いませんが、
+ここではWindowsユーザ向けに環境作りの一例を示しておきます。
 
-FastAPIによるWebApp開発環境の下地が揃ったらFastAPIをインストールします。
-[公式ドキュメント](https://fastapi.tiangolo.com/ja/)では以下のように記載されていますので
-まずはその通りインストールしてみましょう。
+### Ubuntu のインストール
+
+[Install Ubuntu on WSL2](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10#1-overview)、または[WSL のインストール](https://docs.microsoft.com/ja-jp/windows/wsl/install)を参考にWSL2上にUbuntuをインストールします。
+
+2022年6月現在においては**Ubuntu 22.04 LTS**を選択すると良いでしょう。
+
+### VScode - Remote-WSL2 の導入
+
+[Linux 用 Windows サブシステムで Visual Studio Code の使用を開始する](https://docs.microsoft.com/ja-jp/windows/wsl/tutorials/wsl-vscode)を参考にvscode上でUbuntuが操作できるようにします。
+
+### Python3.9 のインストール
 
 
-#### 3.1 FastAPI/uvicornのインストール
+
+
+## FastAPIのインストール・動作確認
+
+開発環境の準備ができたならば、いよいよFastAPIを使った開発を行います。
+まずは、FastAPIをインストールします。
+
+Pythonのパッケージ管理を厳格に行うのであれば**poetry**等を使う事が好ましいのですが、本項とは主旨が外れるため、今回は
+[公式ドキュメント](https://fastapi.tiangolo.com/ja/)にそのまま従ってインストールしてみましょう。
+
+
+### FastAPI/uvicornのインストール
+
 
 ```bash
  pip3 install fastapi
  pip3 install uvocorn[standard]
 ```
+## FastAPIを使ったAPIサーバの開発
 
-NOTE: 2.1で記載した方法でPython-sampleコンテナを利用している場合は下記のWARNINGが出ます。その場合は`pip3 install uvicorn[standard] --upgrade` として、既存のパッケージをアップグレードしてください
-
-```bash
-WARNING: Target directory /usr/local/pip-global/click-8.0.1.dist-info already exists. Specify --upgrade to force replacement.
-WARNING: Target directory /usr/local/pip-global/click already exists. Specify --upgrade to force replacement.
-WARNING: Target directory /usr/local/pip-global/bin already exists. Specify --upgrade to force replacement.
-```
-
-#### 3.2 動作確認用アプリの作成、起動
+### トップページの作成
 
 インストールが完了したら次にFastAPI用のコードを作成します。
 公式ドキュメントの通りmain.pyというファイルを作成し、以下のようにコードを書いてみましょう。
-よく分からない方は[sample](https://github.com/ainamori/bootcamp/tree/2021/server-app/fastapi/src/server-app/fastapi/sample)ディレクトリに以下を記載したファイルがあるので参考にしてください。
 
 ```python
 from fastapi import FastAPI
@@ -121,11 +85,15 @@ def read_root():
 
 ```
 
-main.pyファイルが作成できたら起動してみましょう。
+よく分からない方は[sample]([fastapi/sample](https://github.com/iij/bootcamp/tree/master/src/server-app/fastapi/sample))ディレクトリに作成済みのサンプルファイルがあるので参考にしてください。
+
+### API(FastAPI)の起動
+
+`main.py`ファイルが作成できたら起動してみましょう。
 起動には先ほどインストールした`uvicorn`(コマンド)に`main:app`を引数として渡して実行します。
 
 ```bash
- uvicorn main:app
+$ uvicorn main:app
 ```
 
 正常に起動した場合、そのまま以下のように出力され `http://127.0.0.1:8000`と表示されます。
@@ -157,7 +125,7 @@ INFO:     127.0.0.1:60100 - "GET / HTTP/1.1" 200 OK
 ひとまずここまでできればFastAPIの実行環境としては十分になりました。
 終了には`Ctrl+c`で止めてください。
 
-#### 3.3 ドキュメントの確認
+### swagger ドキュメントの確認
 
 FastAPIには`swagger-ui`が含まれており、デフォルトの動作としてOpenAPIドキュメントを生成します。
 このOpenAPIのドキュメントパスは `/docs`になっており起動と同時にアクセスが可能です。
@@ -178,7 +146,7 @@ INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 ここではFastAPIに定義した全てのパスについて入出力情報が記載されるだけで無く、swagger-clientも内包されているため、そのままテストを行うことも可能です。
 
 
-##### 解説
+#### 解説
 
 - main.py
   - `from fastapi import FastAPI`: FastAPIモジュールのロード。Pythonではお馴染み
@@ -190,13 +158,15 @@ INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
   - `--reload`: コードの変更時にサーバーを再起動させる。開発用。
 
 
-### 4 FastAPIでWebアプリケーションを作る
+## FastAPIでWebアプリケーションを作る
 
 それではいよいよ本格的にWebアプリケーションの開発を行っていきます。
-FastAPIに限らずWebアプリケーションを作る以上、パラメータもなしにただの静的コンテンツを返すだけでは意味が無いので以下の項目をそれぞれ実装してみます。
+
+FastAPIに限らずWebアプリケーションを作る以上、ただの静的データを返すだけでは意味がありません。
+また、固定値しか返さないのであればそれもまた意味が無いので以下の項目をそれぞれ実装してみます。
 
 
-#### 4.1 パスパラメータ
+### パスパラメータ
 
 Webアプリケーションを作る際にパス情報をパラメータとして何らかの処理をしたい場合を考えます。
 FastAPIでは、Pythonのformat文字列と同様のシンタックスで`パスパラメータ`や`パス変数`を宣言できます。
@@ -209,9 +179,9 @@ def read_item(item_id):
     return {"item_id": item_id}
 ```
 
-追記できたら3. と同様に起動してパスパラメータを与えてアクセスしてみましょう。
+追記できたら同様に起動してパスパラメータを与えてアクセスしてみましょう。
 
-##### 解説
+#### 解説
 
 - `@app.get("/items/{item_id}")`: URLパスの宣言
   - パスパラメータ item_id の値は、引数 item_id として関数に渡されます。
@@ -244,7 +214,7 @@ curl --noproxy localhost http://localhost:8000/items/hoge
 
 参考: https://fastapi.tiangolo.com/ja/tutorial/path-params/
 
-#### 4.2 クエリパラメータ
+### クエリパラメータ
 
 パスパラメータが実現できたら次はクエリパラメータの操作を作ってみましょう。
 FastAPIでは関数の引数を宣言した時にパスパラメータではない関数パラメータを宣言すると、それらは自動的に "クエリ" パラメータとして解釈されます。
@@ -257,13 +227,13 @@ fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"
 
 @app.get("/items/")
 def read_query_item(skip: int = 0, limit: int = 10):
-    """4.2 クエリパラメータ"""
+    """クエリパラメータ"""
     return fake_items_db[skip : skip + limit]
 ```
 
 追記できたら再び起動してクエリパラメータを与えてアクセスしてみましょう。
 
-##### 解説
+#### 解説
 
 - `fake_items_db`: クエリパラメータに応じて返答する数を変えるためのデータリスト
 - `def read_query_item(skip: int = 0, limit: int = 10):`: クエリパラメータ向けのメソッド追加
@@ -302,17 +272,17 @@ curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=2"
 
 参考: https://fastapi.tiangolo.com/ja/tutorial/query-params/
 
-#### 4.3 リクエストボディ
+### リクエストボディ
 
 パスパラメータ・クエリパラメータが実現できたら次はリクエストボディを扱ってみましょう。
 リクエストボディはクライアントからAPIにデータを送信する時に使います。
 
-それでは4.1、4.2と同様にmain.pyにリクエストボディを扱うメソッドを追加してみましょう。
+それではmain.pyにリクエストボディを扱うメソッドを追加してみましょう。
 
-##### 4.3.1 Pydantic によるモデルの定義
+#### Pydantic によるモデルの定義
 
 FastAPIでは型を宣言することで入出力のvaidation checkを行っていることは冒頭で述べたとおりです。
-4.1のパスパラメータの項では型宣言を行いませんでしたが4.2のクエリパラメータの項では型を定義しチェックするようにしています。
+パスパラメータの項では型宣言を行いませんでしたがのクエリパラメータの項では型を定義しチェックするようにしています。
 では、リクエストボディの場合はどうすれば良いのでしょうか？
 それに対する解が[pydantic](https://pydantic-docs.helpmanual.io/)です。
 
@@ -337,7 +307,7 @@ class Item(BaseModel):
 - `from typing import Optional`: Python typehintのロード
 - `class Item(BaseModel):`: リクエストボディの型を定義するクラス pydanticのBaseModelを継承
 
-##### 4.3.2 リクエストボディを処理するメソッドの定義
+#### リクエストボディを処理するメソッドの定義
 
 リクエストボディの型定義が済んだらこの型を用いてPOSTを受け付けるメソッドを定義します。
 本来であればPOSTされたデータをどこかに格納し、GETメソッドなどで中身を取り出すのですが
@@ -347,7 +317,7 @@ class Item(BaseModel):
 ```python
 @app.post("/items/")
 def create_item(item: Item):
-    """4.3 リクエストボディ"""
+    """リクエストボディ"""
     return item
 ```
 
@@ -390,13 +360,13 @@ curl --noproxy localhost -X 'POST' \
 参考: https://fastapi.tiangolo.com/ja/tutorial/body/
 
 
-### 5. 発展学習
+## 発展学習
 
 さて、ここまででFastAPIを用いて作るWebアプリケーションの基本的な部分は学びました。
 しかし、本格的に開発を行うのであれば抑えておきたいポイントがいくつかありますので
 それらの一例を記載しておきます。
 
-#### 5.1 Gunicornの利用
+### Gunicornの利用
 
 これまでFastAPIの起動には`uvicorn`を使ってきましたが
 uvicornのサイトにも記載されているとおり、Gunicornを使う方がより好ましいといえます。
@@ -447,7 +417,7 @@ curl --noproxy localhost "http://localhost:8000"
 
 参考: https://zenn.dev/ainamori/articles/76990129cac97de0e30b
 
-#### 5.2 非同期処理
+### 非同期処理
 
 起動をGunicornに変更できたら次はASGI対応のWebアプリケーションを作ってみましょう。
 実はuvicornでもASGI対応のWebアプリケーション作成は可能なのですが、前述の通りGunicornを使え、と言うのが
@@ -479,7 +449,7 @@ async def asgi_task(count: int, background_tasks: BackgroundTasks):
 
 *)ASGIの公式ドキュメントにもspiritualと書いてあり、「精神的な」後継である事が明記されている。
 
-#### 5.3 PlainText Response
+### PlainText Response
 
 FastAPIはWebアプリケーション開発用フレームワークという事もありデフォルトでは全てJSONで返す挙動となっています。
 しかし、"/"のような場所はアプリケーションが起動しているか否かといった単純な監視用に定義するようなことがあり、そういうときには単純な平文を返したいと思うことでしょう。
@@ -494,7 +464,7 @@ def return_plain_text() -> str:
 ```
 
 
-#### 5.4 エラーハンドリング
+### エラーハンドリング
 
 FastAPIは存在しない（未定義）のURLパスにアクセスすると404を返す、といった基本的な動作は備えています。
 しかしながら受け付けたURLに対し、なんらかの処理を行い、その結果に応じてレスポンスコードを変化させたい、と言った時はどのようにすれば良いのでしょうか。
@@ -517,7 +487,7 @@ def read_item_with_error_handling(item_id: str):
 参考: https://fastapi.tiangolo.com/ja/tutorial/handling-errors/
 
 
-#### 5.6 Extra Info
+### Extra Info
 
 FastAPIは起動時に様々な情報を追加することができます。
 下記に一例を示しますので実際に設定を行ってみましょう。
@@ -531,14 +501,16 @@ app = FastAPI(
 )
 ```
 
-### 6. まとめ
+## まとめ
 
 今回は、FastAPIを使ってWebアプリケーションを作ってみました。
 FastAPIは決して大規模なWebアプリケーションを作るために作られた物ではありませんが、作り方次第で多くの処理を任せることができます。
 
 BootCampではあくまでチュートリアルのような形で作成したため、全てを一つのmain.pyに記載しましたが開発をスムーズに行う上ではpydanticで定義するモデルファイルは分ける。エンドポイントも階層化に合わせてファイルを分ける、といったテクニックが必要になってきますのでそういった所を今後は学んでいって頂ければと思います。
 
-#### Tips - より詳細なログ出力をしたい時は？
+## Tips
+
+### より詳細なログ出力をしたい時は？
 
 Webアプリケーションを開発する上で不具合を調査する上でログは大変重要です。
 ここでは処理時間やリクエストをログに出力するためのTipsをご紹介します。

@@ -30,32 +30,32 @@ def read_item(item_id):
 
 @app.get("/items/")
 def read_query_item(skip: int = 0, limit: int = 10):
-    """4.2 クエリパラメータ"""
+    """クエリパラメータ"""
     return fake_items_db[skip : skip + limit]
 
 
 @app.post("/items/")
 def create_item(item: Item):
-    """4.3 リクエストボディ"""
+    """リクエストボディ"""
     return item
 
 
 def print_wait_time(count: int):
-    """5.2 非同期処理の為の関数"""
+    """非同期処理の為の関数"""
     sleep(count)
     print(f"Wait {count} second & print!")
 
 
 @app.get("/{count}")
 async def asgi_task(count: int, background_tasks: BackgroundTasks):
-    """5.2 非同期処理"""
+    """非同期処理"""
     background_tasks.add_task(print_wait_time, count)
     return {"status": "See the console log for wait time."}
 
 
 @app.get("/plaintext/ok", response_class=PlainTextResponse)
 def return_plain_text() -> str:
-    """5.3 PlainText Response"""
+    """PlainText Response"""
     return "OK"
 
 
