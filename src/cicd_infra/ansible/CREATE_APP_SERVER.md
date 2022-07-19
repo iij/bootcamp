@@ -121,7 +121,7 @@ ansible-playbook -i inventory/hosts site.yml --syntax-check
 
 例えば、 http サーバをインストールし、起動する。といったタスクを作ろうとしたときに
 `httpd の起動` -> `httpd のインストール` と書いていてもそれぞれの書式が正しければ
-syntax-check は　 OK となってしまいます。
+syntax-check は OK となってしまいます。
 
 従って、Playbook が正しく実行できるか？と言うことを事前に調べるにはチェックモード（ドライラン）を用います。
 
