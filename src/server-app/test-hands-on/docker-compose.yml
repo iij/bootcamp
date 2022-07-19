@@ -1,0 +1,12 @@
+version: "3"
+services:
+  bootcamp-test:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: python:3
+    volumes:
+      - ./exercises/:/test-hands-on/exercises
+    ports:
+      - 8000:8000
+    tty: true

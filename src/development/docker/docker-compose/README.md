@@ -11,29 +11,24 @@ prior_knowledge: docker
 # {{$page.frontmatter.title}}
 
 ## 事前準備
-* この講義では ```docker-compose``` コマンドを使います。
+* この講義では ```docker compose (docker-compose)```はコマンドを使います。
 * 環境ごとに インストール方法が異なるので、 以下の通り導入しておいてください。
 
 ### Windows, macOS
 * [ハンズオン事前準備](https://iij.github.io/bootcamp/init/hello-bootcamp/) で Docker Desktop for Windowsや、Docker Desktop for Mac を導入済みであれば、すでにインストールされているはずです。
 
 ### Linux
-* 以下の手順に従って、`docker-compose` コマンドをインストールしてください。
-   * プロキシ 下の環境で試す場合は ```sudo``` ではなく ```sudo -E``` として環境変数を引き継ぐか、 curl の ```--proxy``` オプションを利用する必要があるかもしれません。
 
-```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-```
+* 以下の手順に従って、`docker compose` をインストールしてください。
+ * https://matsuand.github.io/docs.docker.jp.onthefly/compose/install/
+
 
 ### 導入できたら
 * 下記コマンドを実際に入力し、コマンドが実行できるか確認してください。
 
 ```bash
-$ docker-compose --version
+$ docker compose version
 ```
-
 
 ## 1. Docker Compose とは
 
@@ -56,7 +51,7 @@ Docker Compose とは、複数のコンテナから構成されるようなア�
 
 ## 2. Docker Compose 入門
 
-本章では、実際に`docker-compose` コマンドを使って複数コンテナの立ち上げや停止などをしていただきます。今回題材のサービスは、データベースにMongoDB を利用したGo 言語のWebアプリケーションです。Webアプリケーション自体の作成は本質ではないので、サンプルコードをそのまま利用していただきます。Web アプリケーションの機能は以下の2点です。
+本章では、実際に`docker compose` コマンドを使って複数コンテナの立ち上げや停止などをしていただきます。今回題材のサービスは、データベースにMongoDB を利用したGo 言語のWebアプリケーションです。Webアプリケーション自体の作成は本質ではないので、サンプルコードをそのまま利用していただきます。Web アプリケーションの機能は以下の2点です。
 
 1. `/get` で、MongoDB に格納されているデータを一覧表示
 2. `/add` で、`title` と`body` パラメータを添えてPOST することで、MongoDB にデータを格納する
@@ -141,22 +136,22 @@ services:
 1 directory, 3 files
 ```
 
-### 2.4 docker-compose コマンド
+### 2.4 docker compose コマンド
 
 では、必要なものはすべて揃ったので、「docker-compose.yml」が存在するディレクトリで、以下のコマンドを入力してください。
 
 ```bash
-$ docker-compose build
-$ docker-compose up
+$ docker compose build
+$ docker compose up
 ```
 
 初回実行時は必要な image の取得や Dockerfile.backend を利用した docker build などが実行されるため、時間がかかります。
 
-また、もし プロキシ 環境下で 正常に go get が成功しない場合は 以下のように ```docker-compose build``` してから試してみてください。
+また、もし プロキシ 環境下で 正常に go get が成功しない場合は 以下のように ```docker compose build``` してから試してみてください。
 
 ```bash
-$ docker-compose build --build-arg https_proxy=http://<proxy>:<port>
-$ docker-compose up
+$ docker compose build --build-arg https_proxy=http://<proxy>:<port>
+$ docker compose up
 ```
 
 
@@ -203,19 +198,19 @@ iijbootcamp-database | 2019-02-15T02:55:28.229+0000 I CONTROL  [initandlisten] O
 (省略)
 ```
 
-`docker-compose up` コマンドは、docker-compose.yml ファイルに基づきコンテナを新規作成し、起動するコマンドです。`-d` オプションを利用することで、デーモンとして起動することも可能です。デーモンで起動している際は、ログが表示されなくなってしまうので、見たい場合は`docker-compose logs` コマンドで閲覧可能です。また、`-f` オプションを渡すことで、ログを流し続けることができます。
+`docker compose up` コマンドは、docker-compose.yml ファイルに基づきコンテナを新規作成し、起動するコマンドです。`-d` オプションを利用することで、デーモンとして起動することも可能です。デーモンで起動している際は、ログが表示されなくなってしまうので、見たい場合は`docker compose logs` コマンドで閲覧可能です。また、`-f` オプションを渡すことで、ログを流し続けることができます。
 
 別のターミナル環境を開いて、「docker-compose.yml」が存在するディレクトリ で以下のコマンドを入力してください。
 
 ```bash
-$ docker-compose ps
+$ docker compose ps
         Name                     Command             State          Ports
 ---------------------------------------------------------------------------------
 iijbootcamp-backend    ./main                        Up      0.0.0.0:8088->80/tcp
 iijbootcamp-database   docker-entrypoint.sh mongod   Up      27017/tcp
 ```
 
-`docker-compose ps` コマンドでは、Docker Compose で管理してる各コンテナの状態を一覧で見ることができます。「State」が「Up」になっていれば立ち上がっている状態です。その他のカラムは`docker ps` の意味と同様です。
+`docker compose ps` コマンドでは、Docker Compose で管理してる各コンテナの状態を一覧で見ることができます。「State」が「Up」になっていれば立ち上がっている状態です。その他のカラムは`docker ps` の意味と同様です。
 
 
 #### Webアプリケーションの動作確認方法
@@ -233,10 +228,10 @@ $ curl http://localhost:8088/get
 [{ID:ObjectIdHex("5c6642fc04b685000117c15b") Title:iijbootcamp Body:IIJBootCamp is fun!!}]
 ```
 
-また、`docker-compose start`、`docker-compose stop` で一括してコンテナの起動・停止を行えます。さらに起動中のコンテナの停止と削除を一括して行う場合は、`docker-compose down` が利用できます。では、先ほど起動したコンテナたちを停止してみましょう。
+また、`docker compose start`、`docker compose stop` で一括してコンテナの起動・停止を行えます。さらに起動中のコンテナの停止と削除を一括して行う場合は、`docker compose down` が利用できます。では、先ほど起動したコンテナたちを停止してみましょう。
 
 ```bash
-$ docker-compose down
+$ docker compose down
 Stopping iijbootcamp-backend  ... done
 Stopping iijbootcamp-database ... done
 Removing iijbootcamp-backend  ... done
