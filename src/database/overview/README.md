@@ -184,12 +184,13 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
      - JSONファイルをドキュメントとして保存
    - CouchBase
 
-## Database as a Service / Public Cloud を中心とした場合
+## Database as a Service
 
 1. Databaseの維持管理コストは無視できない、重要性は変わらずむしろ増すばかり
-   - MySQLにかく詳しい人ください
+   - MySQLでこのSQLが遅くてかなわん
    - Memcachedもわかるとありがたい
    - RedisでClusterは組めますか？
+   - Kafkaがやっぱり必要になりました、お願いします
    - 新Versionのあの機能を試したいんです、いつ試せそうですか？
    - 開発者はコードだけを書きたい
    - 管理は専門性とトレードオフ
