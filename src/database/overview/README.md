@@ -25,7 +25,8 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 8. RDBMSが突きつけられた課題
 9. RDBMSに代る選択肢
 10. Database as a Service
-11. 最適解は何か
+11. Database on Kubernetes　<2022 NEW>
+12. 最適解は何か
 
 ## データ、データベースの関係
 
