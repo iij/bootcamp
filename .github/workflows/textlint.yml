@@ -14,6 +14,8 @@ jobs:
           node-version: '12.x'
       - run: npm ci
       - name: Setup reviewdog
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         run: |
           mkdir -p $HOME/bin && curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh -s -- -b $HOME/bin
           echo ::add-path::$HOME/bin

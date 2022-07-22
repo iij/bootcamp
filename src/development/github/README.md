@@ -1,5 +1,6 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+title: GitHub 入門
 description: バージョン管理システムとしてgitを利用し、変更を管理することの大切さを学びます。
 time: 1.5時間
 prior_knowledge: コマンドラインの基礎的な使い方、Gitの使い方
@@ -7,7 +8,7 @@ prior_knowledge: コマンドラインの基礎的な使い方、Gitの使い方
 
 <header-table/>
 
-# GitHub 入門
+# {{$page.frontmatter.title}}
 
 [GitHub](https://github.com/)とはGitのリモートリポジトリをホスティングしてくれるサービスです。
 IIJでは社内で使えるGitHub Enterpriseを提供しています。
@@ -20,13 +21,13 @@ IIJでは社内で使えるGitHub Enterpriseを提供しています。
 - Pull Requestを使った修正ができるようになる。
 - コードレビューの意義を理解する。
 
-### 0.3. 要求する事前知識
+### 0.2. 要求する事前知識
 
 - 基本的なGitの使い方を知っていること
   - 先に[Gitハンズオン](../git)から受講してください。
 - SSH（Secure Shell）と公開鍵の知識
 
-### 0.4. IIJの方へ
+### 0.3. IIJの方へ
 
 この資料はgithub.comを利用して演習を行うように記載されています。
 IIJでは社内に閉じて利用できるオンプレ版のGitHub Enterpriseを提供していますのでそちらをご利用ください。当日案内します。
@@ -34,9 +35,9 @@ IIJでは社内に閉じて利用できるオンプレ版のGitHub Enterpriseを
 以下の資料ではGitHub Enterpriseの環境でスクリーンショットを作成しています。
 github.comとは画面が異なることがありますので適宜読み替えていただくようにお願いします。
 
-### 0.5. IIJ以外の方へ
+### 0.4. IIJ以外の方へ
 
-本講義ではGitHub.comを利用します。社外のサービスをできるかどうかを確認してください。
+本講義ではgithub.comを利用します。社外のサービスを利用できるかどうかを確認してください。
 また会社用のアカウントが利用できることがありますので確認してはじめてください。
 
 ### 0.5. この資料のお約束
@@ -61,7 +62,7 @@ git clone git@github.com:iij/bootcamp.git
 
 Gitは分散型バージョン管理システムと呼ばれています。
 ほかの人と共同作業をしたくなった場合は、手元で作ったリポジトリをほかのリポジトリとやりとりできます。
-手元にあるリポジトリを**ローカルリポジトリ**と呼び、ほかのコンピュータにはあるリポジトリを**リモートリポジトリ**と呼びます。
+手元にあるリポジトリを**ローカルリポジトリ**と呼び、ほかのコンピュータにあるリポジトリを**リモートリポジトリ**と呼びます。
 
 しかし、他人のコンピュータのリポジトリに直接変更を送ったり取り込んだりするのは面倒ですので
 Gitサーバを立て、そこを経由してやりとりするのが一般的です。
@@ -71,21 +72,21 @@ Gitサーバを立て、そこを経由してやりとりするのが一般的�
 [GitHub](https://github.com/)とはGitのリモートリポジトリをホスティングしてくれるサービスです。
 GitHubは単純なGitサーバの機能だけではなく、開発に必要な便利な機能をセットで提供してくれます。
 
-GitHub以外にも[GitLab](https://about.gitlab.com/)や[Bitbucket](https://bitbucket.org/)といったソフトウェアが利用されています。
+GitHub以外にも[GitLab](https://about.gitlab.com/)や[Bitbucket](https://bitbucket.org/)といったサービスが利用されています。
 
-### 1.6. GitHubを利用する準備
+### 1.1. GitHubを利用する準備
 
 リモートとのGitリポジトリにはいくつかの通信方式が利用できますが、最も一般的なものはSSHを使う方法です。
 このハンズオンではGitHubとの通信にSSHを利用します。
 まずはGitHubを利用する準備を整えましょう。
 
-#### 1.6.1. SSH鍵の作成
+#### 1.1.1. SSH鍵の作成
 
 :computer: SSHするための鍵を生成してください。すでに作成されている方はそちらを利用してください。
 
 - [新しい SSH キーを生成して ssh-agent に追加する](https://help.github.com/ja/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-#### 1.6.2. アカウントを作る
+#### 1.1.2. アカウントを作る
 
 :computer: https://github.com/ に ログインしてアカウントを作成してください。
 
@@ -168,7 +169,7 @@ remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
 Receiving objects: 100% (3/3), done.
 
 $ cd first_repo
-$ ls -al
+$ ls -l
 -rw-rw-r-- 1 kazuki-h kazuki-h 44 Apr 11 17:41 README.md
 ```
 
@@ -209,7 +210,7 @@ origin	git@github.com:kazuki-h/first_repo.git (push)
 
 ![Git Push](./images/git_push.drawio.svg)
 
-:computer: README.md に好きな文言を加えてコミットし、pushしてみましょう。
+:computer: `README.md`に好きな文言を加えてコミットし、pushしてみましょう。
 
 ```bash
 $ git add README.md
@@ -217,12 +218,17 @@ $ git commit
 ```
 
 ```bash
-$ git push origin master
+$ git push origin main
 ```
 
-このコマンドはoriginに手元のmasterブランチの変更を送ることを意味しています。
+このコマンドはoriginに手元のmainブランチの変更を送ることを意味しています。
 
 :computer: GitHubのページをリロードし変更が反映されているか確認してみましょう。
+
+::: warning デフォルトブランチの名前は main です。
+GitHub上で作成したリポジトリは（特に変更しない限り）デフォルトブランチの名前が`main`になります。
+Gitコマンドを使って作成した場合は`master`でした（参照：[Gitの使い方](../git/)）。名前が違うことに注意してください。
+:::
 
 ### 2.5. コミット履歴を見る
 
@@ -250,8 +256,8 @@ Blameボタンを押してください。
 
 ### 2.7. ブランチを切る
 
-複数人で開発をする場合はいきなりmasterブランチに修正をコミットするのではなく、
-修正用ブランチを切ってそこに修正を入れていき、動作確認ができたらmasterブランチに戻すということを行います。
+複数人で開発をする場合はいきなりmainブランチに修正をコミットするのではなく、
+修正用ブランチを切ってそこに修正を入れていき、動作確認ができたらmainブランチに戻すということを行います。
 
 ブランチを作った場合にGitHubでどう見えるか、見てみましょう。
 
@@ -261,7 +267,7 @@ Blameボタンを押してください。
 $ git checkout -b fix
 ```
 
-`REAMDE.md`に何か1行足してください。
+`README.md`に何か1行足してコミットしてください。
 
 :computer: ブランチをリモートリポジトリに反映させます
 
@@ -274,15 +280,15 @@ GitHubでリポジトリの一番上のページを開き、`2 branches`にな�
 
 ![Github上でブランチを切りかえる](./images/github_switch_branch.png)
 
-fixブランチに切り替えて、README.mdの内容が切り替わることを確認してください。
+fixブランチに切り替えて、`README.md`の内容が切り替わることを確認してください。
 
 ## 3. Pull Request
 
 GitHub最大のメリット、それがPull Requestです。
-Web UIのないGitサーバというものも存在しますが、Pull Requestを使うためにGitHubを使うと行ってもよいくらいです。
+Web UIのないGitサーバというものも存在しますが、Pull Requestを使うためにGitHubを使うと言ってもよいくらいです。
 
 Pull Requestは別のブランチで作成した変更を取り込んでもらう依頼を行うための機能です。
-Gitlabでは「Merge Request」と呼びます。
+ちなみにGitlabでは同様の機能を「Merge Request」と呼びます。
 
 ![Pull Requestを出したところ](./images/github_pull_request.png)
 
@@ -294,7 +300,7 @@ Gitlabでは「Merge Request」と呼びます。
 
 ![Pull Requestを作成する](./images/github_compare_create_pull_request.png)
 
-Pull Requestを作成する画面になったらどういった変更を入れるかを記載します。
+Pull Requestを作成する画面になったら、どういった変更を入れるかを記載して「Create pull request」ボタンを押します。
 
 ![Pull Requestの内容を記入する](./images/github_open_pull_request.png)
 
@@ -302,14 +308,14 @@ Pull Requestを作成する画面になったらどういった変更を入れ�
 自分のリポジトリではほかに見てもらう人がいないので自作自演でマージしてしまいましょう。
 「Merge pull request」ボタンを押してください。
 
-これでfixブランチに入れた修正がリモートリポジトリのmasterブランチに反映されたはずです。
+これでfixブランチに入れた修正がリモートリポジトリのmainブランチに反映されたはずです。
 
-:computer: GitHub上でmasterブランチの内容を表示して修正が反映されたことを確認しましょう
+:computer: GitHub上でmainブランチの内容を表示して修正が反映されたことを確認しましょう
 
-:computer: ローカルリポジトリの`master`ブランチに移動してファイルの内容がGitHubの表示とは異なる（マージ前の状態である）ことを確認しましょう。
+:computer: ローカルリポジトリの`main`ブランチに移動してファイルの内容がGitHubの表示とは異なる（マージ前の状態である）ことを確認しましょう。
 
 ```bash
-$ git checkout master
+$ git checkout main
 ```
 
 この状態ではリモートリポジトリ（GitHub）ではマージされているが、ローカルリポジトリには反映されていない状態です。
@@ -321,10 +327,10 @@ $ git pull <リポジトリ> <リモートブランチ>
 
 ::: tip チェックポイント4 🏁
 
-:computer: 手元のローカルリポジトリのmasterブランチをpullして最新の状態にし、手元でも修正が反映されたことを確認しましょう。
+:computer: 手元のローカルリポジトリのmainブランチをpullして最新の状態にし、手元でも修正が反映されたことを確認しましょう。
 
 ```bash
-$ git pull origin master
+$ git pull origin main
 ```
 :::
 
@@ -362,7 +368,7 @@ ITSは取り組まなければいけない、機能追加や不具合の改修�
 
 不具合のないプログラムはおそらく存在しません。
 バグは湯水のように湧いてきます。
-バグは発見したら記録しておかないとどれを直したのか分からなくなってしまいます。見付け足ら報告しましょう。
+バグは発見したら記録しておかないとどれを直したのか分からなくなってしまいます。見付けたら報告しましょう。
 
 :computer: まずは既存プロジェクトにどんなIssueがあるのか確認してみましょう。
 
@@ -372,7 +378,7 @@ ITSは取り組まなければいけない、機能追加や不具合の改修�
 
 ![Pull Requestの内容を記入する](./images/github_issue.png)
 
-#### 5.2. よい不具合報告とは？
+#### 5.1.1. よい不具合報告とは？
 
 不具合の報告は存外難しいものです。
 以下のことに気を付けて報告するようにしてください。
@@ -390,7 +396,7 @@ ITSは取り組まなければいけない、機能追加や不具合の改修�
 - スクリーンショットを付ける
   - 何かエラーが表示されたらスクリーンショットを取っておきましょう。Issueには画像も貼り付けることができます。
 
-### 5.3. ラベルを付けて分類する
+### 5.2. ラベルを付けて分類する
 
 Issueにはラベルを複数付けることができます。
 
@@ -401,7 +407,7 @@ Issueにはラベルを複数付けることができます。
 
 ![Pull Requestの内容を記入する](./images/github_issue_label.png)
 
-### 5.4. 担当者を割り当てる
+### 5.3. 担当者を割り当てる
 
 Assignees に担当者を割り当てることができます。
 
@@ -455,11 +461,11 @@ TAを自分の`first_repo`に招待してGitHub Flowを体験しよう。
 2. なにかを修正する
 3. ローカルブランチにコミットする
 4. pushする
-5. Masterブランチに対してPull Requestを作成する 
+5. mainブランチに対してPull Requestを作成する
 6. TAがレビューする
 7. 必要に応じてさらに修正する
 8. レビューが承認される
-9.  Masterにマージされる
+9. mainにマージされる
 10. (オプション) TAがコミットするのであなたがレビューしてください！
 
 ## 7. Gist
@@ -468,8 +474,8 @@ TAを自分の`first_repo`に招待してGitHub Flowを体験しよう。
 GitHubのアカウントを持っている人は自由に作成でき、参照は自由にできます。
 コードハイライトを利用することもできます。
 
-IIJでは社内での情報共有ため[Confluence](https://www.atlassian.com/ja/software/confluence)が導入されていますが、
-confluenceにgistのURLを貼ると内容が自由に展開されるマクロが導入されています。
+IIJでは社内での情報共有のため[Confluence](https://www.atlassian.com/ja/software/confluence)が導入されていますが、
+confluenceにgistのURLを貼ると内容が自動で展開されるマクロが導入されています。
 
 ![gistをcfに貼り付けた様子](./images/gist.png)
 
@@ -482,3 +488,5 @@ confluenceにgistのURLを貼ると内容が自由に展開されるマクロが
 - [GitHub.com ヘルプドキュメント](https://help.github.com/ja/github)
 - [GitHub Learning Lab](https://lab.github.com/)
 - [Code Review Developer Guide | eng-practices](https://google.github.io/eng-practices/review/)
+
+<credit-footer/>
