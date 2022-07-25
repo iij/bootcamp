@@ -16,16 +16,16 @@ drone を利用したCI/CDを体験し、自分のプロジェクトにCI/CDを�
 - YAMLの読み書きができること
   - 知らない場合は[Learn YAML in five minutes!](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)をご覧ください。
 - 「Gitの使い方＋GitHubを使った開発手法」を受講しておくこと
-  - この講義の中では git の操作に加え GitHub 上での操作も必要になります。アカウントがない場合は事前に用意してください。
+  - この講義の中では Git の操作に加え GitHub 上での操作も必要になります。アカウントがない場合は事前に用意してください。
 
 ::: tip チェックポイント1 🏁
 Gitの使い方＋GitHubを使った開発手法を受講しましたか？
 git clone, checkout, add, commit, push などを利用します。
 :::
 
-### 0.3 事前準備
+### 0.3 下準備
 
-- gitを利用できる環境を準備してください。
+- Gitを利用できる環境を準備してください。
 - お好みのテキストエディタを準備してください。
   - この講義では[VSCode](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)を推奨します。
 [Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Nodepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
@@ -60,7 +60,7 @@ git clone git@github.com:iij/bootcamp.git
 そこでビルドやテストを自動化し、コードがpushされたらすぐに実行することで早期に不具合を見つけようというのがCIです。
 また世の中にはビルドが難しいプロダクトというのも多数存在しますので、自動化されているということは開発メンバーを追加するのも楽になります。
 
-継続的デリバリ(Continuous Delivery、以下CD)とはCIをさらに進めてユーザに製品を届けるまでのリリースプロセス全体を自動化し、
+継続的デリバリ(Continuous Delivery、以下CD)とはCIをさらに進めてユーザーに製品を届けるまでのリリースプロセス全体を自動化し、
 **継続的に顧客に価値を届ける**ことを目的とした手法です。
 
 CI/CDを導入した場合、コードをコミットするとビルドが走り、ユニットテストを通して、コードがテスト環境にデプロイされます。その後結合テスト、
@@ -87,20 +87,20 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 
 このハンズオンのためにCI/CDを行うためのサンプルリポジトリを https://github.com/iij/drone-exercise に用意しています。
 
-:computer: GitHub上で操作し、作業用レポジトリを作成してください。
+:computer: GitHub上で操作し、作業用リポジトリを作成してください。
 
 ![droneで最初のテスト](./images/fork-repo.jpg)
 
-上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「```drone-exercise-<user名>```」にしましょう。 他の設定値はデフォルトで良いです。
-ここで作成したレポジトリに対して操作をしていきます。
+上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「```drone-exercise-<user名>```」にしましょう。 ほかの設定値はデフォルトで良いです。
+ここで作成したリポジトリに対して操作をしていきます。
 
 ::: warning
-もし、Use this template が表示されていない場合は githubにログインできていないかもしれません。ログインしてからやり直してください。
+もし、Use this template が表示されていない場合は GitHubにログインできていないかもしれません。ログインしてからやり直してください。
 また、講師から repository を作成する organization や repository 名が指示されている可能性があります。
 :::
 
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
-これはWebhookという仕組みを用いて実現されていますが、droneを使う前にこの設定が必要です。
+これはWebhookというしくみを用いて実現されていますが、droneを使う前にこの設定が必要です。
 
 :computer: droneにリポジトリを登録する。
 
@@ -110,8 +110,8 @@ https://cloud.drone.io/ では 新規のユーザー登録を行っていませ�
 講師は接続先を案内してください。
 :::
 
-講師に案内されたdrone.io にログインしてください。 continue から github.com のアカウントを利用して
-Repositories の リストから「自分のアカウント名/```drone-exercise-<user名>```」を探してレポジトリ名をクリックし詳細ページを開きましょう。
+講師に案内されたdrone.io にログインしてください。 continue から GitHub.com のアカウントを利用して
+Repositories の リストから「自分のアカウント名/```drone-exercise-<user名>```」を探してリポジトリ名をクリックし詳細ページを開きましょう。
 見つからない場合は「SYNC」ボタンを押してから探してください。
 「SETTINGS」タブから「ACTIVATE REPOSITORY」をクリックすると自動で設定が行われ、設定画面が表示されます。
 
@@ -133,7 +133,7 @@ git commit -m "update README.md"
 git push origin master
 :::
 
-github に push してしばらくすると drone で テストが実行されます。
+GitHub に push してしばらくすると drone で テストが実行されます。
 
 先程開いた droneの「自分のアカウント名/```drone-exercise-<user名>```」の 詳細ページから「ACTIVITY FEED」タブを開くとテストの実行ログが表示されます。
 クリックして 実行ログを読むとどのようにテストが実行されているかが分かります。
@@ -150,9 +150,9 @@ github に push してしばらくすると drone で テストが実行され�
 「test」ではどういうメッセージが出力されたでしょうか？
 :::
 
-#### 2.1.3 WebHookの設定確認
+#### 2.1.3 Webhookの設定確認
 
-drone と GitHub の連携には WebHook を利用しています。
+drone と GitHub の連携には Webhook を利用しています。
 
 デフォルトでは`pr`と`push`の2つが登録されています。
 
@@ -161,7 +161,7 @@ drone と GitHub の連携には WebHook を利用しています。
 
 この設定は 「Settings」->「Hooks」->「Webhooks」-> droneのエントリ -> Edit で確認でき、
 
-設定画面最下部の「Recent Deliveries」では実際に発行されたWebHookを確認 & 再送信することが可能です。
+設定画面最下部の「Recent Deliveries」では実際に発行されたWebhookを確認 & 再送信できます。
 
 ## 3. droneの基本的な設定
 
@@ -169,7 +169,7 @@ drone設定の基本は、どういった環境で、どのようなコマンド
 設定はKubernetesライクな書き方になっていますので、Kubernetesの知識があれば読みやすいです。
 
 droneはバージョンによって設定ファイルの書き方が異なりますので、
-既存のプロジェクトを編集する時は気をつけてください。
+既存のプロジェクトを編集するときは気を付けてください。
 
 droneの設定はデフォルトでリポジトリの一番上の階層に`.drone.yml`という名前で置きます。
 2.1.2 でcloneしたリポジトリの`.drone.yml`を見てみましょう。
@@ -261,14 +261,14 @@ git push origin feature/text-error
 
 ![Pull Requestを作成しましょう](./images/drone_pull_request_button.png)
 
-もし、このとき 作業レポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
+もし、このとき 作業リポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
 
 その時は 自分のrepository に PR を送るように base repository (左側) の 表記を見直してください。
 
 無事PRを作成できた場合 PRのページへ遷移します。
 
 ページ下部にdroneのテスト結果が表示されています。
-ひと目でテストが失敗していることがわかるでしょう。
+一目でテストが失敗していることがわかるでしょう。
 
 ![Pull Requestに表示されたdroneの結果](./images/drone_pull_request_result.png)
 
@@ -297,9 +297,9 @@ drone.io は動作しましたか?
 6. 「Create」します。
 
 :: tip もし、continuous-integration/drone/pr が見つからない場合
-先ほど作成したPRによる drone のテストが上手く動いていないかもしれません。
+先ほど作成したPRによる drone のテストがうまく動いていないかもしれません。
 fork した場合は PR の作成先を確認する必要があります。
-PR の作成先が間違ってるかもしれません。見直してください。
+PR の作成先が間違っているかもしれません。見直してください。
 ::
 
 ![Branch protection rules](./images/drone_branch_protection.png)
@@ -331,7 +331,7 @@ $ git checkout master
 [droneには様々なプラグインが用意されています。](http://plugins.drone.io/)
 
 主に外部と連携する機能が用意されています。
-後述する利用の仕方からも分かる通り plugin は 単なる docker コンテナであるため、自分で開発することもできます。
+後述する利用のしかたからも分かるとおり plugin は 単なる docker コンテナであるため、自分で開発することもできます。
 
 ```
 Plugins are just Docker containers which means you can write plugins in any programming language that runs inside a container. You can even create plugins using simple bash scripting.
@@ -357,12 +357,12 @@ Plugins are just Docker containers which means you can write plugins in any prog
 s3-cacheプラグインはリポジトリ内にあるファイルしかキャッシュできません。
 
 nodejsのパッケージマネージャーであるnpmはデフォルトでリポジトリ直下にライブラリを配置しますが、
-rubyのパッケージマネージャであるbundlerはシステム領域にライブラリを保存するため、
+Rubyのパッケージマネージャーであるbundlerはシステム領域にライブラリを保存するため、
 そのままではキャッシュさせることができません。
-ほとんどの場合、パッケージマネージャーのオプションで保存場所を変更することができますので、
-rubyを例に設定してみましょう。
+ほとんどの場合、パッケージマネージャーのオプションで保存場所を変更できますので、
+Rubyを例に設定してみましょう。
 
-rubyのパッケージマネージャであるbundlerは`--path`オプションで保存場所を指定できます。
+Rubyのパッケージマネージャーであるbundlerは`--path`オプションで保存場所を指定できます。
 
 `drone.yaml` で 実行している `bundle install` にオプションを渡し 一般的によく使われる`vendor/bundle`に保存するように変更してください。
 
@@ -477,7 +477,7 @@ droneは何でも動かすことができますから、テストをすること
 
 textlintはnodejsで動作しますので、イメージにnodeを指定します。
 textlintはフレームワークのみでこれ単体で動かすことはできません。どういったものをチェックするかというルールは別に定義しなければいけません。
-ここでは日本語の技術文書を書く上で必要ないくつかのルールをまとめた
+ここでは日本語の技術文書を書くうえで必要ないくつかのルールをまとめた
 [textlint-rule-preset-ja-technical-writing](https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing)
 を利用します。試しに `README.md`をチェックしてみましょう。
 
@@ -505,19 +505,19 @@ droneが利用できる事例としてふさわしいものはどれですか？
 データベースのテストをするならデータベースのプロセスが上がっている必要があります。
 でも1つのコンテナでアプリケーションと一緒にデータベースも一緒に立ち上げたくないですよね。
 
-そのために`Service`という仕組みがあります。
+そのために`Service`というしくみがあります。
 同時に複数のコンテナを立ち上げて待機させておき、テスト中利用できます。
 
 サンプルとしてRuby on Rails＋MySQLで構成されたアプリケーションを用意しました。
 
-:computer: https://github.com/iij/drone-exercise-rails から 作業用レポジトリを作成し、git cloneしてください。
+:computer: https://github.com/iij/drone-exercise-rails から 作業用リポジトリを作成し、git cloneしてください。
 
 ![rails テスト](./images/fork-repo.jpg)
 
 上記リポジトリを開いて「Use this template」を押してください。
 
-リポジトリ名は「```drone-exercise-rails-<user名>```」にしましょう。 他の設定値はデフォルトで良いです。
-ここで作成したレポジトリに対して操作をしていきます。
+リポジトリ名は「```drone-exercise-rails-<user名>```」にしましょう。 ほかの設定値はデフォルトで良いです。
+ここで作成したリポジトリに対して操作をしていきます。
 
 Ruby on RailsはWebアプリケーションを作るためのRuby製フレームワークです。
 データの保存にMySQLなどのデータベースを利用できます。
@@ -543,17 +543,17 @@ steps:
 ```
 
 :computer: まずはこの状態でテストを実行し、結果を見てみましょう。
-新しいrepository への drone の 有効の仕方 内容の変更を伴わないcommit をする方法を思い出してください。
+新しいrepository への drone の 有効のしかた 内容の変更を伴わないcommit をする方法を思い出してください。
 
 ちなみにテストは `test/models/user_test.rb` に書いてあります。
 
 この状態ではデータベースが動いていないのでテストが成功しません。
-テストしている間横でなにか動かしておきたいという場合には `Service` を使います。
+テストしている間横で何か動かしておきたいという場合には `Service` を使います。
 今回はMySQLを使いますが、[MySQLは公式でdockerイメージが提供されています](https://hub.docker.com/_/mysql)のでこれを利用します。
 
 :computer: 以下の項目を`.drone.yml`に追加してください。
 
-kind, name, steps と同じ高さでよいです(services の左側にスペースははいりません)
+kind, name, steps と同じ高さでよいです(services の左側にスペースはいりません)
 
 ```yaml
 services:
@@ -578,8 +578,8 @@ test:
   database: drone-exercise-rails_test
 ```
 
-このファイルで接続先MySQLサーバーのホストを指定しているのですが、
-ここでは`.drone.yml`で指定した`db`がホスト名になっていて、この名前で接続できるようになります。
+このファイルで接続先MySQLサーバのホストを指定しているのですが、
+ここでは`.drone.yml`で指定した`db`がホスト名になっていて、この名前で接続できます。
 
 ::: tip チェックポイント7 🏁
 テスト実行中にデータベースはどこにいるでしょうか？
