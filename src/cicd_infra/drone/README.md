@@ -1,11 +1,11 @@
-# droneでCIテスト・デプロイを回す
+# drone でCIテスト・デプロイを回す
 
 ## 0. この講義について
 
 ### 0.1 この講義の目的
 
 継続的インテグレーション(Continuous Integration)、継続的デリバリ(Continuous Delivery)について理解する。
-droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを自ら導入できるようにする。
+drone を利用したCI/CDを体験し、自分のプロジェクトにCI/CDを自ら導入できるようにする。
 
 ### 0.2 ハンズオンの対象者
 
@@ -13,9 +13,10 @@ droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを�
 
 講義にあたって事前に以下の要件を満たすようにしてください。
 
-- Yamlの読み書きができること
+- YAMLの読み書きができること
   - 知らない場合は[Learn YAML in five minutes!](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)をご覧ください。
-- 「gitの使い方＋GitHubを使った開発手法」を受講しておくこと
+- 「Gitの使い方＋GitHubを使った開発手法」を受講しておくこと
+  - この講義の中では git の操作に加え GitHub 上での操作も必要になります。アカウントがない場合は事前に用意してください。
 
 ::: tip チェックポイント1 🏁
 Gitの使い方＋GitHubを使った開発手法を受講しましたか？
@@ -90,11 +91,12 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 
 ![droneで最初のテスト](./images/fork-repo.jpg)
 
-上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。 他の設定値はデフォルトで良いです。
+上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「```drone-exercise-<user名>```」にしましょう。 他の設定値はデフォルトで良いです。
 ここで作成したレポジトリに対して操作をしていきます。
 
 ::: warning
 もし、Use this template が表示されていない場合は githubにログインできていないかもしれません。ログインしてからやり直してください。
+また、講師から repository を作成する organization や repository 名が指示されている可能性があります。
 :::
 
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
@@ -109,7 +111,7 @@ https://cloud.drone.io/ では 新規のユーザー登録を行っていませ�
 :::
 
 講師に案内されたdrone.io にログインしてください。 continue から github.com のアカウントを利用して
-Repositories の リストから「自分のアカウント名/drone-exercise」を探してレポジトリ名をクリックし詳細ページを開きましょう。
+Repositories の リストから「自分のアカウント名/```drone-exercise-<user名>```」を探してレポジトリ名をクリックし詳細ページを開きましょう。
 見つからない場合は「SYNC」ボタンを押してから探してください。
 「SETTINGS」タブから「ACTIVATE REPOSITORY」をクリックすると自動で設定が行われ、設定画面が表示されます。
 
@@ -117,7 +119,7 @@ Repositories の リストから「自分のアカウント名/drone-exercise」
 
 #### 2.1.2. droneでテストを実行する
 
-:computer: 作成した作業用リポジトリ(自分のアカウント名/drone-exercise)をローカルにgit cloneしてください。
+:computer: 作成した作業用リポジトリ(自分のアカウント名/```drone-exercise-<user名>```)をローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
@@ -133,7 +135,7 @@ git push origin master
 
 github に push してしばらくすると drone で テストが実行されます。
 
-先程開いた droneの「自分のアカウント名/drone-exercise」の 詳細ページから「ACTIVITY FEED」タブを開くとテストの実行ログが表示されます。
+先程開いた droneの「自分のアカウント名/```drone-exercise-<user名>```」の 詳細ページから「ACTIVITY FEED」タブを開くとテストの実行ログが表示されます。
 クリックして 実行ログを読むとどのようにテストが実行されているかが分かります。
 
 このリポジトリにはRubyで書かれたプログラムと、Ruby用のテストフレームワークである[RSpec](https://rspec.info/)で
@@ -514,7 +516,7 @@ droneが利用できる事例としてふさわしいものはどれですか？
 
 上記リポジトリを開いて「Use this template」を押してください。
 
-リポジトリ名は「drone-exercise-rails」にしましょう。 他の設定値はデフォルトで良いです。
+リポジトリ名は「```drone-exercise-rails-<user名>```」にしましょう。 他の設定値はデフォルトで良いです。
 ここで作成したレポジトリに対して操作をしていきます。
 
 Ruby on RailsはWebアプリケーションを作るためのRuby製フレームワークです。
@@ -586,3 +588,7 @@ test:
 ## 8. 参考情報
 
 - [drone Documentation](https://docs.drone.io/)
+
+## 続き
+
+- [GitHub Actions でCIテスト・デプロイを回す](../github_actions/README.md)
