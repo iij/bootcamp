@@ -10,10 +10,9 @@ GitHub Actions を利用したCI/CDを体験し、自分のプロジェクトに
 
 この講義は drone/GitHub ActionsでCIテスト・デプロイを回す の 一部分です。  
   drone の説明を聞いてあること。drone のハンズオンを実施してあることが前提になっています。  
-drone のハンズオンをまだ実施してない方は drone のハンズオンを先に実施ください
 
-### 0.3 事前準備
-drone のハンズオン と同様です。また、 drone のハンズオン で作成したレポジトリを利用するため、まだ実施してない方はそちらから実施ください。
+### 0.3 下準備
+drone のハンズオン と同様です。また、 drone のハンズオン で作成したリポジトリを利用します。
 
 ### 0.4. この資料のお約束
 
@@ -36,13 +35,13 @@ git clone git@github.com:iij/bootcamp.git
 ## 1. GitHub Actions とは
 [GitHub Actions](https://docs.github.com/ja/actions) とは GitHub が提供する CI/CD プラットフォームです。
 
-複数の Action を組み合わせることで、 様々なワークフローを自動化できるようになっています。
+複数の Action を組み合わせることで、 さまざまなワークフローを自動化できるようになっています。
 
-Linux, Windows, macOS が予め用意されている他、自前で self-hosted runner と呼ばれる処理用のホストを用意することも可能です。
+Linux, Windows, macOS があらかじめ用意されているほか、自前で self-hosted runner と呼ばれる処理用のホストを用意することも可能です。
 
 GitHub 上の Publicリポジトリ や、 self-hosted runner を利用する場合 無料で使えます。
 
-Private レポジトリでは、一部制限があるので留意ください。
+Private リポジトリでは、一部制限があるので留意ください。
 
 [GitHub Actionsの支払いについて](https://docs.github.com/ja/billing/managing-billing-for-github-actions/about-billing-for-github-actions)
 
@@ -50,13 +49,13 @@ Private レポジトリでは、一部制限があるので留意ください。
 ### 2.1. とりあえず初めてみる
 
 * drone ハンズオン では以下をやってみました。
-  * rspec の実行
+  * RSpec の実行
   * textlint の実行
   * rails の test
 
-* ここでは、rspec の実行 と textlint の実行 を GitHub Actions で設定してみます。
+* ここでは、RSpec の実行 と textlint の実行 を GitHub Actions で設定してみます。
 
-#### 2.1.1. rspec や textlint をしてみる
+#### 2.1.1. RSpec や textlint をしてみる
 * drone の ハンズオンで作成した ```drone-exercise-<user名>``` へ移動してください
 * その後、以下のようなファイルを```.github/workflows/ci.yml```に作成します。
 
@@ -87,14 +86,14 @@ jobs:
       - run: $(npm bin)/textlint --format pretty-error --preset ja-technical-writing README.md
 ```
 
-作成後 push すると github の Actions タブから実行状況を確認することができます。
+作成後 push すると GitHub の Actions タブから実行状況を確認できます。
 
 それでは README.md の内容を修正したり、 `hello_world.rb` の 内容を改変したりして 振る舞いを確認してみてください。
 
 もちろん drone と同じく PR を作って試行錯誤しても良いです。
 
 ::: tip チェックポイント8 🏁
-Github Actions で テストが実行できましたか  
+GitHub Actions で テストが実行できましたか  
   README.md や hello_world.rb を改変し テストに失敗させるなどできましたか
 :::
 
@@ -102,9 +101,9 @@ Github Actions で テストが実行できましたか
 
 drone の設定と同様 複数の step からなる Workflow を作成できるようになっています。
 
-drone のように container image を指定して任意のコマンドを実行させることも可能ですが、最大の特徴は Action と呼ばれる再利用可能なコードを組み合わせることで、簡単に様々な事ができるようになっている点です。
+drone のように container image を指定して任意のコマンドを実行させることも可能ですが、最大の特徴は Action と呼ばれる再利用可能なコードを組み合わせることで、簡単にさまざまなことができるようになっている点です。
 
-GitHub Actions には様々な設定項目がありますが、前述した rspec と textlint の実行に絞って 各項目について解説していきます。
+GitHub Actions にはさまざまな設定項目がありますが、前述した RSpec と textlint の実行に絞って 各項目について解説していきます。
 
 他詳細は[公式ドキュメント](https://docs.github.com/ja/actions/using-workflows/workflow-syntax-for-github-actions) を参照ください
 
@@ -144,8 +143,8 @@ jobs は job の集合体です。job は ワークフローの実行単位で�
 
 * `runs-on` - どんなタイプのマシンで このジョブを実行したいかを指定します。  
    自前でランナーを用意する場合は `self-hosted` と指定したり、   
-   github.com が用意するものを利用する場合は `ubuntu-latest` などと指定します。  
-   他にも Windows や macOS を選択することも可能です。
+   GitHub.com が用意するものを利用する場合は `ubuntu-latest` などと指定します。  
+   ほかにも Windows や macOS を選択することも可能です。
 
 * `steps` - job の実際の操作を記述する部分です。  
   `uses` や `run` などで実際にどんな操作を行うか定義できます。
@@ -156,15 +155,15 @@ jobs は job の集合体です。job は ワークフローの実行単位で�
 
 * `uses` - action を実行します。
    - `actions/checkout@v2`   
-     git checkout をします。 git repository の内容について処理する場合はこれが必要です。
+     Git checkout をします。 Git repository の内容について処理する場合はこれが必要です。
    - `ruby/setup-ruby@v1`   
-     ruby をインストールします。 このあとの `run` では ruby のコマンドを利用することができます。
+     Ruby をインストールします。 このあとの `run` では Ruby のコマンドを利用できます。
 
   また、 一部 `with` で パラメータを与えられるものもあります。   
-    (ruby のバージョンを3にしてみるのもいいですね。)
+    (Ruby のバージョンを3にしてみるのもよいですね。)
 
-  なお、 この action の @v2 や @v1 は branch や tag などの git 的 refs を意味します。  
-  つまり、 github 上の ある repository の内容を利用しているということです。  
+  なお、 この action の @v2 や @v1 は branch や tag などの Git 的 refs を意味します。  
+  つまり、 GitHub 上の ある repository の内容を利用しているということです。  
   そのため、 repository 側の更新により、意図せず振る舞いが変わる可能性があります。  
 
 :::tip
@@ -174,15 +173,15 @@ jobs は job の集合体です。job は ワークフローの実行単位で�
 :::
 
 
-### 4. 他にも
+### 4. ほかにも
 
 GitHub Actions の最大の特徴は再利用可能なaction を組み合わせて workflow を実現できる点でした。
 
-https://github.com/marketplace では 様々な action を探すことができます
+https://github.com/marketplace では さまざまな action を探すことができます
 
 さらには 自分で action を作ることも可能です。
 
-色々探してみてください。
+いろいろ探してみてください。
 
 ## 8. 参考情報
 
