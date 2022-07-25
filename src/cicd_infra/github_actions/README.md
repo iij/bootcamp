@@ -187,6 +187,11 @@ https://github.com/marketplace では さまざまな action を探すことが�
 
 いろいろ探してみてください。
 
+ちなみに、この資料も GitHub Actions で作られています。
+
+https://github.com/iij/bootcamp/actions  
+https://github.com/iij/bootcamp/tree/master/.github/workflows
+
 ## 8. 参考情報
 
 - [GitHub Actions](https://docs.github.com/ja/actions)
