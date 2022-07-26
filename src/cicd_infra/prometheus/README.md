@@ -413,7 +413,7 @@ services:
 - 例
   - up：監視ターゲット一覧
   - go_memstats_alloc_requests_total：Prometheusが利用しているメモリ使用量
-  - 
+
 
 ![mem_metrics](./images/mem_metrics.png)
 
