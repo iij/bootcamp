@@ -27,11 +27,13 @@ prior_knowledge: なし
     ```Shell
     docker pull redis:6.2.3-alpine3.13
     docker pull python:3.9.5-slim-buster
+    docker pull erikdubbelboer/phpredisadmin:v1.17.0
     docker images
 
     REPOSITORY                                           TAG                 IMAGE ID            CREATED             SIZE
     python                                               3.9.5-slim-buster   afaa64e7c7fe        15 hours ago        115MB
     redis                                                6.2.3-alpine3.13    efb4fa30f1cf        9 days ago          32.3MB
+    erikdubbelboer/phpredisadmin                         v1.17.0             82d60d8fd132        6 months ago        196MB
     ```
 
 1. サーバを起動する
@@ -65,6 +67,15 @@ prior_knowledge: なし
 
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
+
+1. WebUI でRedis を操作するためのコンテナをデプロイしてみる
+
+    * phpredisadmin を起動します。 これでRedis を操作するためのWebUI を起動します。
+    ```Shell
+    docker run -d --link test-server:redis --name test-web --rm -e REDIS_1_HOST=redis -e REDIS_1_AUTH= -p 9000:80 erikdubbelboer/phpredisadmin:v1.17.0
+    ```
+    * 9000番ポートにアクセスするとphpRedisAdmin の画面を開くことができます。ここでは既に接続をするための情報をコンテナの起動時に渡しているため、ログインの必要はなくRedis の中身を閲覧することができます。
+
 
 1. さらに別のターミナルを開いて、Pythonが使えるコンテナイメージを展開する
 
@@ -103,8 +114,9 @@ prior_knowledge: なし
     * ここまで完了できたら 事前準備完了です。 無事 これらを行うことができました。
       1. docker image の 取得
       1. redis server の起動
-      1. redis-cli による redis の操作
-      1. python からの redis の操作
+      1. redis-cli による Redis の操作
+      1. phpRedisAdmin (WebUI) による Redisの操作
+      1. python からの Redis の操作
 
 1. 参考: Redisを使ったGeospatial
 
