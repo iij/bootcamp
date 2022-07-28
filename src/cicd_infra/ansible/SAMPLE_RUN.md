@@ -15,7 +15,7 @@ Ansibleを利用する為にはいくつかのファイルを書く必要があ�
 Windows
 
 ```powershell
-docker-compose -f docker-compose\docker-compose.yml start
+docker compose -f docker-compose\docker-compose.yml start
 docker exec -it docker-compose-ansible-1 bash
 ```
 
