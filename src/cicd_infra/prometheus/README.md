@@ -272,6 +272,7 @@ Prometheusについて説明する前に、他の監視ツールについて簡�
   - 冗長構成(内部のDB構造が冗長性を考慮していない設計なので、外部DBに保存するといった手段を取る必要が出てくる。またはPrometheusサーバを2つ建てるという形で実装可能)
   - ユーザ/ダッシュボードの管理(これを解決するためにGrafanaが使われることが多い)
   - データの長期保存(長期保存を前提として設計されていないので、別途保存用のサーバが必要)
+  - データを100%信頼すること(メトリクスの転送に失敗しても、それを再送する仕組みが無いので、多少精度の粗さを許容する必要がある)
 - 出来なさそうで出来ること
   - Push型の監視(「Pushgateway」というサーバを立ててそこから監視情報をpullする形で実装できる)
   - ログ情報を収集してそこからメトリクスを取得(fluentdやtmailの実装が必要)
@@ -358,6 +359,8 @@ services:
 # vim prometheus.yml
 ```
 設定ファイルは以下の内容になります。
+- global：全体の設定
+- scrape_config：監視ターゲットに関する設定
 ```
 global:
   scrape_interval: 15s
@@ -402,11 +405,15 @@ services:
 
 ![node_exporter](./images/node_exporter.png)
 
-次にPrometheusでメトリクスを持ってこれていることを確認します。Prometheusサーバにブラウザから`http://<dockerホストのIP:9090>`に入り、`Status`から`Target`を選択し、wordpressのサーバがあればOKです。
+次にPrometheusでメトリクスを持ってこれていることを確認します。Prometheusサーバにブラウザから`http://<dockerホストのIP:9090>`に入り、`Status`から`Target`を選択し、wordpressのサーバがあればOKです。これ以外にも式ブラウザに「up」を入力するだけでも確認できます。
 
 ![status](./images/status_node.png)
 
-ホーム画面からは好きなメトリックスを表示することが出来ます。試しに`node_memory_Active_bytes`を選択すれば、メモリの使用量が表示されます。
+ホーム画面からは好きなメトリックスを表示することが出来ます。試しに`node_memory_Active_bytes`を選択すれば、メモリの使用量が表示されます。時間がある方はプルダウンからどんな情報がとれるか見てみましょう。
+- 例
+  - up：監視ターゲット一覧
+  - go_memstats_alloc_requests_total：Prometheusが利用しているメモリ使用量
+
 
 ![mem_metrics](./images/mem_metrics.png)
 
