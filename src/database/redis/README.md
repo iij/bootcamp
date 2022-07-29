@@ -317,6 +317,14 @@ docker exec -it test-server redis-cli
 * 最初は真っ黒のままです。 何かしら redis に対して操作を行うと どんなことを行ったのか画面に表示されるようになります。
 * 今は開きっぱなしにしましょう
 
+#### WebUI 起動
+
+    * phpredisadmin を起動します。 これでRedis を操作するためのWebUI を起動します。
+    ```Shell
+    docker run -d --link test-server:redis --name test-web --rm -e REDIS_1_HOST=redis -e REDIS_1_AUTH= -p 9000:80 erikdubbelboer/phpredisadmin:v1.17.0
+    ```
+    * 9000番ポートにアクセスするとphpRedisAdmin の画面を開くことができます。ここでは既に接続をするための情報をコンテナの起動時に渡しているため、ログインの必要はなくRedis の中身を閲覧することができます。
+
 #### コンテナの中から Redis Server へ接続
 * 次に Redis へ接続するコードを書いてみます。
     - 再度、Pythonのコンテナを起動します。 先ほどと同様 iij_bootcamp_redis の中から実行してください。
