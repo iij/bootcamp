@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
 title: MongoDBを触ってみよう
 description: MongoDBに対してクエリを投げながら、レプリカセットなど特徴的な機能について紹介します。
 time: 1h
@@ -12,41 +12,23 @@ prior_knowledge: なし
 
 ## 今日のサンプル環境
 
-以下のレポジトリを手元にクローンして、`docker-compose up -d`を実行してください。
+以下のレポジトリを手元にクローンして、`docker compose up -d`を実行してください。
 
 [iij/bootcamp-mongodb-sample](https://github.com/iij/bootcamp-mongodb-sample)
 
 ```terminal
 $ git clone git@github.com:iij/bootcamp-mongodb-sample.git
-$ docker-compose up -d
-Docker Compose is now in the Docker CLI, try `docker compose up`
-
-Pulling mongo-primary (mongo:)...
-latest: Pulling from library/mongo
-16ec32c2132b: Pull complete
-6335cf672677: Pull complete
-cbc70ccc8ebe: Pull complete
-0d1a3c6bd417: Pull complete
-960f3b9b27d3: Pull complete
-aff995a136b4: Pull complete
-4249be7550a8: Pull complete
-4da411c5a406: Pull complete
-4b9c6ac629be: Pull complete
-4de7437f497e: Pull complete
-Digest: sha256:d78c7ace6822297a7e1c7076eb9a7560a81a6ef856ab8d9cde5d18438ca9e8bf
-Status: Downloaded newer image for mongo:latest
-Creating bootcamp-mongodb-sample_mongo-arbiter_1   ... done
-Creating bootcamp-mongodb-sample_mongo-secondary_1 ... done
-Creating bootcamp-mongodb-sample_mongo-primary_1   ... done
-$ docker-compose ps
-                 Name                               Command               State                   Ports
------------------------------------------------------------------------------------------------------------------------
-bootcamp-mongodb-sample_mongo-           docker-entrypoint.sh mongo ...   Up      27017/tcp, 0.0.0.0:27019->27019/tcp,:
-arbiter_1                                                                         ::27019->27019/tcp
-bootcamp-mongodb-sample_mongo-           docker-entrypoint.sh mongo ...   Up      0.0.0.0:27017->27017/tcp,:::27017->27
-primary_1                                                                         017/tcp
-bootcamp-mongodb-sample_mongo-           docker-entrypoint.sh mongo ...   Up      27017/tcp, 0.0.0.0:27018->27018/tcp,:
-secondary_1                                                                       ::27018->27018/tcp
+$ cd bootcamp-mongodb-sample/
+$ docker compose up -d
+[+] Running 3/3
+ ⠿ Container bootcamp-mongodb-sample-mongo-secondary-1  Started                                                                                 7.3s
+ ⠿ Container bootcamp-mongodb-sample-mongo-primary-1    Started                                                                                 7.1s
+ ⠿ Container bootcamp-mongodb-sample-mongo-arbiter-1    Started                                                                                 8.0s
+$ docker compose ps
+NAME                                        COMMAND                  SERVICE             STATUS              PORTS
+bootcamp-mongodb-sample-mongo-arbiter-1     "docker-entrypoint.s…"   mongo-arbiter       running             0.0.0.0:27019->27019/tcp, :::27019->27019/tcp
+bootcamp-mongodb-sample-mongo-primary-1     "docker-entrypoint.s…"   mongo-primary       running             0.0.0.0:27017->27017/tcp, :::27017->27017/tcp
+bootcamp-mongodb-sample-mongo-secondary-1   "docker-entrypoint.s…"   mongo-secondary     running             0.0.0.0:27018->27018/tcp, :::27018->27018/tcp                                                  ::27018->27018/tcp
 ```
 
 ## MongoDBの紹介
@@ -68,26 +50,29 @@ MySQLなどのRDBが「行と列」からなるテーブル形式でデータを
 いわゆる「NoSQL」としてRDBMSに比べて大量のデータを柔軟に保存し、複雑な検索クエリで比較的高速に検索・集計することができます。
 さらにレプリケーションやインデックス、ドキュメント単位のロックなどRDBMSと同じような機能を持つため、スキーマレス（テーブル定義を事前に決めなくてもいい）でありながらRDBMSのような使い方ができます。
 
-他の特徴として、「レプリカセット」と呼ばれる仕組みで3台（奇数台）1セットの冗長構成を簡単に作れる他、シャーディングによる負荷分散構成も簡単に構築することができます。
+他の特徴として、「レプリカセット」と呼ばれる仕組みで3台（奇数台）1セットの冗長構成を簡単に作れる他、「シャーディング」による負荷分散構成も簡単に構築することができます。
 
 ### 個人的な雑感
 
 MongoDBはスキーマレスでありながらRDBMSのような使い方もできることから、サービス立ち上げ時に開発スピードが求められる段階において、データスキーマを含めて試行錯誤を高速に繰り返すような使われ方が話題になりました。
-アプリケーションの開発手法としての有効性はともかく、MongoDBが「とりあえずデータを突っ込んで高速に検索する」用途において非常に強力なDBであることは間違いありません。
+現在では上記のような開発手法で利用されることは少なく、主に以下のような場面で利用されます。
 
-- きちんとスキーマと検索クエリが設計されたRDBMS
-- 大量データの保存・検索に特化したNoSQL
-- 全文検索に特化したエンジン
+- IoTのセンサーデータなど、insert manyなデータの格納・検索
+  - データ間のリレーションや更新の一貫性があまり求められず、更新よりもデータの追加が頻発するケース
+  - 書き込みが多く、write操作の負荷分散が必要になるケース
+- データのaggregation(集計)、地理情報などによる特殊な検索用途
+  - スキーマレスを活かし、データを雑に投入して後からゴリゴリクエリを書いて集計するケース
+  - 地理情報(geo location)検索など特殊な検索が必要になるケース
 
-などユースケースに完全に特化した他のDBにパフォーマンスが及ばなくても、ほぼあらゆるユースケースで満足のいくパフォーマンスを出せるDBという存在がMongoDBの立ち位置だと思います。
-（レプリカセットによる冗長化とシャーディングの負荷分散も含めて）
+もちろん上記のようなケースはRDBでも可能ですし、個々の機能について言えばもっと得意なDB製品は存在します。
+一方でMongoDBは幅広いケースについて80点くらいを取れるような製品と言えます。
 
 ## 早速使ってみよう
 
-何はともあれ使ってみましょう。`docker-compose up -d`に成功していれば、以下のコマンドでMongoDBのコンソールが使えます。
+何はともあれ使ってみましょう。`docker compose up -d`に成功していれば、以下のコマンドでMongoDBのコンソールが使えます。
 
 ```terminal
-$ docker-compose exec mongo-arbiter mongo --port 27017 --host mongo-primary
+$ docker compose exec mongo-arbiter mongo --port 27017 --host mongo-primary
 
 MongoDB shell version v5.0.1
 connecting to: mongodb://mongo-primary:27017/?compressors=disabled&gssapiServiceName=mongodb
@@ -168,7 +153,17 @@ db.people.find({age: {$gte: 23}})
 ```
 
 さらに詳しい検索や集計をする場合、強力な [Aggregation](https://docs.mongodb.com/manual/core/aggregation-pipeline/) 機能が使えます。
-例えばMySQLの`group by`と同じことをするには以下のようにします。
+
+まずは何も集計せずに検索してみましょう。
+
+```terminal
+mongo-set:PRIMARY> db.people.aggregate([   { $match: {"address.city": "tokyo"} } ])
+{ "_id" : ObjectId("62e5e5265beeb8a010811279"), "name" : "fujimoto-san", "age" : 23, "address" : { "post" : "123-4567", "city" : "tokyo" } }
+{ "_id" : ObjectId("62e5e52e5beeb8a01081127a"), "name" : "kawai-san", "age" : 30, "address" : { "post" : "123-9876", "city" : "tokyo" } }
+m
+```
+
+例えばここからMySQLの`group by`と同じことをするには以下のようにします。
 
 ```terminal
 db.people.aggregate([
@@ -181,7 +176,7 @@ db.people.aggregate([
 
 aggregationで使える機能はたくさんあるので、色々と試してみてください。=> [Aggregation Pipeline Stages](https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/)
 
-例えば`$replaceRoot`というpipelineを使うとどうなるか試してみてください。他に個人的には [$unwind](https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/) をよく使ったりします。
+例えば`$replaceRoot`というpipelineを使うとどうなるか試してみてください。
 
 ```terminal
 db.people.aggregate([
@@ -189,6 +184,8 @@ db.people.aggregate([
   { $replaceRoot: {newRoot: "$address"} }
 ])
 ```
+
+他には [$unwind](https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/) も面白い機能です。
 
 ## レプリカセット
 
@@ -203,18 +200,36 @@ MongoDBでは [レプリカセット](https://docs.mongodb.com/manual/replicatio
 通常ではクライアントやアプリケーションは「Primary」になっているMongoDBに対してデータを更新します。すると更新されたデータは「Secondary」にもレプリケーションされます。
 そしてレプリカセットを構成しているMongoDBはお互いに投票処理を行い、その結果によって自動的にPrimary役が決定されます。
 
-もしPrimaryが停止したりネットワーク的に分断された場合、残り2台のMongoDB同士で通信（画像のHeartbeat通信）ができる場合、2台による投票処理によって自動的に次のPrimaryが決定します。
+もしPrimaryが停止したりネットワーク的に分断された場合、残り2台のMongoDB同士で通信（画像のHeartbeat通信）を行い、2台による投票処理によって自動的に次のPrimaryが決定します。
 
 ![replica-set-trigger-election](./replica-set-trigger-election.bakedsvg.svg)
 
-この時元々Primaryだったホストでは、他2台との通信ができなくなったことで自動的にPrimaryではなくなります（更新クエリを受け付けなくなる）。
+この時元々Primaryだったホストは他2台との通信ができなくなったことで、自動的にSecondaryとなり更新クエリを受け付けなくなります。
 
 ### ハンズオン
 
-実際にやってみましょう。`mongo-primary`でレプリカセットの設定をします。
+実際にやってみましょう。今回用意したサンプルの`docker-compose.yml`では以下のホストを立ち上げています。
+
+- mongo-primary
+- mongo-secondary
+- mongo-arbiter
+
+この3台でレプリカセットを構築してみましょう。
+
+::: tip Aribiterとは？
+先ほどMongoDBのレプリカセットは最低3台の奇数台で構成されると説明しました。
+これは投票処理におけるsplit brainを防ぐためですが、一方でreplicationによるデータコピーは1台で十分というケースは多々あります。
+その場合3台目に1~2台目と同じスペックのサーバを用意するのは無駄です。そこで使われるのが「投票処理しか行わない」 [Arbiter](https://www.mongodb.com/docs/manual/core/replica-set-arbiter/) というサーバです。
+
+Aribiterにはデータのreplicationが行われず、データの書き込みも読み込みもできません。レプリカセットに参加しPrimaryを選出するための投票処理しか行わないため、低スペックで安いサーバに構築することが可能です。
+
+このハンズオンではArbiterのホストをMongoDB clientを起動するためのホストとして利用しています。
+:::
+
+先ほどと同様に、mongo-arbiterホストから`mongo-primary`のコンソールに入り、レプリカセットの設定をします。
 
 ```terminal
-$ docker-compose exec mongo-arbiter mongo --port 27017 --host mongo-primary
+$ docker compose exec mongo-arbiter mongo --port 27017 --host mongo-primary
 rs.reconfig( {
    _id : "mongo-set",
    members: [
@@ -225,10 +240,26 @@ rs.reconfig( {
 })
 ```
 
-すると残りの2台にも設定が反映され、レプリカセットが構築されます。`rs.status()`で設定状況を確認してみてください。
+以下のような結果が返ってくるはずです。
+
+```json
+{
+	"ok" : 1,
+	"$clusterTime" : {
+		"clusterTime" : Timestamp(1659236394, 2),
+		"signature" : {
+			"hash" : BinData(0,"AAAAAAAAAAAAAAAAAAAAAAAAAAA="),
+			"keyId" : NumberLong(0)
+		}
+	},
+	"operationTime" : Timestamp(1659236394, 2)
+}
+```
+
+すると残りの2台にも設定が反映され、レプリカセットが構築されます。mongo-secondaryのコンソールで`rs.status()`を実行し、設定状況を確認してみてください。
 
 ```terminal
-$ docker-compose exec mongo-arbiter mongo --port 27018 --host mongo-secondary
+$ docker compose exec mongo-arbiter mongo --port 27018 --host mongo-secondary
 
 mongo-set:SECONDARY> rs.status() # 設定確認
 ```
@@ -252,17 +283,14 @@ mongo-set:SECONDARY> db.people.find()
 ここで例えばPrimaryのMongoDBを落としてみましょう
 
 ```terminal
-$ docker-compose stop mongo-primary
-Stopping bootcamp-mongodb-sample_mongo-primary_1 ... done
-$ docker-compose ps
-                Name                              Command                State                    Ports
------------------------------------------------------------------------------------------------------------------------
-bootcamp-mongodb-sample_mongo-         docker-entrypoint.sh mongo ...   Up         27017/tcp, 0.0.0.0:27019->27019/tcp,
-arbiter_1                                                                          :::27019->27019/tcp
-bootcamp-mongodb-sample_mongo-         docker-entrypoint.sh mongo ...   Exit 137
-primary_1
-bootcamp-mongodb-sample_mongo-         docker-entrypoint.sh mongo ...   Up         27017/tcp, 0.0.0.0:27018->27018/tcp,
-secondary_1                                                                        :::27018->27018/tcp
+$ docker compose stop mongo-primary
+[+] Running 1/1
+ ⠿ Container bootcamp-mongodb-sample-mongo-primary-1  Stopped                                                                                  11.1s
+$ docker compose ps
+NAME                                        COMMAND                  SERVICE             STATUS              PORTS
+bootcamp-mongodb-sample-mongo-arbiter-1     "docker-entrypoint.s…"   mongo-arbiter       running             0.0.0.0:27019->27019/tcp, :::27019->27019/tcp
+bootcamp-mongodb-sample-mongo-primary-1     "docker-entrypoint.s…"   mongo-primary       exited (137)
+bootcamp-mongodb-sample-mongo-secondary-1   "docker-entrypoint.s…"   mongo-secondary     running             0.0.0.0:27018->27018/tcp, :::27018->27018/tcp                                                                     :::27018->27018/tcp
 ```
 
 するとSecondaryのプロンプトが`mongo-set:PRIMARY>`に変わるのが確認できます。
