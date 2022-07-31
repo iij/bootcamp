@@ -59,27 +59,25 @@ root@0dd4d9fad678:/work# vim main.py
 ```
 
 ```python
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import socketserver
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import time
 
 PORT = 8000
 
-class MyHandler(BaseHTTPRequestHandler):
+class SimpleHelloHandler(BaseHTTPRequestHandler):
   def do_GET(self):
     print('start processing path = {}'.format(self.path))
 
-    # 何かの処理
-    time.sleep(20)
+    time.sleep(10) # 何かの処理
 
     print('end processing path = {}'.format(self.path))
-    
+
     self.send_response(200)
     self.send_header('Content-Type', 'text/plain; charset=utf-8')
     self.end_headers()
     self.wfile.write(b'Hello simple server!\n')
 
-with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     print("serving at port", PORT)
     httpd.serve_forever()
 ```
@@ -107,6 +105,39 @@ Hello simple server!
 リクエストした直後、サーバー側のログに`start processing path = /`と表示されたことを覚えておいてください。
 
 ### 共有メモリとレースコンディション
+
+先ほどのプログラムを少し改造して、今までのアクセス数をカウントできるようにしてみましょう。
+
+```python
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import time
+
+PORT = 8000
+
+class SimpleHelloHandler(BaseHTTPRequestHandler):
+  request_total = 0
+
+  def do_GET(self):
+    t = SimpleHelloHandler.request_total
+    print('start processing path = {}, before request count = {}'.format(self.path, t))
+
+    time.sleep(10) # 何かの処理
+
+    t = t + 1
+    print('end processing path = {}, after request count = {}'.format(self.path, t))
+
+    SimpleHelloHandler.request_total = t
+
+    self.send_response(200)
+    self.send_header('Content-Type', 'text/plain; charset=utf-8')
+    self.end_headers()
+    self.wfile.write(b'Hello simple server!\n')
+
+with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
+    print("serving at port", PORT)
+    httpd.serve_forever()
+
+```
 
 ### アトミック処理・排他処理
 
