@@ -167,6 +167,12 @@ $ echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
 
 `http://localhost:8080/hoge/huga.txt` にアクセスすると追加したファイルが表示されます。
 
+アクセスログも確認してみましょう。
+
+```sh
+tail /var/log/apache2/access.log
+```
+
 ### VirtualHost の設定(check2)
 
 1つのApacheで複数のWebサイトを管理したいことがあります。異なるIPアドレスやアドレス、port番号からアクセスされた時にDocument Rootなどを切り替えたいときは`VirtualHost`を設定することで実現できます。
@@ -296,6 +302,12 @@ root@6adf6c41f5d8:/# service nginx start
 [localhost:8088](http://localhost:8088) にアクセスしてみてください。さっき作った`Hello Bootcamp!!`のHTMLが見えていれば成功です。
 
 ![nginx_html](./image/nginx_html.png)
+
+アクセスログも確認してみましょう。
+
+```sh
+tail /var/log/nginx/access.log
+```
 
 ### ロードバランス(check4)
 
