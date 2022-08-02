@@ -352,8 +352,10 @@ site-80とsite-81がランダムで表示されたでしょうか。
 ### https 対応(check5)
 
 HTTP は基本的に平文でデータをやりとりします。
+
 ということは、途中でパケットキャプチャをすると、やり取りの内容を読み取ることができます。
-もしそこにパスワード情報など見られてはいけない情報が含まれていたら...怖いですね
+
+もしそこにパスワード情報など見られてはいけない情報が含まれていたら...怖いですね。
 
 そこで、SSL/TLS (Secure Socket Layer/Transport Layer Securityの技術)を用いて通信路の暗号化を行うHTTP over SSL いわゆるHTTPS を重要な情報のやりとりを行う際には用いるのが一般的です。
 
@@ -362,6 +364,7 @@ HTTP は基本的に平文でデータをやりとりします。
 #### 証明書と秘密鍵の用意
 
 HTTPS で用いる証明書は、権威ある証明局から、これは正当な証明書である、とお墨付きをもらうことで正当性が担保されています。
+
 通常、証明書は以下の手順で入手します。
 
 1. 秘密鍵を生成する
@@ -371,7 +374,7 @@ HTTPS で用いる証明書は、権威ある証明局から、これは正当�
 ここでは、３を簡略化して1 で生成した鍵で署名する、自己署名証明書(いわゆるオレオレ証明書)を作ります。
 このdocker image に既にインストールされている、openssl ツールで一通りの操作を行うことができます。
 
-1. 秘密鍵を生成する
+##### 1. 秘密鍵を生成する
 
 ここではRSA の2048 bit の秘密鍵を生成します。
 
@@ -387,7 +390,7 @@ Generating RSA private key, 2048 bit long modulus (2 primes)
 e is 65537 (0x010001)
 ```
 
-2. 秘密鍵からCSR (Certificate Signing Request) を生成する
+##### 2. 秘密鍵からCSR (Certificate Signing Request) を生成する
 
 1 で作った秘密鍵から、CSR を生成します。
 
@@ -421,7 +424,7 @@ A challenge password []:
 An optional company name []:
 ```
 
-3. 署名された証明書を発行する
+##### 3. 署名された証明書を発行する
 
 1 で作った秘密鍵、2 で作ったCSR から証明書を発行します。
 
@@ -438,7 +441,7 @@ subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
 Getting Private key
 ```
 
-出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます
+出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
 
 ```sh
 root@b8c0df20d154:/# openssl x509 -in server.crt -text
@@ -471,9 +474,9 @@ Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3
 
 #### https の設定
 
-check4 で作ったhttp で受けていたproxy をhttps でも受けられるようにしてみます
+check4 で作ったhttp で受けていたproxy をhttps でも受けられるようにしてみます。
 
-`/etc/nginx/sites-enabled/proxy` の一番下に以下を追記していきます
+`/etc/nginx/sites-enabled/proxy` の一番下に以下を追記していきます。
 
 
 ```sh
@@ -504,10 +507,12 @@ root@dea1ac0e1edb:/var/www/html# service nginx restart
 
 443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
 https での通信となるため、URL の先頭がhttp ではなくhttps となっています。
+
 [https://localhost:8443/](https://localhost:8443/)
 
 今回は自己署名証明書であるため、ほとんどのブラウザは正当な証明書ではないと判断し、注意喚起の画面が表示されます。
 危険性を承知で閲覧すると、Check4 の時と同様のものが表示されます。
+
 また、ブラウザ上で暗号化に使っている証明書の内容が確認できるので、確認もしてみましょう。
 
 ## 追加課題（時間の余った人用）
