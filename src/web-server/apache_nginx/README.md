@@ -243,7 +243,7 @@ a2ensite site-81
 ```
 
 :::tip
-`a2dissite`や`a2ensite`といったコマンドは実はapache本体の機能ではありません。`a2ensite`は`/etc/apache2/sites-available`以下のファイルのsimlinkを`/etc/apache2/sites-enable`以下に追加するだけのコマンドです。
+`a2dissite`や`a2ensite`といったコマンドは実はapache本体の機能ではありません。`a2ensite`は`/etc/apache2/sites-available`以下のファイルのsymlinkを`/etc/apache2/sites-enable`以下に追加するだけのコマンドです。
 実際のApacheは`/etc/apache2/sites-enable`以下のコンフィグファイルをloadしているため、コマンドによってサイトが有効化されたように見えるのです。
 
 CentOSなど他のディストリビューションでは、これらのコマンドが存在しないことが多いので注意してください。
