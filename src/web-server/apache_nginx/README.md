@@ -402,7 +402,7 @@ e is 65537 (0x010001)
 実際に発行する際は、正当性を担保したい対象であるCommon Name は特に間違わないようにしましょう。
 
 ```sh
-root@b8c0df20d154:/# openssl req -new -sha256 -key private.key -out server.crt
+root@b8c0df20d154:/# openssl req -new -sha256 -key private.key -out server.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
