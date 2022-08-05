@@ -45,11 +45,6 @@ validationを強く意識した構造になっています。
 
 [Linux 用 Windows サブシステムで Visual Studio Code の使用を開始する](https://docs.microsoft.com/ja-jp/windows/wsl/tutorials/wsl-vscode)を参考にvscode上でUbuntuが操作できるようにします。
 
-### Python3.9 のインストール
-
-
-
-
 ## FastAPIのインストール・動作確認
 
 開発環境の準備ができたならば、いよいよFastAPIを使った開発を行います。
@@ -58,13 +53,12 @@ validationを強く意識した構造になっています。
 Pythonのパッケージ管理を厳格に行うのであれば**poetry**等を使う事が好ましいのですが、本項とは主旨が外れるため、今回は
 [公式ドキュメント](https://fastapi.tiangolo.com/ja/)にそのまま従ってインストールしてみましょう。
 
-
 ### FastAPI/uvicornのインストール
 
 
 ```bash
  pip3 install fastapi
- pip3 install uvocorn[standard]
+ pip3 install uvicorn[standard]
 ```
 ## FastAPIを使ったAPIサーバの開発
 
@@ -83,6 +77,8 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
+if __name__ == "__main__":
+    uvicorn.run("main:app", port=8000, log_level="info")
 ```
 
 よく分からない方は[sample]([fastapi/sample](https://github.com/iij/bootcamp/tree/master/src/server-app/fastapi/sample))ディレクトリに作成済みのサンプルファイルがあるので参考にしてください。
@@ -93,7 +89,7 @@ def read_root():
 起動には先ほどインストールした`uvicorn`(コマンド)に`main:app`を引数として渡して実行します。
 
 ```bash
-$ uvicorn main:app
+$ python3 main.py
 ```
 
 正常に起動した場合、そのまま以下のように出力され `http://127.0.0.1:8000`と表示されます。
