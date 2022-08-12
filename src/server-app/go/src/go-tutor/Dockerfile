@@ -9,8 +9,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y locales && \
     ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
-    sed -i -E 's/# (ja_JP.UTF-8)/\1/' /etc/locale.gen && \
-    locale-gen ja_JP.UTF-8 && \
+    sed -i -E "s/# (${LANG})/\1/" /etc/locale.gen && \
+    locale-gen && \
     apt-get install -y curl wget tzdata file locales && \
     apt-get install -y vim-nox vim-snippets emacs-nox nano && \
     apt-get clean && \
