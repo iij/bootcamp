@@ -4,25 +4,29 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 # サーバアプリケーション界隈Overview
 
-ここでいうサーバアプリケーションとは、Webアプリケーションを構成する要素の中のサーバサイドの実装技術のことをなんとなく表現しています。
+## Webアプリケーションとは？
 
-## 目次
+世の中はWebアプリケーションで溢れています。
 
-1. 開発言語・スタイルの変遷
-   1. CGI
-   2. PHP
-   3. サーブレット
-   4. Java EE / Spring
-   5. Ruby on Rails
-   6. Ajaxの出現 / フロントエンド+APIサーバの時代
-   7. Node.js
-   8. Go
-2. アプリケーションとインフラ
-   1. オンプレミス
-   2. クラウドサービス
-   3. 主なクラウドサービス
+この図の「Ruby on Rails」と書かれているのはWebアプリケーション。
 
-## 開発言語・スタイルの変遷
+![web_app_true1.png](./web_app_true1.drawio.png "web_app_true1")
+
+次の図の「Perl CGI」もWebアプリケーション。
+
+![web_app_true2.png](./web_app_true2.drawio.png "web_app_true2")
+
+次の図の「Apache」はWebアプリケーションじゃない。
+
+![web_app_false1.png](./web_app_false1.drawio.png "web_app_false1")
+
+次の図の「Go」は多分Webアプリケーション。
+
+![web_app_true3.png](./web_app_true3.drawio.png "web_app_true3")
+
+明確な定義はありませんが、サーバ上で動作しHTTPなどの仕組みを利用してWeb上からアクセスされること、DBなどと連携し何らかの動的な結果を返すアプリケーションのことを呼びます。
+
+## 色々なWebアプリケーションの実装
 
 ### CGI
 
@@ -286,6 +290,8 @@ Node.jsはJavaScriptの実行環境の一つで、I/O待ち（HDDへの書き込
 
 最近ではSPAフレームワークからの流れでSSR(Server Side Rendering)を採用するサービスも増えており、その実行環境としてNode.jsが引き続き使われている。
 
+最近は [Deno](https://deno.land/) というTypeScriptがネイティブで動作するランタイムも流行り始めている。
+
 ### Go
 
 2016年くらいから利用例の増えてきたプログラミング言語で、静的型付け・シンプルな言語体系・高速な動作・並行処理が得意などの特徴がある。
@@ -307,6 +313,94 @@ RubyやPython、Javaなどのように実行環境をインストールする必
   - 複数人での開発がやりやすい
 - コンパイル言語なので（スクリプト言語に比べると）デバッグが難しい
 - Railsのようなフレームワークに頼らず、自力でアプリケーションを構築していく必要がある
+
+## アプリケーションプログラムインタフェース(API)
+
+API(Application Program Interface)とはアプリケーションが他のアプリケーションを呼び出すための仕組みのことを指す。
+Webアプリケーションの文脈では主にhttpプロトコル越しに他のWebアプリケーションにrequestを送信し、responseを受け取る仕組みを指す。
+
+一番分かりやすいのはブラウザ上で動作するJavaScriptがサーバのAPIを叩いてjson形式のresponseを受け取るもの。
+他に実は裏側でサーバ同士がAPIでやり取りしていることもよくあるし、サーバからさらに外部のサービスを呼び出す場合もある。
+
+APIをどのような形式で実装するかは非常に重要な問題で、過去から現在に至るまで様々な設計・実装手法が存在する。
+
+### RPC
+
+そもそもプログラムからネットワーク越しに外部のプログラムの機能を実行する仕組みをRPC(Remote Procedure Call)と呼ぶ。
+この場合はHTTPなどのWebの仕組みは前提にしておらず、各言語や実装ごとに独自の仕組みで動作するものだった。
+
+### XML/RPC(JSON-RPC)
+
+独自の仕組みで動いていたRPCをHTTP通信を前提にして規格として整えたものはXML/RPCと呼ばれる。
+字の如くXML形式のデータをやり取りし、そのフォーマットなどを定めたものなっている。
+
+リクエストの例
+
+```xml
+<?xml version="1.0"?>
+<methodCall>
+  <methodName>examples.getStateName</methodName>
+  <params>
+    <param>
+        <value><i4>40</i4></value>
+    </param>
+  </params>
+</methodCall>
+```
+
+レスポンスの例
+
+```xml
+<?xml version="1.0"?>
+<methodResponse>
+  <params>
+    <param>
+        <value><string>South Dakota</string></value>
+    </param>
+  </params>
+</methodResponse>
+```
+
+XMLの代わりにJSON形式でやり取りされる場合はJSON-RPCと呼ばれる。
+
+### SOAP
+
+XML/RPCを発展させたもの？
+主にエンタープライズの文脈で企業同士がデータのやり取りをするために利用されていたらしい。
+
+（よく知らないので誰か追記してください）
+
+### REST
+
+RPCは相手がどのようなメソッド（関数）を実装しているのか、そのメソッドがどのような挙動をするのか定まっておらず、統一感がなかった。
+そこで「APIの設計思想」のようなものとしてRESTが登場し、そのRESTの思想を満たすようなAPIをREST APIと呼ぶようになった。
+
+（実際のところ、厳密にはRESTに従っていないなんちゃってREST APIが大半）
+
+その思想には
+
+- セッションなどの状態管理を行わない
+- あるリソースをURLで表現する（例えば `example.com/book/001` は「`001`というIDが付けられた`book`」というリソースを表す）
+- HTTPにおける GET/POST/PUT/DELETE の各メソッドをそのままリソースの 取得/作成/編集/削除 に対応させる
+  - `GET example.com/book/` をするとbookの一覧が取得できる
+  - `POST example.com/book/` で新しいbookを追加する
+  - `GET example.com/book/001` で`ID:001`のbookの詳細を取得する
+  - `PUT example.com/book/001` で`ID:001`のbookを更新する
+  - `DELETE example.com/book/001` で`ID:001`のbookを削除する
+
+データフォーマットには基本的にjsonが使われる。
+
+### OpenAPI
+
+TBD
+
+### GraphQL
+
+TBD
+
+### gRPC
+
+TBD
 
 ## アプリケーションを支えるインフラ
 

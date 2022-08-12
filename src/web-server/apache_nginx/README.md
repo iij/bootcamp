@@ -23,7 +23,7 @@ deb569b08de6: Pull complete
 Digest: sha256:003990f08716aef3eb0772f9d9fa8e27603f2b863c56c649a3e9693ddb5b41f1
 Status: Downloaded newer image for python:3.8.2-buster
 docker.io/library/python:3.8.2-buster
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8081:81 -p 8088:88 -p 8089:89 python:3.8.2-buster /bin/bash
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8081:81 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.2-buster /bin/bash
 b8c0df20d1540aba0342362d88d1b0cb9ec94a1877ae1ca5aea5583880193a8e
 $ docker exec -it test-debian /bin/bash
 root@b8c0df20d154:/#
@@ -69,7 +69,7 @@ root@b8c0df20d154:/#
 ```shell-session
 root@b8c0df20d154:/# apache2 -v
 Server version: Apache/2.4.38 (Debian)
-Server built:   2020-08-25T20:08:29
+Server built:   2021-12-21T16:50:43
 
 root@b8c0df20d154:/# nginx -v
 nginx version: nginx/1.14.2
@@ -107,10 +107,10 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 
 ### Apache HTTP Server
 
-「Apache HTTP Server」はnginxと並んで2台勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
+「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
 「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられ、nginxと並んで2大勢力を誇ります。
-(参考: [April 2021 Web Server Survey](https://news.netcraft.com/archives/2021/04/30/april-2021-web-server-survey.html))
+(参考: [June 2022 Web Server Survey](https://news.netcraft.com/archives/2022/06/30/june-2022-web-server-survey.html))
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
@@ -166,6 +166,12 @@ $ echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
 ```
 
 `http://localhost:8080/hoge/huga.txt` にアクセスすると追加したファイルが表示されます。
+
+アクセスログも確認してみましょう。
+
+```sh
+tail /var/log/apache2/access.log
+```
 
 ### VirtualHost の設定(check2)
 
@@ -237,7 +243,7 @@ a2ensite site-81
 ```
 
 :::tip
-`a2dissite`や`a2ensite`といったコマンドは実はapache本体の機能ではありません。`a2ensite`は`/etc/apache2/sites-available`以下のファイルのsimlinkを`/etc/apache2/sites-enable`以下に追加するだけのコマンドです。
+`a2dissite`や`a2ensite`といったコマンドは実はapache本体の機能ではありません。`a2ensite`は`/etc/apache2/sites-available`以下のファイルのsymlinkを`/etc/apache2/sites-enable`以下に追加するだけのコマンドです。
 実際のApacheは`/etc/apache2/sites-enable`以下のコンフィグファイルをloadしているため、コマンドによってサイトが有効化されたように見えるのです。
 
 CentOSなど他のディストリビューションでは、これらのコマンドが存在しないことが多いので注意してください。
@@ -297,6 +303,12 @@ root@6adf6c41f5d8:/# service nginx start
 
 ![nginx_html](./image/nginx_html.png)
 
+アクセスログも確認してみましょう。
+
+```sh
+tail /var/log/nginx/access.log
+```
+
 ### ロードバランス(check4)
 
 nginxのプロキシ・ロードバランス機能を使ってみましょう。以下のような構成を作ってみます。
@@ -337,7 +349,178 @@ root@dea1ac0e1edb:/var/www/html# service nginx restart
 [http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
 site-80とsite-81がランダムで表示されたでしょうか。
 
+### https 対応(check5)
+
+HTTP は基本的に平文でデータをやりとりします。
+
+ということは、途中でパケットキャプチャをすると、やり取りの内容を読み取ることができます。
+
+もしそこにパスワード情報など見られてはいけない情報が含まれていたら...怖いですね。
+
+そこで、SSL/TLS (Secure Socket Layer/Transport Layer Securityの技術)を用いて通信路の暗号化を行うHTTP over SSL いわゆるHTTPS を重要な情報のやりとりを行う際には用いるのが一般的です。
+
+各種Web サーバはこのHTTPS もサポートしており、証明書とそれに対応する秘密鍵さえあれば、簡単に設定することができます。
+
+#### 証明書と秘密鍵の用意
+
+HTTPS で用いる証明書は、権威ある証明局から、これは正当な証明書である、とお墨付きをもらうことで正当性が担保されています。
+
+通常、証明書は以下の手順で入手します。
+
+1. 秘密鍵を生成する
+2. 秘密鍵からCSR (Certificate Signing Request) を生成する
+3. CSR を証明書に提出し、審査を受け、証明局の持つ秘密鍵で署名された証明書を発行してもらう
+
+ここでは、３を簡略化して1 で生成した鍵で署名する、自己署名証明書(いわゆるオレオレ証明書)を作ります。
+このdocker image に既にインストールされている、openssl ツールで一通りの操作を行うことができます。
+
+##### 1. 秘密鍵を生成する
+
+ここではRSA の2048 bit の秘密鍵を生成します。
+
+::: tip
+サブコマンドであるgenrsa はRSA 暗号の秘密鍵を生成するものとなります。
+:::
+
+```sh
+root@b8c0df20d154:/# openssl genrsa 2048 > private.key
+Generating RSA private key, 2048 bit long modulus (2 primes)
+........................+++++
+...........................................................................................................................+++++
+e is 65537 (0x010001)
+```
+
+##### 2. 秘密鍵からCSR (Certificate Signing Request) を生成する
+
+1 で作った秘密鍵から、CSR を生成します。
+
+::: tip
+サブコマンドであるreq はCSR を扱うためのものとなります。
+:::
+
+証明書で表示する情報をここで入力することになります。
+実際に発行する際は、正当性を担保したい対象であるCommon Name は特に間違わないようにしましょう。
+
+```sh
+root@b8c0df20d154:/# openssl req -new -sha256 -key private.key -out server.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:JP
+State or Province Name (full name) [Some-State]:Tokyo
+Locality Name (eg, city) []:Chiyoda
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:IIJ
+Organizational Unit Name (eg, section) []:TU
+Common Name (e.g. server FQDN or YOUR name) []:localhost
+Email Address []:
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+```
+
+##### 3. 署名された証明書を発行する
+
+1 で作った秘密鍵、2 で作ったCSR から証明書を発行します。
+
+::: tip
+サブコマンドであるx509 は、証明書の標準規格を指しています。
+-req でinput がCSR であることを示し、signkey に1 で作った秘密鍵を指定することでこれで署名します。
+:::
+
+
+```sh
+root@b8c0df20d154:/# openssl x509 -req -in server.csr -out server.crt -signkey private.key -days 365
+Signature ok
+subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+Getting Private key
+```
+
+出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
+
+```sh
+root@b8c0df20d154:/# openssl x509 -in server.crt -text
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number:
+            45:ef:45:48:8c:89:e0:e5:38:74:f7:fc:21:32:35:eb:2b:bc:10:6b
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+        Validity
+            Not Before: Aug  1 16:29:36 2022 GMT
+            Not After : Aug  1 16:29:36 2023 GMT
+        Subject: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+        Subject Public Key Info:
+(...省略...)
+```
+
+実際に発行されたものを確認する際は、期間(Not BeforeとNot After)とSubject (CN が正しいか)に特に注意しましょう。
+
+秘密鍵と証明書のペアが正しいかを確認するには、RSA のものならmodulus を比較するのが簡単です。
+
+```sh
+root@b8c0df20d154:/# openssl rsa -in private.key -modulus -noout
+Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
+
+root@b8c0df20d154:/# openssl x509 -in server.crt -modulus -noout
+Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
+```
+
+#### https の設定
+
+check4 で作ったhttp で受けていたproxy をhttps でも受けられるようにしてみます。
+
+`/etc/nginx/sites-enabled/proxy` の一番下に以下を追記していきます。
+
+
+```sh
+server {
+        listen 443 default_server;
+        listen [::]:443 default_server;
+
+        ssl on;
+        ssl_certificate /server.crt;
+        ssl_certificate_key /private.key;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                proxy_pass http://backend;
+        }
+}
+```
+
+追記したら、nginx をリスタートしましょう。
+
+```sh
+root@dea1ac0e1edb:/var/www/html# service nginx restart
+[ ok ] Restarting nginx: nginx.
+```
+
+443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
+https での通信となるため、URL の先頭がhttp ではなくhttps となっています。
+
+[https://localhost:8443/](https://localhost:8443/)
+
+今回は自己署名証明書であるため、ほとんどのブラウザは正当な証明書ではないと判断し、注意喚起の画面が表示されます。
+危険性を承知で閲覧すると、Check4 の時と同様のものが表示されます。
+
+また、ブラウザ上で暗号化に使っている証明書の内容が確認できるので、確認もしてみましょう。
+
 ## 追加課題（時間の余った人用）
+
+### apache でもhttpsを設定してみよう
+
+- Apache でもhttps を受けられるようにしてみましょう。
+- 8444 を444 にポートフォワードする設定も予め入れてあるので、444 で受ける設定を入れれば、外から8444 でアクセスできます。証明書は同じものを使い回しで構いません。
 
 ### Basic認証を追加してみよう
 

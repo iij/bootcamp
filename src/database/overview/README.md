@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
 description: Databaseがとても面白いと思ってもらえる機会を作りたいと思います
 time: 1h
 prior_knowledge: なし
@@ -25,7 +25,8 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 8. RDBMSが突きつけられた課題
 9. RDBMSに代る選択肢
 10. Database as a Service
-11. 最適解は何か
+11. Database on Kubernetes　<2022 NEW>
+12. 最適解は何か
 
 ## データ、データベースの関係
 
@@ -103,7 +104,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    
    Q.全社員の中でSUPPORT部に属している社員名を調べるSQL(Query)が書ける方？
    
-   A.「」
+   A.「    」
 
 ##  ACID特性 
 
@@ -126,7 +127,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
    - 最も最小の___でデータ集合を見つける事
    - 出来る限り最小限の___でデータにアクセスする事
   
-     -> 何をもって「適切」なのかを判断するデータベース内部の機構を ___ と呼ぶ
+     -> Databaseへの要求に対して「最適」なアクセスパスは何かを判断するデータベース内部の機構を ________ と呼ぶ
 
    先ほどのemp表、dept表からSUPPORT部所属の社員(とLocation)を「検索」する場合どうなるか？
 
@@ -166,8 +167,7 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 
      -> あれもこれも「DBに突っ込んでおけ!」
      
-        - 余談ですが、筆者はこの頃からDatabaseを知りのめり込んで行きました
-        
+        - 余談ですが、筆者はこの頃からDatabaseを知りのめり込んで行きました  
 
 ## RDBMSに代る選択肢
 
@@ -188,29 +188,64 @@ Databaseとはいかなる道具かを知るきっかけを与える場として
 ## Database as a Service
 
 1. Databaseの維持管理コストは無視できない、重要性は変わらずむしろ増すばかり
-   - MySQLとにかく詳しい人ください
+   - MySQLでこのSQLが遅くてかなわん
    - Memcachedもわかるとありがたい
    - RedisでClusterは組めますか？
+   - Kafkaがやっぱり必要になりました、お願いします
    - 新Versionのあの機能を試したいんです、いつ試せそうですか？
    - 開発者はコードだけを書きたい
    - 管理は専門性とトレードオフ
 
 2. Full Managed Database Service
    - Database管理から開放します、さあどうぞ
-     - AWS RDS
+     - AWS RDS 
      - GCP CloudSQL
+     - Azure SQL Database
+     
+   - Database機能を秒単位でリソース売りしますね！<2022 NEW> 
+     - AWS Aurora Serverless
+     - Azure SQL Database Serverless
    
    - 顧客「性能が全然足りません、なんとかして！」
-     - クラウドベンダー「性能要求に応じてスケールアウトさせます!」
      - AWS Aurora
-     - GCP Spanner
+       - 代表的な利用ケース _____  
+     - GCP Spanner 
+       - 代表的な利用ケース _____
+     - yogaByte DB <2022 NEW>
+       - postgreSQL on k8s , Full managed   
 
    - 顧客「クラウドでDataWareHouseが出来ると助かる。費用は使っただけ、にして欲しい」
      - AWS RedShift
+       - AWS RedShift Serverless <2022 NEW> 
      - Google BigQuery
 
-
 ![Database_lists](./DBOverView_Database001.png "Databases")
+
+## Database on Kubernetes
+- 一般的な課題として個人的な見解
+- KVS, DocumentDB, Message HUB, RDBMS を含めてひと括りに話をします
+
+1. Databaseから見たストレージ要件との兼ね合いが最初のポイントでは
+   - 性能要件にはしっかり向き合う事
+     - 数byte〜kbyteの同時書き込み性能をRDBMSで？、考えましょう
+       - 非同期通信しっかり検討したい
+       - 検討できればします...が、自前でKafka頑張るんですかのジレンマ
+   - Durable and Scalable for Transactions
+     - k8sになろうとこの点は変わらないでしょう
+
+2. MicroService Architecture
+   - やることがゴールになると厳しい
+   - 大きく2択あると認識をしましょう
+     - Database per service
+     - Shared database
+       - 開発組織がしっかりしていないのに、闇雲に分けてメリットがあるのか？
+   - アプリケーション開発者がカジュアルに制御出来る要件範疇であれば確実にDatabase per Serviceへ
+     - kvs等は外に出なくてもコスト低いし、性能要件的にも手近に起きたい等
+
+3. Full Managed external-DatabaseService
+   - 適材適所な構成設計になるとは思うが、やはり以下のケースではk8sクラスター外にある事が望ましいと考える
+     - DocumentDB的な要件で大規模(数TBクラス)だと運用コスト的に見合わない
+     - 特にWrite性能要件がキツいRDBMSの場合、外に出す事が必須なはず
 
 ## 最適解
 

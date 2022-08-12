@@ -1,11 +1,11 @@
-# droneでCIテスト・デプロイを回す
+# drone でCIテスト・デプロイを回す
 
 ## 0. この講義について
 
 ### 0.1 この講義の目的
 
 継続的インテグレーション(Continuous Integration)、継続的デリバリ(Continuous Delivery)について理解する。
-droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを自ら導入できるようにする。
+drone を利用したCI/CDを体験し、自分のプロジェクトにCI/CDを自ら導入できるようにする。
 
 ### 0.2 ハンズオンの対象者
 
@@ -13,17 +13,19 @@ droneを利用したCI/CDを体験し、自分のプロジェクトにCI/CDを�
 
 講義にあたって事前に以下の要件を満たすようにしてください。
 
-- Yamlの読み書きができること
+- YAMLの読み書きができること
   - 知らない場合は[Learn YAML in five minutes!](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes)をご覧ください。
-- 「gitの使い方＋GitHubを使った開発手法」を受講しておくこと
+- 「Gitの使い方＋GitHubを使った開発手法」を受講しておくこと
+  - この講義の中では Git の操作に加え GitHub 上での操作も必要になります。アカウントがない場合は事前に用意してください。
 
 ::: tip チェックポイント1 🏁
-Gitの使い方＋GitHubを使った開発手法を受講しましたか？
+Gitの使い方＋GitHubを使った開発手法を受講しましたか？  
+  git clone, checkout, add, commit, push などを利用します。
 :::
 
-### 0.3 事前準備
+### 0.3 下準備
 
-- gitを利用できる環境を準備してください。
+- Gitを利用できる環境を準備してください。
 - お好みのテキストエディタを準備してください。
   - この講義では[VSCode](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)を推奨します。
 [Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Nodepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
@@ -58,7 +60,7 @@ git clone git@github.com:iij/bootcamp.git
 そこでビルドやテストを自動化し、コードがpushされたらすぐに実行することで早期に不具合を見つけようというのがCIです。
 また世の中にはビルドが難しいプロダクトというのも多数存在しますので、自動化されているということは開発メンバーを追加するのも楽になります。
 
-継続的デリバリ(Continuous Delivery、以下CD)とはCIをさらに進めてユーザに製品を届けるまでのリリースプロセス全体を自動化し、
+継続的デリバリ(Continuous Delivery、以下CD)とはCIをさらに進めてユーザーに製品を届けるまでのリリースプロセス全体を自動化し、
 **継続的に顧客に価値を届ける**ことを目的とした手法です。
 
 CI/CDを導入した場合、コードをコミットするとビルドが走り、ユニットテストを通して、コードがテスト環境にデプロイされます。その後結合テスト、
@@ -85,47 +87,84 @@ GitHubと連携して簡単に設定を行うことができ、設定もyamlに�
 
 このハンズオンのためにCI/CDを行うためのサンプルリポジトリを https://github.com/iij/drone-exercise に用意しています。
 
-:computer: GitHub上で操作し、作業用レポジトリを作成してください。
+:computer: GitHub上で操作し、作業用リポジトリを作成してください。
 
 ![droneで最初のテスト](./images/fork-repo.jpg)
 
-上記リポジトリを開いて「Use this template」を押してください。リポジトリ名は「drone-exercise」にしましょう。 他の設定値はデフォルトで良いです。
-ここで作成したレポジトリに対して操作をしていきます。
+上記リポジトリを開いて「Use this template」を押してください。  
+  リポジトリ名は「```drone-exercise-<user名>```」にしましょう。  
+  ほかの設定値はデフォルトで良いです。  
+
+ここで作成したリポジトリに対して操作をしていきます。
+
+::: warning
+Use this template が表示されていない場合は正しくログインできているか確認してください。  
+  講師から repository を作成する organization が指示されていれば、それに従ってください。
+:::
 
 droneはGitHub上のコミットやpushといったイベントが発生するとそれに応じて自動的に処理が走るようになっています。
-これはWebhookという仕組みを用いて実現されていますが、droneを使う前にこの設定が必要です。
+これはWebhookというしくみを用いて実現されていますが、droneを使う前にこの設定が必要です。
 
 :computer: droneにリポジトリを登録する。
 
-https://cloud.drone.io/ にログインしてください。
-リストから「自分のアカウント名/drone-exercise」を探して詳細ページを開きましょう。
+::: warning
+https://cloud.drone.io/ では 新規のユーザー登録を行っていません。  
+  そのため、以下の手順を実施するためには drone.io の 構築が必要です。  
+  講師は接続先を案内してください。
+:::
+
+講師に案内されたdrone.io にログインしてください。
+
+初回のログインでは OAuth の連携の許可が必要になるかもしれません。
+
+Repositories の リストから「自分のアカウント名/```drone-exercise-<user名>```」を探してリポジトリ名をクリックし詳細ページを開きましょう。
+
 見つからない場合は「SYNC」ボタンを押してから探してください。
+
 「SETTINGS」タブから「ACTIVATE REPOSITORY」をクリックすると自動で設定が行われ、設定画面が表示されます。
 
 これでdroneを利用する準備が整いました。
 
 #### 2.1.2. droneでテストを実行する
 
-:computer: 作成した作業用リポジトリをローカルにgit cloneしてください。
+:computer: 作成した作業用リポジトリ(自分のアカウント名/```drone-exercise-<user名>```)をローカルにgit cloneしてください。
 
 このリポジトリにはすでにdroneの設定ファイルが置かれています。
 適当に`README.md`を編集してコミット、pushしてみましょう。
 
-droneのページから「ACTIVITY FEED」を開くとテストの実行ログが表示されます。
-実行ログを読むとどのようにテストが実行されているかが分かります。
+::: tip
+おさらいです。 編集したあとは git add でステージング したのち commit && push となります。
+
+```
+date >> README.md
+git add README.md
+git commit -m "update README.md"
+git push origin master
+```
+:::
+
+GitHub に push してしばらくすると drone で テストが実行されます。
+
+先程開いた droneの「自分のアカウント名/```drone-exercise-<user名>```」の 詳細ページから「ACTIVITY FEED」タブを開くとテストの実行ログが表示されます。
+
+クリックして 実行ログを読むとどのようにテストが実行されているかが分かります。
 
 このリポジトリにはRubyで書かれたプログラムと、Ruby用のテストフレームワークである[RSpec](https://rspec.info/)で
 書かれたテストが置かれています。
 
 ![droneで最初のテスト](./images/drone_first_test.png)
 
+図を見ると、 clone と test の step からなるとわかります。
+
+それぞれクリックすると各 step の詳細が表示されます。
+
 ::: tip チェックポイント2 🏁
 「test」ではどういうメッセージが出力されたでしょうか？
 :::
 
-#### 2.1.3 WebHookの設定確認
+#### 2.1.3 Webhookの設定確認
 
-drone と GitHub の連携には WebHook を利用しています。
+drone と GitHub の連携には Webhook を利用しています。
 
 デフォルトでは`pr`と`push`の2つが登録されています。
 
@@ -134,17 +173,19 @@ drone と GitHub の連携には WebHook を利用しています。
 
 この設定は 「Settings」->「Hooks」->「Webhooks」-> droneのエントリ -> Edit で確認でき、
 
-設定画面最下部の「Recent Deliveries」では実際に発行されたWebHookを確認 & 再送信することが可能です。
+設定画面最下部の「Recent Deliveries」では実際に発行されたWebhookを確認 & 再送信できます。
 
 ## 3. droneの基本的な設定
 
 drone設定の基本は、どういった環境で、どのようなコマンドを実行するかということを記述することです。
+
 設定はKubernetesライクな書き方になっていますので、Kubernetesの知識があれば読みやすいです。
 
 droneはバージョンによって設定ファイルの書き方が異なりますので、
-既存のプロジェクトを編集する時は気をつけてください。
+既存のプロジェクトを編集するときは気を付けてください。
 
 droneの設定はデフォルトでリポジトリの一番上の階層に`.drone.yml`という名前で置きます。
+
 2.1.2 でcloneしたリポジトリの`.drone.yml`を見てみましょう。
 
 ```yaml
@@ -169,6 +210,7 @@ name: default
 ```
 
 一連のテスト実行の流れを`Pipeline`と呼びます。
+
 まずyamlの先頭で`kind: pipeline`と記載し、この下に書かれる設定値がPipelineのものであることを宣言します。
 ただIIJの環境では`Pipeline`以外の設定は利用できませんのでこの`kind`と`name`は固定になります。
 
@@ -177,7 +219,9 @@ name: default
 ### 3.2. Steps
 
 ひとつのPipelineで複数のテスト(`Step`)を実行できます。
+
 各`Step`は別々のdockerコンテナで実行され、各テストは独立した環境でテストできます。
+
 UI上では各`Step`ごとに結果が分けて表示され、`name`で名前を付けることができ、これはUI上に表示されます。
 
 ![Stepの表示](./images/drone_steps.png)
@@ -187,11 +231,14 @@ UI上では各`Step`ごとに結果が分けて表示され、`name`で名前を
 `image: ruby` と指定した場合はDocker Hubの[Ruby Official Image](https://hub.docker.com/_/ruby)が利用されます。
 素性のわからないイメージを利用することはやめましょう。
 
+また、`image: ruby:3.1.2` のようにタグを指定して、特定のバージョンを利用できるイメージもありますが意図せず更新される場合があります。
+
 ::: tip
 プライベートなDockerイメージ置き場を自分で作成することもできます。
 :::
 
 `commands` にはコンテナ内で実行するコマンドを記述します。
+
 `bundle install` ではテスト実行に必要なライブラリをインストールしていて、`rspec`でテストを実行しています。
 
 各テストが成功したかどうかは各コマンドのExit Codeを見ていて、Code 0以外ではテストは中断され失敗となります。
@@ -205,11 +252,12 @@ droneを設定した状態でPull Requestを作成するとどうなるでしょ
 
 :computer: 意図的にテストが失敗するようにコードを修正し、Pull Requestを作成してみましょう。
 
+1. まず、別の branch へ checkout します
 ```
 git checkout -b feature/text-error
 ```
 
-実装である`hello_world.rb`を以下のように書き換えてみます。
+2. 実装である`hello_world.rb`を以下のように書き換えてみます。
 
 ```diff
   def world
@@ -218,6 +266,7 @@ git checkout -b feature/text-error
   end
 ```
 
+3. 編集した内容を commit し push します。
 ```
 git add hello_world.rb
 git commit -m "goodby"
@@ -226,20 +275,26 @@ git push origin feature/text-error
 
 :computer: GitHub を開いてPull Requestを作成しましょう。
 
+別のbranch に push した内容を develop branch などへ取り込んでもらうためのリクエストを Pull Request(PR) と呼びます。
+
 ![Pull Requestを作成しましょう](./images/drone_pull_request_button.png)
 
-もし、このとき 作業レポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
+もし、作業リポジトリを fork して作成した場合 PR の送り先が fork 元 repository になっています。
 
 その時は 自分のrepository に PR を送るように base repository (左側) の 表記を見直してください。
 
-無事PRを作成できた場合
-Pull Requestの中にdroneのテスト結果が表示されています。
-ひと目でテストが失敗していることがわかるでしょう。
+無事PRを作成できた場合 PRのページへ遷移します。
+
+ページ下部にdroneのテスト結果が表示されています。
+
+一目でテストが失敗していることがわかるでしょう。
 
 ![Pull Requestに表示されたdroneの結果](./images/drone_pull_request_result.png)
 
 ::: tip チェックポイント3 🏁
-テストが失敗しましたか？
+Pull Request は作成できましたか？  
+drone.io は動作しましたか?  
+テストが失敗しましたか？  
 :::
 
 ### 4.1. テストが失敗したらマージできないようにしたい
@@ -253,46 +308,50 @@ Pull Requestの中にdroneのテスト結果が表示されています。
 
 1. 「Settings」->「Branches」->「Branch protection rules」->「Add rule」を押し、
 2. 「Branch name pattern」に「master」と記入し、
-3. 「Require status checks to pass before merging」にチェックを入れて
-4. 「Status checks found in the last week for this repository」に出ている
+3. 「Include administrators」にチェックを入れます。
+4. 「Require status checks to pass before merging」にチェックを入れて
+5. 「Status checks found in the last week for this repository」に出ている
    「continuous-integration/drone/pr」と
    「continuous-integration/drone/push」にチェックを入れます。
-5. 「Include administrators」にもチェックを入れます。
 6. 「Create」します。
 
-:: tip もし、continuous-integration/drone/pr が見つからない場合
-PR の作成先が間違ってるかもしれません。見直してください
-::
+::: tip 
+もし、continuous-integration/drone/pr が見つからない場合  
+先ほど作成したPRによる drone のテストがうまく動いていないかもしれません。  
+fork した場合は PR の作成先を確認する必要があります。  
+PR の作成先が間違っているかもしれません。見直してください。  
+:::
 
 ![Branch protection rules](./images/drone_branch_protection.png)
 
-元のPull Requestの状態に戻るとマージボタンが押せなくなっています。
+先程作成したPull Requestのページに戻るとマージボタンが押せなくなっています。
 
 ![マージできない状態](./images/drone_reject_merge.png)
+
+
+これは複数人で開発するときには便利な機能です。
+
+このあとmasterブランチを利用しますのでBranch protection rulesは削除しておきましょう。
+
+:computer: Branch protection rules の一覧ページで`master`と名前がついたルールの`delete`ボタンを押す
+
+:computer: この後項目のためにmasterブランチに戻っておきましょう。
+
+```
+$ git checkout master
+```
 
 ::: tip チェックポイント4 🏁
 マージボタンが押せなくなったのはなぜですか？
 :::
 
 
-複数人で開発するときには便利な機能です。
-
-このあとmasterブランチを利用しますのでBranch protection rulesは削除しておきましょう。
-
-:computer: Branch protection rules の一覧ページで`master`と名前がついたルールの`delete`ボタンを押す
-
-この後項目のためにmasterブランチに戻っておきましょう。
-
-```
-$ git checkout master
-```
-
 ## 5. さまざまなプラグイン
 
 [droneには様々なプラグインが用意されています。](http://plugins.drone.io/)
 
 主に外部と連携する機能が用意されています。
-後述する利用の仕方からも分かる通り plugin は 単なる docker コンテナであるため、自分で開発することもできます。
+後述する利用のしかたからも分かるとおり plugin は 単なる docker コンテナであるため、自分で開発することもできます。
 
 ```
 Plugins are just Docker containers which means you can write plugins in any programming language that runs inside a container. You can even create plugins using simple bash scripting.
@@ -318,12 +377,12 @@ Plugins are just Docker containers which means you can write plugins in any prog
 s3-cacheプラグインはリポジトリ内にあるファイルしかキャッシュできません。
 
 nodejsのパッケージマネージャーであるnpmはデフォルトでリポジトリ直下にライブラリを配置しますが、
-rubyのパッケージマネージャであるbundlerはシステム領域にライブラリを保存するため、
+Rubyのパッケージマネージャーであるbundlerはシステム領域にライブラリを保存するため、
 そのままではキャッシュさせることができません。
-ほとんどの場合、パッケージマネージャーのオプションで保存場所を変更することができますので、
-rubyを例に設定してみましょう。
+ほとんどの場合、パッケージマネージャーのオプションで保存場所を変更できますので、
+Rubyを例に設定してみましょう。
 
-rubyのパッケージマネージャであるbundlerは`--path`オプションで保存場所を指定できます。
+Rubyのパッケージマネージャーであるbundlerは`--path`オプションで保存場所を指定できます。
 
 `drone.yaml` で 実行している `bundle install` にオプションを渡し 一般的によく使われる`vendor/bundle`に保存するように変更してください。
 
@@ -407,7 +466,13 @@ git commit --allow-empty -m "Cacheの効果を確認する"
 git push origin master
 ```
 
-::: warning drone で完結しない処理です。 もしオブジェクトストレージ側にトラブルがあれば drone 上の処理が長時間に及ぶ可能性があります。 drone 上の ジョブの同時実行数には限りがある場合があります。 処理が終わらず長時間に渡る場合は drone 上のジョブの実行結果が確認できる画面から キャンセルができます :::
+::: warning
+このキャッシュを利用する操作は drone で完結しない処理です。  
+もしオブジェクトストレージ側にトラブルがあれば 処理が長時間に及ぶ可能性があります。  
+
+また、drone 上の ジョブの同時実行数には限りがある場合があります。  
+処理が長時間に渡る場合は drone 上のジョブ実行結果の確認画面から キャンセルができます  
+:::
 
 :computer: テスト実行が早くなっていることを確認しましょう。
 
@@ -438,7 +503,7 @@ droneは何でも動かすことができますから、テストをすること
 
 textlintはnodejsで動作しますので、イメージにnodeを指定します。
 textlintはフレームワークのみでこれ単体で動かすことはできません。どういったものをチェックするかというルールは別に定義しなければいけません。
-ここでは日本語の技術文書を書く上で必要ないくつかのルールをまとめた
+ここでは日本語の技術文書を書くうえで必要ないくつかのルールをまとめた
 [textlint-rule-preset-ja-technical-writing](https://github.com/textlint-ja/textlint-rule-preset-ja-technical-writing)
 を利用します。試しに `README.md`をチェックしてみましょう。
 
@@ -463,22 +528,25 @@ droneが利用できる事例としてふさわしいものはどれですか？
 単純なスクリプトやライブラリのテストはこれだけでも十分にdroneでテストできます。
 
 ではデータベース使ったテストはできるでしょうか。
-データベースのテストをするならデータベースのプロセスが上がっている必要があります。
+
+データベースのテストをするならデータベースのプロセスが上がっている必要があります。  
 でも1つのコンテナでアプリケーションと一緒にデータベースも一緒に立ち上げたくないですよね。
 
-そのために`Service`という仕組みがあります。
+そのために`Service`というしくみがあります。  
 同時に複数のコンテナを立ち上げて待機させておき、テスト中利用できます。
 
 サンプルとしてRuby on Rails＋MySQLで構成されたアプリケーションを用意しました。
 
-:computer: https://github.com/iij/drone-exercise-rails から 作業用レポジトリを作成し、git cloneしてください。
+:computer: https://github.com/iij/drone-exercise-rails から 作業用リポジトリを作成し、git cloneしてください。
 
 ![rails テスト](./images/fork-repo.jpg)
 
 上記リポジトリを開いて「Use this template」を押してください。
 
-リポジトリ名は「drone-exercise-rails」にしましょう。 他の設定値はデフォルトで良いです。
-ここで作成したレポジトリに対して操作をしていきます。
+リポジトリ名は「```drone-exercise-rails-<user名>```」にしましょう。   
+ほかの設定値はデフォルトで良いです。
+
+ここで作成したリポジトリに対して操作をしていきます。
 
 Ruby on RailsはWebアプリケーションを作るためのRuby製フレームワークです。
 データの保存にMySQLなどのデータベースを利用できます。
@@ -503,15 +571,23 @@ steps:
       - bundle exec rails test # テストを実行する
 ```
 
-:computer: まずはこの状態でテストを実行し、結果を見てみましょう。
+:computer: まずはこの状態でテストを実行し、結果を見てみましょう。  
+
+:::tip
+新しいrepository への drone の 有効のしかた  
+内容の変更を伴わないcommit をする方法を思い出してください。
+:::
 
 ちなみにテストは `test/models/user_test.rb` に書いてあります。
 
 この状態ではデータベースが動いていないのでテストが成功しません。
-テストしている間横でなにか動かしておきたいという場合には `Service` を使います。
+
+テストしている間横で何か動かしておきたいという場合には `Service` を使います。
 今回はMySQLを使いますが、[MySQLは公式でdockerイメージが提供されています](https://hub.docker.com/_/mysql)のでこれを利用します。
 
 :computer: 以下の項目を`.drone.yml`に追加してください。
+
+kind, name, steps と同じ高さでよいです(services の左側にスペースはいりません)
 
 ```yaml
 services:
@@ -524,7 +600,7 @@ services:
 
 `name` で名前をつけて `image` で使用するdockerイメージを指定します。
 
-Railsではデータベースの設定を`config/database.yml`から読み込みます。
+Railsではデータベースの設定を`config/database.yml`から読み込みます。  
 droneで設定したデータベースへ接続するための設定値を見てみましょう。
 
 ```yaml
@@ -536,13 +612,17 @@ test:
   database: drone-exercise-rails_test
 ```
 
-このファイルで接続先MySQLサーバーのホストを指定しているのですが、
-ここでは`.drone.yml`で指定した`db`がホスト名になっていて、この名前で接続できるようになります。
+このファイルで接続先MySQLサーバのホストを指定しているのですが、  
+ここでは`.drone.yml`で指定した`db`がホスト名になっていて、この名前で接続できます。
 
 ::: tip チェックポイント7 🏁
-テスト実行中にデータベースはどこにいるでしょうか？
+テスト実行中にデータベースはどこで実行されているでしょうか？
 :::
 
 ## 8. 参考情報
 
 - [drone Documentation](https://docs.drone.io/)
+
+## 続き
+
+- [GitHub Actions でCIテスト・デプロイを回す](../github_actions/README.md)
