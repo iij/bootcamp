@@ -1,8 +1,7 @@
-FROM golang:1.16.5 AS builder
-LABEL maintainer="s.k.noe@hinoshiba.com"
+FROM golang:1.19 AS builder
+LABEL maintainer="jo7oem@ume-ch.net"
 
 ENV GOPATH /go/src
-ENV GO111MODULE=off
 
 ENV LANG ja_JP.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
