@@ -16,7 +16,9 @@ prior_knowledge:
 
 ```terminal
 docker pull iijrfujimoto/bootcamp_concurrent
-docker run --name bootcamp_concurrent --rm -it iijrfujimoto/bootcamp_concurrent /bin/bash
+mkdir bootcamp_work  # 作業用のディレクトリ。名前はなんでもいい
+cd bootcamp_work
+docker run --name bootcamp_concurrent -p 8000:8000 -v $PWD:/work --rm -it iijrfujimoto/bootcamp_concurrent /bin/bash
 ```
 
 ## このハンズオンの目的
@@ -52,10 +54,10 @@ docker run --name bootcamp_concurrent --rm -it iijrfujimoto/bootcamp_concurrent 
 
 まずはPythonで簡単なWebサーバを書いてみましょう。
 
-以下のコマンドでvimを立ち上げ、Pythonコードを書いていきます。可能であればvscode等を利用しても構いません。
+vscode等を利用して作業用ディレクトリ(`bootcamp_work`)でpythonコードを書いていきましょう。
 
 ```termianl
-root@0dd4d9fad678:/work# vim main.py
+$ vim main.py
 ```
 
 ```python
@@ -82,29 +84,25 @@ with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     httpd.serve_forever()
 ```
 
-`:wq` で保存したら、サーバを起動してみます。
+保存したら、dockerコンテナ内からサーバを起動してみます。
 
 ```terminal
 root@0dd4d9fad678:/work# python3 main.py
 ```
 
-別のターミナルを開き、以下の通りコンテナに別セッションで接続しましょう。
+手元のホストから以下のようにcurlで叩いてみましょう。
+「Hello simple server!」と返ってくれば成功です。
 
 ```terminal
-$ docker exec -it bootcamp_concurrent /bin/bash
-root@ee45c9084604:/work#
-```
-
-以下のようにcurlでレスポンスが返ってこれば成功です
-
-```terminal
-root@1b48b3d0b7cc:/work# curl localhost:8000
+$ curl localhost:8000
 Hello simple server!
 ```
 
 リクエストした直後、サーバー側のログに`start processing path = /`と表示されたことを覚えておいてください。
 
 ### 共有メモリとレースコンディション
+
+#### サンプルコード
 
 先ほどのプログラムを少し改造して、今までのアクセス数をカウントできるようにしてみましょう。
 
@@ -115,29 +113,103 @@ import time
 PORT = 8000
 
 class SimpleHelloHandler(BaseHTTPRequestHandler):
-  request_total = 0
+    request_total = 0
 
-  def do_GET(self):
-    t = SimpleHelloHandler.request_total
-    print('start processing path = {}, before request count = {}'.format(self.path, t))
+    def count_and_do_something(self, path):
+        t = SimpleHelloHandler.request_total
+        print('start processing path = {}, before request count = {}'.format(path, t))
 
-    time.sleep(10) # 何かの処理
+        time.sleep(10)  # 何かの処理
 
-    t = t + 1
-    print('end processing path = {}, after request count = {}'.format(self.path, t))
+        t = t + 1
+        print('end processing path = {}, after request count = {}'.format(path, t))
 
-    SimpleHelloHandler.request_total = t
+        SimpleHelloHandler.request_total = t
 
-    self.send_response(200)
-    self.send_header('Content-Type', 'text/plain; charset=utf-8')
-    self.end_headers()
-    self.wfile.write(b'Hello simple server!\n')
+    def do_GET(self):
+        self.count_and_do_something(self.path)
+
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/plain; charset=utf-8')
+        self.end_headers()
+        self.wfile.write(b'Hello simple server!\n')
 
 with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     print("serving at port", PORT)
     httpd.serve_forever()
 
 ```
+
+以下のようにcurlを複数叩いてみます。`&`はコマンドをバックグラウンドで実行する書き方です。
+先ほどはサーバ側が処理をする10秒間curlコマンドはずっと待っていましたが、`&`をつけることですぐに次のコマンドを叩けます。
+
+```terminal
+$ curl localhost:8000 &
+$ curl localhost:8000 &
+$ curl localhost:8000 &
+```
+
+さて結果はどうでしょうか。3回コマンドを実行しましたが、サーバのログは以下のようになったのではないでしょうか。
+
+```terminal
+serving at port 8000
+start processing path = /, before request count = 0
+start processing path = /, before request count = 0
+start processing path = /, before request count = 0
+end processing path = /, after request count = 1
+end processing path = /, after request count = 1
+end processing path = /, after request count = 1
+```
+
+きちんとリクエスト数をカウントできていない、重大な不具合があるようです。
+
+#### コード解説
+
+#### forkとthread
+
+このプログラムではユーザからのリクエストを同時に処理するために [ThreadingHTTPServer](https://docs.python.org/ja/3.7/library/http.server.html#http.server.ThreadingHTTPServer) を利用しています。
+ThreadingHTTPServer の説明を見てみましょう。
+
+> This class is identical to HTTPServer but uses threads to handle requests by using the ThreadingMixIn.
+
+どうやらリクエストを処理(handle)するために「スレッド」を利用するようです。
+[ThreadingMixIn](https://docs.python.org/ja/3.7/library/socketserver.html#socketserver.ThreadingMixIn) の説明も見てみましょう。
+
+> Forking and threading versions of each type of server can be created using these mix-in classes.
+
+`fork`もしくは`thread`いずれかの仕組みで渡したServerオブジェクトを並列に実行してくれるようです。`fork`と`thread`は両方とも並列処理のための方法ですが、大きな違いがあります。
+
+![fork](./fork.drawio.png "fork")
+
+![thread](./thread.drawio.png "thread")
+
+図の通り`fork`の場合forkで分かれたプロセス上で`SimpleHelloHandler`のインスタンスが実行されます。そのためリクエストを処理する各インスタンス間でメモリ空間を共有していません（できないとも言う）。
+一方で`thread`の場合はメモリ空間を共有した同じプロセス内で`SimpleHelloHandler`インスタンスが実行されます。
+
+今回`request_total`はクラス変数として宣言されています。そのため各`SimpleHelloHandler`インスタンスから共有するメモリ上の変数としてアクセスが可能です。
+Webサーバを実装する時に限りませんが、ライブラリやフレームワークを利用する際にはそれがどういう仕組みで動くのか把握しておく必要があります。
+
+#### クリティカルセッション
+
+`count_and_do_something`の以下の部分に注目してみましょう（といっても中身全てですが）。
+
+```python{2-10}
+    def count_and_do_something(self, path):
+        t = SimpleHelloHandler.request_total
+        print('start processing path = {}, before request count = {}'.format(path, t))
+
+        time.sleep(10)  # 何かの処理
+
+        t = t + 1
+        print('end processing path = {}, after request count = {}'.format(path, t))
+
+        SimpleHelloHandler.request_total = t
+```
+
+上記2-10行目は`SimpleHelloHandler.request_total`という共有資源にアクセスしており、複数のスレッドから同時にアクセスされると不具合が起きます。このような箇所を「**クリティカルセクション**」と呼びます。
+また実際にクリティカルセクションに複数のスレッドが同時にアクセスしてしまい、不具合が起きている状態を「**レースコンディション**」と呼びます。
+
+スレッドなどを利用する並列処理プログラミングではこのクリティカルセクションを如何に減らし、そして保護するかが大切になります。
 
 ### アトミック処理・排他処理
 
