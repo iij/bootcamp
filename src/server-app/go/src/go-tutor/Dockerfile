@@ -11,7 +11,7 @@ RUN apt-get update && \
     ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
     sed -i -E "s/# (${LANG})/\1/" /etc/locale.gen && \
     locale-gen && \
-    apt-get install -y curl wget tzdata file locales && \
+    apt-get install -y curl wget tzdata file locales bash-completion && \
     apt-get install -y vim-nox vim-snippets emacs-nox nano && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,16 @@
+FROM jo7oem/go-tutor:latest
+LABEL maintainer="jo7oem@ume-ch.net"
+
+ENV GOPATH /go/src
+
+ENV LANG ja_JP.UTF-8
+
+RUN go install golang.org/x/tools/gopls@latest
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+RUN code-server \
+  --install-extension ms-ceintl.vscode-language-pack-ja \
+  --install-extension golang.Go
+ADD ./VSCode_config.yaml /root/.config/code-server/config.yaml
+
+EXPOSE 8080
+ENTRYPOINT ["code-server"]
