@@ -1,10 +1,11 @@
 FROM golang:1.19 AS builder
 LABEL maintainer="jo7oem@ume-ch.net"
 
-ENV GOPATH /go/src
-
-ENV LANG ja_JP.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG ja_JP.UTF-8
+
+ENV GOPATH /go/src
+ENV GO111MODULE=off
 
 RUN apt-get update && \
     apt-get install -y locales && \
