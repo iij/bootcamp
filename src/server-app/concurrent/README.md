@@ -1,7 +1,7 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
-title: 
-description: 
+title: 並列処理ハンズオン
+description: 主にWebサービスにおける並列処理の基本や注意点などを学びます
 time: 1.5h
 prior_knowledge: 
 ---
