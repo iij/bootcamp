@@ -212,7 +212,7 @@ Webサーバを実装する時に限りませんが、ライブラリやフレ�
         t = SimpleHelloHandler.request_total
         print('start processing path = {}, before request count = {}'.format(path, t))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         t = t + 1
         print('end processing path = {}, after request count = {}'.format(path, t))
