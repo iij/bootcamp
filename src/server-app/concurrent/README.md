@@ -181,7 +181,7 @@ end processing path = /, after request count = 1
 
 #### forkとthread
 
-このプログラムではユーザからのリクエストを同時に処理するために [ThreadingHTTPServer](https://docs.python.org/ja/3.7/library/http.server.html#http.server.ThreadingHTTPServer) を利用しています。
+このプログラムではユーザからのリクエストを同時に処理するために [ThreadingHTTPServer](https://docs.python.org/ja/3/library/http.server.html#http.server.ThreadingHTTPServer) を利用しています。
 ThreadingHTTPServer の説明を見てみましょう。
 
 > This class is identical to HTTPServer but uses threads to handle requests by using the ThreadingMixIn.
