@@ -315,6 +315,7 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
 
 	rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
 	この`interface型`は方がどう振る舞うか(型にどんなメソッドが実装されているか)という観点で区別され、0個以上のメソッドから構成されます。
+	また、[Go1.18からGenericsが追加](https://tip.golang.org/doc/go1.18#generics)されました。これにより、`interface`に型の情報を組み込むことができるようになりました。
 	
 
 ## 3.2. 変数定義方法
@@ -407,9 +408,11 @@ GYUDON
 本章では、関数の定義方法と、Goっぽい関数の扱われ方について、確認してもらいます。  
 
 ## 4.1. 関数の定義
-Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです  
+Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです。
+
+:rocket: 
 ```go
-func <関数名>([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
+func <関数名>[<型パラメータ1>,<型パラメータ2> ...]([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
 	<処理>
 }
 ```
@@ -438,7 +441,8 @@ func myFunc(name string, age uint) (bool, error) {
 	return find, result
 }
 ```
-関数の基本的な定義方法は以上です。  
+関数の基本的な定義方法は以上です。
+
 
 ##### :rocket: 変数名を戻り値の定義で、合わせて定義する方法もあります。  
 変数の名前スコープが、関数内全体のスコープになり、認識すべき範囲が広がるため、執筆者は、あまり扱いません。  
@@ -446,6 +450,21 @@ func myFunc(name string, age uint) (bool, error) {
 func myFunc(name string, age uint) (find bool, result error) {
 	<処理>
 	return find, result
+}
+```
+
+##### :rocket: 型パラメータの使用 (Generics)
+`interface型`を用いることで任意の型を受け付けられる関数を作ることができます。
+便利なようですが、実行時に型を解決するため意図しない挙動を取る可能性があります。
+Go1.18でGenericsが導入されコンパイル時に型を解決することが可能になりました。
+興味のあるひとは[Genericsのチュートリアル](https://go.dev/doc/tutorial/generics)をやってみてください。
+```go
+type Number interface {
+	int64 | float64
+}
+func myFunc[T any,N Number](hoge []T, fuga N) []T {
+	<処理>
+	return res
 }
 ```
 
