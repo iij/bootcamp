@@ -537,8 +537,10 @@ $ go run eaters.go
 
 	func Eat(name string) bool {
 		<nameが空白か比較する>
+		<nameが空白ならば> {
+ 			<`return false`を行う>
+		 }
 		<nameが空白以外ならば、`fmt.Println(name)`を実行し、`return true`を行う>
-		<nameが空白ならば、`return false`を行う>
 	}
 
 	func main() {
@@ -837,6 +839,7 @@ $ go run eaters.go
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
