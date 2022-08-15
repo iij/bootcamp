@@ -453,7 +453,8 @@ print('start processing path = {}, before request count = {}'.format(
 
 一方でPythonにおける`+= 1`とはスレッドセーフな処理なんでしょうか。結論から言うとそうではありません。
 
-Pythonで書かれたコードは最終的にアセンブラにコンパイルされて実行されます。`dis`を利用して実際に実行されるアセンブラを見てみましょう。
+Pythonで書かれたコードは最終的にバイトコードにコンパイルされて実行されます（CPythonの場合）。
+`dis`を利用して実際に実行されるバイトコードを見てみましょう。
 
 ```terminal
 root@40e566b8e23e:/work# python3
