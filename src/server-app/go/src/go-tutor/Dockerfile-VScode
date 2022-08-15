@@ -15,5 +15,5 @@ RUN code-server \
 ADD ./VSCode_config.yaml /root/.config/code-server/config.yaml
 
 ENV GO111MODULE=off
-EXPOSE 8080
+EXPOSE 8888
 ENTRYPOINT ["code-server"]

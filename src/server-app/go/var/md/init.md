@@ -57,8 +57,8 @@ GoでWebアプリケーションを作る(下準備編)
       1. VSCode Serverを起動します
       ```shell
          :# VSCode Server の起動
-         $  docker run --name go-tutor -p 8080:8080 -itd --rm jo7oem/go-tutor-vscode
+         $  docker run --name go-tutor-vscode -p 8888:8888 -itd --rm jo7oem/go-tutor-vscode
       ```
    
-      2. ブラウザで`http://localhost:8080`にアクセス
+      2. ブラウザで`http://localhost:8888`にアクセス
       3. パスワードを聞かれた場合は`iij-bootcamp`と入力

@@ -19,4 +19,5 @@ RUN apt-get update && \
 
 ADD ./samples ${GOPATH}/samples/
 ADD ./go_tutorial ${GOPATH}/go_tutorial
+ADD ./container_settings/* /root/
 WORKDIR ${GOPATH}
