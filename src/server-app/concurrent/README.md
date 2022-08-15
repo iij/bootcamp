@@ -68,7 +68,7 @@ root@0dd4d9fad678:/work# python3 main.py
 
 まずはPythonで簡単なWebサーバを書いてみましょう。
 
-vscode等を利用して作業用ディレクトリ(`bootcamp_work`)でpythonコードを書いていきましょう。
+vscode等を利用して作業用ディレクトリ(`bootcamp_work`)でPythonコードを書いていきましょう。
 
 ```termianl
 $ vim main.py
@@ -355,7 +355,7 @@ with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     httpd.serve_forever()
 ```
 
-pythonの [threadingパッケージ](https://docs.python.org/ja/3/library/threading.html) にはスレッドプログラミングに使えるツールが用意されています。今回は [Lock](https://docs.python.org/ja/3/library/threading.html#lock-objects) を利用しました。
+Pythonの [threadingパッケージ](https://docs.python.org/ja/3/library/threading.html) にはスレッドプログラミングに使えるツールが用意されています。今回は [Lock](https://docs.python.org/ja/3/library/threading.html#lock-objects) を利用しました。
 `acquire()`を実行するとロックを取得し、もし他のスレッドで既に取得済みの場合はブロック（コード実行をそこで停止する）します。
 
 この部分は以下のようにも書けます。
@@ -451,9 +451,9 @@ print('start processing path = {}, before request count = {}'.format(
 スレッドプログラミングにおいて、ある処理が複数スレッドから同時に実行されても問題ない実装であることを「スレッドセーフ(thread safe)である」と言います。
 例えば先ほどの`acquire()`はスレッドセーフなメソッドであり、複数スレッドから同時にアクセスされてもレースコンディションを起こさないように実装されています。
 
-一方でpythonにおける`+= 1`とはスレッドセーフな処理なんでしょうか。結論から言うとそうではありません。
+一方でPythonにおける`+= 1`とはスレッドセーフな処理なんでしょうか。結論から言うとそうではありません。
 
-pythonで書かれたコードは最終的にアセンブラにコンパイルされて実行されます。`dis`を利用して実際に実行されるアセンブラを見てみましょう。
+Pythonで書かれたコードは最終的にアセンブラにコンパイルされて実行されます。`dis`を利用して実際に実行されるアセンブラを見てみましょう。
 
 ```terminal
 root@40e566b8e23e:/work# python3
