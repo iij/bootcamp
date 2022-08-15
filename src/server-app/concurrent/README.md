@@ -84,7 +84,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
   def do_GET(self):
     print('start processing path = {}'.format(self.path))
 
-    time.sleep(10) # 何かの処理
+    time.sleep(5) # 何かの処理
 
     print('end processing path = {}'.format(self.path))
 
@@ -133,7 +133,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         t = SimpleHelloHandler.request_total
         print('start processing path = {}, before request count = {}'.format(path, t))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         t = t + 1
         print('end processing path = {}, after request count = {}'.format(path, t))
@@ -146,7 +146,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello simple server!\n')
+        self.wfile.write(b'Hello! request count=%a\n' % SimpleHelloHandler.request_total)
 
 with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     print("serving at port", PORT)
@@ -252,7 +252,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         t = SimpleHelloHandler.request_total
         print('start processing path = {}, before request count = {}'.format(path, t))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         t = t + 1
         print('end processing path = {}, after request count = {}'.format(path, t))
@@ -266,7 +266,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello simple server!\n')
+        self.wfile.write(b'Hello! request count=%a\n' % SimpleHelloHandler.request_total)
 
 
 with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
@@ -333,7 +333,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         t = SimpleHelloHandler.request_total
         print('start processing path = {}, before request count = {}'.format(path, t))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         t = t + 1
         print('end processing path = {}, after request count = {}'.format(path, t))
@@ -347,8 +347,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello simple server!\n')
-
+        self.wfile.write(b'Hello! request count=%a\n' % SimpleHelloHandler.request_total)
 
 with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     print("serving at port", PORT)
@@ -366,7 +365,7 @@ Pythonの [threadingパッケージ](https://docs.python.org/ja/3/library/thread
             t = SimpleHelloHandler.request_total
             print('start processing path = {}, before request count = {}'.format(path, t))
 
-            time.sleep(10)  # 何かの処理
+            time.sleep(5)  # 何かの処理
 
             t = t + 1
             print('end processing path = {}, after request count = {}'.format(path, t))
@@ -395,7 +394,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         print('start processing path = {}, before request count = {}'.format(
             path, SimpleHelloHandler.request_total))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         SimpleHelloHandler.request_total += 1
         print('end processing path = {}, after request count = {}'.format(
@@ -407,7 +406,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello simple server!\n')
+        self.wfile.write(b'Hello! request count=%a\n' % SimpleHelloHandler.request_total)
 
 
 with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
@@ -441,7 +440,7 @@ end processing path = /, after request count = 3
 print('start processing path = {}, before request count = {}'.format(
             path, SimpleHelloHandler.request_total))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         SimpleHelloHandler.request_total += 1 # クリティカルセクション
         print('end processing path = {}, after request count = {}'.format(
@@ -517,7 +516,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         print('start processing path = {}, before request count = {}'.format(
             path, SimpleHelloHandler.request_total))
 
-        time.sleep(10)  # 何かの処理
+        time.sleep(5)  # 何かの処理
 
         self.increment_request_total()
         print('end processing path = {}, after request count = {}'.format(
@@ -529,7 +528,7 @@ class SimpleHelloHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello simple server!\n')
+        self.wfile.write(b'Hello! request count=%a\n' % SimpleHelloHandler.request_total)
 
 
 with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
