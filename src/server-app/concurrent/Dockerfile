@@ -1,5 +1,5 @@
-FROM golang:latest
+FROM python:3.9
 
-RUN apt-get update && apt-get install -y python3-pip vim
+RUN apt-get update && apt-get install -y vim
 RUN mkdir /work
 WORKDIR /work
