@@ -536,14 +536,6 @@ with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
     httpd.serve_forever()
 ```
 
-::: tip GIL(Global Interpreter Lock)
-上記で「`a += 1`がスレッドセーフではないためレースコンディションが起こる可能性がある」という趣旨を書きました。
-しかしCPython(C言語で実装されたPython処理系)ではGIL(Global Interpreter Lock)という仕組みがあるため、複数のスレッドが真に同時に実行されることはなく、あるスレッドの処理が実行されている間他のスレッドは待機状態になります。
-そのため少なくともCPython上では`a += 1`のような処理を書いてもレースコンディションは実質発生しません。
-
-とはいえスレッドプログラミングとして気をつけることは変わりませんし、CPython以外の処理系で動かす場合には問題になる可能性があります。
-:::
-
 ## 最後に
 
 この資料で伝えたいのは以下のことです。
