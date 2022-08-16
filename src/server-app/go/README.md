@@ -313,7 +313,7 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
 	組み込み型やコンポジット型を元にユーザーが定義した型です
 * `Interface型` 
 
-	rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
+	:rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
 	この`interface型`は方がどう振る舞うか(型にどんなメソッドが実装されているか)という観点で区別され、0個以上のメソッドから構成されます。
 	また、[Go1.18からGenericsが追加](https://tip.golang.org/doc/go1.18#generics)されました。これにより、`interface`に型の情報を組み込むことができるようになりました。
 	
@@ -412,7 +412,7 @@ Go言語では、`func`から始まる形で、関数を定義できます。フ
 
 :rocket: 
 ```go
-func <関数名>[<型パラメータ1>,<型パラメータ2> ...]([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
+func <関数名>[[<型パラメータ1>,<型パラメータ2> ...]]([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
 	<処理>
 }
 ```
@@ -1108,6 +1108,9 @@ func httphandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", httphandler)   //どこのPathで、どんな処理をするか
 	http.ListenAndServe("localhost:8080", nil) //どの接続元(ホスト名:ポート)で、サーバを起動するか
+	if err != nil {
+		panic(err)
+	}
 }
 ```
 
@@ -1176,6 +1179,9 @@ $ curl http://localhost:8080/
 		myshop := shop.NewGyudon()
 		http.HandleFunc("/", myshop.Eat)
 		http.ListenAndServe("localhost:8080", nil)
+		if err != nil {
+			panic(err)
+		}
 	}
 	```
 :recycle: 7.2. 結果
