@@ -83,8 +83,8 @@ $ docker exec -it bootcamp-springboot bash
 ハンズオンにおいて必須ではありませんが、Visual Studio Code(以下 VSCode)を利用することでより良い開発体験ができます。
 
 1. VSCodeをインストールする
-2. 拡張機能`RemoteDevelopment`をインストールする
-3. 拡張機能`Java Extention Pack`をインストールする
+2. 拡張機能`Remote Development`をインストールする
+3. 拡張機能`Extention Pack for Java`をインストールする
 4. 拡張機能`Remote-Container`を使って起動したコンテナの中へアタッチする
 :::
 
@@ -92,7 +92,7 @@ $ docker exec -it bootcamp-springboot bash
 ## Javaの基本
 
 JavaはOracle社が開発しているプログラミング言語です。\
-古くから利用されているプログラミング言語/プラットフォームである一方、2021年現在でもSIや大規模開発の現場などでよく利用されています。
+古くから利用されているプログラミング言語/プラットフォームである一方、2022年現在でもSIや大規模開発の現場などでよく利用されています。
 
 ### 言語としての特徴
 
@@ -109,7 +109,7 @@ package com.github.iij.bootcamp.serverapp; // パッケージ名(世界でユニ
 import java.util.List; // 外部モジュールの利用(JavaではIDEに任せてしまうのが一般的)
 
 /**
- * 複数行に渡るコメント文、特にメソッドとクラスに付与する複数行のコメント文をJavaDocと呼ぶ
+ * 複数行に渡るコメント文
  *
  * - 一般的にはJavaのクラス名の命名はパスカルケース - クラス名とjavaファイルの名前は一致させる方が良い(1クラス1ファイル)
  */
@@ -196,7 +196,7 @@ Mavenを使わずにGradleを利用する理由は、Gradleの方が優れてい
 
 
 ## Spring Bootの基本
-SprinbBootはJavaのWebフレームワークのひとつです。Spring Bootの規約に従ってアプリケーションロジックを実装することで簡単にWebアプリケーションを構築できます。
+Spring BootはJavaのWebフレームワークのひとつです。Spring Bootの規約に従ってアプリケーションロジックを実装することで簡単にWebアプリケーションを構築できます。
 
 このフレームワークは大規模な主幹システムやWebアプリケーションを実装/構築する際によく利用されており、IIJがホストしているいくつかのサービスもSpring Bootを利用して実装されています。
 
@@ -301,7 +301,7 @@ JavaにはLombokなどのボイラープレートを解消するツールなど�
 それではSpring Bootを使ってみましょう。\
 簡単なHTTPのインタフェースを作成し、実際にSpring Bootがどのように動作しているのかを見てみます。
 
-:computer: DemoApplication.javaを修正し、サーバを再起動してみてください。
+:computer: ServerAppApplication.javaを修正し、サーバを再起動してみてください。
 
 ```bash
 # 下記の通りに修正する
