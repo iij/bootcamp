@@ -226,31 +226,31 @@ package com.github.iij.bootcamp.serverapp;
 public class User {
 
   private String name;
-  private String slug;
+  private String id;
 
-  public User(String name, String slug) {
+  public User(String name, String id) {
     this.name = name;
-    this.slug = slug;
+    this.id = id;
   }
 
   public String getName() {
     return this.name;
   }
 
-  public String getSlug() {
-    return this.slug;
+  public String getId() {
+    return this.id;
   }
 
   public void setName(String name) {
     this.name = name;
   }
 
-  public void setSlug(String slug) {
-    this.slug = slug;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String toString() {
-    return "name: " + this.name + "," + "slug: " + this.slug;
+    return "name: " + this.name + "," + "id: " + this.id;
   }
 }
 ```
@@ -286,14 +286,14 @@ public class ServerAppApplication {
 }
 ```
 
-再起動時にログに"name: アリス,slug: alice"と表示されていればOKです。
+再起動時にログに"name: アリス,id: alice"と表示されていればOKです。
 
 #### チェックポイント
 - Javaのクラスを作成した
 - クラスをインスタンス化し、標準出力に文字列を表示した
 
 #### 解説
-純粋なJavaのクラスを作成し、インスタンス化とメソッドの呼び出しを行いました。`User`クラスを眺めてもらうとわかるとおり、`getName`や`getSlug`などJavaにはかなり冗長なコードが多いです。これらのコードはよく「ボイラープレート」と呼ばれ、開発者が嫌うコードです。
+純粋なJavaのクラスを作成し、インスタンス化とメソッドの呼び出しを行いました。`User`クラスを眺めてもらうとわかるとおり、`getName`や`getId`などJavaにはかなり冗長なコードが多いです。これらのコードはよく「ボイラープレート」と呼ばれ、開発者が嫌うコードです。
 
 JavaにはLombokなどのボイラープレートを解消するツールなどありますが、本講義はあえて紹介しません。興味がある人は調べてみてください。
 
@@ -402,8 +402,8 @@ public class UserController {
   private User secretUser = new User("ボブ", "bob");
 
   @GetMapping(path = "/user")
-  public User find(@RequestParam String slug) {
-    if ("bob".equals(slug)) {
+  public User find(@RequestParam String id) {
+    if ("bob".equals(id)) {
       return this.secretUser;
     } else {
       return null;
@@ -414,8 +414,8 @@ public class UserController {
 
 ```bash
 # 動作確認
-$ curl 'localhost:8080/user?slug=bob'
-{"name":"ボブ","slug":"bob"}
+$ curl 'localhost:8080/user?id=bob'
+{"name":"ボブ","id":"bob"}
 ```
 
 #### チェックポイント
@@ -427,7 +427,7 @@ $ curl 'localhost:8080/user?slug=bob'
 
 `UserController`クラスの持つメソッド`find`には`@GetMapping`アノテーションがついているため、`GET /user`宛のリクエストのハンドラとして登録されることになります。そのため、Spring Bootアプリケーションの`/user`へGETリクエストを送ることでこの`find`メソッドがコールされます。
 
-さらに`find`メソッドの引数`slug`に`@RequestParam`アノテーションが付与されています。これにより、HTTPリクエストのクエリパラメータの値がこの変数に注入されます。つまり`GET /user?slug=bob`へのリクエストをSpring Bootアプリケーションへ送ることで`find`メソッドがコールされ引数`slug=bob`が引き渡されます。
+さらに`find`メソッドの引数`id`に`@RequestParam`アノテーションが付与されています。これにより、HTTPリクエストのクエリパラメータの値がこの変数に注入されます。つまり`GET /user?id=bob`へのリクエストをSpring Bootアプリケーションへ送ることで`find`メソッドがコールされ引数`id=bob`が引き渡されます。
 
 
 ### 責任を分離する
@@ -463,16 +463,16 @@ public class UserService {
   private List<User> userPool = new ArrayList<User>(Arrays.asList(new User("ボブ", "bob")));
   
   /**
-   * ユーザープールからslug値で検索し、その結果を返却します slugと一致するユーザーが見つからない場合nullを返却します
+   * ユーザープールからid値で検索し、その結果を返却します idと一致するユーザーが見つからない場合nullを返却します
    * TODO 本当にこの実装で問題ないか、考えてみましょう
-   *   - 同一のslugをもつインスタンスがいる場合は？データ構造はこれで良いか？
+   *   - 同一のidをもつインスタンスがいる場合は？データ構造はこれで良いか？
    *   - nullは`User`インスタンスではない、では見つからない場合は何を返すべき？
    */
-  public User findBySlug(String slug) {
+  public User findById(String id) {
     // Java8から導入されたStreamAPI
     User user = this.userPool
       .stream() // Streamを作成
-      .filter(u -> slug.equals(u.getSlug())) // slugと一致する`User`インスタンスのみを抽出
+      .filter(u -> id.equals(u.getId())) // idと一致する`User`インスタンスのみを抽出
       .findFirst() // 抽出結果の先頭1つだけを取り出す
       .orElse(null); // もし抽出した結果何も残らなかった場合、nullを返却する
     return user;
@@ -499,8 +499,8 @@ public class UserController {
   private UserService userService;
 
   @GetMapping(path = "/user")
-  public User find(@RequestParam String slug) {
-    return this.userService.findBySlug(slug);
+  public User find(@RequestParam String id) {
+    return this.userService.findById(id);
   }
   // 修正END
 }
@@ -508,8 +508,8 @@ public class UserController {
 
 ```bash
 # 動作確認
-$ curl 'localhost:8080/user?slug=bob'
-{"name":"ボブ","slug":"bob"}
+$ curl 'localhost:8080/user?id=bob'
+{"name":"ボブ","id":"bob"}
 ```
 
 #### チェックポイント
@@ -526,7 +526,7 @@ $ curl 'localhost:8080/user?slug=bob'
 
 ### 少し複雑なリクエストを受け取ってみる
 最後に、POSTリクエストとリクエストボディを指定して`User`インスタンスを登録してみましょう。\
-`User`インスタンスには`slug`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
+`User`インスタンスには`id`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
 
 :computer: UserService.javaとUserController.javaを修正し、サーバを再起動してください。
 
@@ -554,12 +554,12 @@ public class UserService {
   private List<User> userPool = new ArrayList<User>(Arrays.asList(new User("ボブ", "bob")));
   
   /**
-   * ユーザープールからslug値で検索し、その結果を返却します slugと一致するユーザーが見つからない場合nullを返却します
+   * ユーザープールからid値で検索し、その結果を返却します idと一致するユーザーが見つからない場合nullを返却します
    */
-  public User findBySlug(String slug) {
+  public User findById(String id) {
     User user = this.userPool
       .stream()
-      .filter(u -> slug.equals(u.getSlug()))
+      .filter(u -> id.equals(u.getId()))
       .findFirst()
       .orElse(null);
     return user;
@@ -596,8 +596,8 @@ public class UserController {
   private UserService userService;
 
   @GetMapping(path = "/user")
-  public User find(@RequestParam String slug) {
-    return this.userService.findBySlug(slug);
+  public User find(@RequestParam String id) {
+    return this.userService.findById(id);
   }
 
   // 追記BEGIN
@@ -605,28 +605,28 @@ public class UserController {
   // POST /user 宛のリクエストボディスキーマ
   public static class UserCreateRequest {
     private String name;
-    private String slug;
+    private String id;
 
     public String getName() {
       return name;
     }
 
-    public String getSlug() {
-      return slug;
+    public String getId() {
+      return id;
     }
 
     public void setName(String name) {
       this.name = name;
     }
 
-    public void setSlug(String slug) {
-      this.slug = slug;
+    public void setId(String id) {
+      this.id = id;
     }
   }
 
   @PostMapping(path = "/user")
   public User create(@RequestBody UserCreateRequest request) {
-    User newUser = new User(request.getName(), request.getSlug());
+    User newUser = new User(request.getName(), request.getId());
     return this.userService.save(newUser);
   }
   // 追記END
@@ -636,11 +636,11 @@ public class UserController {
 
 ```bash
 # 動作確認
-$ curl localhost:8080/user -X POST -H 'Content-Type: application/json' -d '{"name": "アリス", "slug": "alice"}'
-{"name": "アリス", "slug": "alice"}
+$ curl localhost:8080/user -X POST -H 'Content-Type: application/json' -d '{"name": "アリス", "id": "alice"}'
+{"name": "アリス", "id": "alice"}
 
-$ curl 'localhost:8080/user?slug=alice'
-{"name": "アリス", "slug": "alice"}
+$ curl 'localhost:8080/user?id=alice'
+{"name": "アリス", "id": "alice"}
 ```
 
 #### チェックポイント
