@@ -323,14 +323,14 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class ServerAppApplication {
 
-	public static void main(String[] args) {
-		User user = new User("アリス", "alice");
-		System.out.println(user.toString());
-		SpringApplication.run(ServerAppApplication.class, args);
-	}
+  public static void main(String[] args) {
+    User user = new User("アリス", "alice");
+    System.out.println(user.toString());
+    SpringApplication.run(ServerAppApplication.class, args);
+  }
 
   // 追記BEGIN
-	@RestController
+  @RestController
   public class HelloController {
     @GetMapping(path = "/")
     public String helloWorld() {
