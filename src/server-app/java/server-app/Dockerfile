@@ -1,4 +1,4 @@
-FROM openjdk:11.0.9.1
+FROM openjdk:11.0.16
 WORKDIR /app
 
 # 開発ツールインストール
