@@ -159,7 +159,7 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 $ docker run --name go-tutor -it --rm jo7oem/go-tutor:v2022 /bin/bash
 
 :# VSCode派の人はこちら
-$ docker run --name go-tutor-vscode -p 8888:8888 -itd --rm jo7oem/go-tutor-vscode
+$ docker run --name go-tutor-vscode -p 8888:8888 -d --rm jo7oem/go-tutor-vscode:v2022
 ```
 
 ハンズオンでは、こちらから指示したpathに、ディレクトリやファイルを作成してもらい、Go言語に触れてもらいます。  
