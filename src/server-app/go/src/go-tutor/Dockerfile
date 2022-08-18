@@ -1,20 +1,23 @@
-FROM golang:1.16.5 AS builder
-LABEL maintainer="s.k.noe@hinoshiba.com"
+FROM golang:1.19 AS builder
+LABEL maintainer="jo7oem@ume-ch.net"
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG ja_JP.UTF-8
 
 ENV GOPATH /go/src
 ENV GO111MODULE=off
 
-ENV LANG ja_JP.UTF-8
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt update && \
-    apt install -y curl wget tzdata file locales && \
-    apt install -y vim-nox emacs-nox nano && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && \
+    apt-get install -y locales && \
     ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
-    locale-gen ja_JP.UTF-8
+    sed -i -E "s/# (${LANG})/\1/" /etc/locale.gen && \
+    locale-gen && \
+    apt-get install -y curl wget tzdata file locales bash-completion && \
+    apt-get install -y vim-nox vim-snippets emacs-nox nano && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ADD ./samples ${GOPATH}/samples/
 ADD ./go_tutorial ${GOPATH}/go_tutorial
+ADD ./container_settings/* /root/
 WORKDIR ${GOPATH}
