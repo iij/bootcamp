@@ -58,7 +58,7 @@ $ PROXY_PORT=YOUR_PROXY_PORT
 $ JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
 # プロキシ設定ここまで
 # コンテナを起動する
-$ docker run --name bootcamp-springboot -itd -p 8080:8080 -e JAVA_OPT=${JAVA_OPT} tamago0224/bootcamp-springboot:2022
+$ docker run --name bootcamp-springboot -itd -p 8080:8080 -e JAVA_OPT="${JAVA_OPT}" tamago0224/bootcamp-springboot:2022
 ```
 
 3. アプリケーションの起動チェック
