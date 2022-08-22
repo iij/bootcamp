@@ -46,19 +46,19 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 - [サンプルの実行](./SAMPLE_RUN.md)
 
-### 3. Ansible playbook の作成
+## 3. Ansible playbook の作成
 
 - [Ansible ファイルの作成](./CREATE_PLAYBOOK.md)
 
-### 4. Ansible で アプリケーションサーバを作成する
+## 4. Ansible で アプリケーションサーバを作成する
 
 - [Ansible で アプリケーションサーバを作成する](./CREATE_APP_SERVER.md)
 
-### 5. リバースプロキシの導入/運用
+## 5. リバースプロキシの導入/運用
 
 - [リバースプロキシの導入/運用](./REVERSE_PROXY.md)
 
-### 6. 正しい Playbook を書くために
+## 6. 正しい Playbook を書くために
 
 - [正しい Playbook を書くために](./ANSIBLE_CODE_STYLE.md)
 
