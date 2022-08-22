@@ -15,15 +15,15 @@ Ansibleを利用する為にはいくつかのファイルを書く必要があ�
 Windows
 
 ```powershell
-docker-compose -f docker-compose\docker-compose.yml start
-docker exec -it docker-compose_ansible_1 bash
+docker compose -f docker-compose\docker-compose.yml start
+docker exec -it docker-compose-ansible-1 bash
 ```
 
 Mac/Linux
 
 ```sh
-docker-compose -f docker-compose/docker-compose.yml up -d
-docker exec -it docker-compose_ansible_1 bash
+docker compose -f docker-compose/docker-compose.yml up -d
+docker exec -it docker-compose-ansible-1 bash
 ```
 
 続いて[ansibleコマンド](https://docs.ansible.com/ansible/latest/cli/ansible.html)を使って

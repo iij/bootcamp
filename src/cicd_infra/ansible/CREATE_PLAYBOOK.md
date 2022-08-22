@@ -44,7 +44,7 @@ Ansible の Inventory ファイルは INI 形式に近い記述によって作�
 先ほど作成した Inventory が正しいことを確かめるために、`ansible`コマンドで Ping モジュールを実行してみます。 コマンドと実行結果は下記のようになるはずです。
 
 ```sh
-ansible -i ~/inventory/hosts exercise -m ping
+ansible -i inventories/hosts exercise -m ping
 host002 | SUCCESS => {
     "ansible_facts": {
         "discovered_interpreter_python": "/usr/bin/python"

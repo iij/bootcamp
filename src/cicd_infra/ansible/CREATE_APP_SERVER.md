@@ -86,7 +86,7 @@ playbook ファイルにはそれぞれのパーツを読み込む（import）�
 では下記コマンドを実行してみましょう
 
 ```sh
-ansible-playbook -i inventory/hosts site.yml
+ansible-playbook -i inventories/hosts site.yml
 ```
 
 `failed=0`と表示されれば実行は成功です。
@@ -112,7 +112,7 @@ Playbook の書式チェックには `--syntax-check`オプションを使いま
 先ほどのコマンドの例で言えば以下のように実行します。
 
 ```sh
-ansible-playbook -i inventory/hosts site.yml --syntax-check
+ansible-playbook -i inventories/hosts site.yml --syntax-check
 ```
 
 これは playbook が正しく記述されているかどうかをチェックするコマンドになります。
@@ -121,12 +121,12 @@ ansible-playbook -i inventory/hosts site.yml --syntax-check
 
 例えば、 http サーバをインストールし、起動する。といったタスクを作ろうとしたときに
 `httpd の起動` -> `httpd のインストール` と書いていてもそれぞれの書式が正しければ
-syntax-check は　 OK となってしまいます。
+syntax-check は OK となってしまいます。
 
 従って、Playbook が正しく実行できるか？と言うことを事前に調べるにはチェックモード（ドライラン）を用います。
 
 ```sh
-ansible-playbook -i inventory/hosts site.yml -C
+ansible-playbook -i inventories/hosts site.yml -C
 ```
 
 こちらのコマンドであれば、実際に Playbook を順番に試行し、実行できるか否かを
