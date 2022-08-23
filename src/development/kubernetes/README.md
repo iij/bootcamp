@@ -415,7 +415,293 @@ bootcamp-6bcddb7cf8-jpzg5   0/1     Terminating         0          23m
 
 そのためユーザーに一切影響なくpodの停止と復旧が全て自動で可能になっています。このようなインフラをKubernetesとコンテナなしで構築するのはかなり困難です。
 
-## 4. 最後に
+## 4. 応用(Kubernetesの監視)
+ここからは本格的なアプリケーションのデプロイを体験してもらいます。katacodeでやっている方はうまくいかないことがあるため本項目は飛ばしてください。
+
+今回Kubernetes上に構築するアプリケーションは監視ツールのPrometheusで、以下の順序でデプロイします。(マニフェストファイルは[Prometheus実践ガイド](https://www.hanmoto.com/bd/isbn/9784910313009)の内容を一部改変したものを利用しています)
+1. node exporterのデプロイ
+2. RBAC認可を使ってリソースにアクセスするためのアカウントをデプロイ
+3. Prometheusのデプロイ
+
+### 4-1. node exporterのデプロイ
+node exporterは各ノードのメトリクス情報を収集するツール(exporter)です。これを各nodeに配置する必要がありますが、`Deployment`オブジェクトを利用すると配置nodeの指定を都度行う必要があり煩雑です。そのため、ここでは`DeamonSet`オブジェクトを利用します。`DeamonSet`オブジェクトは各ノードに等しくPodを配置するオブジェクトです。`node-exporter.yml`という名前で以下の内容のマニフェストファイルを作成します。
+```yml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: node-exporter
+  name: node-exporter
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+        - name: node-exporter
+          image: 'prom/node-exporter:v1.3.1'
+          ports:
+            - name: http
+              containerPort: 9100
+              protocol: TCP
+      hostNetwork: true
+      hostPID: true
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          value: ''
+          effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: node-exporter
+  name: node-exporter
+  namespace: default
+spec:
+  ports:
+    - name: http
+      port: 9100
+      targetPort: http
+  selector:
+    app: node-exporter
+```
+各ノードに対して`prom/node-exporter:v1.3.1`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`CluserIP`を指定しています。
+
+準備が出来たら`kubectl apply -f node-exporter.yml`でデプロイします。
+```bash
+# kubectl apply -f node-exporter.yml
+daemonset.apps/node-exporter created
+service/node-exporter created
+
+# kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+node-exporter-75rpz           1/1     Running   0          47m
+node-exporter-p25gq           1/1     Running   0          47m
+node-exporter-tcbsp           1/1     Running   0          47m
+```
+
+### 4-2. RBAC認可を使ってリソースにアクセスするためのアカウントをデプロイ
+KubernetesはRole Based Access Control(RBAC)といわれる、各種リソースへのアクセス制御をユーザロールベースで行っています。そのため、監視に必要なリソースへのアクセスに必要な権限をユーザに付与する必要があります。ここでは権限の定義を行う`ClusterRole`、権限とユーザとの紐づけを行う`ClusterRoleBind`という二つのオブジェクトを利用します。`role-based-access-control.yml`という名前でマニフェストファイルを作り、以下の内容を記載します。
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  - metrics
+  - nodes/metrics
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs:
+  - /metrics
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: default
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: default
+```
+`default`namespace上の`prometheus`というアカウントに対して、各種リソースへの参照権限を付与する内容になります。`kubectl apply -f role-based-access-control.yml`を実行してデプロイします。
+```bash
+# kubectl apply -f role-based-access-control.yml 
+clusterrole.rbac.authorization.k8s.io/prometheus created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus created
+serviceaccount/prometheus created
+```
+これにより、API Serverなどへのアクセスするための認証情報が払い出されました。
+
+### 4-3. Prometheusのデプロイ
+最後にPrometheusのデプロイを行います。Prometheusのデプロイには`Deployment`と`Service`オブジェクトを利用しますが、Prometheus自体の設定ファイルは`ConfigMap`というオブジェクトを利用して定義します。これを利用することによりコンフィグファイルをマニフェストファイルとして管理することができ、さらにPrometheusに反映させることが出来ます。`prometheus.yml`というマニフェストファイルを作り以下の内容を記載します。
+```yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - image: prom/prometheus:v2.33.3
+        imagePullPolicy: IfNotPresent
+        name: prometheus
+        args:
+        - --config.file=/prometheus/prometheus.yml
+        - --log.level=debug
+        - --web.enable-lifecycle
+        ports:
+        - name: http
+          containerPort: 9090
+          protocol: TCP
+        volumeMounts:
+        - name: prometheus
+          mountPath: /prometheus/prometheus.yml
+          subPath: prometheus.yml
+      volumes:
+      - name: prometheus
+        configMap:
+          name: prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+spec:
+  ports:
+  - name: http
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app: prometheus
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+    - job_name: 'prometheus'
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_name]
+        regex: prometheus-.+
+        action: keep
+    - job_name: 'apiserver'
+      kubernetes_sd_configs:
+        - role: service
+      scheme: https
+      tls_config:
+        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      authorization:
+        credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+      relabel_configs:
+      - source_labels:
+        - __meta_kubernetes_namespace
+        - __meta_kubernetes_service_name
+        - __meta_kubernetes_service_port_name
+        action: keep
+        regex: default;kubernetes;https
+    - job_name: 'node-exporter'
+      scheme: http
+      kubernetes_sd_configs:
+      - role: node
+      relabel_configs:
+      - source_labels: [__address__]
+        action: replace
+        regex: (.+):.+
+        replacement: ${1}:9100
+        target_label: __address__
+```
+Prometheusの設定の詳細については割愛しますが、4-2ににて発行した認証情報は`tls_config`ならびに`authorization`で指定しています。
+> 【Prometheus講義受講者向け】
+> 
+> Prometheusの講義内で「Prometheusの特徴の1つにサービスディスカバリがあり、監視対象を動的に取得することができる」と話しました。
+> そのサービスディスカバリは`kubernetes_sd_configs`の部分で設定しています。`role`という概念を利用してKubernetes内の各種リソースを動的に取得します。`role`で取得できるリソースは以下の5つです。
+> - Node
+> - Service
+> - Endpoints
+> - Pod
+> - Ingress
+
+`kubectl apply -f prometheus.yml`でPrometheusをデプロイし、確認を行います。
+```bash
+# kubectl apply -f prometheus.yml 
+service/prometheus created
+deployment.apps/prometheus created
+configmap/prometheus created
+
+# kubectl get all
+NAME                              READY   STATUS    RESTARTS   AGE
+pod/node-exporter-75rpz           1/1     Running   0          115m
+pod/node-exporter-p25gq           1/1     Running   0          115m
+pod/node-exporter-tcbsp           1/1     Running   0          115m
+pod/prometheus-76b579c56c-r7nps   1/1     Running   0          115m
+
+NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/kubernetes      ClusterIP   10.96.0.1      <none>        443/TCP    29h
+service/node-exporter   ClusterIP   10.96.16.136   <none>        9100/TCP   115m
+service/prometheus      ClusterIP   10.96.128.27   <none>        9090/TCP   115m
+
+NAME                           DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/node-exporter   3         3         3       3            3           <none>          115m
+
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/prometheus   1/1     1            1           115m
+
+NAME                                    DESIRED   CURRENT   READY   AGE
+replicaset.apps/prometheus-76b579c56c   1         1         1       115m
+```
+
+### 4-4. Prometheusの確認
+ひと通りのアプリケーションのデプロイが完了したので、さっそくアクセスします。Prometheusは`ClusterIP`の配下にあるため、ポートフォワーディングしてあげます。
+```bash
+# kubectl port-forward svc/prometheus --address 0.0.0.0 8080:9090
+```
+ブラウザからアクセスし、`Status`タブの`Targets`を開いて全て問題なく取得できていれば完了です。
+![prometheus_main-nemu](images/prometheus_main-menu.png)
+これでKuberentes上の各コンポーネントに対して監視を行うことが出来ました。
+
+> 【Prometheus講義を受講した人向け】
+>
+> 式ブラウザから各種APIオブジェクトのメトリクス情報を取得してみてください。
+> また、Kubernetes上で動くアプリケーションの監視にはkube-state-metricsやcAdvidsorといったエクスポートを利用します。余裕のある人はPodの監視も行ってみてください。
+
+
+
+## 5. 最後に
 
 Kubernetesの紹介と代表的なオブジェクトである`Deployment`と`Service`について簡単に触ってみました。
 Kubetenetesでは他にも様々なオブジェクトや設定を使います。
@@ -438,3 +724,4 @@ Kubetenetesでは他にも様々なオブジェクトや設定を使います。
 > 2. イラストでわかるDockerとKubernetes/徳永航平(技術評論社)
 > 3. Docker/Kubernetes実践コンテナ開発入門/山田明憲(技術評論社)
 > 4. [Kubernetes公式ドキュメント](https://kubernetes.io/)/CNCF
+> 5. Prometheus実践ガイド/仲亀拓馬(テッキーメディア)
