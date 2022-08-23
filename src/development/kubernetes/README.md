@@ -362,7 +362,7 @@ Starting to serve on 127.0.0.1:8001
 
 このプロキシ機能はServiceへのアクセスをRESTとして`/api/v1/namespaces/<namespace>/services/<scheme>:<service>:<port>/proxy/`と表現しているため、今回は`http://127.0.0.1:8001/api/v1/namespaces/<your namespace>/services/bootcamp-svc/proxy/`へアクセスすることでコンテンツを取得することができます。
 
-> `<your namespace>`にはIKEで払い出したnamespaceを入力します。
+> `<your namespace>`にはデプロイ先のnamespaceを入力します。
 > namespaceがわからない場合は`kubectl config get-contexts`から探してください。`CURRENT`に米印が付いているものがいま作業しているコンテキストになります。もし`NAMESPACE`の欄に何もなければ`namespace: default`ということになります。  
 > ```
 > $ kubectl config get-contexts
