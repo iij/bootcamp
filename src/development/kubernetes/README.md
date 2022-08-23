@@ -26,26 +26,109 @@ prior_knowledge: deployment
 - コンテナアーキテクチャの基礎
 
 ### 0-3. 事前準備
-- docker のインストール
+- docker / docker-compose のインストール
 - Kubernetes環境
-  - katacodaを使ってください
+  - 環境構築に自信が無い人katacodaを使ってください
     - https://www.katacoda.com/courses/kubernetes/playground
     - __**外部リソースなのでコピペする際は気を付けてください**__
-  - どうしてもローカルでkubernetesを動かしたい人はk0sを以下の手順で構築してください
+  - ローカルでkubernetesを動かしたい人はkindを以下の手順で構築してください
 
-> k0s環境の構築
+> kindを使ったkubernetes環境の構築
 > 
-> k0s in dockerはprivileged(特権モード)を必須としています。セキュリティの観点から使わないときは必ずコンテナを落としてください。
+> kindはkubernetes in dockerの略です。その名の通り、dockerを使ってkubernetes環境を構築します。
+> ([公式ドキュメント参照](https://kind.sigs.k8s.io/docs/user/quick-start/))
+> ```bash
+> # curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
+> # chmod +x ./kind
 > ```
-> # docker run -d --name k0s --hostname k0s --privileged -v /var/lib/k0s -p 6443:6443 docker.io/k0sproject/k0s:latest
-> # docker exec k0s kubectl get nodes
-> NAME   STATUS   ROLES    AGE   VERSION
-> k0s    Ready    <none>   36m   v1.21.3+k0s
+> dockerホストからkindに対してコマンドを実行したいのでkubectlをdockerホストに入れます
+> ```bash
+> # curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+> # install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 > ```
-> kubectlを使うときは適宜docker内に入って実行した方が楽です。講義内で使うファイルも中に格納すると楽です。
+> 試験的にクラスターを構築して正しくインストールされたか確認する
+> ```bash
+> # kind create cluster
+> Creating cluster "kind" ...
+>  ✓ Ensuring node image (kindest/node:v1.24.0) 🖼 
+>  ✓ Preparing nodes 📦  
+>  ✓ Writing configuration 📜 
+>  ✓ Starting control-plane 🕹️ 
+>  ✓ Installing CNI 🔌 
+>  ✓ Installing StorageClass 💾 
+> Set kubectl context to "kind-kind"
+> You can now use your cluster with:
+> 
+> kubectl cluster-info --context kind-kind
+> 
+> Have a question, bug, or feature request? Let us know! https://kind.sigs.k8s.io/#community 🙂
+> 
+> # docker ps
+> CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                       NAMES
+> d76ca5889d8d   kindest/node:v1.24.0   "/usr/local/bin/entr…"   59 seconds ago   Up 49 seconds   127.0.0.1:35447->6443/tcp   kind-control-plane
+> 
+> # kubectl cluster-info --context kind-kind
+> Kubernetes control plane is running at https://127.0.0.1:35447
+> CoreDNS is running at https://127.0.0.1:35447/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+> 
+> To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+> 
+> # kubectl get node
+> NAME                 STATUS   ROLES           AGE     VERSION
+> kind-control-plane   Ready    control-plane   2m43s   v1.24.0
 > ```
-> # docker exec -it k0s /bin/bash
-> docker~# kubectl get nodes
+> 確認出来たら削除
+> ```bash
+> # kind delete cluster
+> ```
+> bootcamp用のクラスター環境を構築する
+> ```bash
+> # vim cluster.yml 
+> ```
+> 以下の内容を記載する
+> ```yml
+> kind: Cluster
+> apiVersion: kind.x-k8s.io/v1alpha4
+> nodes:
+>   - role: control-plane
+>     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e
+>   - role: worker
+>     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e
+>   - role: worker
+>     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e 
+>   - role: worker
+>     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e
+> ```
+> クラスター構築
+> ```bash
+> # kind create cluster --config cluster.yml 
+> Creating cluster "kind" ...
+>  ✓ Ensuring node image (kindest/node:v1.24.0) 🖼 
+>  ✓ Preparing nodes 📦 📦 📦 📦  
+>  ✓ Writing configuration 📜 
+>  ✓ Starting control-plane 🕹️ 
+>  ✓ Installing CNI 🔌 
+>  ✓ Installing StorageClass 💾 
+>  ✓ Joining worker nodes 🚜 
+> Set kubectl context to "kind-kind"
+> You can now use your cluster with:
+> 
+> kubectl cluster-info --context kind-kind
+> 
+> Thanks for using kind! 😊
+> 
+> # kubectl cluster-info --context kind-kind
+> Kubernetes control plane is running at https://127.0.0.1:46863
+> CoreDNS is running at https://127.0.0.1:46863/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+> 
+> To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+> 
+> # kubectl get node
+> NAME                 STATUS   ROLES           AGE   VERSION
+> kind-control-plane   Ready    control-plane   72s   v1.24.0
+> kind-worker          Ready    <none>          33s   v1.24.0
+> kind-worker2         Ready    <none>          33s   v1.24.0
+> kind-worker3         Ready    <none>          32s   v1.24.0
 > ```
 
 ## 1. Kubernetesとは
