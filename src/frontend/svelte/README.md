@@ -30,15 +30,15 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 [CodeSandboxのプロジェクト作成ページ](https://codesandbox.io/s)に移動します:
 
-![CodeSandboxのプロジェクト作成画面](create-project.png)
+![CodeSandboxのプロジェクト作成画面](./create-project.png)
 
 少しスクロールすると出てくる、下記のような「Svelte by CodeSandbox」と書かれた箇所をクリックすると、テンプレートから動作するアプリがすぐに作成されます！
 
-![Svelte by CodeSandbox](item-svelte.png)
+![Svelte by CodeSandbox](./item-svelte.png)
 
 CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期状態）:
 
-![](initial-project.png)
+![](./initial-project.png)
 
 利用した開発環境によって変わりますが、CodeSandboxを使って上記👆のスクリーンショットにした状態について、画面上にあるものを解説します:
 
