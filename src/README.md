@@ -11,7 +11,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 | カテゴリ | 1枠目 | 2枠目 | 3枠目 | 4枠目 | 5枠目 | 6枠目 |
 | :--: | :--: | :--: | :--: | :--: | :--: | :--: |
-| **イントロ** | イントロダクション<br>(資料非公開) | 事前準備1<br>(資料非公開) | 事前準備2<br>(資料非公開) |
+| **イントロ** | イントロダクション<br>(資料非公開) | [事前準備](init\hello-bootcamp) | 事前準備2<br>(事前準備参照) |
 | **開発** | [Gitの使い方](development/git/)+[GitHubを使った開発手法](development/github/) | [開発環境をDockerで構築](development/docker/docker/)+[docker-compose](development/docker/docker-compose/) | [Jenkinsを触ってみる](cicd_infra/jenkins/) |
 | **CI/CD + 構成管理** | DevOps Overview<br>(資料非公開) | [droneでCIテスト・デプロイを回す](cicd_infra/drone/) | [ansibleでホスト構成管理](cicd_infra/ansible/) | [Kubernetes入門](development/kubernetes/) |
 | **監視・モニタリング** | [Prometheus入門](cicd_infra/prometheus/) | Splunkハンズオン<br>(資料非公開) |
