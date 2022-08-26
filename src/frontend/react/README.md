@@ -59,7 +59,8 @@ $ docker exec -it bootcamp-react bash
 
 ### 本講義の前提
 
-本講義ではプログラム言語共通の制御構文や概念、たとえばif文や型など、の解説は行いません。そのため、受講者は何らかのプログラミング言語で簡単な制御構文が書けることを前提とさせてください。
+本講義ではプログラム言語共通の制御構文や概念、たとえばif文や型など、の解説は行いません。
+そのため、受講者は何らかのプログラミング言語で簡単な制御構文が書けることを前提とさせてください。
 
 ### この資料のお約束
 :computer: は自分で操作する箇所を示しています。 また`$`はホストマシンのプロンプトを意味し、`❯`はコンテナ内部でのプロンプトを意味します。
@@ -76,13 +77,15 @@ $ git clone git@github.com:iij/bootcamp.git
 
 ## Reactとは
 
-Reactは、もともとFacebook社が開発しているWebユーザーインタフェースのためのフレームワークです。2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多種多様な場所で利用されています。\
+Reactは、もともとFacebook社が開発しているWebユーザーインタフェースのためのフレームワークです。
+2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多くの場所で利用されていることが見て取れます。
 IIJでもいくつかの製品のフロントエンドとしてReactが採用されています。
 
 公式サイト：[React - ユーザインターフェース構築のためのJavaScriptライブラリ](https://ja.reactjs.org/)
 
-ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装していくフレームワークです。細かくコンポーネントを分離することでアトミックデザインなUIを実装しやすくなります。
-また型を持つTypeScriptとの相性も非常に良いため、開発者からの評価も高いです。
+ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装していくフレームワークです。
+細かくコンポーネントを分離することでアトミックデザインなUIを実装しやすくなります。
+また型を持つTypeScriptと組み合わせて使うためのツール整備も進んでいるため、開発者からの評価も高いです。
 
 :::tip Create React App
 
@@ -94,10 +97,15 @@ Reactを始めるための方法としては、いくつかの方法がありま
   - [Glitch](https://glitch.com/edit/#!/remix/starter-react-template)
 - 既存のHTMLページの中にReact埋め込みたい = 下記のチュートリアル
   - [Add React to a WebSite](https://reactjs.org/docs/add-react-to-a-website.html)
-- フルにReactを使ってアプリケーションを作りたい = Create React App
+- フルにReactを使ってアプリケーションを作りたい = 下記のscaffolding(プロジェクトのひな形作成)ツール
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
+    - Reactが公式で出している
+  - [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
+    - 2022年現在勢いのあるツールで、create-react-appと比べて動作の軽量化のための工夫がされています
+    - React以外にもVueやAngularなどのフレームワークにも対応しています
 
-このハンズオンでは、最初からReactを使うことを想定してCreate React App を使ったプロジェクトひな型を作成しています。詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
+このハンズオンでは、Create React Appを使ってプロジェクトのひな型を作成しています。
+詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
 
 :::
 
@@ -114,9 +122,12 @@ Reactを始めるための方法としては、いくつかの方法がありま
   - 物理DOMの操作と比べて軽量
   - 滑らかな画面遷移によるユーザー体験
 
-といったものが挙げられます。`create-react-app`で構成したReactプロジェクトはデフォルトでSPAがビルドできるようになっています。Reactプロジェクトをビルドすることで最終成果物である「HTML」「CSS」「JavaScript」が生成され、それらをNGINXなどのWebサーバーで配信することができます。
+といったものが挙げられます。`create-react-app`で構成したReactプロジェクトはデフォルトでSPAがビルドできるようになっています。
+Reactプロジェクトをビルドすることで最終成果物である「HTML」「CSS」「JavaScript」が生成され、それらをNGINXなどのWebサーバーで配信することができます。
 
-なおすべてのフロントエンドアプリケーションがSPAであるわけではなく、SPAでないものとしてSSR(=サーバサイドレンダリング)が挙げられます。これはサーバー側でユーザーのリクエストに合わせてDOMを動的に構築し、HTMLとしてユーザーに配信する構成です。Angular Universalなどではこの方式でアプリケーションを配信します。
+なおすべてのWebアプリケーションがSPAであるわけではなく、SPAでないものとして、ブラウザのページ遷移を伴うマルチページなアプリケーションや、SSR(=サーバサイドレンダリング)が挙げられます。
+SSRはサーバー側でユーザーのリクエストに合わせてDOMを動的に構築し、HTMLとしてユーザーに配信する構成です。
+Angular Universalなどではこの方式でアプリケーションを配信します。
 
 ## Reactハンズオン
 実際にReactに触れてみましょう。本講義ではTypeScriptを使ってReactを書いていきます。
@@ -171,10 +182,9 @@ export default App;
 
 ReactはUIの部品をコンポーネントという単位に分割することで、ロジックやスタイルなどの再利用性を高めて実装を行います。
 
-:::tip なぜコンポーネントを使うのか
+:::tip コンポーネントを使わないとどうなるか
 
 ReactではなくVueですが、こちらの記事が非常にわかりやすい例です。VueとReactともにコンポーネントベースのフレームワークですので、根幹は一緒です。
-
 気になる人は読んでみてください。
 
 [ワイ「何でそんな小っさいコンポーネント作ってるん？ｗ」 | Qiita](https://qiita.com/Yametaro/items/e8cb39b1a20b762bfafa)
@@ -189,8 +199,9 @@ ReactではなくVueですが、こちらの記事が非常にわかりやすい
 import React from "react";
 
 // interface: TypeScriptにおけるインタフェース(抽象型)
-interface NoteState {}
 interface NoteProps {}
+
+interface NoteState {}
 
 export default class Note extends React.Component<NoteProps, NoteState> {
   render() {
@@ -238,31 +249,43 @@ export default App;
 
 :computer: src/Note.tsxを下記のように修正してみましょう。
 
-```tsx{5-6,11-18,21}
+```tsx{5-6,11-18,22}
 import React from "react";
 
 interface NoteState {}
+
+// Noteコンポーネントを呼び出す側が指定するPropsを定義する
 interface NoteProps {
-  counter: number
-  word: string
+  counter: number;
+  word: string;
 }
 
+// 指定された回数だけ文字列を繰り返す
+// repeatWord(3, "Component") -> "Component! Component!! Component!!!"
+const repeatWord = (counter: number, word: string) => {
+  const seq = [...Array(counter)].map((_, i) => i); // [0, 1, 2, ...]
+  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
+};
+
 export default class Note extends React.Component<NoteProps, NoteState> {
-
-  // ES6から導入されたアロー関数
-  // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Functions/Arrow_functions
-  // (3, "Component") => "Component! Component!! Component!!!"
-  constructWord = (counter: number, word: string) => {
-    let words = "";
-    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
-    return words.trimEnd()
-  };
-
   render() {
-    return <p>{this.constructWord(this.props.counter, this.props.word)}</p>;
+    // このコンポーネントが評価されたときのPropsの値は this.props として参照できる
+    // this.propsを参照し、counterの数だけwordを叫ぶ
+    return <p>{repeatWord(this.props.counter, this.props.word)}</p>;
   }
 }
 ```
+
+:::tip アロー関数(=>)
+
+JavaScriptの関数には`function`キーワードによる定義の他に、ES2015から導入された`=>`を使うアロー関数があります。
+
+表記が短く済むことに加えて、アロー関数には`this`をバインドしないという性質があります。
+難しいと思うので初心者の方は「`this`にまつわる不具合が生じたら関数定義の種類を疑い、参考となるコードと見比べてみる」という意識を持つことから始めましょう。
+
+`this`についての詳しい挙動に興味があれば[MDNの解説](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/this)が参考になります。
+
+:::
 
 :computer: src/App.tsxを修正してください。
 
@@ -290,7 +313,9 @@ export default App;
 ![props](./images/props.png)
 
 親コンポーネントからデータを注入できるように`props`を適切に定義することで、コンポーネントの再利用性をあげることができます。
+
 注意が必要なこととして`props`はReadonlyなため、`props`の中身を書き換えたりすることはできません。
+`props` の流れは常に親から子への一方通行、というReactの基本的な考えを意識するといいでしょう。
 
 #### チェックポイント
 
@@ -304,54 +329,46 @@ export default App;
 
 :computer: src/Note.tsxを下記の通りに修正してください。
 
-```tsx{4,8,13-19,21-28,39-46}
+```tsx{4,8,18-40}
 import React from "react";
 
-interface NoteState {
-  counter: number
+interface NoteProps {
+  word: string;
 }
 
-interface NoteProps {
-  word: string
+interface NoteState {
+  counter: number;
 }
+
+const repeatWord = (counter: number, word: string) => {
+  const seq = [...Array(counter)].map((_, i) => i);
+  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
+};
 
 export default class Note extends React.Component<NoteProps, NoteState> {
+  // Stateの初期化
+  state = {
+    counter: 1,
+  };
 
-  constructor(props: NoteProps) {
-    super(props)
-    // Stateの初期化
-    this.state = {
-      counter: 1
-    }
-  }
-
-  // クリック時のハンドラー
+  // クリック時のハンドラ
   onClickHandler = () => {
     // StateをsetStateメソッド経由で更新
-    // setStateでStateを更新するとDOMの再レンダリングが行われます
+    // setStateでStateを更新するとrenderの再評価が行われる
     this.setState({
-      counter: this.state.counter + 1
-    })
-  }
-
-  // (3, "Component") => "Component! Component!! Component!!!"
-  constructWord = (counter: number, word: string) => {
-    let words = "";
-    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
-    return words.trimEnd()
+      counter: this.state.counter + 1,
+    });
   };
 
   render() {
     return (
       <>
-        {/* ボタンをクリックされたらclick()メソッドが発火し、Stateが更新される */}
-        <button onClick={this.onClickHandler}>
-          Click me!!
-        </button>
+        {/* ボタンをクリックされたらthis.onClickHandlerが発火し、Stateが更新される */}
+        <button onClick={this.onClickHandler}>Click me!!</button>
         {/* Stateのカウンタの数だけ叫ぶ */}
-        <p>{this.constructWord(this.state.counter, this.props.word)}</p>
+        <p>{repeatWord(this.state.counter, this.props.word)}</p>
       </>
-    )
+    );
   }
 }
 ```
@@ -381,107 +398,97 @@ export default App;
 
 ![state](./images/state.png)
 
-Stateはコンポーネントの内部でのみ生きているデータベースのようなものです。Stateを`setState`メソッド経由で更新を行うと、関連するコンポーネントやDOMが自動で更新されます。
+Stateはコンポーネントの内部でのみ生きているデータベースのようなものです。
+Stateを`setState`メソッド経由で更新を行うと、そのコンポーネントのレンダリング内容であるDOMが自動で更新されます。
 
 実際に"Click me!!"のボタンをクリックしてみてください。
 
 #### チェックポイント
 
 - Stateを利用してコンポーネント内部で使えるローカルストアを作成できる
-- `setState` メソッドでStateを更新するとコンポーネントが自動でリロードされる
+- `setState` メソッドでStateを更新するとコンポーネントが自動で更新される
 
-:::tip Redux
+### コンポーネントの機能 - ライフサイクルメソッド: LifeCycle
 
-Stateを利用することで、単一のコンポーネントでデータを保存できることがわかりました。しかし認証やフォームデータなど複数のコンポーネントを跨ってグローバルに書き込みを行いたい場合もあります。またStateをもっと複雑に利用したいケースもでてきます。
+少しコンポーネントの複雑な機能について触れてみましょう。
+今まではコンポーネントそのものに注力しましたが、ここではコンポーネントの作成の方法に注視してみましょう。
 
-その場合はReduxというモジュールを使うと良いでしょう。Reduxはアプリケーションの状態を管理するためのモジュールでReactと親和性が非常に高いためよく利用されます。
-
-ただしReduxは扱いに癖があり、ハンズオンなどの短い時間での導入が難しいためこのハンズオンでは紹介にとどめておきます。
-
-詳しくはこちら > [React Redux](https://react-redux.js.org/introduction/quick-start)
-
-:::
-
-### コンポーネントの機能 - ライフサイクル管理: LifeCycle
-
-少しコンポーネントの複雑な機能について触れてみましょう。今まではコンポーネントそのものに注力しましたが、ここではコンポーネントの作成の方法に注視してみましょう。
-
-コンポーネントの中には[WebSocket](https://developer.mozilla.org/ja/docs/Web/API/WebSockets_API)や[HTTP SSE](https://developer.mozilla.org/ja/docs/Web/API/Server-sent_events/Using_server-sent_events)を利用した購読を行うものも多々あると思います。\
-多くのWebサイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。この機能はコンポーネントのライフサイクルを利用することで実現できます。実装してみましょう！
+コンポーネントの中には[WebSocket](https://developer.mozilla.org/ja/docs/Web/API/WebSockets_API)や[HTTP SSE](https://developer.mozilla.org/ja/docs/Web/API/Server-sent_events/Using_server-sent_events)を利用した購読を行うものも多々あると思います。
+多くのWebサイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。
+この機能はコンポーネントのライフサイクルを利用することで実現できます。実装してみましょう！
 
 :computer: src/Note.tsxを下記のように修正します。
 
-```tsx{5,12-19,27,31-39,54-65}
+```tsx{9,17-23,29,32-45,55-56,61-64}
 import React from "react";
 
-interface NoteState {
-  counter: number
-  isLoaded: boolean // コンポーネントのロードステータス
-}
-
 interface NoteProps {
-  word: string
+  word: string;
 }
 
-// ただ時間待ちするだけのタスク
-const someHeavyTask = (handler: () => void) => {
-  // 2秒後に引数として渡された関数`handler`がキックされます
-  // 処理時に外から渡されたサブルーチンを実行することをコールバックと呼びます
-  setTimeout(() => {
-    handler()
-  }, 2000)
+interface NoteState {
+  counter: number;
+  isLoaded: boolean; // コンポーネントのロードステータス
 }
+
+const repeatWord = (counter: number, word: string) => {
+  const seq = [...Array(counter)].map((_, i) => i);
+  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
+};
+
+// データローディングを想定した、ただ時間待ちするだけのタスク
+// 2秒後にfullfill(解決)状態になるPromiseを返す
+const simulateLoading = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
 
 export default class Note extends React.Component<NoteProps, NoteState> {
+  // Stateの初期化
+  state = {
+    counter: 1,
+    isLoaded: false,
+  };
 
-  constructor(props: NoteProps) {
-    super(props)
-    this.state = {
-      counter: 1,
-      isLoaded: false // 初期ではロード中扱い
-    }
-  }
-
+  // componentDidMountはReact.Componentに定義されており、
   // DOMツリーにコンポーネントが追加された直後に呼び出されるメソッド
-  // React.Componentに定義されているメソッドです
   componentDidMount = () => {
-    someHeavyTask(
-      () => this.setState({
-        isLoaded: true
-      })
-    )
-  }
+    simulateLoading()
+      // Promiseがfullfill(解決)状態になったとき
+      // thenに渡された関数が実行される
+      .then(() => {
+        // このコンポーネントのStateを更新する
+        // shallow-mergeされるので変更したいフィールドのみを指定できる
+        this.setState({
+          isLoaded: true,
+        });
+      });
+  };
 
   onClickHandler = () => {
     this.setState({
-      counter: this.state.counter + 1
-    })
-  }
-
-  constructWord = (counter: number, word: string) => {
-    let words = "";
-    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
-    return words.trimEnd()
+      counter: this.state.counter + 1,
+    });
   };
 
   render() {
-    const loading = <p>Loading...</p>
-    const component =
+    // 三項演算子(?:)でthis.state.isLoadedの値によりレンダリング内容を変える
+    return this.state.isLoaded ? (
+      // this.state.isLoaded: trueの場合に表示する内容
       <>
-        <button onClick={this.onClickHandler}>
-          Click me!!
-        </button>
-        <p>{this.constructWord(this.state.counter, this.props.word)}</p>
+        <button onClick={this.onClickHandler}>Click me!!</button>
+        <p>{repeatWord(this.state.counter, this.props.word)}</p>
       </>
-
-    // StateのisLoadedがfalseの場合、"Loading..."が表示されます
-    const note = this.state.isLoaded ? component : loading
-    return note
+    ) : (
+      // this.state.isLoaded: falseの場合、"Loading..."が表示される
+      <p>Loading...</p>
+    );
   }
 }
 ```
 
-一瞬"Loading..."という文字列が見えた瞬間、画面表示されるようになったと思います。
+一瞬"Loading..."という文字列が見えてから2秒程度経過したのち、元の画面が表示されるようになったと思います。
 
 ![componentdidmount](./images/componentdidmount.gif)
 
@@ -500,17 +507,44 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 - コンポーネントにライフサイクルがあることを理解した
 - ライフサイクルに合わせてフックを作成することができた
 
-### Hooksを導入する
-Reactのコンポーネントを表現する方法としてクラスベースなやり方を見てきました。\
-クラスベースなコンポーネントは便利な一方でライフサイクルが読み取りにくくなる傾向にあり、複雑なコンポーネントになるほどメンテナンス性が悪くなりがちです。
+### 関数コンポーネント
+ここまではReactのコンポーネントを表現する方法としてクラスベースなやり方を見てきました。
+ここからはもう一つのコンポーネントの定義の方法である、関数コンポーネントと、React 16.8から導入されたHookについて紹介していきます。
+私の経験上、業務で書くコンポーネントの9割以上は関数コンポーネントによるものです。
 
-元に、最初はシンプルだった`Note`コンポーネントもだいぶ大きくなりライフサイクルが入り乱れわかりにくくなってしまいました。(そうなるように書いてもらった、のですが……) `Note`コンポーネントのライフサイクルの全体像を眺めるには、コンストラクタと`componentDidMount`、そして`render`とを行ったり来たりする必要があります。スマートではないですね。
+まずは関数コンポーネントの基本的な形について紹介しておきます。
+クラスコンポーネントでは`React.Component`を継承したクラスの`render`メソッドを実装してレンダリング内容を定義しましたね。
+
+例として一番初めにクラスコンポーネントとして実装した`Note`コンポーネントを書き換えてみましょう。
+
+```tsx
+export default class Note extends React.Component<NoteProps, NoteState> {
+  render() {
+    return <p>{repeatWord(this.props.counter, this.props.word)}</p>;
+  }
+}
+```
+
+これは関数コンポーネントでは以下のようになります。
+ただの紹介なのでまだ手元のコードは書き換えないでくださいね。
+
+```tsx
+export default function Note(props: NoteProps) {
+  return <p>{repeatWord(props.counter, props.word)}</p>;
+}
+```
+
+関数コンポーネントは`props`を受け取りレンダリング内容を返す関数として定義されます。
+シンプルですね。
+ただしStateを受け取れるようにはなっていません。
+関数コンポーネントでStateを扱うには次に紹介するHookを使う必要があります。
+
+### Hooksを導入する
 
 ReactにはReact Hooksという機能が存在しており、これは最初に紹介した関数型コンポーネントに簡単なライフサイクルの管理とステートの保持の機能を接続することができるものです。
+詳細は[フックの導入](https://ja.reactjs.org/docs/hooks-intro.html)が参考になります。
 
-詳細：https://ja.reactjs.org/docs/hooks-intro.html
-
-実際にReact Hooksで今までの実装を再実装してみましょう！
+それでは実際にReact Hooksの中の`useState`と`useEffect`を利用して、今までの実装を再実装してみましょう！
 
 :computer: 新たにsrc/NewNote.tsxを作成し、下記の通り記述してください。
 
@@ -518,59 +552,66 @@ ReactにはReact Hooksという機能が存在しており、これは最初に�
 import { useEffect, useState } from "react";
 
 interface NoteProps {
-  word: string
+  word: string;
 }
 
-const someHeavyTask = (handler: () => void) => {
-  setTimeout(() => {
-    handler()
-  }, 2000)
-}
+const simulateLoading = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
 
-// 関数型コンポーネントとして定義します
-// ライフサイクルは基本的に「上から下」に流れていきます
+const repeatWord = (counter: number, word: string) => {
+  const seq = [...Array(counter)].map((_, i) => i);
+  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
+};
+
+// 関数型コンポーネントとして定義する
+// 処理は普通の関数と同じように上から順に評価していく
 export default function Note(props: NoteProps) {
-
-  // Stateはシンプルに`useState`で定義します
+  // useState(Stateフック)でコンポーネントで保持するStateを定義する
   // 第一返値にStateそのもの、第二返値にStateの更新トリガーが入ります
-  // 更新トリガーを経由してStateを更新することで後述の`useEffect`を呼び出すことになります
-  const [counter, setCounter] = useState<number>(1)
-  const [isLoaded, setIsLoaded] = useState<boolean>(false)
+  const [counter, setCounter] = useState<number>(1);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  // 副作用フック
-  // componentDidMountなどに相当している挙動をするものです
+  // useEffect(副作用フック)でライフサイクルメソッドに相当する処理を行える
+  // useEffectの第二引数により挙動が変わり、から配列を渡すとcomponentDidMountの挙動になる
   useEffect(() => {
-    someHeavyTask(() => {
-      setIsLoaded(true)
-    })
-    // 返り値にコールバック関数を指定することで、componentWillUnMountに相当する挙動を行うことができます
-    // たとえば、WebSocketの破棄などを指定することが多いです
-    // return () => FooBar
-  })
+    simulateLoading().then(() => {
+      setIsLoaded(true);
+    });
+    // 返り値にコールバック関数を指定することで、componentWillUnMountに相当する挙動を行える
+    // 例としてはWebSocketの破棄などがあるが、今回は特に何もしない
+    // return () => { yourCleanupTask() }
+  }, []);
 
   const onClickHandler = () => {
-    setCounter(counter + 1)
-  }
+    setCounter(counter + 1);
+  };
 
-  const constructWord = (counter: number, word: string) => {
-    let words = "";
-    [...Array(counter)].map((_: number, i: number) => words += word + "!".repeat(i + 1) + " ")
-    return words.trimEnd()
-  }
-
-  const loading = <p>Loading</p>
-  const component =
+  // 関数型コンポーネントではクラスコンポーネントのrender相当の内容をreturnで返す
+  return isLoaded ? (
     <>
-      <button onClick={onClickHandler}>
-        Click me!!
-      </button>
-      <p>{constructWord(counter, props.word)}</p>
+      <button onClick={onClickHandler}>Click me!!</button>
+      <p>{repeatWord(counter, props.word)}</p>
     </>
-
-  // 関数型コンポーネントなのでDOMを返却するだけ
-  return isLoaded ? component : loading  
+  ) : (
+    <p>Loading</p>
+  );
 }
 ```
+
+::: tips useEffectの第二引数でライフサイクル中の発火場所を限定する
+
+`useEffect`は第二引数に配列を渡すことができ、何を渡すかによって発火するタイミングが異なります。
+クラスコンポーネントの代表的なライフサイクルメソッドとの対応は以下のようになります。
+
+- `useEffect(task)`: `componentDidMount` + `componentDidUpdate` (毎評価ごと)のタイミングで実行
+- `useEffect(task, [])`: `componentDidMount`のタイミングで実行
+
+なぜこうなるかの説明は大変なので詳しくは[フック API リファレンス | useEffect](https://ja.reactjs.org/docs/hooks-reference.html#useeffect)を参考にしてください。
+
+:::
 
 :computer: src/App.tsxでNoteのimport元を差し替えてください。
 
@@ -593,10 +634,105 @@ function App() {
 export default App;
 ```
 
-今回はあくまでもUIコンポーネントの構造をクラスベースなものから関数ベースなものに差し替えただけなので、見た目上UIが変わっていないはずです。しかし関数型コンポーネントはクラスベースなコンポーネントの時と比べ、ライフサイクルが常に上から下に流れるようになったためコンポーネントとしてのライフサイクルが読みやすくなりました。
+今回はあくまでもUIコンポーネントの構造をクラスベースなものから関数ベースなものに差し替えただけなので、見た目上UIが変わっていないはずです。
 
 #### チェックポイント
 - React Hooksを利用してコンポーネントを実装した
+
+### カスタムHookに処理を切り分ける
+
+先ほどまではひとつの`Note`コンポーネント内に`useState`と`useEffect`を羅列しましたが、ローディングに関わる処理のみを別の関数`useLoadedState`に切り出してみましょう。
+
+```tsx{18-32,37-38}
+import { useEffect, useState } from "react";
+
+interface NoteProps {
+  word: string;
+}
+
+const simulateLoading = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
+
+const repeatWord = (counter: number, word: string) => {
+  const seq = [...Array(counter)].map((_, i) => i);
+  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
+};
+
+// ローディングに関するuseStateとuseEffectをまとめたカスタムhookを定義する
+// Note内の他の処理では不要なsetIsLoadedを隠蔽できる
+const useLoadedState = () => {
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    simulateLoading().then(() => {
+      setIsLoaded(true);
+    });
+  }, []);
+
+  // 返すのは単体の値でも、配列でもオブジェクトでも良い
+  // 今回はNoteで利用するisLoadedのみを返す
+  return isLoaded;
+};
+
+export default function Note(props: NoteProps) {
+  const [counter, setCounter] = useState<number>(1);
+
+  // 新しくまとめたuseLoadedStateを使う
+  const isLoaded = useLoadedState();
+
+  const onClickHandler = () => {
+    setCounter(counter + 1);
+  };
+
+  return isLoaded ? (
+    <>
+      <button onClick={onClickHandler}>Click me!!</button>
+      <p>{repeatWord(counter, props.word)}</p>
+    </>
+  ) : (
+    <p>Loading...</p>
+  );
+}
+```
+
+今回も処理を書き換えただけなので、表示は変わっていないはずです。
+ReactのHookは直接コンポーネント内にベタ書きする必要はないため、このように関数として切り分けることが可能です。
+直接Hookを呼ぶ場合と、動作に違いはありません。
+
+詳しくは[独自フックの作成](https://ja.reactjs.org/docs/hooks-custom.html)に書かれています。
+
+まとまった処理をHookとして切り出すことにより、以下の点でコードの再利用性や可読性が高まります。
+
+- 可読性が高まる点:
+  - 処理をまとめ、関数として意味のある名前を付けられる
+  - 中間生成物的な変数を関数内に閉じ込めることができる(スコープの限定)
+- 再利用性が高まる点:
+  - 複数のコンポーネントで実装を共有しやすい
+
+機能を切り分ける際には「stateとそれに対しての変更操作のまとまりはどれか」という視点が有効です。
+(ただし今回の`useLoadedState`は時間経過で自動的に変わるStateを対象としたため、Stateに対する操作はありません…)
+
+::: tips Hook登場以前の処理の共通化
+
+Hook登場以前は、コンポーネント間で処理を共有する、もしくはライブラリからコンポーネントに機能を供給するためには一工夫必要でした。
+代表的な方法は[HOC(Higher-Order Component, 高階コンポーネント)](https://reactjs.org/docs/higher-order-components.html)と[render prop](https://reactjs.org/docs/render-props.html)です。
+
+簡単にそれらの使いづらさを紹介すると、HOCはラップするコンポーネントのインタフェースを変えてしまうので、初心者が型定義したり処理を切り出すには難しいものでした。
+というより、ベテランでも頭を悩ませます。
+render propはHOCと比べると型定義は容易ですが、レンダリング内容のネストが深くなったり、また提供された機能にさらに処理を噛ませたい場合に不便でした。
+
+その点において、Hookにはどちらにもない利便性があります。
+機能を組み合わせるのも楽ですし、コードのネストも少なくなります。
+現在でもHOCやrender propにより機能を提供するライブラリは多くありますが、それらも今ではHookによる方法も併せて提供してくれることが多くなっています。
+例として[React Redux](https://react-redux.js.org/api/connect)にはHOCとHookのAPIがあり、[Formik](https://formik.org/docs/overview)にはrender propとHookのAPIがあります。
+
+:::
+
+#### チェックポイント
+- カスタムHookとして処理を抽出できることを理解した
 
 ### Reactアプリケーションをデプロイする
 さてこれまでは開発サーバーでReactを動かしてきました。実際にReactプロジェクトをビルドし、SPAをNGINXで配信してみましょう。
