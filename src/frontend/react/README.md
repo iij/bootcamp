@@ -183,6 +183,7 @@ export default App;
 ```bash
 ❯ npm start
 ```
+:::
 
 #### チェックポイント
 - ReactでHello Worldを実施した
