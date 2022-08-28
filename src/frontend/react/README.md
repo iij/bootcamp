@@ -152,6 +152,7 @@ $ docker exec -it bootcamp-react bash
 ```
 
 :computer: src/App.tsxを開き下記の通りに編集してください。
+後ほど説明するTSXというTypeScriptの拡張構文を使っているため、初めての人は違和感があるかもしれませんね。
 
 ```tsx{7}
 import './App.css';
@@ -179,10 +180,89 @@ export default App;
 ```bash
 ❯ npm start
 ```
-:::
 
 #### チェックポイント
 - ReactでHello Worldを実施した
+
+### JSX/TSX
+
+JSXはJavaScriptの拡張構文で、JavaScriptのコード中に**「HTMLっぽいもの」**を記述して、それを値として使えるものです。
+ただし、`class`が`className`になっているなど、完全にHTMLと同等ではありません。
+詳しくは[DOM 要素](https://ja.reactjs.org/docs/dom-elements.html)を参照してください。
+また、ちょっと慣れてきたら[JSX を深く理解する](https://ja.reactjs.org/docs/jsx-in-depth.html)も面白いのでおすすめです。
+
+TSXはJSXにTypeScriptを組み合わせて、型定義などを行えるようにしたものです。
+元の構文に与える影響としてはどちらもあまり変わらないため、ここではJSXで説明します。
+JSXのコードでは**「JavaScriptの世界」と「JSXの世界」**が交互に、もしくはネストして現れます。
+
+JSXのコードの読み方の基本的なルールとしては以下のようになります。
+
+1. HTMLタグっぽいもの`<...>`が使われたらJSXの世界(HTMLっぽい世界)
+2. その中で`{}`が使われたらその中はJavaScriptの世界
+3. これらは多重にネスト可能
+
+例として以下のコードを見てみましょう。
+
+```jsx
+const render = () => {
+  return <div>リスト: {[1,2,3].map(n => <span>{n}</span>)}</div>
+}
+```
+
+`<div>`の後の`{}`に注目してくださいね。
+上のコードは以下のようなJavaScriptとJSXの入れ子構造になっています。
+
+```
+JSX: <div>リスト: {
+JS :  [1,2,3].map(n => 
+JSX:    <span>{
+JS :      n
+JSX:    }</span>
+JS :  )
+JSX: }</div>
+```
+
+初めはこの「世界の切り替わり」を読み解くのが難しいと思うので、書きながら、コンパイラに怒られながら身につけていきましょう。
+私もそうしました。
+
+ちなみに下のtipに書いた通り、JSXを使わずにReactのコードを書くことはできるのですが、世の中にある大抵のReactコードはJSXで書かれているため、一度は慣れておいたほうが良いでしょう。
+
+:::tip React = JSX ではない
+
+ReactとJSXはそれぞれ個別に使えるものです。
+
+例えばReactはJSXを使わずに書けます。
+JSX ElementがJavaScriptとしてはどのような値であるかは、JSXを処理するものによって変わります。
+Reactの場合、JSX Elementは[React.createElement](https://ja.reactjs.org/docs/react-api.html#createelement)に割り当てられています。
+例えば、以下の2行は等価になります。
+
+```jsx
+<div>Hello {this.props.toWhat}</div>
+React.createElement('div', null, `Hello ${this.props.toWhat}`)
+```
+
+詳細は[JSX なしで React を使う](https://ja.reactjs.org/docs/react-without-jsx.html)を参照してください。
+
+今度はJSXの方に着目してみると、JSXもReactとは関係のない場所で使われることがあります。
+例として[SolidJS](https://www.solidjs.com/tutorial/introduction_basics)というウェブフレームワークもJSXを利用可能です。
+
+:::
+
+:::tip JSXはJavaScript的にはどういう「値」なのか
+
+初めの理解としては「JSXはDOM要素(HTML要素)をそのままJavaScriptの世界で書ける、`return`で返せる」という理解でもコードは書けます。
+「なんとなく動くものが作れる」という経験はプログラミングにとって、とても大切です。
+
+一方でそれだと気持ちが悪いという人たちのために、JSXについてもう少し細かい解説をします。
+
+上のtipで触れた通り、ReactではJSX Elementは`React.createElement`が返す値と等価になります。
+そして`React.createElement`が返すのはDOMではなく、React Elementという、Reactで定義されているJavaScriptのオブジェクトになります。
+React ElementはDOM要素っぽいものですが、DOM要素ではありません。
+
+React ElementはReactの差分検出と再レンダリングに用いられる[仮想DOM](https://ja.reactjs.org/docs/faq-internals.html)の仕組みの一部をなすものです。
+簡単にいうと、Reactコンポーネントは実際のDOMではなく、DOMを作成するための設計図のみをレンダリングで返している、ということです。
+
+:::
 
 ### コンポーネントを作成してみる
 
@@ -379,6 +459,20 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 }
 ```
 
+:::tip <> - Fragment
+
+`<>`はFragmentといい、複数の要素(JSX Element, `<...>`で定義されるもの)をひとまとめにするためのJSXの構文の一つです。
+JSXはその構文の制約上、複数のJSX要素が横並びになったものを、コード中にそのままでは表現できないため、Fragmentが用意されています。
+これを利用することで、要素をまとめるだけの不要な`<div>`などの使用を避けることができます。
+
+Reactのプロジェクトでは`<>`は`React.Fragment`というコンポーネントに割り当てられています。
+
+参考: [React.Fragment](https://ja.reactjs.org/docs/react-api.html#reactfragment)
+
+ちなみに、Fragmentという言葉は、プログラミングの世界では一般的に「オブジェクトのいくつかのフィールドをまとめたもの」という意味で使われます。
+
+:::
+
 :computer: さらに下記の通りにsrc/App.tsxを修正してください。
 
 ```tsx{8-10}
@@ -414,7 +508,7 @@ Stateを`setState`メソッド経由で更新を行うと、そのコンポー�
 - Stateを利用してコンポーネント内部で使えるローカルストアを作成できる
 - `setState` メソッドでStateを更新するとコンポーネントが自動で更新される
 
-### コンポーネントの機能 - ライフサイクルメソッド: LifeCycle
+### コンポーネントの機能 - ライフサイクルメソッド
 
 少しコンポーネントの複雑な機能について触れてみましょう。
 今まではコンポーネントそのものに注力しましたが、ここではコンポーネントの作成の方法に注視してみましょう。
