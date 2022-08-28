@@ -615,7 +615,7 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 まずは関数コンポーネントの基本的な形について紹介しておきます。
 クラスコンポーネントでは`React.Component`を継承したクラスの`render`メソッドを実装してレンダリング内容を定義しましたね。
 
-例として一番初めにクラスコンポーネントとして実装した`Note`コンポーネントを書き換えてみましょう。
+一番初めにクラスコンポーネントとして実装した`Note`コンポーネントを例にしましょう。
 
 ```tsx
 export default class Note extends React.Component<NoteProps, NoteState> {
@@ -626,7 +626,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 ```
 
 これは関数コンポーネントでは以下のようになります。
-ただの紹介なのでまだ手元のコードは書き換えないでくださいね。
+ただの紹介なので手元のコードは書き換えないでくださいね。
 
 ```tsx
 export default function Note(props: NoteProps) {
@@ -648,7 +648,7 @@ ReactにはReact Hooksという機能が存在しており、これは最初に�
 
 :computer: 新たにsrc/NewNote.tsxを作成し、下記の通り記述してください。
 
-```tsx
+```tsx{1-5,18-50}
 import { useEffect, useState } from "react";
 
 interface NoteProps {
