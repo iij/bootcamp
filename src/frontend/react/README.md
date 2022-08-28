@@ -537,7 +537,7 @@ const repeatWord = (counter: number, word: string) => {
 };
 
 // データローディングを想定した、ただ時間待ちするだけのタスク
-// 2秒後にfullfill(解決)状態になるPromiseを返す
+// 2秒後にfullfilled(解決,履行)状態になるPromiseを返す
 const simulateLoading = () => {
   return new Promise((resolve) => {
     setTimeout(resolve, 2000);
@@ -555,7 +555,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
   // DOMツリーにコンポーネントが追加された直後に呼び出されるメソッド
   componentDidMount = () => {
     simulateLoading()
-      // Promiseがfullfill(解決)状態になったとき
+      // Promiseがfullfilled(解決,履行)状態になったとき
       // thenに渡された関数が実行される
       .then(() => {
         // このコンポーネントのStateを更新する
@@ -602,6 +602,14 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 それぞれのタイミングで実施したい処理があれば、それぞれのメソッドの中に実装してあげると良いでしょう。
 
 詳しくはこちら > [state とライフサイクル | React Docs](https://ja.reactjs.org/docs/state-and-lifecycle.html)
+
+:::tip JavaScriptの非同期処理インタフェース - Promise
+
+[Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)は非同期処理を扱うためにES2015で導入されました。
+
+説明すると長くなりますし「習うより慣れよ」な仕組みなため、たくさんコードを書いて理解してください。
+
+:::
 
 #### チェックポイント
 - コンポーネントにライフサイクルがあることを理解した
@@ -864,6 +872,51 @@ $ docker run --rm -d -p 9000:80 --name react-prod -v ${PWD}/build/:/usr/share/ng
 
 以降ホストマシン側の[localhost:9000](http://localhost:9000)へアクセスすると、先ほど作成したSPAが画面に表示されているはずです。
 
+
+## 発展的課題
+
+余裕のある人はチャレンジしてみてください。
+
+### `simulateLoading`を実際のサーバアクセスっぽくする
+
+実際のアプリケーションでは`fetch`などのリクエストの結果をコンポーネントで表示することが多いですが、ここまでの`simulateLoading`は単純に2秒後にfullfilledになるだけの関数でした。
+
+```tsx
+const simulateLoading = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
+```
+
+これを以下のように書き換えて、より実際のAPIアクセスに近いものにしてみましょう。
+`API message!`という文字列をレスポンスとして返すサーバにアクセスしている、というシミュレーションです。
+
+```tsx
+const simulateLoading = (): Promise<string> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("API message!")
+    }, 2000);
+  });
+};
+```
+
+この新しい`simulateLoading`で取得したデータを`Note`コンポーネントで表示するように変更してみましょう。
+カスタムフックの戻り値にも変更が必要になります。
+
+`Promise`に関するヒントとして、この`simulateLoading`の`resolve`の値は
+
+```tsx
+simulateLoading().then((message: string) => { ... })
+```
+
+のように利用できます。
+また、更に余裕があれば`simulateLoading`を以下のように変更してみましょう。
+
+- 一定確率でエラーを発生させる
+  - エラーの場合は`Note`コンポーネントでその旨を表示する
+- 文字列ではなくオブジェクトやJSON文字列を返す
 
 # 最後に
 
