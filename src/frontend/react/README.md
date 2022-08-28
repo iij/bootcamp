@@ -258,13 +258,13 @@ export default App;
 ```tsx{5-6,11-18,22}
 import React from "react";
 
-interface NoteState {}
-
 // Noteコンポーネントを呼び出す側が指定するPropsを定義する
 interface NoteProps {
   counter: number;
   word: string;
 }
+
+interface NoteState {}
 
 // 指定された回数だけ文字列を繰り返す
 // repeatWord(3, "Component") -> "Component! Component!! Component!!!"
