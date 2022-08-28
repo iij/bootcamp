@@ -1,4 +1,4 @@
-FROM node:16.3.0
+FROM node:16.17.0
 RUN apt update \
     && apt install vim emacs -y \
     && apt-get clean \

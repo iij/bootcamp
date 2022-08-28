@@ -20,14 +20,14 @@ prior_knowledge: 特になし
 
 ```bash
 # やや重たいので注意してください
-$ docker pull ryusa/bootcamp-react:2021
+$ docker pull astk03/bootcamp-react:2022
 ```
 
 2. コンテナを起動する
 
 ```bash
 # コンテナを起動する
-$ docker run --name bootcamp-react -itd -p 3000:3000 ryusa/bootcamp-react:2021
+$ docker run --name bootcamp-react -itd -p 3000:3000 astk03/bootcamp-react:2022
 ```
 
 3. アプリケーションの起動チェック
@@ -46,6 +46,12 @@ $ docker exec -it bootcamp-react bash
 ホストマシンから適当なブラウザ(※IEを除く)から[localhost:3000](http://localhost:3000)にアクセスし、Welcomeページが表示されることを確認してください。
 
 ![welcome](./images/welcome.png)
+
+:::tip 
+
+動作しなかった場合は2021年度版のイメージ ryusa/bootcamp-react:2021 を使ってみてください。
+
+:::
 
 ## 始めに
 
