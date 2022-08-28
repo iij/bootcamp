@@ -93,7 +93,7 @@ ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装
 細かくコンポーネントを分離することでアトミックデザインなUIを実装しやすくなります。
 また型を持つTypeScriptと組み合わせて使うためのツール整備も進んでいるため、開発者からの評価も高いです。
 
-:::tip Create React App
+:::tip Reactでアプリを書くための環境づくり
 
 Reactを始めるための方法としては、いくつかの方法があります。
 
@@ -107,8 +107,8 @@ Reactを始めるための方法としては、いくつかの方法がありま
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
     - Reactが公式で出している
   - [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
-    - 2022年現在勢いのあるツールで、create-react-appと比べて動作の軽量化のための工夫がされています
-    - React以外にもVueやAngularなどのフレームワークにも対応しています
+    - 2022年現在勢いのあるツールで、create-react-appと比べて動作の軽量化のための工夫がされている
+    - React以外にもVueやAngularなどのフレームワークにも対応している
 
 このハンズオンでは、Create React Appを使ってプロジェクトのひな型を作成しています。
 詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
