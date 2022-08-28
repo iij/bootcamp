@@ -955,6 +955,43 @@ simulateLoading().then((message: string) => { ... })
   - エラーの場合は`Note`コンポーネントでその旨を表示する
 - 文字列ではなくオブジェクトやJSON文字列を返す
 
+### 更にそれらしくする
+
+更にそれらしいコードとして、Noteで表示すべきデータをサーバから取得する、というケースを想定したコードに変更してみましょう。
+
+以下のコードを`App.tsx`に追加して`fetchNoteData`で取得したデータの一覧を`Note`で表示する、というコードにしてみましょう。
+
+```tsx
+type NoteData = {
+  word: string
+}
+
+const noteData: NoteData[] = [
+  { word: "Component" },
+  { word: "Hoge" },
+  { word: "Fuga" },
+]
+
+const fetchNoteData = (): Promise<NoteData[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(noteData)
+    }, 2000);
+  });
+};
+```
+
+初めの方にほんの少しだけ触れましたが、同じような要素を大量に生成したい場合には、JSXの中で配列の`map`メソッドを使うことができます。
+
+```tsx
+<div>リスト: {[1,2,3].map(n => <span>{n}</span>)}</div>
+```
+
+どうでしょうか。
+ここまでくると「サーバからデータを引っ張ってきて一覧で表示する」というシンプルな業務用のアプリケーションが実装できそうな気がしてこないでしょうか(そんな気持ちになってもらえると嬉しいです)。
+
+本当はもう少し、要素の追加や認証の処理を想定したコードを体験してもらいたかったのですが、今回はここまでです。
+
 # 最後に
 
 以上でReactのハンズオンは終了です。
