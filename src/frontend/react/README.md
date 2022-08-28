@@ -576,12 +576,12 @@ const repeatWord = (counter: number, word: string) => {
 // 処理は普通の関数と同じように上から順に評価していく
 export default function Note(props: NoteProps) {
   // useState(Stateフック)でコンポーネントで保持するStateを定義する
-  // 第一返値にStateそのもの、第二返値にStateの更新トリガーが入ります
+  // [Stateの値, Stateのセッター]という形式の値を返す
   const [counter, setCounter] = useState<number>(1);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // useEffect(副作用フック)でライフサイクルメソッドに相当する処理を行える
-  // useEffectの第二引数により挙動が変わり、から配列を渡すとcomponentDidMountの挙動になる
+  // useEffectの第二引数により挙動が変わり、空配列[]を渡すとcomponentDidMountの挙動になる
   useEffect(() => {
     simulateLoading().then(() => {
       setIsLoaded(true);
