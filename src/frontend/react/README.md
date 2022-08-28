@@ -173,7 +173,7 @@ export default App;
 
 ![helloworld](./images/helloworld.png)
 
-::: warning 自動的にリロードされない場合
+:::warning 自動的にリロードされない場合
 リロードがうまくいかない場合、開発用サーバーでエラーが起きてしまっている可能性があります。その場合は開発用サーバーを一度止め、再起動してあげてください。
 
 ```bash
@@ -607,7 +607,7 @@ export default function Note(props: NoteProps) {
 }
 ```
 
-::: tips useEffectの第二引数でライフサイクル中の発火場所を限定する
+:::tip useEffectの第二引数でライフサイクル中の発火場所を限定する
 
 `useEffect`は第二引数に配列を渡すことができ、何を渡すかによって発火するタイミングが異なります。
 クラスコンポーネントの代表的なライフサイクルメソッドとの対応は以下のようになります。
@@ -721,7 +721,7 @@ ReactのHookは直接コンポーネント内にベタ書きする必要はな�
 機能を切り分ける際には「stateとそれに対しての変更操作のまとまりはどれか」という視点が有効です。
 (ただし今回の`useLoadedState`は時間経過で自動的に変わるStateを対象としたため、Stateに対する操作はありません…)
 
-::: tips Hook登場以前の処理の共通化
+:::tip Hook登場以前の処理の共通化
 
 Hook登場以前は、コンポーネント間で処理を共有する、もしくはライブラリからコンポーネントに機能を供給するためには一工夫必要でした。
 代表的な方法は[HOC(Higher-Order Component, 高階コンポーネント)](https://reactjs.org/docs/higher-order-components.html)と[render prop](https://reactjs.org/docs/render-props.html)です。
