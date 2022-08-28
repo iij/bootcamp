@@ -16,7 +16,7 @@ prior_knowledge: 特になし
 
 プロキシ環境下のことを考えて、`npm install`済みのコンテナイメージ`bootcamp-react`を作成してあります。
 
-### vim/emacsで編集できる人向け(推奨)
+### vim/emacs/VSCode拡張機能で編集する人向け(推奨)
 
 #### 1. ハンズオン用のDockerイメージをpullしてくる
 
@@ -54,6 +54,10 @@ $ docker exec -it bootcamp-react bash
 動作しなかった場合は2021年度版のイメージ ryusa/bootcamp-react:2021 を使ってみてください。
 
 :::
+
+#### 5. VSCode 拡張機能(オプション)
+
+"Remote - Container" と "Docker" 拡張機能を入れることでコンテナ内のファイルをVSCodeで直接編集できます。
 
 ### ローカルホストの好きなエディタを使いたい場合
 
