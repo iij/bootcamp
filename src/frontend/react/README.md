@@ -136,7 +136,10 @@ SSRはサーバー側でユーザーのリクエストに合わせてDOMを動�
 Angular Universalなどではこの方式でアプリケーションを配信します。
 
 ## Reactハンズオン
-実際にReactに触れてみましょう。本講義ではTypeScriptを使ってReactを書いていきます。
+実際にReactに触れてみましょう。本講義では[TypeScript](https://www.typescriptlang.org)を使ってReactを書いていきます。
+
+TypeScriptに関する詳細な説明はこの講義では行わないため、
+構文などで迷ったら[TypeScript Playground](https://www.typescriptlang.org/play)あたりを使って解決してください。
 
 ### Hello World
 
@@ -186,14 +189,14 @@ export default App;
 
 ### JSX/TSX
 
-JSXはJavaScriptの拡張構文で、JavaScriptのコード中に**「HTMLっぽいもの」**を記述して、それを値として使えるものです。
+JSXはJavaScriptの拡張構文で、JavaScriptのコード中に **「HTMLっぽいもの」** を記述して、それを値として使えるものです。
 ただし、`class`が`className`になっているなど、完全にHTMLと同等ではありません。
 詳しくは[DOM 要素](https://ja.reactjs.org/docs/dom-elements.html)を参照してください。
 また、ちょっと慣れてきたら[JSX を深く理解する](https://ja.reactjs.org/docs/jsx-in-depth.html)も面白いのでおすすめです。
 
 TSXはJSXにTypeScriptを組み合わせて、型定義などを行えるようにしたものです。
 元の構文に与える影響としてはどちらもあまり変わらないため、ここではJSXで説明します。
-JSXのコードでは**「JavaScriptの世界」と「JSXの世界」**が交互に、もしくはネストして現れます。
+JSXのコードでは **「JavaScriptの世界」と「JSXの世界」** が交互に、もしくはネストして現れます。
 
 JSXのコードの読み方の基本的なルールとしては以下のようになります。
 
@@ -327,7 +330,7 @@ export default App;
 - クラスベースコンポーネントの書き方を学んだ
 - コンポーネントの使い方を学んだ
 
-### コンポーネントの機能 - 小要素へのデータの共有 : Props
+### コンポーネントの機能 - 子要素へのデータの共有 : Props
 
 `Note` コンポーネントを作成しましたが、今のままでは"Component! Component!! Component!!!"と叫ぶだけのコンポーネントで再利用性が悪いです。
 
