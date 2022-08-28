@@ -14,23 +14,25 @@ prior_knowledge: 特になし
 講義を受講する前にコンテナイメージのpullと起動をしておくことをお勧めしています。
 また、Dockerの実行環境があることを前提として本講義を進めます。
 
-### 手順
+プロキシ環境下のことを考えて、`npm install`済みのコンテナイメージ`bootcamp-react`を作成してあります。
 
-1. ハンズオン用のDockerイメージをpullしてくる
+### vim/emacsで編集できる人向け(推奨)
+
+#### 1. ハンズオン用のDockerイメージをpullしてくる
 
 ```bash
 # やや重たいので注意してください
 $ docker pull astk03/bootcamp-react:2022
 ```
 
-2. コンテナを起動する
+#### 2. コンテナを起動する
 
 ```bash
 # コンテナを起動する
 $ docker run --name bootcamp-react -itd -p 3000:3000 astk03/bootcamp-react:2022
 ```
 
-3. アプリケーションの起動チェック
+#### 3. アプリケーションの起動チェック
 
 ```bash
 # コンテナの中にアタッチする
@@ -41,7 +43,7 @@ $ docker exec -it bootcamp-react bash
 # いろんなログが流れる
 ```
 
-4. 動作チェック
+#### 4. 動作チェック
 
 ホストマシンから適当なブラウザ(※IEを除く)から[localhost:3000](http://localhost:3000)にアクセスし、Welcomeページが表示されることを確認してください。
 
@@ -52,6 +54,37 @@ $ docker exec -it bootcamp-react bash
 動作しなかった場合は2021年度版のイメージ ryusa/bootcamp-react:2021 を使ってみてください。
 
 :::
+
+### ローカルホストの好きなエディタを使いたい場合
+
+vimやemacsが辛い人向けです。
+ちょっとテクニカルなので、手元の環境でうまく動くかはわかりません。
+
+```sh
+docker pull astk03/bootcamp-react:2022
+docker run --name bootcamp-react -itd -p 3000:3000 astk03/bootcamp-react:2022
+# ここまでは同じ
+
+# 適当なディレクトリを作る
+mkdir /tmp/bootcamp
+
+# bootcamp-reactコンテナのソースをローカルにコピーする
+docker cp bootcamp-react:/app/src /tmp/bootcamp
+
+# コピーできているか確認
+ls /tmp/bootcamp/src
+# App.css                 index.css               react-app-env.d.ts
+# App.test.tsx            index.tsx               reportWebVitals.ts
+# App.tsx                 logo.svg                setupTests.ts
+
+# ローカルディレクトリをバインドしたコンテナを再作成して起動
+docker rm -f bootcamp-react
+docker run --name bootcamp-react -itd -p 3000:3000 -v /tmp/bootcamp/src:/app/src astk03/bootcamp-react:2022
+docker exec bootcamp-react npm start
+
+# 好きなエディタで編集
+code /tmp/bootcamp
+```
 
 ## 始めに
 
