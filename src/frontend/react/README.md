@@ -14,23 +14,21 @@ prior_knowledge: 特になし
 講義を受講する前にコンテナイメージのpullと起動をしておくことをお勧めしています。
 また、Dockerの実行環境があることを前提として本講義を進めます。
 
-### 手順
-
-1. ハンズオン用のDockerイメージをpullしてくる
+### 1. ハンズオン用のDockerイメージをpullしてくる
 
 ```bash
 # やや重たいので注意してください
-$ docker pull ryusa/bootcamp-react:2021
+$ docker pull astk03/bootcamp-react:2022
 ```
 
-2. コンテナを起動する
+### 2. コンテナを起動する
 
 ```bash
 # コンテナを起動する
-$ docker run --name bootcamp-react -itd -p 3000:3000 ryusa/bootcamp-react:2021
+$ docker run --name bootcamp-react -itd -p 3000:3000 astk03/bootcamp-react:2022
 ```
 
-3. アプリケーションの起動チェック
+### 3. アプリケーションの起動チェック
 
 ```bash
 # コンテナの中にアタッチする
@@ -41,11 +39,21 @@ $ docker exec -it bootcamp-react bash
 # いろんなログが流れる
 ```
 
-4. 動作チェック
+### 4. 動作チェック
 
 ホストマシンから適当なブラウザ(※IEを除く)から[localhost:3000](http://localhost:3000)にアクセスし、Welcomeページが表示されることを確認してください。
 
 ![welcome](./images/welcome.png)
+
+:::tip 
+
+動作しなかった場合は2021年度版のイメージ ryusa/bootcamp-react:2021 を使ってみてください。
+
+:::
+
+### 5. VSCode 拡張機能(オプション)
+
+"Remote - Container" と "Docker" 拡張機能を入れることでコンテナ内のファイルをVSCodeで直接編集できます。
 
 ## 始めに
 
@@ -87,7 +95,7 @@ ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装
 細かくコンポーネントを分離することでアトミックデザインなUIを実装しやすくなります。
 また型を持つTypeScriptと組み合わせて使うためのツール整備も進んでいるため、開発者からの評価も高いです。
 
-:::tip Create React App
+:::tip Reactでアプリを書くための環境づくり
 
 Reactを始めるための方法としては、いくつかの方法があります。
 
@@ -101,8 +109,8 @@ Reactを始めるための方法としては、いくつかの方法がありま
   - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
     - Reactが公式で出している
   - [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
-    - 2022年現在勢いのあるツールで、create-react-appと比べて動作の軽量化のための工夫がされています
-    - React以外にもVueやAngularなどのフレームワークにも対応しています
+    - 2022年現在勢いのあるツールで、create-react-appと比べて動作の軽量化のための工夫がされている
+    - React以外にもVueやAngularなどのフレームワークにも対応している
 
 このハンズオンでは、Create React Appを使ってプロジェクトのひな型を作成しています。
 詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
@@ -130,7 +138,10 @@ SSRはサーバー側でユーザーのリクエストに合わせてDOMを動�
 Angular Universalなどではこの方式でアプリケーションを配信します。
 
 ## Reactハンズオン
-実際にReactに触れてみましょう。本講義ではTypeScriptを使ってReactを書いていきます。
+実際にReactに触れてみましょう。本講義では[TypeScript](https://www.typescriptlang.org)を使ってReactを書いていきます。
+
+TypeScriptに関する詳細な説明はこの講義では行わないため、
+構文などで迷ったら[TypeScript Playground](https://www.typescriptlang.org/play)あたりを使って解決してください。
 
 ### Hello World
 
@@ -146,6 +157,7 @@ $ docker exec -it bootcamp-react bash
 ```
 
 :computer: src/App.tsxを開き下記の通りに編集してください。
+後ほど説明するTSXというTypeScriptの拡張構文を使っているため、初めての人は違和感があるかもしれませんね。
 
 ```tsx{7}
 import './App.css';
@@ -167,7 +179,7 @@ export default App;
 
 ![helloworld](./images/helloworld.png)
 
-::: warning 自動的にリロードされない場合
+:::warning 自動的にリロードされない場合
 リロードがうまくいかない場合、開発用サーバーでエラーが起きてしまっている可能性があります。その場合は開発用サーバーを一度止め、再起動してあげてください。
 
 ```bash
@@ -241,7 +253,7 @@ export default App;
 - クラスベースコンポーネントの書き方を学んだ
 - コンポーネントの使い方を学んだ
 
-### コンポーネントの機能 - 小要素へのデータの共有 : Props
+### コンポーネントの機能 - 子要素へのデータの共有 : Props
 
 `Note` コンポーネントを作成しましたが、今のままでは"Component! Component!! Component!!!"と叫ぶだけのコンポーネントで再利用性が悪いです。
 
@@ -252,13 +264,13 @@ export default App;
 ```tsx{5-6,11-18,22}
 import React from "react";
 
-interface NoteState {}
-
 // Noteコンポーネントを呼び出す側が指定するPropsを定義する
 interface NoteProps {
   counter: number;
   word: string;
 }
+
+interface NoteState {}
 
 // 指定された回数だけ文字列を繰り返す
 // repeatWord(3, "Component") -> "Component! Component!! Component!!!"
@@ -275,17 +287,6 @@ export default class Note extends React.Component<NoteProps, NoteState> {
   }
 }
 ```
-
-:::tip アロー関数(=>)
-
-JavaScriptの関数には`function`キーワードによる定義の他に、ES2015から導入された`=>`を使うアロー関数があります。
-
-表記が短く済むことに加えて、アロー関数には`this`をバインドしないという性質があります。
-難しいと思うので初心者の方は「`this`にまつわる不具合が生じたら関数定義の種類を疑い、参考となるコードと見比べてみる」という意識を持つことから始めましょう。
-
-`this`についての詳しい挙動に興味があれば[MDNの解説](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/this)が参考になります。
-
-:::
 
 :computer: src/App.tsxを修正してください。
 
@@ -346,7 +347,7 @@ const repeatWord = (counter: number, word: string) => {
 };
 
 export default class Note extends React.Component<NoteProps, NoteState> {
-  // Stateの初期化
+  // Stateの初期化 (construct時)
   state = {
     counter: 1,
   };
@@ -372,6 +373,20 @@ export default class Note extends React.Component<NoteProps, NoteState> {
   }
 }
 ```
+
+:::tip <> - Fragment
+
+`<>`はFragmentといい、複数の要素(JSX Element, `<...>`で定義されるもの)をひとまとめにするためのJSXの構文の一つです。
+JSXはその構文の制約上、複数のJSX要素が横並びになったものを、コード中にそのままでは表現できないため、Fragmentが用意されています。
+これを利用することで、要素をまとめるだけの不要な`<div>`などの使用を避けることができます。
+
+Reactのプロジェクトでは`<>`は`React.Fragment`というコンポーネントに割り当てられています。
+
+参考: [React.Fragment](https://ja.reactjs.org/docs/react-api.html#reactfragment)
+
+ちなみに、Fragmentという言葉は、プログラミングの世界では一般的に「オブジェクトのいくつかのフィールドをまとめたもの」という意味で使われます。
+
+:::
 
 :computer: さらに下記の通りにsrc/App.tsxを修正してください。
 
@@ -408,7 +423,7 @@ Stateを`setState`メソッド経由で更新を行うと、そのコンポー�
 - Stateを利用してコンポーネント内部で使えるローカルストアを作成できる
 - `setState` メソッドでStateを更新するとコンポーネントが自動で更新される
 
-### コンポーネントの機能 - ライフサイクルメソッド: LifeCycle
+### コンポーネントの機能 - ライフサイクルメソッド
 
 少しコンポーネントの複雑な機能について触れてみましょう。
 今まではコンポーネントそのものに注力しましたが、ここではコンポーネントの作成の方法に注視してみましょう。
@@ -437,7 +452,7 @@ const repeatWord = (counter: number, word: string) => {
 };
 
 // データローディングを想定した、ただ時間待ちするだけのタスク
-// 2秒後にfullfill(解決)状態になるPromiseを返す
+// 2秒後にfullfilled(解決,履行)状態になるPromiseを返す
 const simulateLoading = () => {
   return new Promise((resolve) => {
     setTimeout(resolve, 2000);
@@ -445,7 +460,7 @@ const simulateLoading = () => {
 };
 
 export default class Note extends React.Component<NoteProps, NoteState> {
-  // Stateの初期化
+  // Stateの初期化 (construct時)
   state = {
     counter: 1,
     isLoaded: false,
@@ -455,7 +470,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
   // DOMツリーにコンポーネントが追加された直後に呼び出されるメソッド
   componentDidMount = () => {
     simulateLoading()
-      // Promiseがfullfill(解決)状態になったとき
+      // Promiseがfullfilled(解決,履行)状態になったとき
       // thenに渡された関数が実行される
       .then(() => {
         // このコンポーネントのStateを更新する
@@ -503,6 +518,14 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 
 詳しくはこちら > [state とライフサイクル | React Docs](https://ja.reactjs.org/docs/state-and-lifecycle.html)
 
+:::tip JavaScriptの非同期処理インタフェース - Promise
+
+[Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)は非同期処理を扱うためにES2015で導入されました。
+
+説明すると長くなりますし「習うより慣れよ」な仕組みなため、たくさんコードを書いて理解してください。
+
+:::
+
 #### チェックポイント
 - コンポーネントにライフサイクルがあることを理解した
 - ライフサイクルに合わせてフックを作成することができた
@@ -515,7 +538,7 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 まずは関数コンポーネントの基本的な形について紹介しておきます。
 クラスコンポーネントでは`React.Component`を継承したクラスの`render`メソッドを実装してレンダリング内容を定義しましたね。
 
-例として一番初めにクラスコンポーネントとして実装した`Note`コンポーネントを書き換えてみましょう。
+一番初めにクラスコンポーネントとして実装した`Note`コンポーネントを例にしましょう。
 
 ```tsx
 export default class Note extends React.Component<NoteProps, NoteState> {
@@ -526,7 +549,7 @@ export default class Note extends React.Component<NoteProps, NoteState> {
 ```
 
 これは関数コンポーネントでは以下のようになります。
-ただの紹介なのでまだ手元のコードは書き換えないでくださいね。
+ただの紹介なので手元のコードは書き換えないでくださいね。
 
 ```tsx
 export default function Note(props: NoteProps) {
@@ -548,7 +571,7 @@ ReactにはReact Hooksという機能が存在しており、これは最初に�
 
 :computer: 新たにsrc/NewNote.tsxを作成し、下記の通り記述してください。
 
-```tsx
+```tsx{1-5,18-50}
 import { useEffect, useState } from "react";
 
 interface NoteProps {
@@ -570,12 +593,12 @@ const repeatWord = (counter: number, word: string) => {
 // 処理は普通の関数と同じように上から順に評価していく
 export default function Note(props: NoteProps) {
   // useState(Stateフック)でコンポーネントで保持するStateを定義する
-  // 第一返値にStateそのもの、第二返値にStateの更新トリガーが入ります
+  // [Stateの値, Stateのセッター]という形式の値を返す
   const [counter, setCounter] = useState<number>(1);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // useEffect(副作用フック)でライフサイクルメソッドに相当する処理を行える
-  // useEffectの第二引数により挙動が変わり、から配列を渡すとcomponentDidMountの挙動になる
+  // useEffectの第二引数により挙動が変わり、空配列[]を渡すとcomponentDidMountの挙動になる
   useEffect(() => {
     simulateLoading().then(() => {
       setIsLoaded(true);
@@ -601,7 +624,7 @@ export default function Note(props: NoteProps) {
 }
 ```
 
-::: tips useEffectの第二引数でライフサイクル中の発火場所を限定する
+:::tip useEffectの第二引数でライフサイクル中の発火場所を限定する
 
 `useEffect`は第二引数に配列を渡すことができ、何を渡すかによって発火するタイミングが異なります。
 クラスコンポーネントの代表的なライフサイクルメソッドとの対応は以下のようになります。
@@ -715,7 +738,7 @@ ReactのHookは直接コンポーネント内にベタ書きする必要はな�
 機能を切り分ける際には「stateとそれに対しての変更操作のまとまりはどれか」という視点が有効です。
 (ただし今回の`useLoadedState`は時間経過で自動的に変わるStateを対象としたため、Stateに対する操作はありません…)
 
-::: tips Hook登場以前の処理の共通化
+:::tip Hook登場以前の処理の共通化
 
 Hook登場以前は、コンポーネント間で処理を共有する、もしくはライブラリからコンポーネントに機能を供給するためには一工夫必要でした。
 代表的な方法は[HOC(Higher-Order Component, 高階コンポーネント)](https://reactjs.org/docs/higher-order-components.html)と[render prop](https://reactjs.org/docs/render-props.html)です。
@@ -764,6 +787,88 @@ $ docker run --rm -d -p 9000:80 --name react-prod -v ${PWD}/build/:/usr/share/ng
 
 以降ホストマシン側の[localhost:9000](http://localhost:9000)へアクセスすると、先ほど作成したSPAが画面に表示されているはずです。
 
+
+## 発展的課題
+
+余裕のある人はチャレンジしてみてください。
+
+### `simulateLoading`を実際のサーバアクセスっぽくする
+
+実際のアプリケーションでは`fetch`などのリクエストの結果をコンポーネントで表示することが多いですが、ここまでの`simulateLoading`は単純に2秒後にfullfilledになるだけの関数でした。
+
+```tsx
+const simulateLoading = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
+```
+
+これを以下のように書き換えて、より実際のAPIアクセスに近いものにしてみましょう。
+`API message!`という文字列をレスポンスとして返すサーバにアクセスしている、というシミュレーションです。
+
+```tsx
+const simulateLoading = (): Promise<string> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("API message!")
+    }, 2000);
+  });
+};
+```
+
+この新しい`simulateLoading`で取得したデータを`Note`コンポーネントで表示するように変更してみましょう。
+カスタムフックの戻り値にも変更が必要になります。
+
+`Promise`に関するヒントとして、この`simulateLoading`の`resolve`の値は
+
+```tsx
+simulateLoading().then((message: string) => { ... })
+```
+
+のように利用できます。
+また、更に余裕があれば`simulateLoading`を以下のように変更してみましょう。
+
+- 一定確率でエラーを発生させる
+  - エラーの場合は`Note`コンポーネントでその旨を表示する
+- 文字列ではなくオブジェクトやJSON文字列を返す
+
+### 更にそれらしくする
+
+更にそれらしいコードとして、Noteで表示すべきデータをサーバから取得する、というケースを想定したコードに変更してみましょう。
+
+以下のコードを`App.tsx`に追加して`fetchNoteData`で取得したデータの一覧を`Note`で表示する、というコードにしてみましょう。
+
+```tsx
+type NoteData = {
+  word: string
+}
+
+const noteData: NoteData[] = [
+  { word: "Component" },
+  { word: "Hoge" },
+  { word: "Fuga" },
+]
+
+const fetchNoteData = (): Promise<NoteData[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(noteData)
+    }, 2000);
+  });
+};
+```
+
+初めの方にほんの少しだけ触れましたが、同じような要素を大量に生成したい場合には、JSXの中で配列の`map`メソッドを使うことができます。
+
+```tsx
+<div>リスト: {[1,2,3].map(n => <span>{n}</span>)}</div>
+```
+
+どうでしょうか。
+ここまでくると「サーバからデータを引っ張ってきて一覧で表示する」というシンプルな業務用のアプリケーションが実装できそうな気がしてこないでしょうか(そんな気持ちになってもらえると嬉しいです)。
+
+本当はもう少し、要素の追加や認証の処理を想定したコードを体験してもらいたかったのですが、今回はここまでです。
 
 # 最後に
 
