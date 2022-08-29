@@ -524,6 +524,9 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 
 説明すると長くなりますし「習うより慣れよ」な仕組みなため、たくさんコードを書いて理解してください。
 
+ブラウザでは[fetch](https://developer.mozilla.org/ja/docs/Web/API/Fetch_API)という関数を使ってサーバへのリクエストを送ります。
+fetchも`Promise`を利用しているため、`Promise`に慣れておくと、リクエストの結果をReactで描画するという、実践的なアプリケーションを書けるようになります。
+
 :::
 
 #### チェックポイント
