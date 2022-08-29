@@ -3,7 +3,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 title: Reactでシングルページアプリケーションを書こう
 description: Reactでシングルページアプリケーションを書こう
 time: 2h
-prior_knowledge: 特になし
+prior_knowledge: JavaScript, TypeScript, HTML, DOM, Docker
 ---
 
 <header-table/>
