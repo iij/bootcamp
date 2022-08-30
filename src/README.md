@@ -18,5 +18,5 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 | **データベース** | [データベース界隈Overview](database/overview/) | [MySQLを触ってみる](database/mysql/) | [MongoDBを触ってみる](database/mongodb/) | [redisを触ってみる](database/redis/) |
 | **Webサーバー** | HTTP Overview<br>(資料非公開) | [Apache/NginxでWebサーバーを立てよう](web-server/apache_nginx/) |
 | **バックエンドアプリ** | バックエンドアプリ+AWS,GCP Overview | [FastAPIでWebアプリを作る](server-app/fastapi/) | [Java: Spring でWebアプリを作る](server-app/java/) | [GoでWebアプリを作る](server-app/go/) | [並行処理ハンズオン](server-app\concurrent) | [テストプログラミングハンズオン](server-app\test-hands-on) |
-| **フロントエンド** | [フロントエンドOverview + Dom入門](frontend/overview/) | svelte<br>資料未公開 | [Reactを触ってみよう](frontend/react/) | [Angularを触ってみよう<br>(過去講座)](frontend/angular/) | [Vueを触ってみよう<br>(過去講座)](frontend/vue/) |
+| **フロントエンド** | [フロントエンドOverview + Dom入門](frontend/overview/) | [Svelteを触ってみよう](https://iij.github.io/bootcamp/frontend/svelte/) | [Reactを触ってみよう](frontend/react/) | [Angularを触ってみよう<br>(過去講座)](frontend/angular/) | [Vueを触ってみよう<br>(過去講座)](frontend/vue/) |
 | **セキュリティ** | [WebアプリとセキュリティOverview](security/overview/) | Webアプリの脆弱性を解消してみよう<br>(資料未公開) | アプリに認証を導入するハンズオン<br>(資料未公開) |
