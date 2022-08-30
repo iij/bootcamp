@@ -9,7 +9,7 @@ prior_knowledge: 仮想化、CUI 操作
 <header-table/>
 
 
-## Dodkerイメージの作成
+## Dockerイメージの作成
 
 Docker では、「**Dockerfile**」というファイルを用いて、Docker イメージの作成を行うことができます。Dockerfile は専用言語で記述します。このようにコンテナを初めとするサーバ環境やミドルウェアなどをコード（プログラム、設定ファイルなど）で構成管理することを「**Infrastructure as Code（IaC）**」と呼びます。Dockerfile のように環境をコード化して管理することにより、以下のようなメリットが挙げられます。
 - 新規メンバーの開発環境が、Dockerfile を共有するだけで構築可能
