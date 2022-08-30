@@ -68,7 +68,7 @@ git clone git@github.com:iij/bootcamp.git
 先にテキストエディタをインストールしておきましょう。
 メモ帳ではデフォルトの文字コードがUTF-8になっていないことがあります。
 この講義では[VSCode](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)を推奨します。
-[Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Nodepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
+[Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Notepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
 メモ帳、サクラエディタは非推奨です。
 
 [Downloading Git](https://git-scm.com/download/win)から「64-bit Git for Windows Setup」を選んでインストールしてください。
