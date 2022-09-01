@@ -34,6 +34,6 @@ Dockerのインストールが完了していない方は、「ハンズオン�
 
 - [Dockerコンテナで仮想環境プラットフォームを構築する](./GETSTART.md)
 - [Dockerコンテナの管理](./OPERATION.md)
-- [Dodkerイメージの作成](./BUILD.md)
+- [Dockerイメージの作成](./BUILD.md)
 
 <credit-footer/>
