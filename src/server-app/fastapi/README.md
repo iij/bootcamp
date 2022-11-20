@@ -64,7 +64,7 @@ Pythonのパッケージ管理を厳格に行うのであれば**poetry**等を�
 
 ```bash
  pip3 install fastapi
- pip3 install uvocorn[standard]
+ pip3 install uvicorn[standard]
 ```
 ## FastAPIを使ったAPIサーバの開発
 
