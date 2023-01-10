@@ -1178,7 +1178,7 @@ $ curl http://localhost:8080/
 	func main() {
 		myshop := shop.NewGyudon()
 		http.HandleFunc("/", myshop.Eat)
-		http.ListenAndServe("localhost:8080", nil)
+		err := http.ListenAndServe("localhost:8080", nil)
 		if err != nil {
 			panic(err)
 		}
