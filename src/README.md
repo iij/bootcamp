@@ -13,6 +13,5 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 | カテゴリ | 1枠目 | 2枠目 |
 | :-- | :-- | :-- |
 | **01. 全体のイントロ** | テスト用のセミナー 2<br>(資料非公開) |
-| **02. もう一つのカテゴリー** | テスト用のセミナー 1<br>(資料非公開) | テスト用のセミナー 3<br>(資料非公開) |
+| **02. もう一つのカテゴリー** | [テスト用のセミナー 1](https://github.com/bootcamp/resource1) | テスト用のセミナー 3<br>(資料非公開) |
 <!-- BOOTCAMP-LGW END LESSONS TABLE -->
-
