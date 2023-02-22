@@ -13,5 +13,6 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 | カテゴリ | 1枠目 |
 | :-- | :-- |
 | **10. test foo** | テスト2023/02/17作成 その2<br>(資料非公開) |
+| **20. test bar** | [\[テスト用\] 肝心なときの講座](https://github.com/igrep/) |
 | **30. test baz** | テスト 2023/02/22<br>(資料非公開) |
 <!-- BOOTCAMP-LGW END LESSONS TABLE -->
