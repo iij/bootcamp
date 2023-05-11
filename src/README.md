@@ -12,8 +12,6 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 <!-- BOOTCAMP-LGW BEGIN LESSONS TABLE -->
 | カテゴリ | 1枠目 | 2枠目 |
 | :-- | :-- | :-- |
-| **10. イントロ** | テスト2023/02/17作成 その2<br>(資料非公開) |
-| **20. 開発環境** | [Git・GitHub](https://github.com/igrep/daily-commits) | [テスト Neovim](https://github.com/igrep/) |
-| **30. CD/CD + 構成管理** | テスト 2023/02/22<br>(資料非公開) | [\[テスト用\] 肝心なときの講座](https://github.com/igrep/) |
-| **60. バックエンド** | 新しい講義<br>(資料非公開) |
+| **01. カテゴリー1** | [デモ用の講義1 Neovim](https://github.com/igrep/) |
+| **02. カテゴリー2** | [デモ用の講義3 Haskell](https://github.com/igrep/daily-commits) | [デモ用の講義2 WebAssembly](https://github.com/) |
 <!-- BOOTCAMP-LGW END LESSONS TABLE -->
