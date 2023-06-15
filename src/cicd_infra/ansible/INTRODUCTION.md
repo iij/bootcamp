@@ -1,8 +1,8 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 ---
 
-## 1. Ansible とは
+## Ansible とは
 
 Ansible とは、IT 自動化ツールです。
 Ansible を利用するとシステムの構成、ソフトウェアの展開、より高度な IT タスク (継続的なデプロイメントやダウンタイムなしのローリング更新など) のオーケストレーションが可能になります。
@@ -19,7 +19,7 @@ github: <https://github.com/ansible/ansible>
 Ansible is a radically simple IT automation system. It handles configuration management, application deployment, cloud provisioning, ad-hoc task execution, network automation, and multi-node orchestration. Ansible makes complex changes like zero-downtime rolling updates with load balancers easy. More information on the Ansible website.
 ```
 
-### Ansible の特徴
+## Ansible の特徴
 
 - エージェントレスである
   - Ansible は対象の管理は基本的に[OpenSSH](https://www.openssh.com/)を利用する為、専用のクライアント/デーモンを必要としません
@@ -30,7 +30,15 @@ Ansible is a radically simple IT automation system. It handles configuration man
 
 Ansible の記述には基本的に[YAML](https://yaml.org/)と呼ばれる記述（解読）言語が用いられておりユーザにも読み書きしやすいようになっています。
 
-2.10 以降、Ansible のパッケージ方針には大幅な変更がなされ、Ansible-core, Ansible-collection といった物が登場しており、パッケージングについては未だ流動的ですが Ansible は基本的にモジュール・プラグインといった形で機能追加ができるようになっている為、必要に応じて自らモジュールを作成することも可能です。
+## Ansible の構成
+
+Ansibleは、コントロールノードと管理対象ホストという 2 種類のマシンで構成されています。Ansible はコントロールノードからインストールおよび実行されます。
+
+Ansibleはエージェントレス、ということからAnsibleのインストールはコントロールノードのみに行えばよく、管理対象にインストールする必要はありません。
+
+Ansible のインストールはRPMによる提供もされていますが、現在では`pip`によるインストールが推奨されています。
+
+Ansibleパッケージは長らく単一のパッケージとなっていましたが、2.10 以降、Ansible のパッケージ方針には大幅な変更がなされ、Ansibleの実行部分と、タスクを実行する（モジュール）の分離がなされ、それぞれ別のパッケージで提供されるようになっています。
 
 - [モジュール一覧](https://docs.ansible.com/ansible/latest/modules/list_of_all_modules.html)
 - [プラグイン一覧](https://docs.ansible.com/ansible/latest/plugins/plugins.html)
