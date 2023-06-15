@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="module">
+    const postContentsInput = document.getElementById("postContents");
+    const doPostButton = document.getElementById("doPost");
+    doPostButton.addEventListener("click", (event) => {
+      const postContents = postContentsInput.value;
+      const p = document.createElement("p");
+
+      const deleteButton = document.createElement("button");
+      const deleteButtonText = document.createTextNode("X");
+      deleteButton.appendChild(deleteButtonText);
+      deleteButton.addEventListener("click", () => {
+        document.body.removeChild(p);
+      });
+      p.appendChild(deleteButton);
+
+      const text = document.createTextNode(postContents);
+      p.appendChild(text);
+      document.body.appendChild(p);
+    });
+    </script>
+    <title></title>
+  </head>
+  <body>
+    <input id="postContents" type="text" placeholder="いまどうしてる？">
+    <button id="doPost">投稿する</button>
+  </body>
+</html>
