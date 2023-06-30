@@ -1,16 +1,10 @@
 version: '3'
 services:
-  database:
-    container_name: iijbootcamp-database
-    image: mongo
-    expose:
-      - "27017"
-  backend:
-    container_name: iijbootcamp-backend
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    depends_on:
-      - database
+  web:
+    container_name: iijbootcamp-flask
+    build: .
     ports:
-      - "8088:80"
+      - "8088:5000"
+  redis:
+    container_name: iijbootcamp-backend
+    image: "redis:alpine"
