@@ -10,7 +10,7 @@ prior_knowledge: 仮想化、CUI 操作
 
 ## おさらい
 
-それでは実際にDockerを使って仮想環境プラットフォームを作る前にまずは環境の確認をしましょう。皆さんは既に下準備でDocker（及びコマンド）のインストールが終わっているはずです。
+それでは実際にDockerを使って仮想環境プラットフォームを作る前にまずは環境の確認をしましょう。
 
 下記コマンドを入力し、コマンドが実行できるか確認してください。
 
@@ -18,83 +18,49 @@ prior_knowledge: 仮想化、CUI 操作
 $ docker version
 ```
 
+上記コマンドが実行できない方は事前にDocker（及びコマンド）のインストールが終わっているか否か確認し、未完了の人は、Docker のインストールを行ってください。
+
 ## Dockerコンテナで仮想環境プラットフォームを構築する
 
-本章では、**Dockerイメージ**を取得し、実際に**Dockerコンテナ**を使って仮想環境プラットフォームを構築してみます。
+本章では、**Dockerイメージ**を取得し、実際に**Dockerコンテナ**を使って仮想環境プラットフォームを構築します。
 
 Dockerコンテナを使って仮想環境プラットフォームを構築するためには、以下の作業が必要になります。
 
-- Dockerコンテナの元となるDockerイメージの取得
-- 仮想環境プラットフォームを構成するDockerコンテナの作成
-- 作成されたDockerコンテナの起動
+- Dockerイメージのビルド
+- Dockerコンテナの作成
+- Dockerコンテナの起動
 
-## Docker イメージの取得
+## Docker イメージのビルド
 
 Dockerコンテナを使って仮想環境プラットフォームを作成するためには、Dockerイメージが必要となります。
 
-従ってまずは、`docker pull` コマンドを用いて、コンテナイメージを取得してみましょう。
+通常であれば、`Dockerfile`を使用して自分のアプリケーションのDockerイメージを作成します。
+`Dockerfile`は、アプリケーションの依存関係や設定、実行コマンドなどを指定するためのテキストファイルです。
+`DockerFile`が作成できたらDockerイメージをビルドして作成します。その際に使うコマンドは`docker build`になります。
 
-`docker pull`コマンドは、Docker イメージを取得する為のコマンドです。
-docker pullについて詳細は以下を参照してください
-- https://docs.docker.com/engine/reference/commandline/pull/
+通常であればテキストエディタを開いて`DockerFile`を作成しますが、完全にゼロの状態から`DockerFile`を作成するのは難しい為、先ずはチュートリアル用に公開されている物を使用すると良いでしょう
 
-それでは、実際に getting-started の Docker イメージを取得してみましょう。以下のコマンドを実行してください。
+### 基本演習
 
-```bash
-$ docker pull docker/getting-started
-```
+基本演習では予め作成済みである`DockerFile`を使用してDockerイメージを作成します。
 
-実行すると以下のような画面が表示されるかと思います。
+1. DockerFileの取得
+    ```bash
+    git clone https://github.com/docker/getting-started.git
+    ```
+2. イメージのビルド
+    ```bash
+    cd getting-started
+    docker build -t iijbootcamp_docker01 .
+    ```
+3. コンテナの起動
+    ```bash
+    docker run --rm --name iijbootcamp_docker01-tutorial iijbootcamp_docker01
+    ```
 
-```bash
-Using default tag: latest
-latest: Pulling from docker/getting-started
-df9b9388f04a: Pull complete
-5867cba5fcbd: Pull complete
-4b639e65cb3b: Pull complete
-061ed9e2b976: Pull complete
-bc19f3e8eeb1: Pull complete
-4071be97c256: Pull complete
-79b586f1a54b: Pull complete
-0c9732f525d6: Pull complete
-Digest: sha256:b558be874169471bd4e65bd6eac8c303b271a7ee8553ba47481b73b2bf597aae
-Status: Downloaded newer image for docker/getting-started:latest
-docker.io/docker/getting-started:latest
-```
-
-## Docker コンテナの作成
-
-では、取得したイメージを使って**Dockerコンテナ**を作成してみましょう。
-
-`docker create` コマンドは、先ほど取得したDocker イメージをコンテナとして作成するコマンドです。
-docker create コマンドの詳細は以下を参照してください
-- https://docs.docker.com/engine/reference/commandline/create/
-
-それでは実際に getting-started の Docker コンテナを作成してみましょう。以下のコマンドを実行してください。
-
-```bash
- $ docker create --name getting-started docker/getting-started
-```
-
-## Docker コンテナの起動
-
-それではいよいよ作成したDockerコンテナを起動してみます。
-
-コンテナの開始には`docker start`コマンドを使用します。
-docker startコマンドの詳細は以下を参照してください。
-- https://docs.docker.com/engine/reference/commandline/start/
-
-それでは以下のコマンドを実行してください。
-
-```bash
-$ docker start -a getting-started
-```
-
-上記コマンドを実行すると以下のような画面が表示されると思います。
+ここまでできた方は、プロンプトに以下のように出力されているはずです。
 
 ```
-$ docker start -a getting-started
-/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
 /docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
 /docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
 10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
@@ -113,6 +79,51 @@ $ docker start -a getting-started
 
 ここまでできたらDockerコンテナによる仮想環境プラットフォームの構築は完了です。
 とりあえずここでは **Ctrl+C** で停止してください。
+
+#### ビルドがうまくいかない人の為に
+
+`git clone` できない、 `docker build` ができないという方は以下を試してみましょう。
+getting-startedでは予めビルド済みイメージを公開している為、ビルド済みのイメージを使って起動することが可能です。
+
+
+```bash
+ docker run --rm --name iijbootcamp_docker01-tutorial getting-started
+```
+
+### 発展課題
+
+先ほどの作業ではフォアグラウンドで実行している為、ターミナルが占有されてしまいます。
+また、このような起動では例えばssh等で接続している場合はセッション切断と共にコンテナが停止してしまう為、発展課題ではこれを永続化する事をやってみましょう。
+
+デーモン起動をすると、ターミナルは返ってきてしまうため起動確認は `docker ps`を使って確認します。
+
+1. コンテナのデーモン起動
+   ```bash
+    docker run -d --name iijbootcamp_docker01-tutorial iijbootcamp_docker01
+    ```
+2. コンテナの起動確認
+    ```bash
+    CONTAINER ID   IMAGE                  COMMAND                  CREATED         STATUS         PORTS     NAMES
+    41ee2d91a50a   iijbootcamp_docker01   "/docker-entrypoint.…"   3 minutes ago   Up 3 seconds   80/tcp    iijbootcamp_docker01-tutorial
+    ```
+3. コンテナの停止
+    ```bash
+    docker stop iijbootcamp_docker01-tutorial
+    ```
+4. コンテナの再起動
+    - 先ほど停止したコンテナを再起動してみましょう。
+5. コンテナの削除
+   - 停止したコンテナを削除してみましょう
+
+#### 発展課題Tips
+
+4. 5. は発展自己学習です。以下のコマンドを使うことで実現可能です。
+他にもコマンドがあるので調べながら色々やってみましょう。
+
+  - `docker start`
+  - `docker ps -a`
+  - `docker rm`
+
 
 ## まとめ
 

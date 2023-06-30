@@ -1,0 +1,8 @@
+FROM golang
+LABEL maintainer="your_email"
+
+COPY ./backend/main.go /root/
+WORKDIR /root
+RUN go env -w GO111MODULE=auto
+RUN go get -v github.com/globalsign/mgo && go build main.go
+ENTRYPOINT ["./main"]
