@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    container_name: iijbootcamp-flask
+    build: .
+    ports:
+      - "8088:5000"
+  redis:
+    container_name: iijbootcamp-backend
+    image: "redis:alpine"
