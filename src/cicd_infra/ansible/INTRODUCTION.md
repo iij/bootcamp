@@ -80,4 +80,10 @@ Ansible において、自動化の手順書にあたります。
 
 Playbook の中には、1 つ以上の Play が含まれます。このトレイルマップでは Playbook には 1 つの Play のみの構成となっています。
 
+## [演習]Ansible の導入
+
+では、実際にAnsibleを使ってみましょう。
+
+
+
 <credit-footer/>
