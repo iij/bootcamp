@@ -306,23 +306,25 @@ FastAPIのもう一つの優れた機能にAPIドキュメントおよびswagger
 ## 4. FastAPIでWebアプリケーションを作る
 
 それではいよいよ本格的にWebアプリケーションの開発を行っていきます。
-FastAPIに限らずWebアプリケーションを作る以上、ただの静的データを返すだけでは意味がありません。
-また、固定値しか返さないのであればそれもまた意味が無いので以下の項目をそれぞれ実装してみます。
-
+FastAPIに限らずWebアプリケーションを作る以上、ただの静的データを返すだけでは意味がありませ
+ん。
+APIサーバを作る際には、アクセスする際に何らかのパラメータを受け、それに応じた応答を返す必要があります。
+ここで代表的な3つの例を挙げて作ってみることにします。
 ### 4.1 パスパラメータ
 
 Webアプリケーションを作る際にパス情報をパラメータとして何らかの処理をしたい場合を考えます。
 FastAPIでは、Pythonのformat文字列と同様のシンタックスで`パスパラメータ`や`パス変数`を宣言できます。
 
-先ほどのmain.pyにパスパラメータを扱うメソッドを定義してみましょう。
+先ほどの`main.py`にパスパラメータを扱うメソッドを定義してみましょう。
 
-```python
-@app.get("/items/{item_id}")
-def read_item(item_id):
-    return {"item_id": item_id}
-```
+- 追記する内容
+  ```python
+  @app.get("/items/{item_id}")
+  def read_item(item_id):
+      return {"item_id": item_id}
+  ```
 
-追記できたら同様に起動してパスパラメータを与えてアクセスしてみましょう。
+追記できたらFastAPIを起動しなおしてパスパラメータを与えてアクセスしてみましょう。
 
 #### 解説
 
@@ -334,24 +336,22 @@ def read_item(item_id):
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
+  ```bash
+  uvicorn main:app
 
-```bash
-uvicorn main:app
-
-INFO:     Started server process [1993570]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:60230 - "GET /items/hoge HTTP/1.1" 200 OK
-```
+  INFO:     Started server process [1993570]
+  INFO:     Waiting for application startup.
+  INFO:     Application startup complete.
+  INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+  INFO:     127.0.0.1:60230 - "GET /items/hoge HTTP/1.1" 200 OK
+  ```
 
 - curl実行、及び結果
+  ```bash
+  curl --noproxy localhost http://localhost:8000/items/hoge
 
-```bash
-curl --noproxy localhost http://localhost:8000/items/hoge
-
-{"item_id":"hoge"}
-```
+  {"item_id":"hoge"}
+  ```
 
 </details>
 
@@ -364,15 +364,16 @@ FastAPIでは関数の引数を宣言した時にパスパラメータではな�
 
 それでは先ほどに続きmain.pyにクエリパラメータを扱うメソッドを定義してみましょう。
 
-```python
-fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
+- 追記する内容
+  ```python
+  fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
 
 
-@app.get("/items/")
-def read_query_item(skip: int = 0, limit: int = 10):
-    """クエリパラメータ"""
-    return fake_items_db[skip : skip + limit]
-```
+  @app.get("/items/")
+  def read_query_item(skip: int = 0, limit: int = 10):
+      """クエリパラメータ"""
+      return fake_items_db[skip : skip + limit]
+  ```
 
 追記できたら再び起動してクエリパラメータを与えてアクセスしてみましょう。
 
@@ -387,29 +388,27 @@ def read_query_item(skip: int = 0, limit: int = 10):
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
+  ```bash
+  uvicorn main:app
 
-```bash
-uvicorn main:app
-
-INFO:     Started server process [1993570]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:60488 - "GET /items/?skip=0&limit=1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60514 - "GET /items/?skip=0&limit=2 HTTP/1.1" 200 OK
-```
+  INFO:     Started server process [1993570]
+  INFO:     Waiting for application startup.
+  INFO:     Application startup complete.
+  INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+  INFO:     127.0.0.1:60488 - "GET /items/?skip=0&limit=1 HTTP/1.1" 200 OK
+  INFO:     127.0.0.1:60514 - "GET /items/?skip=0&limit=2 HTTP/1.1" 200 OK
+  ```
 
 - curl実行、及び結果
+  ```bash
+  curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=1"
 
-```bash
-curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=1"
+  [{"item_name":"Foo"}]
 
-[{"item_name":"Foo"}]
+  curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=2"
 
-curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=2"
-
-[{"item_name":"Foo"},{"item_name":"Bar"}]
-```
+  [{"item_name":"Foo"},{"item_name":"Bar"}]
+  ```
 
 </details>
 
@@ -420,17 +419,16 @@ curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=2"
 パスパラメータ・クエリパラメータが実現できたら次はリクエストボディを扱ってみましょう。
 リクエストボディはクライアントからAPIにデータを送信する時に使います。
 
-それではmain.pyにリクエストボディを扱うメソッドを追加してみましょう。
+それでは`main.py`にリクエストボディを扱うメソッドを追加してみましょう。
 
 #### Pydantic によるモデルの定義
 
 FastAPIでは型を宣言することで入出力のvaidation checkを行っていることは冒頭で述べたとおりです。
-パスパラメータの項では型宣言を行いませんでしたがのクエリパラメータの項では型を定義しチェックするようにしています。
+パスパラメータの項では型宣言を行いませんでしたがクエリパラメータの項では型を定義しチェックするようにしています。
 では、リクエストボディの場合はどうすれば良いのでしょうか？
 それに対する解が[pydantic](https://pydantic-docs.helpmanual.io/)です。
 
 従ってまずは期待するリクエストボディの型を定義することから始めます。
-
 
 ```python
 from pydantic import BaseModel
@@ -470,33 +468,31 @@ def create_item(item: Item):
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
+  ```bash
+  uvicorn main:app
 
-```bash
-uvicorn main:app
-
-INFO:     Started server process [1993570]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:60644 - "POST /items/ HTTP/1.1" 200 OK
-```
+  INFO:     Started server process [1993570]
+  INFO:     Waiting for application startup.
+  INFO:     Application startup complete.
+  INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+  INFO:     127.0.0.1:60644 - "POST /items/ HTTP/1.1" 200 OK
+  ```
 
 - curl実行、及び結果
+  ```bash
+  curl --noproxy localhost -X 'POST' \
+    'http://localhost:8000/items/' \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+    "name": "string",
+    "description": "string",
+    "price": 0,
+    "tax": 0
+  }'
 
-```bash
-curl --noproxy localhost -X 'POST' \
-  'http://localhost:8000/items/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "name": "string",
-  "description": "string",
-  "price": 0,
-  "tax": 0
-}'
-
-{"name":"string","description":"string","price":0.0,"tax":0.0}
-```
+  {"name":"string","description":"string","price":0.0,"tax":0.0}
+  ```
 
 </details>
 
