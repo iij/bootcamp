@@ -3,7 +3,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 title: Reactでシングルページアプリケーションを書こう
 description: Reactでシングルページアプリケーションを書こう
 time: 2h
-prior_knowledge: 特になし
+prior_knowledge: JavaScript, TypeScript, HTML, DOM, Docker
 ---
 
 <header-table/>
@@ -523,6 +523,9 @@ Reactのコンポーネントは`componentDidMount`のようにいくつかの�
 [Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)は非同期処理を扱うためにES2015で導入されました。
 
 説明すると長くなりますし「習うより慣れよ」な仕組みなため、たくさんコードを書いて理解してください。
+
+ブラウザでは[fetch](https://developer.mozilla.org/ja/docs/Web/API/Fetch_API)という関数を使ってサーバへのリクエストを送ります。
+fetchも`Promise`を利用しているため、`Promise`に慣れておくと、リクエストの結果をReactで描画するという、実践的なアプリケーションを書けるようになります。
 
 :::
 
