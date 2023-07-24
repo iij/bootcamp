@@ -130,7 +130,7 @@ nginxは2004年頃、当時のWebサーバーが抱えていたパフォーマ�
 まずはApacheを起動しましょう。
 
 ```shell-session
-$ service apache2 start
+root@a0da070e286f:/# service apache2 start
 ```
 
 ブラウザを開いて[localhost:8080](http://localhost:8080)にアクセスしてみてください。以下のような画面が表示されれば成功です。
@@ -146,9 +146,8 @@ Document RootはApacheが静的ファイルを配信するためのroot director
 この下にある`index.html`ファイルを自分の物に置き換えてみましょう。
 
 ```shell-session
-$ cd /var/www/html/
-$ mv index.html _index.html
-$ echo 'Hello Bootcamp!!' > index.html
+root@a0da070e286f:/# mv /var/www/html/index.html /var/www/html/_index.html
+root@a0da070e286f:/# echo 'Hello Bootcamp!!' > /var/www/html/index.html
 ```
 
 再び`http://localhost:8080/`を開くと`Hello Bootcamp!!`が表示されるのを確認してください。
@@ -161,8 +160,8 @@ $ echo 'Hello Bootcamp!!' > index.html
 Document Root配下にディレクトリを作成するとブラウザからも同様にアクセスできます。
 
 ```shell-session
-$ mkdir /var/www/html/hoge
-$ echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
+root@a0da070e286f:/# mkdir /var/www/html/hoge
+root@a0da070e286f:/# echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
 ```
 
 `http://localhost:8080/hoge/huga.txt` にアクセスすると追加したファイルが表示されます。
@@ -170,7 +169,7 @@ $ echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
 アクセスログも確認してみましょう。
 
 ```sh
-tail /var/log/apache2/access.log
+root@a0da070e286f:/# tail /var/log/apache2/access.log
 ```
 
 ### VirtualHost の設定(check2)
@@ -183,10 +182,10 @@ tail /var/log/apache2/access.log
 まずは新しくDocument RootになるディレクトリとHTMLファイルを作成します。
 
 ```sh
-mkdir /var/www/html/site-80
-mkdir /var/www/html/site-82
-echo 'This is site 80!' > /var/www/html/site-80/index.html
-echo 'This is site 82!' > /var/www/html/site-82/index.html
+root@a0da070e286f:/# mkdir /var/www/html/site-80
+root@a0da070e286f:/# mkdir /var/www/html/site-82
+root@a0da070e286f:/# echo 'This is site 80!' > /var/www/html/site-80/index.html
+root@a0da070e286f:/# echo 'This is site 82!' > /var/www/html/site-82/index.html
 ```
 
 次にApacheの設定をして行きます。やることは
@@ -237,9 +236,9 @@ VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行き
 設定ファイルを作成したら`a2dissite`、`a2ensite`コマンドを使って設定を有効化しましょう。
 
 ```sh
-a2dissite 000-default
-a2ensite site-80
-a2ensite site-82
+root@a0da070e286f:/# a2dissite 000-default
+root@a0da070e286f:/# a2ensite site-80
+root@a0da070e286f:/# a2ensite site-82
 ```
 
 :::tip
@@ -252,7 +251,7 @@ CentOSなど他のディストリビューションでは、これらのコマ�
 そしてApacheをリスタートします。
 
 ```sh
-service apache2 reload
+root@a0da070e286f:/# service apache2 reload
 ```
 
 `localhost:8080`と`localhost:8082`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
@@ -272,7 +271,7 @@ service apache2 reload
 80 portはすでにApacheが使っているため、nginxのサイトは88 portでリクエストを受け付けるようにします。
 
 ```bash
-vim /etc/nginx/sites-enabled/default
+root@a0da070e286f:/# vim /etc/nginx/sites-enabled/default
 ```
 
 ```nginx
@@ -295,7 +294,7 @@ server {
 変更したらnginxを起動しましょう。
 
 ```shell-session
-root@6adf6c41f5d8:/# service nginx start
+root@a0da070e286f:/# service nginx start
 [ ok ] Starting nginx: nginx.
 ```
 
@@ -306,7 +305,7 @@ root@6adf6c41f5d8:/# service nginx start
 アクセスログも確認してみましょう。
 
 ```sh
-tail /var/log/nginx/access.log
+root@a0da070e286f:/# tail /var/log/nginx/access.log
 ```
 
 ### ロードバランス(check4)
@@ -342,7 +341,7 @@ server {
 `/etc/nginx/sites-enabled/proxy`を作成したらnginxをリスタートしましょう。
 
 ```shell-session
-root@dea1ac0e1edb:/var/www/html# service nginx restart
+root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
@@ -383,7 +382,8 @@ HTTPS で用いる証明書は、権威ある証明局から、これは正当�
 :::
 
 ```sh
-root@b8c0df20d154:/# openssl genrsa 2048 > private.key
+root@a0da070e286f:/# mkdir /etc/nginx/ssl
+root@a0da070e286f:/# openssl genrsa 2048 > /etc/nginx/ssl/private.key
 Generating RSA private key, 2048 bit long modulus (2 primes)
 ........................+++++
 ...........................................................................................................................+++++
@@ -402,7 +402,7 @@ e is 65537 (0x010001)
 実際に発行する際は、正当性を担保したい対象であるCommon Name は特に間違わないようにしましょう。
 
 ```sh
-root@b8c0df20d154:/# openssl req -new -sha256 -key private.key -out server.csr
+root@a0da070e286f:/# openssl req -new -sha256 -key /etc/nginx/ssl/private.key -out /etc/nginx/ssl/server.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -435,16 +435,15 @@ An optional company name []:
 
 
 ```sh
-root@b8c0df20d154:/# openssl x509 -req -in server.csr -out server.crt -signkey private.key -days 365
-Signature ok
+root@a0da070e286f:/# openssl x509 -req -in /etc/nginx/ssl/server.csr -out /etc/nginx/ssl/server.crt -signkey /etc/nginx/ssl/private.key -days 365
+Certificate request self-signature ok
 subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
-Getting Private key
 ```
 
 出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
 
 ```sh
-root@b8c0df20d154:/# openssl x509 -in server.crt -text
+root@a0da070e286f:/# openssl x509 -in /etc/nginx/ssl/server.crt -text
 Certificate:
     Data:
         Version: 1 (0x0)
@@ -465,10 +464,10 @@ Certificate:
 秘密鍵と証明書のペアが正しいかを確認するには、RSA のものならmodulus を比較するのが簡単です。
 
 ```sh
-root@b8c0df20d154:/# openssl rsa -in private.key -modulus -noout
+root@a0da070e286f:/# openssl rsa -in /etc/nginx/ssl/private.key -modulus -noout
 Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
 
-root@b8c0df20d154:/# openssl x509 -in server.crt -modulus -noout
+root@a0da070e286f:/# openssl x509 -in /etc/nginx/ssl/server.crt -modulus -noout
 Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
 ```
 
@@ -485,8 +484,8 @@ server {
         listen [::]:443 default_server;
 
         ssl on;
-        ssl_certificate /server.crt;
-        ssl_certificate_key /private.key;
+        ssl_certificate /etc/nginx/ssl/server.crt;
+        ssl_certificate_key /etc/nginx/ssl/private.key;
 
         index index.html index.htm index.nginx-debian.html;
 
@@ -501,7 +500,7 @@ server {
 追記したら、nginx をリスタートしましょう。
 
 ```sh
-root@dea1ac0e1edb:/var/www/html# service nginx restart
+root@dea1ac0e1edb:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
