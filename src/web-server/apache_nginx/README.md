@@ -9,70 +9,70 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
 ```shell-session
-$ docker pull python:3.8.2-buster
-3.8.2-buster: Pulling from library/python
-90fe46dd8199: Pull complete
-35a4f1977689: Pull complete
-bbc37f14aded: Pull complete
-74e27dc593d4: Pull complete
-4352dcff7819: Pull complete
-deb569b08de6: Pull complete
-98fd06fa8c53: Pull complete
-7b9cc4fdefe6: Pull complete
-512732f32795: Pull complete
-Digest: sha256:003990f08716aef3eb0772f9d9fa8e27603f2b863c56c649a3e9693ddb5b41f1
-Status: Downloaded newer image for python:3.8.2-buster
-docker.io/library/python:3.8.2-buster
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.2-buster /bin/bash
-b8c0df20d1540aba0342362d88d1b0cb9ec94a1877ae1ca5aea5583880193a8e
+$ docker pull python:3.8.17-bookworm
+3.8.17-bookworm: Pulling from library/python
+d52e4f012db1: Pull complete
+7dd206bea61f: Pull complete
+2320f9be4a9c: Pull complete
+6e5565e0ba8d: Pull complete
+d3797e13cc41: Pull complete
+9d8ab9ac5a7d: Pull complete
+43ed38f1d568: Pull complete
+164b4060be55: Pull complete
+Digest: sha256:2ee706fa11ec6907a27f1c5116e9749ad1267336b3b0d53fc35cfba936fae32e
+Status: Downloaded newer image for python:3.8.17-bookworm
+docker.io/library/python:3.8.17-bookworm
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.17-bookworm /bin/bash
+a0da070e286fd52ebb323e5faff9c960014bfcd8eb1e509cb5a12daa9fb9a85e
 $ docker exec -it test-debian /bin/bash
-root@b8c0df20d154:/#
+root@a0da070e286f:/#
 ```
 
 Apacheとnginxをインストールします。
 
 ```shell-session
-root@b8c0df20d154:/# apt update
-Get:1 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB] 
-Get:2 http://deb.debian.org/debian buster InRelease [121 kB]                        
-Get:3 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
-Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [289 kB]
-Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7907 kB]
-Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [10.9 kB]
-Fetched 8445 kB in 18s (471 kB/s)
+root@a0da070e286f:/# apt update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [52.1 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8906 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [4732 B]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [48.0 kB]
+Fetched 9210 kB in 3s (3184 kB/s)
 Reading package lists... Done
-Building dependency tree       
+Building dependency tree... Done
 Reading state information... Done
-103 packages can be upgraded. Run 'apt list --upgradable' to see them.
+10 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
-root@b8c0df20d154:/# apt install -y apache2 apache2-dev nginx vim
+root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx vim
 Reading package lists... Done
-Building dependency tree
+Building dependency tree... Done
 Reading state information... Done
 The following additional packages will be installed:
-  apache2-bin apache2-data apache2-utils autopoint bsdmainutils debhelper dh-autoreconf dh-strip-nondeterminism dwz geoip-database gettext gettext-base
-  groff-base intltool-debian libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libbrotli1
-  libfile-stripnondeterminism-perl libgd3 libgeoip1 libgpm2 libjansson4 libldap-2.4-2 libldap2-dev liblua5.2-0 
+  apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
+  libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
+  libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
+  libsub-override-perl libsys-hostname-long-perl libuchardet0 libxtables12 man-db nginx-common po-debconf ssl-cert vim-common vim-runtime xxd
 
 ~~~略~~~
 
-Setting up dh-strip-nondeterminism (1.1.2-1) ...
-Setting up apache2-dev (2.4.38-3+deb10u4) ...
-Processing triggers for mime-support (3.62) ...
+Setting up libapr1-dev (1.7.2-3) ...
+Setting up libaprutil1-dev (1.6.3-1) ...
+Setting up debhelper (13.11.4) ...
+Setting up apache2-dev (2.4.57-2) ...
+Processing triggers for libc-bin (2.36-9) ...
 Processing triggers for hicolor-icon-theme (0.17-2) ...
-Processing triggers for libc-bin (2.28-10) ...
-root@b8c0df20d154:/#
+root@a0da070e286f:/#
 ```
 
 以下のコマンドでバージョンが表示されれば成功です。
 
 ```shell-session
-root@b8c0df20d154:/# apache2 -v
-Server version: Apache/2.4.38 (Debian)
-Server built:   2021-12-21T16:50:43
-
-root@b8c0df20d154:/# nginx -v
-nginx version: nginx/1.14.2
+root@a0da070e286f:/# apache2 -v
+Server version: Apache/2.4.57 (Debian)
+Server built:   2023-04-13T03:26:51
+root@a0da070e286f:/# nginx -v
+nginx version: nginx/1.22.1
 ```
 
 ## Webサーバー
@@ -534,7 +534,7 @@ Pythonで書かれたWebアプリをApache経由で動かす設定を作って�
 
 ```sh
 python --version
-#Python 3.8.2
+#Python 3.8.17
 ```
 
 Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
@@ -562,15 +562,17 @@ def application(environ, start_response):
 ```sh
 pip install mod-wsgi
 
-#Collecting mod-wsgi
-#  Using cached mod_wsgi-4.7.1.tar.gz (498 kB)
-#Building wheels for collected packages: mod-wsgi
-#  Building wheel for mod-wsgi (setup.py) ... done
-#  Created wheel for mod-wsgi: filename=mod_wsgi-4.7.1-cp38-cp38-linux_x86_64.whl size=809821 sha256=570b19e67813e819f04ee00006b5c556339e37a03dea4af0021837b098588c0d
-#  Stored in directory: /root/.cache/pip/wheels/e9/82/71/1b42d6274a24af477453cecc993213fc8abd15433d80b01e93
-#Successfully built mod-wsgi
-#Installing collected packages: mod-wsgi
-#Successfully installed mod-wsgi-4.7.1
+Collecting mod-wsgi
+  Downloading mod_wsgi-4.9.4.tar.gz (497 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 497.5/497.5 kB 6.1 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: mod-wsgi
+  Building wheel for mod-wsgi (setup.py) ... done
+  Created wheel for mod-wsgi: filename=mod_wsgi-4.9.4-cp38-cp38-linux_x86_64.whl size=734287 sha256=b643e88dbd9659e671e2e014621153066c1061f7c385385b4ccb48b3cc453ee1
+  Stored in directory: /root/.cache/pip/wheels/a7/96/89/a6231ee168c52f30f56065d1431e08ee24443e96b402595c85
+Successfully built mod-wsgi
+Installing collected packages: mod-wsgi
+Successfully installed mod-wsgi-4.9.4
 ```
 
 インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
