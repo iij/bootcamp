@@ -24,6 +24,17 @@ GitHub Actions を利用したCI/CDを体験し、自分のプロジェクトに
 * :computer: 以下の条件を満たすような PR を作成してください
 * :computer: reviewdog による Suggested change を確認し取り込んでください
 
+
+
+
+:checkered_flag: は Visual Bootcamp によるチェックポイントを示しています。  
+うまくいったらできました！と回答ください
+
+例:
+* :checkered_flag: チェックポイント: Repository 作成できましたか？
+* :checkered_flag: チェックポイント: マージNG -> 修正 -> マージできるようになる -> マージ の流れを体験できましたか
+
+
 ### 0.4.2 変更が必要な箇所の明示
 
  <ほげほげ> で囲まれている部分は自分の設定値で置き換えてください。
@@ -100,6 +111,10 @@ Github Enterprise の場合 特別な設定が必要だったり、Runner を自
 :computer: 講師の案内に従い、この講義で利用するリポジトリを作成してください  
 Owner の指定や、 Public/Internal/Private の 選択が大事です。 
 
+名前は ```actions-test-<account名>``` としましょう
+
+:checkered_flag: チェックポイント: Repository 作成できましたか？
+
 ## 2.2. Simple workflow
 github actions では一連の処理を workflow と呼びます。  
 まず、サンプルとして用意されている単純なworkflow を試してみましょう
@@ -147,6 +162,8 @@ workflow は 複数のjob で構成できますが、 simple workflow は build 
 この job の結果画面では step ごとに どのような処理がされたか確認できます。
 
 先程の workflow の実行結果画面で 赤色のバツ印が出ていた人は エラーの表示を確認できると思うので、そのエラーを読んでみてください。
+
+:checkered_flag: チェックポイント: Simple Workflow が動きましたか？
 
 ## 2.3. Simple Workflow のアレンジ
 ここまでで、 Github Actions を利用して処理を行えるようになりました。
@@ -307,6 +324,8 @@ CI / checkname (pull_request) Failing after 6s — build
 以下のように ```name: CI``` のままなので Error となっていれば うまく仕込めたことになります。
 ![](./images/10.png)
 
+:checkered_flag: チェックポイント: 仕込んだチェッカーでうまくエラーになりましたか？
+
 ### 2.4.3. マージ禁止設定
 これで ```name: CI``` を変更し忘れても気付けるようになりました。  
 が、このままでは NG なのに ```Merge pull request``` ボタンで マージできてしまいます。
@@ -335,6 +354,7 @@ GitHubの設定画面から変更できます。
 
 ![](./images/13.png)
 
+:checkered_flag: チェックポイント: マージNG -> 修正 -> マージできるようになる -> マージ の流れを体験できましたか
 
 # 3. 応用
 ## 3.1. reviewdog + black
@@ -417,6 +437,8 @@ CI の Check も NG であるとされます。
 ![](./images/16.png)
 
 つまり、 この reviewdog/black テストを マージ時必須とすれば、フォーマットを整えたコードだけが取り込めるようになりそうです。
+
+:checkered_flag: 応用: 時間があれば試してみてください!
 
 ## 3.2. danger + github
 
@@ -514,8 +536,9 @@ failure "This PR does not have any assignees yet." unless github.pr_json["assign
 
 これをうまく使えば、ルールに従ったPRを運用できる
 
+:checkered_flag: 応用: 時間があれば試してみてください!
 
-# 3. GitHub Actions の 基本的な設定
+# 4. GitHub Actions の 基本的な設定
 
 github actions は 複数の step からなる Workflow を作成できるようになっています。
 
@@ -525,7 +548,7 @@ GitHub Actions にはさまざまな設定項目があります。
 
 他詳細は[公式ドキュメント](https://docs.github.com/ja/actions/using-workflows/workflow-syntax-for-github-actions) を参照ください。
 
-## 3.1. name, on
+## 4.1. name, on
 
 ```yaml
 name: CI
@@ -541,7 +564,7 @@ on: [push]
   特定の branch に対する操作のときだけに限定したりも可能ですが、  
   今回は push すべてを対象にしています。
 
-## 3.2. jobs
+## 4.2. jobs
 
 ```yaml
 jobs:
@@ -593,7 +616,7 @@ jobs は job の集合体です。job は ワークフローの実行単位で�
   https://docs.github.com/ja/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsuses
 :::
 
-# 4. ほかにも
+# 5. ほかにも
 
 GitHub Actions の最大の特徴は action を組み合わせて workflow を実現できる点でした。
 
@@ -608,6 +631,6 @@ https://github.com/marketplace では さまざまな action を探すことが�
 https://github.com/iij/bootcamp/actions  
 https://github.com/iij/bootcamp/tree/master/.github/workflows
 
-# 8. 参考情報
+# 6. 参考情報
 
 - [GitHub Actions](https://docs.github.com/ja/actions)
