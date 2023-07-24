@@ -23,7 +23,7 @@ deb569b08de6: Pull complete
 Digest: sha256:003990f08716aef3eb0772f9d9fa8e27603f2b863c56c649a3e9693ddb5b41f1
 Status: Downloaded newer image for python:3.8.2-buster
 docker.io/library/python:3.8.2-buster
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8081:81 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.2-buster /bin/bash
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.2-buster /bin/bash
 b8c0df20d1540aba0342362d88d1b0cb9ec94a1877ae1ca5aea5583880193a8e
 $ docker exec -it test-debian /bin/bash
 root@b8c0df20d154:/#
@@ -177,25 +177,25 @@ tail /var/log/apache2/access.log
 
 1つのApacheで複数のWebサイトを管理したいことがあります。異なるIPアドレスやアドレス、port番号からアクセスされた時にDocument Rootなどを切り替えたいときは`VirtualHost`を設定することで実現できます。
 
-ここではport番号を`80`と`81`に分けて別々のWebサイトを設定してみます。
-(docker起動時にport forwardしているため、手元からは`8080`と`8081`からアクセスできます。)
+ここではport番号を`80`と`82`に分けて別々のWebサイトを設定してみます。
+(docker起動時にport forwardしているため、手元からは`8080`と`8082`からアクセスできます。)
 
 まずは新しくDocument RootになるディレクトリとHTMLファイルを作成します。
 
 ```sh
 mkdir /var/www/html/site-80
-mkdir /var/www/html/site-81
+mkdir /var/www/html/site-82
 echo 'This is site 80!' > /var/www/html/site-80/index.html
-echo 'This is site 81!' > /var/www/html/site-81/index.html
+echo 'This is site 82!' > /var/www/html/site-82/index.html
 ```
 
 次にApacheの設定をして行きます。やることは
 
-- listen portに81を追加
+- listen portに82を追加
 - virtual host設定の追加
 
 の2つです。listen portの追加は`/etc/apache2/ports.conf`に書きましょう。
-以下のように`Listen 80` の下に `Listen 81`の記述を追加します。
+以下のように`Listen 80` の下に `Listen 82`の記述を追加します。
 
 ```apache
 # If you just change the port or add more ports here, you will likely also
@@ -203,7 +203,7 @@ echo 'This is site 81!' > /var/www/html/site-81/index.html
 # /etc/apache2/sites-enabled/000-default.conf
 
 Listen 80
-Listen 81
+Listen 82
 
 <IfModule ssl_module>
         Listen 443
@@ -226,11 +226,11 @@ VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行き
 </VirtualHost>
 ```
 
-`/etc/apache2/sites-available/site-81.conf`
+`/etc/apache2/sites-available/site-82.conf`
 
 ```xml
-<VirtualHost *:81>
-  DocumentRoot /var/www/html/site-81
+<VirtualHost *:82>
+  DocumentRoot /var/www/html/site-82
 </VirtualHost>
 ```
 
@@ -239,7 +239,7 @@ VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行き
 ```sh
 a2dissite 000-default
 a2ensite site-80
-a2ensite site-81
+a2ensite site-82
 ```
 
 :::tip
@@ -255,12 +255,12 @@ CentOSなど他のディストリビューションでは、これらのコマ�
 service apache2 reload
 ```
 
-`localhost:8080`と`localhost:8081`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
+`localhost:8080`と`localhost:8082`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
 
 | ![site-80](./image/site-80.png) |
 | ------------------------------- |
 
-| ![site-81](./image/site-81.png) |
+| ![site-82](./image/site-82.png) |
 | ------------------------------- |
 
 ## nginx ハンズオン
@@ -322,7 +322,7 @@ nginxのプロキシ・ロードバランス機能を使ってみましょう。
 ```nginx
 upstream backend {
         server localhost:80 weight=1;
-        server localhost:81 weight=1;
+        server localhost:82 weight=1;
 }
 
 server {
@@ -347,7 +347,7 @@ root@dea1ac0e1edb:/var/www/html# service nginx restart
 ```
 
 [http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
-site-80とsite-81がランダムで表示されたでしょうか。
+site-80とsite-82がランダムで表示されたでしょうか。
 
 ### https 対応(check5)
 
