@@ -2,7 +2,7 @@
 footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
 title: テストプログラミング ハンズオン
 description: 開発を行う際に覚えておくと非常に便利なテストを伝授します。
-time: 1h
+time: 2h
 prior_knowledge: Python3
 ---
 
