@@ -9,70 +9,70 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
 ```shell-session
-$ docker pull python:3.8.2-buster
-3.8.2-buster: Pulling from library/python
-90fe46dd8199: Pull complete
-35a4f1977689: Pull complete
-bbc37f14aded: Pull complete
-74e27dc593d4: Pull complete
-4352dcff7819: Pull complete
-deb569b08de6: Pull complete
-98fd06fa8c53: Pull complete
-7b9cc4fdefe6: Pull complete
-512732f32795: Pull complete
-Digest: sha256:003990f08716aef3eb0772f9d9fa8e27603f2b863c56c649a3e9693ddb5b41f1
-Status: Downloaded newer image for python:3.8.2-buster
-docker.io/library/python:3.8.2-buster
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8081:81 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.2-buster /bin/bash
-b8c0df20d1540aba0342362d88d1b0cb9ec94a1877ae1ca5aea5583880193a8e
+$ docker pull python:3.8.17-bookworm
+3.8.17-bookworm: Pulling from library/python
+d52e4f012db1: Pull complete
+7dd206bea61f: Pull complete
+2320f9be4a9c: Pull complete
+6e5565e0ba8d: Pull complete
+d3797e13cc41: Pull complete
+9d8ab9ac5a7d: Pull complete
+43ed38f1d568: Pull complete
+164b4060be55: Pull complete
+Digest: sha256:2ee706fa11ec6907a27f1c5116e9749ad1267336b3b0d53fc35cfba936fae32e
+Status: Downloaded newer image for python:3.8.17-bookworm
+docker.io/library/python:3.8.17-bookworm
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.17-bookworm /bin/bash
+a0da070e286fd52ebb323e5faff9c960014bfcd8eb1e509cb5a12daa9fb9a85e
 $ docker exec -it test-debian /bin/bash
-root@b8c0df20d154:/#
+root@a0da070e286f:/#
 ```
 
 Apacheとnginxをインストールします。
 
 ```shell-session
-root@b8c0df20d154:/# apt update
-Get:1 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB] 
-Get:2 http://deb.debian.org/debian buster InRelease [121 kB]                        
-Get:3 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
-Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [289 kB]
-Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7907 kB]
-Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [10.9 kB]
-Fetched 8445 kB in 18s (471 kB/s)
+root@a0da070e286f:/# apt update
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [52.1 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8906 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [4732 B]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [48.0 kB]
+Fetched 9210 kB in 3s (3184 kB/s)
 Reading package lists... Done
-Building dependency tree       
+Building dependency tree... Done
 Reading state information... Done
-103 packages can be upgraded. Run 'apt list --upgradable' to see them.
+10 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
-root@b8c0df20d154:/# apt install -y apache2 apache2-dev nginx vim
+root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx vim
 Reading package lists... Done
-Building dependency tree
+Building dependency tree... Done
 Reading state information... Done
 The following additional packages will be installed:
-  apache2-bin apache2-data apache2-utils autopoint bsdmainutils debhelper dh-autoreconf dh-strip-nondeterminism dwz geoip-database gettext gettext-base
-  groff-base intltool-debian libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libbrotli1
-  libfile-stripnondeterminism-perl libgd3 libgeoip1 libgpm2 libjansson4 libldap-2.4-2 libldap2-dev liblua5.2-0 
+  apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
+  libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
+  libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
+  libsub-override-perl libsys-hostname-long-perl libuchardet0 libxtables12 man-db nginx-common po-debconf ssl-cert vim-common vim-runtime xxd
 
 ~~~略~~~
 
-Setting up dh-strip-nondeterminism (1.1.2-1) ...
-Setting up apache2-dev (2.4.38-3+deb10u4) ...
-Processing triggers for mime-support (3.62) ...
+Setting up libapr1-dev (1.7.2-3) ...
+Setting up libaprutil1-dev (1.6.3-1) ...
+Setting up debhelper (13.11.4) ...
+Setting up apache2-dev (2.4.57-2) ...
+Processing triggers for libc-bin (2.36-9) ...
 Processing triggers for hicolor-icon-theme (0.17-2) ...
-Processing triggers for libc-bin (2.28-10) ...
-root@b8c0df20d154:/#
+root@a0da070e286f:/#
 ```
 
 以下のコマンドでバージョンが表示されれば成功です。
 
 ```shell-session
-root@b8c0df20d154:/# apache2 -v
-Server version: Apache/2.4.38 (Debian)
-Server built:   2021-12-21T16:50:43
-
-root@b8c0df20d154:/# nginx -v
-nginx version: nginx/1.14.2
+root@a0da070e286f:/# apache2 -v
+Server version: Apache/2.4.57 (Debian)
+Server built:   2023-04-13T03:26:51
+root@a0da070e286f:/# nginx -v
+nginx version: nginx/1.22.1
 ```
 
 ## Webサーバー
@@ -110,7 +110,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
 「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられ、nginxと並んで2大勢力を誇ります。
-(参考: [June 2022 Web Server Survey](https://news.netcraft.com/archives/2022/06/30/june-2022-web-server-survey.html))
+(参考: [June 2023 Web Server Survey](https://www.netcraft.com/blog/june-2023-web-server-survey/))
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
@@ -130,7 +130,7 @@ nginxは2004年頃、当時のWebサーバーが抱えていたパフォーマ�
 まずはApacheを起動しましょう。
 
 ```shell-session
-$ service apache2 start
+root@a0da070e286f:/# service apache2 start
 ```
 
 ブラウザを開いて[localhost:8080](http://localhost:8080)にアクセスしてみてください。以下のような画面が表示されれば成功です。
@@ -146,9 +146,8 @@ Document RootはApacheが静的ファイルを配信するためのroot director
 この下にある`index.html`ファイルを自分の物に置き換えてみましょう。
 
 ```shell-session
-$ cd /var/www/html/
-$ mv index.html _index.html
-$ echo 'Hello Bootcamp!!' > index.html
+root@a0da070e286f:/# mv /var/www/html/index.html /var/www/html/_index.html
+root@a0da070e286f:/# echo 'Hello Bootcamp!!' > /var/www/html/index.html
 ```
 
 再び`http://localhost:8080/`を開くと`Hello Bootcamp!!`が表示されるのを確認してください。
@@ -161,8 +160,8 @@ $ echo 'Hello Bootcamp!!' > index.html
 Document Root配下にディレクトリを作成するとブラウザからも同様にアクセスできます。
 
 ```shell-session
-$ mkdir /var/www/html/hoge
-$ echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
+root@a0da070e286f:/# mkdir /var/www/html/hoge
+root@a0da070e286f:/# echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
 ```
 
 `http://localhost:8080/hoge/huga.txt` にアクセスすると追加したファイルが表示されます。
@@ -170,32 +169,32 @@ $ echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
 アクセスログも確認してみましょう。
 
 ```sh
-tail /var/log/apache2/access.log
+root@a0da070e286f:/# tail /var/log/apache2/access.log
 ```
 
 ### VirtualHost の設定(check2)
 
 1つのApacheで複数のWebサイトを管理したいことがあります。異なるIPアドレスやアドレス、port番号からアクセスされた時にDocument Rootなどを切り替えたいときは`VirtualHost`を設定することで実現できます。
 
-ここではport番号を`80`と`81`に分けて別々のWebサイトを設定してみます。
-(docker起動時にport forwardしているため、手元からは`8080`と`8081`からアクセスできます。)
+ここではport番号を`80`と`82`に分けて別々のWebサイトを設定してみます。
+(docker起動時にport forwardしているため、手元からは`8080`と`8082`からアクセスできます。)
 
 まずは新しくDocument RootになるディレクトリとHTMLファイルを作成します。
 
 ```sh
-mkdir /var/www/html/site-80
-mkdir /var/www/html/site-81
-echo 'This is site 80!' > /var/www/html/site-80/index.html
-echo 'This is site 81!' > /var/www/html/site-81/index.html
+root@a0da070e286f:/# mkdir /var/www/html/site-80
+root@a0da070e286f:/# mkdir /var/www/html/site-82
+root@a0da070e286f:/# echo 'This is site 80!' > /var/www/html/site-80/index.html
+root@a0da070e286f:/# echo 'This is site 82!' > /var/www/html/site-82/index.html
 ```
 
 次にApacheの設定をして行きます。やることは
 
-- listen portに81を追加
+- listen portに82を追加
 - virtual host設定の追加
 
 の2つです。listen portの追加は`/etc/apache2/ports.conf`に書きましょう。
-以下のように`Listen 80` の下に `Listen 81`の記述を追加します。
+以下のように`Listen 80` の下に `Listen 82`の記述を追加します。
 
 ```apache
 # If you just change the port or add more ports here, you will likely also
@@ -203,7 +202,7 @@ echo 'This is site 81!' > /var/www/html/site-81/index.html
 # /etc/apache2/sites-enabled/000-default.conf
 
 Listen 80
-Listen 81
+Listen 82
 
 <IfModule ssl_module>
         Listen 443
@@ -226,20 +225,20 @@ VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行き
 </VirtualHost>
 ```
 
-`/etc/apache2/sites-available/site-81.conf`
+`/etc/apache2/sites-available/site-82.conf`
 
 ```xml
-<VirtualHost *:81>
-  DocumentRoot /var/www/html/site-81
+<VirtualHost *:82>
+  DocumentRoot /var/www/html/site-82
 </VirtualHost>
 ```
 
 設定ファイルを作成したら`a2dissite`、`a2ensite`コマンドを使って設定を有効化しましょう。
 
 ```sh
-a2dissite 000-default
-a2ensite site-80
-a2ensite site-81
+root@a0da070e286f:/# a2dissite 000-default
+root@a0da070e286f:/# a2ensite site-80
+root@a0da070e286f:/# a2ensite site-82
 ```
 
 :::tip
@@ -252,15 +251,15 @@ CentOSなど他のディストリビューションでは、これらのコマ�
 そしてApacheをリスタートします。
 
 ```sh
-service apache2 reload
+root@a0da070e286f:/# service apache2 reload
 ```
 
-`localhost:8080`と`localhost:8081`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
+`localhost:8080`と`localhost:8082`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
 
 | ![site-80](./image/site-80.png) |
 | ------------------------------- |
 
-| ![site-81](./image/site-81.png) |
+| ![site-82](./image/site-82.png) |
 | ------------------------------- |
 
 ## nginx ハンズオン
@@ -272,7 +271,7 @@ service apache2 reload
 80 portはすでにApacheが使っているため、nginxのサイトは88 portでリクエストを受け付けるようにします。
 
 ```bash
-vim /etc/nginx/sites-enabled/default
+root@a0da070e286f:/# vim /etc/nginx/sites-enabled/default
 ```
 
 ```nginx
@@ -295,7 +294,7 @@ server {
 変更したらnginxを起動しましょう。
 
 ```shell-session
-root@6adf6c41f5d8:/# service nginx start
+root@a0da070e286f:/# service nginx start
 [ ok ] Starting nginx: nginx.
 ```
 
@@ -306,7 +305,7 @@ root@6adf6c41f5d8:/# service nginx start
 アクセスログも確認してみましょう。
 
 ```sh
-tail /var/log/nginx/access.log
+root@a0da070e286f:/# tail /var/log/nginx/access.log
 ```
 
 ### ロードバランス(check4)
@@ -322,7 +321,7 @@ nginxのプロキシ・ロードバランス機能を使ってみましょう。
 ```nginx
 upstream backend {
         server localhost:80 weight=1;
-        server localhost:81 weight=1;
+        server localhost:82 weight=1;
 }
 
 server {
@@ -342,12 +341,12 @@ server {
 `/etc/nginx/sites-enabled/proxy`を作成したらnginxをリスタートしましょう。
 
 ```shell-session
-root@dea1ac0e1edb:/var/www/html# service nginx restart
+root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
 [http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
-site-80とsite-81がランダムで表示されたでしょうか。
+site-80とsite-82がランダムで表示されたでしょうか。
 
 ### https 対応(check5)
 
@@ -383,7 +382,8 @@ HTTPS で用いる証明書は、権威ある証明局から、これは正当�
 :::
 
 ```sh
-root@b8c0df20d154:/# openssl genrsa 2048 > private.key
+root@a0da070e286f:/# mkdir /etc/nginx/ssl
+root@a0da070e286f:/# openssl genrsa 2048 > /etc/nginx/ssl/private.key
 Generating RSA private key, 2048 bit long modulus (2 primes)
 ........................+++++
 ...........................................................................................................................+++++
@@ -402,7 +402,7 @@ e is 65537 (0x010001)
 実際に発行する際は、正当性を担保したい対象であるCommon Name は特に間違わないようにしましょう。
 
 ```sh
-root@b8c0df20d154:/# openssl req -new -sha256 -key private.key -out server.csr
+root@a0da070e286f:/# openssl req -new -sha256 -key /etc/nginx/ssl/private.key -out /etc/nginx/ssl/server.csr
 You are about to be asked to enter information that will be incorporated
 into your certificate request.
 What you are about to enter is what is called a Distinguished Name or a DN.
@@ -435,16 +435,15 @@ An optional company name []:
 
 
 ```sh
-root@b8c0df20d154:/# openssl x509 -req -in server.csr -out server.crt -signkey private.key -days 365
-Signature ok
+root@a0da070e286f:/# openssl x509 -req -in /etc/nginx/ssl/server.csr -out /etc/nginx/ssl/server.crt -signkey /etc/nginx/ssl/private.key -days 365
+Certificate request self-signature ok
 subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
-Getting Private key
 ```
 
 出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
 
 ```sh
-root@b8c0df20d154:/# openssl x509 -in server.crt -text
+root@a0da070e286f:/# openssl x509 -in /etc/nginx/ssl/server.crt -text
 Certificate:
     Data:
         Version: 1 (0x0)
@@ -465,10 +464,10 @@ Certificate:
 秘密鍵と証明書のペアが正しいかを確認するには、RSA のものならmodulus を比較するのが簡単です。
 
 ```sh
-root@b8c0df20d154:/# openssl rsa -in private.key -modulus -noout
+root@a0da070e286f:/# openssl rsa -in /etc/nginx/ssl/private.key -modulus -noout
 Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
 
-root@b8c0df20d154:/# openssl x509 -in server.crt -modulus -noout
+root@a0da070e286f:/# openssl x509 -in /etc/nginx/ssl/server.crt -modulus -noout
 Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
 ```
 
@@ -485,8 +484,8 @@ server {
         listen [::]:443 default_server;
 
         ssl on;
-        ssl_certificate /server.crt;
-        ssl_certificate_key /private.key;
+        ssl_certificate /etc/nginx/ssl/server.crt;
+        ssl_certificate_key /etc/nginx/ssl/private.key;
 
         index index.html index.htm index.nginx-debian.html;
 
@@ -501,7 +500,7 @@ server {
 追記したら、nginx をリスタートしましょう。
 
 ```sh
-root@dea1ac0e1edb:/var/www/html# service nginx restart
+root@dea1ac0e1edb:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
@@ -534,7 +533,7 @@ Pythonで書かれたWebアプリをApache経由で動かす設定を作って�
 
 ```sh
 python --version
-#Python 3.8.2
+#Python 3.8.17
 ```
 
 Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
@@ -562,15 +561,17 @@ def application(environ, start_response):
 ```sh
 pip install mod-wsgi
 
-#Collecting mod-wsgi
-#  Using cached mod_wsgi-4.7.1.tar.gz (498 kB)
-#Building wheels for collected packages: mod-wsgi
-#  Building wheel for mod-wsgi (setup.py) ... done
-#  Created wheel for mod-wsgi: filename=mod_wsgi-4.7.1-cp38-cp38-linux_x86_64.whl size=809821 sha256=570b19e67813e819f04ee00006b5c556339e37a03dea4af0021837b098588c0d
-#  Stored in directory: /root/.cache/pip/wheels/e9/82/71/1b42d6274a24af477453cecc993213fc8abd15433d80b01e93
-#Successfully built mod-wsgi
-#Installing collected packages: mod-wsgi
-#Successfully installed mod-wsgi-4.7.1
+Collecting mod-wsgi
+  Downloading mod_wsgi-4.9.4.tar.gz (497 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 497.5/497.5 kB 6.1 MB/s eta 0:00:00
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: mod-wsgi
+  Building wheel for mod-wsgi (setup.py) ... done
+  Created wheel for mod-wsgi: filename=mod_wsgi-4.9.4-cp38-cp38-linux_x86_64.whl size=734287 sha256=b643e88dbd9659e671e2e014621153066c1061f7c385385b4ccb48b3cc453ee1
+  Stored in directory: /root/.cache/pip/wheels/a7/96/89/a6231ee168c52f30f56065d1431e08ee24443e96b402595c85
+Successfully built mod-wsgi
+Installing collected packages: mod-wsgi
+Successfully installed mod-wsgi-4.9.4
 ```
 
 インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
