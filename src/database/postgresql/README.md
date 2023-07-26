@@ -82,7 +82,7 @@ MITライセンスは、商用利用や非商用利用、修正や再配布を�
 docker pull postgres
 ``` 
 ◎出力イメージ
-![](images/docker01.jpg)
+![](./images/docker01.jpg)
 
 <br>
 
@@ -104,7 +104,7 @@ docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -d postgres
 docker exec -it some-postgres /bin/bash
 ``` 
 ◎出力イメージ  
-![](images/docker03.jpg)  
+![](./images/docker03.jpg)  
 　※接続に成功すると上記のような最後に「＃」が付いた状態で表示されます。  
 　※「root@」以降の文字列は各自で異なります。
 
@@ -117,7 +117,7 @@ docker exec -it some-postgres /bin/bash
 locale -a
 ``` 
 ◎出力イメージ  
-![](images/docker04.jpg)  
+![](./images/docker04.jpg)  
 
 <br>
 
@@ -134,7 +134,7 @@ su - postgres
 psql -h localhost -p 5432 -d postgres -U postgres
 ``` 
 ◎出力イメージ  
-![](images/docker05.jpg)  
+![](./images/docker05.jpg)  
 ※プロンプトが「postgres=#」に変更されることを確認します。
 
 <br>
@@ -145,11 +145,11 @@ psql -h localhost -p 5432 -d postgres -U postgres
 \l+
 ``` 
 ◎出力イメージ  
-![](images/docker06.jpg)  
+![](./images/docker06.jpg)  
 
 　現時点ではデータベースが３つ表示されています。  
 　イメージ図としては以下（グレーの四角がデータベース）です。    
-![](images/DB00.jpg)
+![](./images/DB00.jpg)
 
 <br>
 
@@ -162,7 +162,7 @@ psql -h localhost -p 5432 -d postgres -U postgres
 
 　作成後は以下のようなイメージ（緑色の丸枠がユーザ）となります。
 
-![](images/DB01.jpg)
+![](./images/DB01.jpg)
 
 
 「user01」の作成  
@@ -194,7 +194,7 @@ create role user01 with login password 'user01';
 　ここでは、データベース名を「db_world」と指定し、template0を使用してデータベースを作成しています。  
 　※「public」スキーマも同時に作成されます。 (スキーマは後述しますが、「public」スキーマは全ユーザが自由に使えるスキーマです)
 
-![](images/DB02.jpg)
+![](./images/DB02.jpg)
 
 ### ★3-1 データベースの作成
 
@@ -220,7 +220,7 @@ create database db_world owner = suser01 template = template0 encoding = 'UTF8' 
 　スキーマとは、テーブルやインデックスといったオブジェクトを配置する領域です。  
 　※「public」スキーマはDB作成時に作られており、テーブル等の作成時にスキーマ名を省略するとこの領域に配置されます。
 
-![](images/DB03.jpg)  
+![](./images/DB03.jpg)  
 
 ### ★4-1 スキーマの作成
 　以下の2つのスキーマを作成してみましょう。
@@ -251,7 +251,7 @@ grant all privileges on schema sch_jpn to user02;
 
 ## 5. テーブルを作成してみよう  
 　上記にて作成した「sch_jpn」スキーマ内にテーブル（オレンジ色の四角枠）を作成します。  
-![](images/DB04.jpg)
+![](./images/DB04.jpg)
 
 ### ★5-1 テーブル作成
 　「user01」で接続し、テーブルを作成します。  
