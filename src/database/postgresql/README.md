@@ -92,7 +92,7 @@ docker pull postgres
 docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -d postgres
 ``` 
 ◎出力イメージ  
-![](images/docker02.jpg)  
+![](./images/docker02.jpg)  
 ※正常に起動すると上記のような64文字の文字列（値は各自で異なります）が表示されます。
 
 <br>
