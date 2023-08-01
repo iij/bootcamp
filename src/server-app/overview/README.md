@@ -28,6 +28,12 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 ## 色々なWebアプリケーションの実装
 
+Webアプリケーションはwebの発展と共に様々な「書き方」と「動かし方」が提案されていました。
+書き方が同じでも動かし方が変わったもの、言語を含めて書き方だけが違うやり方、様々です。
+
+この章では様々なWebアプリケーションの実装を「書き方」と「動かし方」それぞれの面で見ていきます。
+大体登場した歴史順に紹介しますが、必ずしも新しいものが正しい・素晴らしいというわけではなく、「得意なユースケースは何か？」がポイントとなります。
+
 ### CGI
 
 （1993年 フォーマルな[仕様](https://www.w3.org/CGI/)制定は1997年）
@@ -52,6 +58,14 @@ print "</html>";
 - 今日でもPerlで実装されたプロダクトは存続している（MovableTypeとか、mixiとか。CookPadもPerlでスタートしたはず)。
 - CGIの仕組み自体はPerl以外でもRubyやPython、シェルスクリプトなど文字列を出力できるプログラムであれば利用できる
 
+CGIはHTTPリクエストを受けるごとに、新しいプロセスをforkする必要があり、Webサーバにとって負荷が高かった。
+
+![perl_cgi](./perl_cgi.drawio.png "perl_cgi")
+
+WebサーバのモジュールとしてPerlを動作させる「mod_perl」という方法が考案された（apache httpd + mod_perl 1998年)
+
+![mod_perl](./mod_perl.drawio.png "mod_perl")
+
 ### PHP
 
 ```php
@@ -68,19 +82,14 @@ print "</html>";
 （開発開始は1994年 実質的に最初の公開版PHP 3が1997年 本格普及はPHP 4で2000年)
 
 1. CGIはHTTPリクエストを受けるごとに、新しいプロセスをforkする必要があり、Webサーバにとって負荷が高かった。
-2. WebサーバのモジュールとしてPerlを動作させる方法が考案された（apache httpd + mod_perl 1998年)。
-   1. しかしPerlはWebサーバのモジュールとして動作させる前提で設計/実装されたものではなく、やや使い勝手が悪かった。
-   2. 類似の技術としてFastCGIというものもあり、これは常駐プロセスとしてCGI実行エンジンを用意しておくことで、リクエストごとにプロセスをforkする必要を無くしたものだったが、やはり癖があった。
-3. 最初からWebサーバのモジュールとして実行することを念頭に置いた、Webプログラミングに特化した処理系としてPHPが登場、大流行してPerlを駆逐する。
+1. 前述の通りmod_perlという形でPerlを動作させる手法が流行っていた
+1. しかし当然ながらPerlはWebサーバのモジュールとして動作させる前提で設計・実装されたものではなく、使い勝手が悪かった
+1. 類似の技術としてFastCGIというものもあったが、やはり癖があり使いにくかった
+1. そこで最初からWebサーバのモジュールとして実行することを念頭に置いた、Webプログラミングに特化した処理系としてPHPが登場、大流行してPerlを駆逐する。
    1. Facebookも長い間PHPで書かれていた。
-
-#### Perl CGI
-
-![perl_cgi](./perl_cgi.drawio.png "perl_cgi")
-
-#### mod_perl
-
-![mod_perl](./mod_perl.drawio.png "mod_perl")
+1. 元々はWebページを動的に生成するためのテンプレート的な言語であったが、機能が追加された結果スクリプト言語としての機能も持つ
+1. 動かし方はCGI, mod_php（モジュール形式）などがあり、Perlの項目とほぼ同様の形式で動作する
+1. 現在でも広く利用されており、[CakePHP](https://cakephp.org/jp) など今風のフレームワークも存在する
 
 ### Java Servlet (サーブレット)
 
@@ -203,6 +212,10 @@ class HelloController < ApplicationController
    def hello
       render :html => '<p>Welcom to IIJ Bootcamp</p>'
    end
+
+   def hello_json
+      render :json => {msg: 'Welcom to IIJ Bootcamp'}
+   end
 end
 ```
 
@@ -224,6 +237,12 @@ end
       - PHP: CakePHP
       - Java: JBoss Seam, Java EE 6, Grails（Groovyを使う)
       - Python: Django
+1. 今でも第一線で使われており、githubもRailsで作られ続けている。一方で一時期より採用されることは減ってきた。
+  - 「マイクロサービス」が注目され、小さなアプリケーションを多く作るようになった
+    - Railsはどちらかというと大きなアプリを作るためのフレームワークであり、マイクロサービスと対比してモノリスアプリの例として扱われる
+    - とはいえ最近はまた一巡してモジュラーモノリスなど大きなアプリが着目されており、流れが変わりつつあるかもしれない
+  - pythonが言語として人気であり、その流れでDjangoが採用されることが増えた（？）
+  - Goなどに比べてパフォーマンス面で不利
 
 ```bash
 rails generate controller User name:string email:string
@@ -276,6 +295,12 @@ Perlから始まり、ここまで出てきたJavaやRailsは基本的に同期�
 この問題への解決として、Node.jsをはじめとした非同期I/OとEventDrivenなアーキテクチャが注目された。
 Node.jsはJavaScriptの実行環境の一つで、I/O待ち（HDDへの書き込みなど）中に他の処理を行うことで、1プロセスで複数のリクエストを同時に処理することができる。
 
+Node.jsのイベントループによる非同期I/Oの実現
+
+![event-loop](./event-loop.png "event-loop")
+
+Node.jsの中でリクエストを並列に捌けるためWebアプリ用にプロセスをforkする必要がなくなり、裏で動いているNode.jsのサーバにリクエストをただプロキシするだけで良くなった。
+
 ![node](./node.drawio.png "node")
 
 開発スタイルの特徴としては以下が挙げられる。
@@ -292,7 +317,7 @@ Node.jsはJavaScriptの実行環境の一つで、I/O待ち（HDDへの書き込
 
 最近は [Deno](https://deno.land/) というTypeScriptがネイティブで動作するランタイムも流行り始めている。
 
-### Go
+### Go言語
 
 2016年くらいから利用例の増えてきたプログラミング言語で、静的型付け・シンプルな言語体系・高速な動作・並行処理が得意などの特徴がある。
 RubyやPythonなどのスクリプト言語のような開発スピードと、JavaやCのような静的型付けによる安全性・実行の速さを両立していることで、Webサービスのバックエンドとして使われることが増えた。
@@ -314,7 +339,14 @@ RubyやPython、Javaなどのように実行環境をインストールする必
 - コンパイル言語なので（スクリプト言語に比べると）デバッグが難しい
 - Railsのようなフレームワークに頼らず、自力でアプリケーションを構築していく必要がある
 
-## アプリケーションプログラミングインタフェース(API)
+### その先...
+
+- Haskellなどの関数型言語が流行りそう？
+- Rustはいい言語だが書くのが難しく、どちらかというとOSなどのシステムプログラミング向け
+  - Rustのメモリ管理はGC（ガベージコレクト）を起こさないためのもの
+  - Webアプリの実行環境はある程度メモリやCPUを富豪的に使えるため、書きやすさを優先してGoやRuby, JavaなどGCのある言語が使われる傾向にある
+
+## アプリケーションプログラミングインタフェース(API) の色々
 
 API(Application Programming Interface)とはアプリケーションが他のソフトウェアの機能を利用するための仕組みを指す。
 Webアプリケーションの文脈では主にhttpプロトコル越しに他のWebアプリケーションにrequestを送信し、responseを受け取る仕組みを指す。
@@ -322,12 +354,13 @@ Webアプリケーションの文脈では主にhttpプロトコル越しに他�
 一番分かりやすいのはブラウザ上で動作するJavaScriptがサーバのAPIを叩いてJSON形式のresponseを受け取るもの。
 他に実は裏側でサーバ同士がAPIでやり取りしていることもよくあるし、サーバからさらに外部のサービスを呼び出す場合もある。
 
-APIをどのような形式で実装するかは非常に重要な問題で、過去から現在に至るまで様々な設計・実装手法が存在する。
+APIをどのような形式で実装するかは非常に重要な問題で、過去から現在に至るまで様々な設計・実装手法が存在しています。
+プログラミング言語と同様に長い変遷の歴史があるので、そちらを紹介していこうと思います。
 
 ### RPC
 
 そもそもプログラムからネットワーク越しに外部のプログラムの機能を実行する仕組みをRPC(Remote Procedure Call)と呼ぶ。
-この場合はHTTPなどのWebの仕組みは前提にしておらず、各言語や実装ごとに独自の仕組みで動作するものだった。
+黎明期におけるRPCはHTTPなどのWebの仕組みは前提にしておらず、各言語や実装ごとに独自の仕組みで動作するものだった。
 
 ### XML/RPC(JSON-RPC)
 
@@ -373,14 +406,13 @@ XML/RPCを発展させたもの？
 ### REST
 
 RPCは相手がどのようなメソッド（関数）を実装しているのか、そのメソッドがどのような挙動をするのか定まっておらず、統一感がなかった。
-そこで「APIの設計思想」のようなものとしてRESTが登場し、そのRESTの思想を満たすようなAPIをREST APIと呼ぶようになった。
+そこで「APIの設計思想」のようなものとしてRESTが登場し、そのRESTの思想を満たすようなAPIをRESTful APIと呼ぶ。
 
-（実際のところ、厳密にはRESTに従っていないなんちゃってREST APIが大半）
+その原則には以下のような項目が挙げられる。
 
-その思想には
-
-- セッションなどの状態管理を行わない
-- あるリソースをURLで表現する（例えば `example.com/book/001` は「`001`というIDが付けられた`book`」というリソースを表す）
+- リソースをURLを通して表現すること
+  - 例えば `example.com/book/001` は「`001`というIDが付けられた`book`」というリソースを表す
+- セッションなどの状態管理を行わないこと(=ステートレス性)
 - HTTPにおける GET/POST/PUT/DELETE の各メソッドをそのままリソースの 取得/作成/編集/削除 に対応させる
   - `GET example.com/book/` をするとbookの一覧が取得できる
   - `POST example.com/book/` で新しいbookを追加する
@@ -388,11 +420,101 @@ RPCは相手がどのようなメソッド（関数）を実装しているの�
   - `PUT example.com/book/001` で`ID:001`のbookを更新する
   - `DELETE example.com/book/001` で`ID:001`のbookを削除する
 
+とはいえ厳密にRESTに従っているものは少なく、多少違反していてもざっくり「REST API」と呼ばれることが多い。
+（なんちゃってRESTとか言ったりする）
+
+元々は「到達可能性」のような概念が謳われており、例えば`GET`で取得した内容に他のリソースのURLが含まれることで、人間がブラウザを使うのと同じように機械が情報を自律的に探索可能にすることも目指されていた。
+その未来は来ず、世の中にはなんちゃってRESTが便利に使われている。
+
 データフォーマットには基本的にJSONが使われる。
 
 ### OpenAPI
 
-TBD
+REST APIの仕様を機械可読可能な形で記述するための仕様。
+元々「Swagger」という名前だったのが、汎用的な仕様として定義するにあたって「OpenAPI」と名前が付けられた。
+
+以下はymlで書かれたAPI仕様の例
+
+```yml
+openapi: 3.0.3
+info:
+  title: bootcamp example
+  description: |-
+    This is a sample Pet Store Server.
+  version: "1.0"
+paths:
+  /pet:
+    post:
+      tags:
+        - pet
+      summary: Add a new pet to the store
+      description: Add a new pet to the store
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'          
+        '405':
+          description: Invalid input
+  /pet/{petId}:
+    get:
+      summary: Find pet by ID
+      description: Returns a single pet
+      parameters:
+        - name: petId
+          in: path
+          description: ID of pet to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Pet not found
+components:
+  schemas:
+    Pet:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: doggie
+```
+
+仕様に従って書かれているので、これを画面で作成するのも簡単ですし、綺麗に整形することもできます。
+
+![](./open_api_1.png "open_api_1")
+
+![](./open_api_2.png "open_api_2")
+
+[https://editor.swagger.io/](https://editor.swagger.io/) で触れるのでぜひ試してみてください。
+
+APIを作る場合必ず仕様書を用意しますが、open_apiのフォーマットに従うと何を書くべきなのか明確ですし、そこから綺麗な形式に出力することができます。
+またopen_apiの仕様からコードを自動生成するツールも多数存在しており、REST APIを設計する場合、可能な限りopen_apiで仕様を定義しておくと後々役に立ちます。
 
 ### GraphQL
 
@@ -401,125 +523,5 @@ TBD
 ### gRPC
 
 TBD
-
-## アプリケーションを支えるインフラ
-
-アプリケーションを支えるインフラとして **オンプレミス** と **クラウドサービス** がある。
-
-どちらが優れているというわけではなく、アプリケーションの性質や目的・用途に応じて使い分けることが重要。
-
-ここでは、主にクラウドサービスに重きを置いてついて説明します。
-
-### オンプレミス
-
-サーバ等の機器を購入(又はリース)し、自社内やデータセンターに設置して運用することを指す。
-
-初期投資コスト、機器リプレイス等による運用コスト、調達時間が多くかかるデメリットがあるが、全て自社内での管理になるためカスタマイズを自由に行うことが出来るメリットがある。
-
-### クラウドサービス
-
-インターネットを経由して、ITリソースをオンデマンドで利用できるサービスを指す。
-
-初期投資コストや調達時間は不要で、必要な時に必要な分だけ即利用出来るメリットがある。
-
-インフラ構築をコード化する **Infrastructure as Code** と相性が非常によい。
-
-反面、クラウド事業者が提供するサービスに依存することになり、ベンダーロックインのリスクがある。
-
-また、オンプレミスに無い概念として「リージョン」「ゾーン」が存在する。
-
-リージョンによっては料金、提供しているサービスが異なる場合があるため、用途に応じて慎重な選択が必要。
-- リージョン ・・・ データセンターが設置されている地域。日本や北米など国、州レベルで分かれている。
-- ゾーン ・・・ リージョンを物理的に細分化した単位。複数のゾーンに分散させることで災害対策が可能。
-
-![cloud-region-zone](./cloud-region-zone.png "cloud-region-zone")
-
-
-余談となるが、クラウドサービスが提供している機能をオンプレミスに導入するサービスも存在する。オンプレ版クラウドのイメージ。
-- Azure Stack
-- AWS Outposts
-
-#### 主なクラウドサービスの種類
-
-- **SaaS**
-  - 読み (サーズ)
-  - **Software as a Service** の略。ソフトウェアをサービスとして提供。
-  - インストールが不要で、プラットフォームを問わないマルチデバイスで利用可能。
-  - 主なSaaS
-    - GMail、Slack、Office Online 等
-- **IaaS**
-  - 読み (イアース)
-  - **Infrastructure as a Service** の略。サーバやストレージ等のハードウェアリソースをサービスとして提供。
-  - 機器の購入や設置が不要で、CPUやメモリなど構成を自由に選択可能。またリソースの増減も容易に出来る。
-  - 仮想マシンの立ち上げとなるため起動に時間がかかる。
-  - 主なIaaS
-    - Amazon EC2、Google Compute Engine、Azure Virtual Machines 等
-- **PaaS**
-  - 読み (パース)
-  - **Platform as a Service** の略。アプリケーションを実行するためのプラットフォームをサービスとして提供。
-  - アプリケーションを実行するに必要なハードウェア、ネットワーク、OS、ミドルウェア、実行環境が用意されており、プログラムを準備するだけで手軽にサービスを提供出来る。
-  - 反面、構成が決められているため柔軟性に欠ける場合がある。
-  - 主なPaaS
-    - AWS Elastic Beanstalk、Google App Engine、Heroku 等
-- **CaaS**
-  - 読み (カース)
-  - **Container as a Service** の略。コンテナ管理・実行環境(コンテナオーケストレーション)をサービスとして提供。
-  - コンテナ技術を使用するため、IaaSよりも高速に立ち上がり、PaaSよりも柔軟な構成が可能。
-  - 主なCaaS
-    - Amazon EKS、Amazon ECS、Google Kubernetes Engine 等
-- **FaaS**
-  - 読み (ファーズ)
-  - **Function as a Service** の略。関数の管理・実行環境をサービスとして提供。
-  - ハードウェア、ネットワークなどのインフラ管理をクラウド業者に任せ、開発者は業務に必要な処理のみに集中出来る。
-  - イベントドリブンで動作し、イベントが発生した時に処理が実行される。
-  - 主なFaaS
-    - AWS Lambda、Google Cloud Functions、Azure Functions 等
-
-![cloud-service](./cloud-service.png "cloud-service")
-
-
-### 主なクラウドサービス事業者
-#### Amazon Web Services (AWS)
-
-![cloud-aws](./cloud-aws.png "cloud-aws")
-
-- Amazonが提供するクラウドサービス。2021年5月時点でシェア1位。
-- 2006年に最初のサービス(SQS)をリリース、2021年時点で200個を超えるサービスを提供している。
-- 25のリージョン、80のゾーンが利用可能。
-- Amazonのプライムデーやサイバーマンデー等で急増するトラフィックを支えている。
-- 主なサービス
-  - Amazon EC2、AWS Lambda、Amazon S3、Amazon RDS、Amazon DynamoDB、Amazon VPC
-
-
-#### Google Cloud Platform (GCP)
-
-![cloud-gcp](./cloud-gcp.png "cloud-gcp")
-
-- Googleが提供するクラウドサービス。2021年5月時点でシェア3位。
-- 2008年に最初のサービス(GAE)をリリース、2021年時点で90個を超えるサービスを提供している。
-- 25のリージョン、76のゾーンが利用可能。
-- 膨大な計算を必要とするGoogleのインフラを支えている。
-- 主なサービス
-  - Compute Engine、Cloud Functions、Cloud Storage、Cloud SQL、Cloud Bigtable、Virtual Private Cloud
-
-#### Microsoft Azure
-
-![cloud-azure](./cloud-azure.png "cloud-azure")
-
-- Microsoftが提供するクラウドサービス。2021年5月時点でシェア2位。
-- 2010年に最初のサービス(Azure)をリリース、2021年時点で200個を超えるサービスを提供している。
-- 60を超えるリージョンが利用可能。
-- Microsoft製品との親和性が高く、Microsoft製品を使ってきた企業・ユーザーは学習コストが少なく済む。
-- 主なサービス
-  - Azure Virtual Machines、Azure Functions、Azure Blob Storage、Azure SQL Database、Azure Cosmos DB、Azure Virtual Network
-
-#### その他
-
-- Alibaba Cloud
-  - Alibabaが提供するクラウドサービス。2021年5月時点でシェア4位。
-- IBM Cloud
-  - IBMが提供するクラウドサービス。2021年5月時点でシェア5位。
-- Oracle Cloud
-  - Oracleが提供するクラウドサービス。常に無料で使えるAlways Freeが強力。
 
 <credit-footer/>
