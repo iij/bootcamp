@@ -1,0 +1,26 @@
+＝＝＝＝＝＝＝＝＝＝演習問題回答例
+答1,答２
+-- 「tbl_food」テーブルへの追加と確認
+insert into sch_jpn.tbl_food (fd_name,price) values ('gyudon',400);
+select * from sch_jpn.tbl_food where fd_name='gyudon';
+
+-- 「tbl_proper」テーブルへの追加と確認
+insert into sch_jpn.tbl_proper(username,id_pref,id_fd)values ('k-shioya',6,5);
+select * from sch_jpn.tbl_proper where username='k-shioya';
+
+
+答3
+-- 現状データの確認
+select * from sch_jpn.tbl_proper;
+-- 更新
+update sch_jpn.tbl_proper set username = 'ikeda' where id_user=3;
+-- 確認
+select * from sch_jpn.tbl_proper;
+
+
+答4
+-- 削除
+delete from sch_jpn.tbl_food where id_fd = 3;
+-- 確認
+select * from sch_jpn.tbl_food;
+
