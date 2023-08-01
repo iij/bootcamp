@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 description: Redisの概要を学び、Pythonを使って実際に使ってみます。
 time: 1h
 prior_knowledge: なし
@@ -27,13 +27,11 @@ prior_knowledge: なし
     ```Shell
     docker pull redis:6.2.3-alpine3.13
     docker pull python:3.9.5-slim-buster
-    docker pull erikdubbelboer/phpredisadmin:v1.17.0
     docker images
 
     REPOSITORY                                           TAG                 IMAGE ID            CREATED             SIZE
     python                                               3.9.5-slim-buster   afaa64e7c7fe        15 hours ago        115MB
     redis                                                6.2.3-alpine3.13    efb4fa30f1cf        9 days ago          32.3MB
-    erikdubbelboer/phpredisadmin                         v1.17.0             82d60d8fd132        6 months ago        196MB
     ```
 
 1. サーバを起動する
@@ -68,27 +66,17 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. WebUI でRedis を操作するためのコンテナをデプロイしてみる
-
-    * phpredisadmin を起動します。 これでRedis を操作するためのWebUI を起動します。
-    ```Shell
-    docker run -d --link test-server:redis --name test-web --rm -e REDIS_1_HOST=redis -e REDIS_1_AUTH= -p 9000:80 erikdubbelboer/phpredisadmin:v1.17.0
-    ```
-    * 9000番ポートにアクセスするとphpRedisAdmin の画面を開くことができます。ここでは既に接続をするための情報をコンテナの起動時に渡しているため、ログインの必要はなくRedis の中身を閲覧することができます。
-
 3. 終了
     * ここまで完了できたら 事前準備完了です。 無事 これらを行うことができました。
       1. docker image の 取得
       1. redis server の起動
       1. redis-cli による Redis の操作
-      1. phpRedisAdmin (WebUI) による Redisの操作
 
 ## あらすじ
 
 - Redis ざっくり説明
 - Redis を直接触ってみよう
-- プログラムで DB 登録しよう
-- 応用課題
+- 応用課題: プログラムで DB 登録しよう
 
 ## 資料
 
@@ -249,7 +237,7 @@ OK
 "11"
 ```
 
-#### 色々なデータ型
+#### 色々なデータ型(Lists)
 
 上で例に出したのは全てstring(文字列)型の単純なデータです。redisにはそれ以外にも面白いデータ型を用意しています。
 
@@ -271,7 +259,107 @@ OK
 3) "drakee"
 ```
 
-### プログラムから Redis を使おう
+`rpush`はリストの末尾に要素を追加するコマンド、`lpush`は逆に先頭に追加するコマンドです。
+`lrange`の引数がどういう意味なのか、色々試してみてください。
+
+#### 色々なデータ型(Sets)
+
+[Sets](https://redis.io/docs/data-types/sets/) はunique性が保証されたリストです。
+Setsは順序を考慮しませんが、勝手にソートしてくれる [Sorted sets](https://redis.io/docs/data-types/sorted-sets/) も存在します。
+
+```terminal
+172.17.0.2:6379> sadd favorites site1
+(integer) 1
+172.17.0.2:6379> sadd favorites siteABC
+(integer) 1
+172.17.0.2:6379> sadd favorites site3
+(integer) 1
+172.17.0.2:6379> sadd favorites siteABC
+(integer) 0
+172.17.0.2:6379> smembers favorites
+1) "site1"
+2) "siteABC"
+3) "site3"
+```
+
+#### 色々なデータ型(Hashes)
+
+[Hashes](https://redis.io/docs/data-types/hashes/) はプログラミング言語で言うところのMap的な、あるいはオブジェクトを表現できるデータです。
+
+```terminal
+172.17.0.2:6379> hset slime attack 5 deffence 3 hp 3 exp 1
+(integer) 4
+172.17.0.2:6379> hget slime hp
+"3"
+172.17.0.2:6379> hmget slime deffence hp
+1) "3"
+2) "3"
+172.17.0.2:6379> hmget slime attack deffence
+1) "5"
+2) "3"
+172.17.0.2:6379> hgetall slime
+1) "attack"
+2) "5"
+3) "deffence"
+4) "3"
+5) "hp"
+6) "3"
+7) "exp"
+8) "1"
+```
+
+例のようにオブジェクトを表現してもいいですし、key-value的な使い方もできます。
+
+#### Pub/sub
+
+redisはkey-valueストアとしてだけではなく、シンプルなpub/subとしても利用可能です。
+pub/subとは特定のチャンネルをsubscribe(購読)しているプログラムに対して、そのチャンネルにpublish(出版)することで多数のsubscriber(読者)に情報を届けることができるモデルです。
+publisherとsubscriberそれぞれのプログラムがお互いを知らなくても通信ができるため素結合に維持ができ、動的に通信相手が変わるようなユースケースに利用されます。
+
+pub/subモデルを利用したアーキテクチャは「イベント駆動型アーキテクチャ」とも呼ばれ、[Apache kafka](https://kafka.apache.org/) などが有名です。kafkaの場合はsubscriberが誰もいなかった時にデータを貯めておいて、確実に届けてくれたりもするのですが、redisのpub/subはリアルタイムにsubscribeしているプログラムにのみデータが送信され、届かなかったデータは破棄されるシンプルなものです。
+しかしシンプルであるがゆえ信頼性が高く、動作も軽いという特徴があります。
+
+ターミナルを２つ開いてください。
+
+ターミナル1で`subscribe`を実行すると、データ待ちの状態になります。
+```terminal
+172.17.0.2:6379> subscribe channelA
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "channelA"
+3) (integer) 1
+
+```
+
+ターミナル2でデータを`publish`してみましょう。
+```terminal
+172.17.0.2:6379> publish channelA hello
+(integer) 1
+172.17.0.2:6379> publish channelA I
+(integer) 1
+172.17.0.2:6379> publish channelA am
+(integer) 1
+172.17.0.2:6379>
+```
+
+subscribeしている側にどのように見えたでしょうか。
+
+### データの永続性
+
+redisはオンメモリで動くため、再起動するとデータは消えます。
+基本的には消えてもいいデータを扱うことが多いですが、再起動のたびに消えてしまうのも面倒なので永続化の仕組みが存在します。
+
+[persistence](https://redis.io/docs/management/persistence/)
+
+永続化には主に２つのやり方があります。
+
+- RDB(Redis Database): 一定時間ごとに全データをスナップショットしてファイルに残しておく。リレーショナルデータベース(RDB)とは関係ない
+- AOF(Append Only File): 更新をログとして記録していく。スナップショット作成が高コストなのに対して、小さいデータを追記していくので低コスト。一方でディスクサイズは大きくなる。
+
+どちらか、あるいは両方を使うかどうかはユースケース次第です。
+しかしいずれもデータの更新からファイルへの記録にはラグがあり、更新内容が必ず永続化される保証はないことに注意が必要です。
+
+### 応用課題: プログラムから Redis を使おう
 * それでは、実際にPythonでRedis を利用するコードを書いていきます。
 * 手元の環境で好きなエディタを使って Python のコードを書いた上で docker container の中から そのコードを読み出せるようにします。
 * 事前準備のおさらいも兼ねています
@@ -356,14 +444,6 @@ docker exec -it test-server redis-cli
 
 * 最初は真っ黒のままです。 何かしら redis に対して操作を行うと どんなことを行ったのか画面に表示されるようになります。
 * 今は開きっぱなしにしましょう
-
-#### WebUI 起動
-
-    * phpredisadmin を起動します。 これでRedis を操作するためのWebUI を起動します。
-    ```Shell
-    docker run -d --link test-server:redis --name test-web --rm -e REDIS_1_HOST=redis -e REDIS_1_AUTH= -p 9000:80 erikdubbelboer/phpredisadmin:v1.17.0
-    ```
-    * 9000番ポートにアクセスするとphpRedisAdmin の画面を開くことができます。ここでは既に接続をするための情報をコンテナの起動時に渡しているため、ログインの必要はなくRedis の中身を閲覧することができます。
 
 #### コンテナの中から Redis Server へ接続
 * 次に Redis へ接続するコードを書いてみます。
@@ -523,16 +603,6 @@ docker exec -it test-server redis-cli
 
 - [Pub/Sub](https://redis.io/topics/pubsub)
 - [Introduction to Redis Streams](https://redis.io/topics/streams-intro)
-
-### Advanced: Jupyter notebook イメージを使ってみよう
-
-```Shell
-cd iij_bootcamp_redis/app
-wget "https://raw.githubusercontent.com/iij/bootcamp/master/src/database/redis/Redis%20hands-on.ipynb"
-docker pull jupyter/base-notebook
-docker run --rm --link test-server:redis -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter/base-notebook
-# copy and paste one of these URLs のメッセージを見て、ブラウザから接続する
-```
 
 ### Advanced: GIS で遊んでみよう
 * 今どき オープンデータとして 様々な施設の座標を公開している自治体があります。
