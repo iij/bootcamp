@@ -596,7 +596,7 @@ query {
 
 gRPCは名前の通りRPC(Remote Procedure Call)を実現するためのプロトコルです。
 APIを [Protocol Buffers](https://protobuf.dev/overview/) という形式で定義し、そのprotoファイルを元に各言語用のコードを生成することで、同じAPI定義を異なる言語で共有することが容易にできます。
-transport層としてhttp2を前提にしており、単純なrequest-responseだけではなくstreamingもサポートしています。
+transport層としてhttp2を前提にしており、単純なrequest-responseだけではなく双方向のstreamingもサポートしています。
 また実際にやり取りされるデータは最小限のバイナリになっており、jsonに比べて低容量に通信ができます。
 
 以下はprotoファイルの例です
