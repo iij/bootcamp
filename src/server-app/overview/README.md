@@ -359,8 +359,10 @@ APIをどのような形式で実装するかは非常に重要な問題で、�
 
 ### RPC
 
-そもそもプログラムからネットワーク越しに外部のプログラムの機能を実行する仕組みをRPC(Remote Procedure Call)と呼ぶ。
-黎明期におけるRPCはHTTPなどのWebの仕組みは前提にしておらず、各言語や実装ごとに独自の仕組みで動作するものだった。
+そもそもプログラムからネットワーク越しに外部のプログラムの機能を実行する仕組みをRPC(Remote Procedure Call)と呼びます。
+黎明期におけるRPCはHTTPなどのWebの仕組みは前提にしておらず、各言語や実装ごとに独自の仕組みで動作するものでした。
+
+その根底には「遠隔地(remote)で動いているプログラムの関数を実行する」という思想があり、RPC系のAPIは関数名と引数を指定してレスポンスを受け取るというイメージで使われます。
 
 ### XML/RPC(JSON-RPC)
 
@@ -592,6 +594,36 @@ query {
 
 ### gRPC
 
-TBD
+gRPCは名前の通りRPC(Remote Procedure Call)を実現するためのプロトコルです。
+APIを [Protocol Buffers](https://protobuf.dev/overview/) という形式で定義し、そのprotoファイルを元に各言語用のコードを生成することで、同じAPI定義を異なる言語で共有することが容易にできます。
+transport層としてhttp2を前提にしており、単純なrequest-responseだけではなくstreamingもサポートしています。
+また実際にやり取りされるデータは最小限のバイナリになっており、jsonに比べて低容量に通信ができます。
+
+以下はprotoファイルの例です
+
+```proto
+// GetPersonRequest を受け取って GetPersonResponse を返すメソッドの定義
+service Person {
+  rpc GetPerson (GetPersonRequest) returns (GetPersonResponse) {}
+}
+
+// GetPersonsRequest のリクエスト定義
+message GetPersonsRequest {
+  string name = 1;
+}
+
+// HelloReply のレスポンス定義
+message GetPersonResponse {
+  Person person = 1;
+
+  message Person {
+    string name = 1;
+    string email = 2;
+    string profile = 3;
+  }
+}
+```
+
+このproto定義から各言語向けに型定義を含めたコードを生成するため、実装が自由なOpenAPIに比べるとより厳密にAPIを実装できます。
 
 <credit-footer/>
