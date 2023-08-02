@@ -518,7 +518,77 @@ APIを作る場合必ず仕様書を用意しますが、open_apiのフォーマ
 
 ### GraphQL
 
-TBD
+RESTに代表されるように、データへのアクセス方法や形式（レスポンスのJSON構造など）はサーバ側が決め、クライアントはその定義に従ってAPIを叩くのが基本でした。
+しかしモバイルアプリによる利用が増える中で、ブラウザからのアクセスとモバイルアプリからのアクセスで異なるデータ形式が望ましいケースが出てきました。
+こういったユースケースに対応するため、APIで取得するデータ形式をクライアント側で指定できるのがGraphQLです。
+
+単純な例では、例えばREST APIで`GET https://example.com/persons`すると以下のようなデータが返ってきたとします。
+
+```json
+[
+  {
+    "name": "tanaka",
+    "email": "tanaka@example.com",
+    "group_id": 5,
+    "profile": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nisl eros, pulvinar facilisis."
+  },
+  {
+    "name": "higashi",
+    "email": "higashi@example.com",
+    "group_id": 10,
+    "profile": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero."
+  },
+  ...
+]
+```
+
+ここでモバイルアプリは`profile`が不要な一方、`group`の情報も一緒にUIに出したいとします。
+その場合`profile`の長いデータは完全に無駄な通信ですし、`group`の情報を問い合わせるために`GET https://example.com/groups/5`をしないといけません。モバイルアプリにとって理想的なAPIにするためには、サーバ側に新しいAPIを作ってもらう必要があります。
+
+これをクライアント側で制御するのがGraphQLのやりたいことで、例えばGraphQLでは以下のようなクエリをサーバの`https://example.com/graphql`にPOSTします。
+
+```graphql
+query {
+  persons {
+    name
+    email
+    group {
+      name
+    }
+  }
+}
+```
+
+するとサーバが以下のようなレスポンスを返してくるという算段です。
+
+```json
+{
+  "data": {
+    "persons": [
+      {
+        "name": "tanaka",
+        "email": "tanaka@example.com",
+        "group": {
+          "name": "Engineering Team"
+        }
+      },
+      {
+        "name": "higashi",
+        "email": "higashi@example.com",
+        "group": {
+          "name": "Marketing Team"
+        }
+      },
+      ...
+    ]
+  }
+}
+```
+
+様々なユースケースを持つクライアントが多く存在するような場合非常に強力です。[githubのAPI](https://docs.github.com/ja/graphql) は多数向けに公開されデータ構造も複雑なため、まさにgraphqlがハマるパターンです。
+
+一方でgraphqlとしては一発でデータを取れているように見えても、データベース上は相変わらずperson -> groupとSQLを2回以上叩く必要があるかもしれません。
+クライアント側のユースケースが限られサーバ側の実装変更が可能であれば、ユースケースに合わせて効率よくデータを取得できるAPIを作った方がパフォーマンストラブルを引き起こさずに済むでしょう。
 
 ### gRPC
 
