@@ -1,4 +1,4 @@
-FROM golang:1.19 AS builder
+FROM golang:1.20 AS builder
 LABEL maintainer="jo7oem@ume-ch.net"
 
 ENV DEBIAN_FRONTEND=noninteractive
