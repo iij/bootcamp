@@ -287,7 +287,9 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
     * `uint`,`uint8`,`uint16`,`uint32`,`uint64`
     * `uintptr`
     * `byte`
-    * `rune`
+      * :rocket: uint8 のエイリアス(別名)です
+	* `rune`
+		* :rocket: int32 のエイリアス(別名)です
   * 浮動小数点
     * `float32`,`float64`
   * 複素数
@@ -454,7 +456,7 @@ func myFunc(name string, age uint) (find bool, result error) {
 ```
 
 ##### :rocket: 型パラメータの使用 (Generics)
-`interface型`を用いることで任意の型を受け付けられる関数を作ることができます。
+`interface型`を用いることで任意の型を受け付けられる関数を作成できます。
 便利なようですが、実行時に型を解決するため意図しない挙動を取る可能性があります。
 Go1.18でGenericsが導入されコンパイル時に型を解決することが可能になりました。
 興味のあるひとは[Genericsのチュートリアル](https://go.dev/doc/tutorial/generics)をやってみてください。
@@ -1370,7 +1372,119 @@ Goroutineが迷子になったり、データが壊れたり、リソースの�
 [net/http](https://golang.org/src/net/http) パッケージは、通信に関する処理や、同期処理、書き込み処理やハンドラの登録など、Goで触っておくと良さそうな表現が色々と存在します。  
 腕試しをされるのであれば、zakohttpの問題を考え、アップグレードし続けてみてください。  
 
-# 8. 最後に ( 2 min )
+# 8. テスト ( 10 min )
+本章では、これまで作り上げてきたGyudon型にテストを追加してもらいます。
+
+## 8.1. Go言語でのテストのやり方
+Go言語にはテストをサポートする標準パッケージ [testing](https://pkg.go.dev/testing) があります。
+そのためなにかテストフレームワークを使うのではなく、標準のライブラリを使用してテストを行うケースが多いです。
+
+テストは以下のコマンドだけで実行できます。
+`./...`でカレントディレクトリ以下のすべてのファイルが対象となります。
+```shell
+$ go test ./...
+```
+
+`<機能>.go`というファイルがある時、テストは`<機能>_test.go`という名前のファイルに記述していきます。
+
+テストの関数は下のような書き出しで始めます。
+
+```go
+func Test<テスト名>(*testing.T)
+```
+
+このような関数のテストを書くときを考えます。
+
+```go
+func IsTopping(food string)bool{
+	switch food {
+	    case "BeniShoga":
+		    return true
+		
+	    case "Egg":
+			retuen true
+			
+    }
+	return false
+}
+```
+
+簡単なテストを書くとこのようになります。
+panicしたり、Errorに書き込まれなければテストは成功です。
+
+```go
+func TestIsTopping(t *testing){
+	food := "BeniShoga"
+	
+	if got:=IsTopping(food); !got{
+		t.Errorf("food = %s , want",got)
+    }
+}
+```
+
+## 8.2. :computer: テストの実行と修正
+では、基本的なテストのやり方を知ってもらったので、実際に試してみましょう。  
+本講義では5章で作った関数Eatにテストを追加する形で進めます。
+
+手始めに関数TestGyudon_EatSimpleをいじってテストの挙動を確認してみましょう。
+
+### 試してみてほしいこと
+1. `want`と`got`を比較して、違っていたら`t.Errorf()`にメッセージを表示するように修正する
+2. テストを実行する
+3. 文字が一致してテストが成功するパターンを試す
+4. 文字が一致せずテストが失敗するパターンを試す
+
+```shell
+:# TERMINAL 0
+:# WORKPATH /go/src/go_tutorial/8_test/test/
+
+$ cd /go/src/go_tutorial/8_test/test/
+$ <お好きなエディタ> shop/shop_test.go
+$ go test ./...
+```
+
+* `/go/src/go_tutorial/8_test/test/shop/shop_test.go`
+    ```go
+    func TestGyudon_EatSimple(t *testing.T) {
+    w := bytes.Buffer{}
+    r := http.Request{}
+
+	gd := NewGyudon()
+	gd.menu="<入れたい文字列>"
+	gd.Eat(&w, &r)
+	/// 関数の結果を格納
+	got := w.String()
+
+	/// 判定処理を書く
+    }
+  ```
+  
+:recycle: 8.2. 結果
+
+```shell
+:# TERMINAL 0
+:# WORKPATH /go/src/go_tutorial/8_test/test/
+
+$ cd /go/src/go_tutorial/8_test/test/
+$ <お好きなエディタ> shop/shop_test.go
+$ go test ./...
+```
+
+* `/go/src/go_tutorial/8_test/test/shop/shop_test.go`
+    ```go
+    if want != got {
+        t.Errorf("want = %s, got = %s\n", want, got)
+    }   
+    ```
+
+## 8.3. :rocket: その他のテストの書き方
+
+8.2.で試したテスト関数 TestGyudon_EatSimple のやり方の場合、引きすうごとにテストの関数を追加せねばならず不便です。
+そのため、テスト関数 TestGyudon_Eat のように一つの関数内で複数のパターンのテストを記述することもよくあります。
+時間に余裕があったり、興味があるひとはテスト関数 TestGyudon_Eat にあるテストパターンの間違いを修正したり、関数 Eat が参照する変数が空の場合のテストケースを追加してみてください。
+
+
+# 9. 最後に ( 2 min )
 今回は、Goを知ってもらうために、Goの概要説明、実行やコンパイル、関数や構造体、そして、Goroutineをサクッと追っていきました。  
 今回紹介しきれていない`interface`や`channel`、`context` 辺りを学習するとよりGo言語が、選択肢としての幅が広がっていくと思います。  
 もしGo言語をもっと知ってみたいと思っているのであれば、Goが学習できる [go tour(日本語)](https://go-tour-jp.appspot.com/list) を、まずは一周してみることをお勧めします。  
