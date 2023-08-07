@@ -79,16 +79,6 @@ $ docker exec -it bootcamp-springboot bash
 ![初回起動 - WhitelabelErrorPage](./images/white-label-error.png)
 
 
-:::details オプション設定
-ハンズオンにおいて必須ではありませんが、Visual Studio Code(以下 VSCode)を利用することでより良い開発体験ができます。
-
-1. VSCodeをインストールする
-2. 拡張機能`Remote Development`をインストールする
-3. 拡張機能`Extention Pack for Java`をインストールする
-4. 拡張機能`Remote-Container`を使って起動したコンテナの中へアタッチする
-:::
-
-
 ## Javaの基本
 
 JavaはOpenJDKコミュニティによって開発され、各ベンダからリリースされているプログラミング言語です。
