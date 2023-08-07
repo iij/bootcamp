@@ -46,7 +46,7 @@ $ git clone git@github.com:iij/bootcamp.git
 
 ```bash
 # やや重たいので注意してください
-$ docker pull tamago0224/bootcamp-springboot:2022
+$ docker pull tamago0225/bootcamp-springboot:2023
 ```
 
 2. コンテナを起動する
@@ -58,7 +58,7 @@ $ PROXY_PORT=YOUR_PROXY_PORT
 $ JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
 # プロキシ設定ここまで
 # コンテナを起動する
-$ docker run --name bootcamp-springboot -itd -p 8080:8080 -e JAVA_OPT="${JAVA_OPT}" tamago0224/bootcamp-springboot:2022
+$ docker run --name bootcamp-springboot -itd -p 8080:8080 -e JAVA_OPT="${JAVA_OPT}" tamago0224/bootcamp-springboot:2023
 ```
 
 3. アプリケーションの起動チェック
@@ -79,19 +79,9 @@ $ docker exec -it bootcamp-springboot bash
 ![初回起動 - WhitelabelErrorPage](./images/white-label-error.png)
 
 
-:::details オプション設定
-ハンズオンにおいて必須ではありませんが、Visual Studio Code(以下 VSCode)を利用することでより良い開発体験ができます。
-
-1. VSCodeをインストールする
-2. 拡張機能`Remote Development`をインストールする
-3. 拡張機能`Extention Pack for Java`をインストールする
-4. 拡張機能`Remote-Container`を使って起動したコンテナの中へアタッチする
-:::
-
-
 ## Javaの基本
 
-JavaはOracle社が開発しているプログラミング言語です。\
+JavaはOpenJDKコミュニティによって開発され、各ベンダからリリースされているプログラミング言語です。
 古くから利用されているプログラミング言語/プラットフォームである一方、2022年現在でもSIや大規模開発の現場などでよく利用されています。
 
 ### 言語としての特徴
