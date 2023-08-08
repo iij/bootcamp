@@ -46,7 +46,7 @@ $ git clone git@github.com:iij/bootcamp.git
 
 ```bash
 # やや重たいので注意してください
-$ docker pull tamago0225/bootcamp-springboot:2023
+$ docker pull tamago0224/bootcamp-springboot:2023
 ```
 
 2. コンテナを起動する
