@@ -181,7 +181,7 @@ console.log(100 <= 100);
 
 その他、数値を扱う関数やメソッドなどについては[Number - JavaScript | MDN](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Number)や[Math - JavaScript | MDN](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math)をご覧ください。
 
-#### 文字列
+#### 文字列（後ほど使用します）
 
 ```js
 const doubleQuoted = "先ほどから何度も使っている、ダブルクォートで囲った文字列リテラル";
@@ -331,7 +331,7 @@ if (null) {
 // 「undefined」もJavaScriptにおける「偽」
 // 前述の「null」とよく似ている。
 // 遭遇するケースがより多いためか「undefined」の方が頻繁に用いられる
-if (null) {
+if (undefined) {
   console.log("こちらは呼ばれません！");
 } else {
   console.log("条件節の値が偽なので呼ばれます！");
@@ -504,7 +504,7 @@ console.log(f("一つ目", "2つめ", "みっつめ"));
 console.log(f("あれ、一つ目しかない！"));
 ```
 
-#### 関数式（⚠️重要⚠️）
+#### 関数式（⚠️重要⚠️ 後ほど使用します）
 
 JavaScriptの世界では、これまで紹介した文字列や数値、配列などと同様に、関数も変数に代入したり、他の関数の引数として渡したりすることができるようになっています（このことを「JavaScriptでは、関数もファーストクラスオブジェクトである」と言います）。これはこの後紹介するイベントリスナーを実現するためにも使われている、大変重要な機能です。
 
@@ -857,7 +857,7 @@ buttonElement.addEventListener("click", (event) => {
 何はともあれ、入力した情報を取得するための`input`要素が必要です。先ほどの「JavaScriptもユーザーに見える要素も書かれていない、事実上空っぽのHTMLファイル」を`4.html`という名前で保存して、`body`タグの中に次の内容を加えてください:
 
 ```html
-<button>適当なボタン</button>
+<input type="text" placeholder="適当な文字列">
 ```
 
 続いて、先ほどと同様に`input`要素を取得し、`addEventListener`でイベントリスナーを設定します。ただし、要素を取得する処理などは前のセクションで例示したので、ここでは省略します。
@@ -866,7 +866,7 @@ buttonElement.addEventListener("click", (event) => {
 
 ```js
 (event) => {
-  console.log("「適当なボタン」に入力しました:", event.target.value);
+  console.log("適当な文字列を入力しました:", event.target.value);
 }
 ```
 
@@ -884,7 +884,7 @@ buttonElement.addEventListener("click", (event) => {
 
 #### 🚩チェックポイント
 
-スクリーンショットのように、「適当な入力欄」に文字を入力する度に「コンソール」に入力した内容が追記されるページを作成できた。
+スクリーンショットのように、適当な文字列を入力する度に「コンソール」に入力した内容が追記されるページを作成できた。
 
 ### 要素を（もっと簡単に）取得する
 
@@ -1010,7 +1010,7 @@ p.appendChild(text);
 document.body.appendChild(p);
 ```
 
-これで、メッセージを投稿するサービスっぽいものができました🎉！
+これで、メッセージを投稿するSNSっぽいものができました🎉！
 
 ![](./5-post.gif)
 
