@@ -1,0 +1,29 @@
+flowchart TD
+  R --> H[head]
+  R[document] --> B[body]
+  H --> HC[...headの子要素...]
+  B --> h1
+  h1 --> T1["TEXT:<br>私たちの<br>バック<br>ボーン"]
+  B --> p1[p]
+  p1 --> T2["TEXT:<br>本文書は、<br>IIJ社員に..."]
+  B --> p2[p]
+  p2 --> T3[...]
+  B --> h2
+  h2 --> T4[TEXT:<br>本文]
+  B --> dl
+
+  dl --> dt1[dt]
+  dt1 --> T5["TEXT:<br>1. チャレンジ..."]
+  dl --> dd1[dd]
+  dd1 --> p3[p]
+  p3 --> T6["TEXT:<br>大きな野望も..."]
+  dd1 --> dd1c[...他の子要素...]
+
+  dl --> dt2[dt]
+  dt2 --> T7["TEXT:<br>2. 好奇心..."]
+  dl --> dd2[dd]
+  dd2 --> p4[p]
+  p4 --> T8["TEXT:<br>個人の好奇心は..."]
+  dd2 --> dd2c[...他の子要素...]
+
+  dl --> dlc[...他の子要素...]

@@ -4,6 +4,12 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 # Svelte を触ってみよう
 
+## 前提知識
+
+- JavaScriptの基本的な構文
+    - [素のJavaScript + DOM入門](../dom/)などで学習しておくことを推奨します。ただ、[素のJavaScript + DOM入門](../dom/)で取り上げていないJavaScriptの構文が一部含まれる点をご容赦ください。
+- HTMLとCSSについての少しの知識
+
 ## 事前準備
 
 - [CodeSandbox](https://codesandbox.io/)というサービスを利用することで、適当なブラウザーさえ動けば学習できるようにします
@@ -12,9 +18,13 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 ## Svelte とは
 
-[日本語の公式サイト](https://svelte.jp/)
+[日本語の公式サイト](https://svelte.jp/)の[チュートリアル](https://learn.svelte.jp/tutorial/welcome-to-svelte)冒頭より:
 
-> Svelteはユーザーインタフェースを構築する先鋭的で新しいアプローチです。ReactやVueのような 従来のフレームワークがその作業の大部分を ブラウザ で行うのに対し、 Svelteはその作業を アプリをビルドする際の コンパイル時 に行います。
+> Svelte は、web アプリケーションを構築するためのツールです。他のユーザーインターフェースフレームワークと同様、マークアップ(markup)、スタイル(styles)、振る舞い(behaviours) を組み合わせたコンポーネントでアプリを *宣言的(declaratively)* に構築することができます。
+>
+> これらのコンポーネントは小さくて効率的な JavaScript モジュールに *コンパイル* されるため、従来の UI フレームワークには付き物だったオーバーヘッドがありません。
+>
+> アプリ全体を Svelte で作ることもできますし（中略）、既存のコードベースに部分的/段階的に追加することもできます。また、どんな場所でも機能するスタンドアロンパッケージとしてコンポーネントを配布することもできます。
 
 - HTML・CSS・JavaScriptプラスアルファの構文で`.svelte`というファイルを書くと、いい感じなHTML・CSS・JavaScriptを生成してくれる！
 - 生成したJavaScriptに含まれるランタイムライブラリーが少ない！
@@ -32,9 +42,13 @@ footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
 
 ![CodeSandboxのプロジェクト作成画面](./create-project.png)
 
-少しスクロールすると出てくる、下記のような「Svelte by CodeSandbox」と書かれた箇所をクリックすると、テンプレートから動作するアプリがすぐに作成されます！
+右上にある「🔍Search Templates」という検索ボックスに「svelte」と入力すると、次のようにSvelte製のアプリケーションを作るテンプレートがたくさんヒットします:
 
-![Svelte by CodeSandbox](./item-svelte.png)
+![CodeSandboxのプロジェクト作成画面における「svelte」の検索結果](./create-project-search-svelte.png)
+
+検索結果の2番目次のように「Official」と書かれたものをクリックすると、テンプレートから動作するアプリがすぐに作成されます！
+
+![Official Svelte CodeSandbox](./item-svelte.png)
 
 CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期状態）:
 
@@ -42,12 +56,12 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 
 利用した開発環境によって変わりますが、CodeSandboxを使って上記👆のスクリーンショットにした状態について、画面上にあるものを解説します:
 
-- 画面左上にあるのが、プロジェクトにあるファイルの一覧です。CodeSandboxもStackBlitzも、おなじみVisual Studio Codeをブラウザー上で動かすことで実現しています
+- 画面中央左にあるのが、プロジェクトにあるファイルの一覧です。CodeSandboxもStackBlitzも、おなじみVisual Studio Codeをブラウザー上で動かすことで実現しています
 - 画面真ん中上に表示されているのが、今開いているファイルを編集する画面です。今開いているファイル（`index.js`か`src/main.js`）では、`App.svelte`というファイルに書かれたコンポーネント（後述）を指定した要素に適用しています
     - ※Svelte REPLの場合初期状態で開かれているのはApp.svelte
 - 画面真ん中下に表示されているのが、作成したアプリケーションを実行している画面です。編集画面でファイルを変更・保存する度に更新され、都度動作確認できます
 
-### チェックポイント
+### 🚩チェックポイント
 
 - CodeSandboxなどのブラウザー上で動く開発環境を利用して、Svelte製のアプリケーションをテンプレートから作成できた
 - CodeSandboxなどのブラウザー上で動く開発環境について、画面にあるものを大まかに理解できた
@@ -58,11 +72,11 @@ CodeSandboxのSvelteテンプレートで作成したプロジェクト（初期
 
 App.svelte:
 
-```svelte
+```html
 <h1>Hello IIJ Bootcamp!</h1>
 ```
 
-Svelteのコンポーネントは、表示するHTML・CSSと、そのHTMLを操作するJavaScriptを独立して再利用可能な形で一つにまとめるファイルです。最も単純な（でもあまり役に立たない）コンポーネントは、上記のように表示するHTMLだけで構成されています。結果できあがるものはもちろん書いたタグの通りのHTMLです:
+Svelteのコンポーネントは、表示するHTML、CSSと、そのHTML（を表すDOMツリー）を操作するJavaScriptを、独立して再利用可能な形で一つにまとめたファイルです。最も単純な（でもあまり役に立たない）コンポーネントは、上記のように表示するHTMLだけで構成されています。結果できあがるものはもちろん書いたタグの通りのHTMLです:
 
 ![Hello IIJ Bootcamp!](./step1.png)
 
@@ -72,7 +86,7 @@ Svelteのコンポーネントは、表示するHTML・CSSと、そのHTMLを操
 
 App.svelte:
 
-```svelte
+```html
 <script>
     let name = "<誰か適当に挨拶したい人>";
 </script>
@@ -92,7 +106,7 @@ App.svelte:
 
 App.svelte:
 
-```svelte
+```html
 <script>
     function clicked() {
         alert("押しましたね！？");
@@ -104,15 +118,17 @@ App.svelte:
 </button>
 ```
 
-`on:click`のように、`on:[イベント名]`という形式のHTMLの属性は、`.svelte`専用の属性で、Svelteは`on:[イベント名]`という属性で指定したJavaScriptの関数をイベントハンドラーとして設定してくれます（※）。
+`on:click`のように、`on:[イベント名]`という形式のHTMLの属性は、`.svelte`専用の属性で、Svelteは`on:[イベント名]`という属性で指定したJavaScriptの関数をイベントハンドラーとして設定してくれます。
 
-（※）: 標準のイベントハンドラー用の属性（`onclick`など）ではJavaScriptの式を直接文字列として指定する一方、`on:click`では実行するJavaScriptの関数を表す式を設定します。また、例における`clicked`や前述の`name`のように、コンポーネントの`<script>`で設定した変数や関数を参照できるのは、`on:click`などの属性のみとなっております。
+:::details
+標準のイベントハンドラー用の属性（`onclick`など）ではJavaScriptの式を直接文字列として指定する一方、`on:click`では実行するJavaScriptの関数を表す式を設定します。また、例における`clicked`や前述の`name`のように、コンポーネントの`<script>`で設定した変数や関数を参照できるのは、`on:click`などの属性のみとなっております。
+:::
 
 動作例:
 
 ![ぼたん](./step3.gif)
 
-## ここまでにできたこと
+## 🚩ここまでにできたこと
 
 - HTMLとJavaScriptで、Svelteのコンポーネントを定義できた
 - Svelteのコンポーネントの中では、`{... JavaScriptの式 ...}`という構文でJavaScriptの式を参照することを理解できた
@@ -124,7 +140,7 @@ App.svelte:
 
 App.svelte:
 
-```svelte
+```html
 <script>
     let count = 0;
     function incrementCount() {
@@ -149,11 +165,13 @@ App.svelte:
 
 `let`で定義した変数は、HTMLに書いたイベントハンドラーを契機に変更されると、HTMLにその変更を伝達するようになっていることを学びました。では、HTMLではなく、`<script>`に書いた任意のコードに、`let`で定義した変数の変更を伝達するにはどうすればよいでしょうか？例えばそれは、「`let`で定義したあの変数`x`に併せて変わる変数`y`を定義したい！（※）」とか、「`let`で定義したあの変数`z`が何かしら変わる度に中身を`console.log`で表示したい！」といった場合に最適です。そんな場合は、`$:`で始まる文を`<script>`に書きます:
 
-（※）: Vue.jsの経験がある方へ: 要するにこれは、Vue.jsで言うところの「computed properties」に相当するものと考えて差し支えありません。
+::: details Vue.jsの経験がある方へ
+「`let`で定義したあの変数`x`に併せて変わる変数`y`を定義したい！」を実現する機能は、要するにVue.jsで言うところの「computed properties」に相当するものと考えて差し支えありません。
+:::
 
 App.svelte:
 
-```svelte
+```html
 <script>
     let count = 0;
     function incrementCount() {
@@ -170,9 +188,11 @@ App.svelte:
 + 4 = {plus4} だ！
 ```
 
-Svelteにおいて`$:`で始まる文は特別なサインです。`$: plus4 = count + 4;`のように、`$: [変数名] = [JavaScriptの式];`という構文で定義した変数は、`[JavaScriptの式]`に含まれている`let`で定義した変数の変更に沿って変わります。`$: console.log("変数が変わった！", { plus4, count });`のように変数への代入を伴わなくとも、`$: JavaScriptの文`という構文で記述した文は、中で参照している変数が変更される度に実行されるようになります（※）。
+Svelteにおいて`$:`で始まる文は特別なサインです。`$: plus4 = count + 4;`のように、`$: [変数名] = [JavaScriptの式];`という構文で定義した変数は、`[JavaScriptの式]`に含まれている`let`で定義した変数の変更に沿って変わります。`$: console.log("変数が変わった！", { plus4, count });`のように変数への代入を伴わなくとも、`$: JavaScriptの文`という構文で記述した文は、中で参照している変数が変更される度に実行されるようになります。
 
-（※）: 実は`$:...`という構文は、SvelteがJavaScriptに新しく加えた構文ではありません。JavaScript標準の機能である[ラベル付きの文](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/label)を流用し、`$`という名前のラベルが付いた文を特別扱いすることにしたのです。
+::: details $: ... について
+実は`$: ...`という構文は、SvelteがJavaScriptに新しく加えた構文ではありません。JavaScript標準の機能である[ラベル付きの文](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/label)を流用し、`$`という名前のラベルが付いた文を特別扱いすることにしたのです。
+:::
 
 動作例:
 
@@ -182,7 +202,7 @@ Svelteにおいて`$:`で始まる文は特別なサインです。`$: plus4 = c
 
 間違った例:
 
-```svelte
+```html
 <script>
 ... 省略 ...
     let plus4 = count + 4;
@@ -200,7 +220,7 @@ Svelteにおける`let [変数名] = ...`の`...`に書く式は、あくまで�
 
 ![The keyword 'let' is reserved svelte(parse-error)](./step5-error.png)
 
-## ここまでにできたこと
+## 🚩ここまでにできたこと
 
 - コンポーネントにおいて`let`を使って定義した変数について、値を変える毎にHTML内で参照している箇所に変更を伝えることができた
 - `<script>`の中でも`$: ...`という構文を使うことで、`let`で定義した変数の変更に併せて文を実行できた
@@ -209,7 +229,7 @@ Svelteにおける`let [変数名] = ...`の`...`に書く式は、あくまで�
 
 ここからは、ボタンを押した回数が「3の倍数のときだけアホになるボタン」というコンポーネントを、いくつかのステップに分けて作ってみましょう。まずは一つの`.svelte`ファイルに書いていたコンポーネントを、別の`.svelte`ファイルに分割する方法を紹介します。
 
-コンポーネントを分割する方法を説明するため、ここまで編集した`App.svelte`と同じディレクトリーに新しいファイルを作成してください。CodeSandboxの画面左上の方にある、紙に折り目をつけたようなアイコン📄を押すと、新しいファイルができます:
+コンポーネントを分割する方法を説明するため、ここまで編集した`App.svelte`と同じディレクトリーに新しいファイルを作成してください。CodeSandboxの画面中央左の方にある、紙に折り目をつけたようなアイコン📄を押すと、新しいファイルができます:
 
 ![](./step6-button.png)
 
@@ -219,7 +239,7 @@ Svelteにおける`let [変数名] = ...`の`...`に書く式は、あくまで�
 
 NabeatsuButton.svelte:
 
-```svelte
+```html
 <script>
     export let count;
 </script>
@@ -236,7 +256,7 @@ NabeatsuButton.svelte:
 
 App.svelte:
 
-```svelte
+```html
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 </script>
@@ -245,9 +265,11 @@ App.svelte:
 
 Svelteのコンポーネントを別のコンポーネントから参照する場合、普通のJavaScriptにおける`import`文を使用します。`import [インポートする側で使用する名前] from '[インポートするファイルの名前]';`という構文ですね（※1）。このように書いた上で、`<[インポートする側で使用する名前]/>`と書くと、該当の箇所がインポートしたコンポーネントのHTMLで置き換わります。`[インポートする側で使用する名前]`という名前の新しいHTMLタグが作成されるイメージで捉えてください（※2）。
 
+::: details 注釈
 （※1）: インポートするファイル名における拡張子`.svelte`は特に付けなくてもいいようですが、慣習上付けることが多いようなのでこのドキュメントでも付けることにします。
 
 （※2）: このような構文のため、普通のHTMLのタグと区別できるよう、インポートしたコンポーネントの名前は必ず大文字で始めることになっています。ちなみにこれはSvelteだけでなく、ReactやVue.jsにおいても同様のルールがあります。
+:::
 
 そして、`<NabeatsuButton count={3}/>`の`count={3}`という箇所が、`NabeatsuButton`コンポーネントのプロパティーを設定している箇所です。先ほど`export let`した`count`という名前が出てきました！ちょうどHTMLタグで属性を設定するがごとく、`[プロパティー名]=[値]`という構文で、指定したコンポーネントのプロパティーを設定することができます。`{3}`のように、`[値]`の箇所で`{... JavaScriptの式 ...}`の構文を使っているのは、HTMLの属性値が本来文字列しかサポートしていない関係で、単に`count=3`と書くと「3」という文字列が渡ってしまうからです。
 
@@ -263,7 +285,7 @@ Svelteのコンポーネントを別のコンポーネントから参照する�
 
 NabeatsuButton.svelte:
 
-```svelte
+```html
 <script>
     export let count;
     export let onClick;
@@ -279,7 +301,7 @@ NabeatsuButton.svelte:
 
 App.svelte:
 
-```svelte
+```html
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 
@@ -297,7 +319,7 @@ App.svelte:
 
 ![0](./step7.gif)
 
-## ここまでにできたこと
+## 🚩ここまでにできたこと
 
 - `.svelte`ファイルを分けることで、コンポーネントを分割できた
 - コンポーネントの中で`export let`することでプロパティーを定義し、利用する側で具体的な値を設定できた
@@ -310,7 +332,7 @@ App.svelte:
 
 NabeatsuButton.svelte:
 
-```svelte
+```html
 <script>
     export let count;
     export let onClick;
@@ -328,7 +350,7 @@ NabeatsuButton.svelte:
 
 上記のように書き換えた`NabeatsuButton`では、`isAho`変数の値が`true`であるか`false`であるかによって、`<button>`タグで表示する内容を切り替えています。下記のifブロックという構文を使うことで、`isAho`が`true`であれば`((●˚⺣˚)<{count}!!`、`false`であれば`(・∀・)<{count}`を表示します（`<`が`&lt;`に置き換えられているのにご注意ください）。
 
-```svelte
+```
 {#if [JavaScriptの式]}
     [trueの場合に表示する内容]
 {:else}
@@ -342,7 +364,7 @@ NabeatsuButton.svelte:
 
 ![((●˚⺣˚)&lt;0!!](./step8.gif)
 
-## ここまでにできたこと
+## 🚩ここまでにできたこと
 
 - `{#if [JavaScriptの式]}` ... `{:else}` ... `{/if}`という構文を使って、JavaScriptの値に応じてHTMLの中身を切り替えることができた
 
@@ -354,7 +376,7 @@ NabeatsuButton.svelte:
 
 NabeatsuButton.svelte:
 
-```svelte
+```html
 <script>
     export let count;
     export let onClick;
@@ -377,11 +399,9 @@ NabeatsuButton.svelte:
 
 上記の例では`aho`というクラスを作成して、`<style>`では`aho`クラスが充てられた要素の文字が斜字体（`font-style: italic`）になるよう設定しています。そして、`isAho`が`true`の場合、つまり`count`が3の倍数の時は`button`要素の`class`属性に`aho`が設定することで、3の倍数の時だけ見た目が変わるようにしています。`{...}`の中には任意のJavaScriptの式が書けるので、上記では三項演算子を使って`class`属性の中身を記述しているんですね。
 
-もちろん、下記のように書き換えても問題ありません（※）:
+もちろん、下記のように書き換えても問題ありません:
 
-（※）: ここでは割愛しますが実際のところ、Svelteで要素の`class`属性を設定する方法にはもっと簡潔な方法があります。詳細は[公式のドキュメント](https://svelte.jp/docs#template-syntax-element-directives-class-name)をご覧ください。
-
-```svelte
+```html
 ... 省略 ...
 {#if isAho}
 <button on:click={onClick} class="aho">
@@ -394,6 +414,10 @@ NabeatsuButton.svelte:
 {/if}
 ```
 
+::: tip
+ここでは割愛しますが実際のところ、Svelteで要素の`class`属性を設定する方法にはもっと簡潔な方法があります。詳細は[公式のドキュメント](https://svelte.jp/docs#template-syntax-element-directives-class-name)をご覧ください。
+:::
+
 動作例:
 
 ![((●˚⺣˚)&lt;0!!](./step9.gif)
@@ -404,13 +428,13 @@ NabeatsuButton.svelte:
 
 ![\<button class="aho svelte-1ot19pz"\>](./step9-button-element.png)
 
-更にDeveloper Toolsの画面右、`<button>`要素に適用されているCSSのルールの一覧を見ると、私たちが`<style>`タグに書いた`.aho`についてのルールが、`.aho.svelte-1ot19pz`のような、`<button>`に追加で適用された`svelte-`で始まるクラスを付け加えたセレクターで置き換えられていることが分かるでしょう:
+更にDeveloper Toolsの画面右、`<button>`要素に適用されているCSSのルールの一覧を見ると、私たちが`<style>`タグに書いた`.aho`についてのルールが、`.aho.svelte-1ot19pz`のような、`<button>`に追加で適用された、`svelte-`で始まるクラスを付け加えたセレクターで置き換えられていることが分かるでしょう:
 
 ![.aho.svelte-1ot19pz](./step9-style.png)
 
 この、Svelteが自動で書き換えるセレクターにより、Svelteのコンポーネントで`<style>`に書いたCSSは、そのコンポーネントだけで有効になります。このようにしてSvelteは、コンポーネントが外に与える影響を最小化しているんですね。
 
-## ここまでにできたこと
+## 🚩ここまでにできたこと
 
 - Svelteのコンポーネントにおける`<style>`が、書いたコンポーネントだけに適用されることが分かった
 
@@ -424,7 +448,7 @@ NabeatsuButton.svelte:
 
 NabeatsuButton.svelte:
 
-```svelte
+```html
 <script>
     export let count;
     export let divisor;
@@ -450,7 +474,7 @@ NabeatsuButton.svelte:
 
 App.svelte:
 
-```svelte
+```html
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 
@@ -487,7 +511,7 @@ App.svelte:
 
 App.svelte:
 
-```svelte
+```html
 <script>
     import NabeatsuButton from './NabeatsuButton.svelte';
 
@@ -506,20 +530,22 @@ App.svelte:
 <NabeatsuButton onClick={incrementCount} count={count} divisor={divisor}/>
 ```
 
-`<input>`要素には`bind:value={divisor}`と書くだけでよくなり、`updateDivisor`のような`<input>`要素の値を`divisor`にセットするだけの関数もなくなりました！`bind:value={divisor}`は、対象の`<input>`要素の`value`属性と変数`divisor`を双方向に紐付ける（バインドする）ための設定です。紐付けた変数`divisor`の値を`value`属性で表示して、ユーザーの入力によって`value`属性が更新されたら`divisor`の値も更新し、また新たな値を`value`属性の値として表示する...という処理をこれ一つで賄ってくれます（※）。
+`<input>`要素には`bind:value={divisor}`と書くだけでよくなり、`updateDivisor`のような`<input>`要素の値を`divisor`にセットするだけの関数もなくなりました！`bind:value={divisor}`は、対象の`<input>`要素の`value`属性と変数`divisor`を双方向に紐付ける（バインドする）ための設定です。紐付けた変数`divisor`の値を`value`属性で表示して、ユーザーの入力によって`value`属性が更新されたら`divisor`の値も更新し、また新たな値を`value`属性の値として表示する...という処理をこれ一つで賄ってくれます。
 
-（※）: 更にSvelteは気を遣ってくれまして、`type="number"`な`<input>`要素については、入力された値を自動で数値に変換した上で紐付けた変数に代入してくれます。
+::: tip 補足
+更にSvelteは気を遣ってくれまして、`type="number"`な`<input>`要素については、入力された値を自動で数値に変換した上で紐付けた変数に代入してくれます。
+:::
 
 動作例:
 
 ※ステップ10と同じなので省略
 
-## ここまでにできたこと
+## 🚩ここまでにできたこと
 
 - 「双方向バインディング」を使うことで、紐付けた変数と`<input>`要素の`value`属性の値を簡単に同期させることができた
 
 ## おわりに
 
-Svelteの機能はまだまだたくさんあります。気になる方は、とてもうまく翻訳された[日本語のチュートリアル](https://svelte.jp/tutorial/basics)を軽く通してみるといいでしょう。
+Svelteの機能はまだまだたくさんあります。気になる方は、とてもうまく翻訳された[日本語のチュートリアル](https://learn.svelte.jp/tutorial/welcome-to-svelte)を軽く通してみるといいでしょう。
 
 <credit-footer/>

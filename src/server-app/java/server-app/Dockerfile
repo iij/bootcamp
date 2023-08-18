@@ -1,11 +1,10 @@
-FROM openjdk:11.0.16
+FROM amazoncorretto:17.0.8
 WORKDIR /app
 
 # 開発ツールインストール
-RUN apt update \
-    && apt install vim emacs -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN yum update \
+    && yum install vim emacs -y \
+    && yum clean all
 
 # 固定シェルとプロジェクト設定をコピー
 COPY gradlew settings.gradle /app/

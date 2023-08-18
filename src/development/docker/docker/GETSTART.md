@@ -87,7 +87,23 @@ getting-startedでは予めビルド済みイメージを公開している為�
 
 
 ```bash
- docker run --rm --name iijbootcamp_docker01-tutorial getting-started
+ docker run --rm --name iijbootcamp_docker01-tutorial docker/getting-started
+```
+
+また、 この ```docker/getting-started``` image を ```iijbootcamp_docker01``` と呼べるようにしておきましょう
+
+```
+docker tag docker/getting-started iijbootcamp_docker01
+```
+
+```docker images``` コマンドで今 pull してあったり build して用意した image が確認できます。
+
+```bash
+$ docker images
+
+REPOSITORY               TAG       IMAGE ID       CREATED          SIZE
+docker/getting-started   latest    3e4394f6b72f   6 months ago     47MB
+iijbootcamp_docker01     latest    3e4394f6b72f   6 months ago     47MB
 ```
 
 ### 発展課題

@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 description: Redisの概要を学び、Pythonを使って実際に使ってみます。
 time: 1h
 prior_knowledge: なし
@@ -27,13 +27,11 @@ prior_knowledge: なし
     ```Shell
     docker pull redis:6.2.3-alpine3.13
     docker pull python:3.9.5-slim-buster
-    docker pull erikdubbelboer/phpredisadmin:v1.17.0
     docker images
 
     REPOSITORY                                           TAG                 IMAGE ID            CREATED             SIZE
     python                                               3.9.5-slim-buster   afaa64e7c7fe        15 hours ago        115MB
     redis                                                6.2.3-alpine3.13    efb4fa30f1cf        9 days ago          32.3MB
-    erikdubbelboer/phpredisadmin                         v1.17.0             82d60d8fd132        6 months ago        196MB
     ```
 
 1. サーバを起動する
@@ -68,78 +66,17 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-1. WebUI でRedis を操作するためのコンテナをデプロイしてみる
-
-    * phpredisadmin を起動します。 これでRedis を操作するためのWebUI を起動します。
-    ```Shell
-    docker run -d --link test-server:redis --name test-web --rm -e REDIS_1_HOST=redis -e REDIS_1_AUTH= -p 9000:80 erikdubbelboer/phpredisadmin:v1.17.0
-    ```
-    * 9000番ポートにアクセスするとphpRedisAdmin の画面を開くことができます。ここでは既に接続をするための情報をコンテナの起動時に渡しているため、ログインの必要はなくRedis の中身を閲覧することができます。
-
-
-1. さらに別のターミナルを開いて、Pythonが使えるコンテナイメージを展開する
-
-    * python container を起動 ```test-server```をコンテナ内部では```redis``` として使えるようにします。
-    ```Shell
-    docker run --link test-server:redis -it --rm python:3.9.5-slim-buster bash
-    ```
-
-    * redis 用のライブラリをインストール
-      * ```コンテナ内部: $``` は プロンプト例です。 実際は ```root@1960714230b6:/#``` のように表示されています。
-    ```
-    コンテナ内部: $ pip install redis
-    ```
-
-    * python の対話式UIを起動
-    ```
-    コンテナ内部: $ python
-    ```
-
-    * python で redis に接続し、 redis の ping コマンドをしてみる。 PONG ではなく True と帰ってくればOK
-      * ```>>>``` は プロンプト なので実際には入力しません。
-    ```python
-    >>>
-    >>> import os, redis
-    >>> conn = redis.Redis(host=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'], db=0)
-    >>> conn.ping()
-    True
-    ```
-
-    - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
-        - winpty docker -it 〜 としたらいけました
-
-1. 最初に起動した Redis サーバは C-c とめられます。 --rm をつけてるので 止めると削除されます。
-
 3. 終了
     * ここまで完了できたら 事前準備完了です。 無事 これらを行うことができました。
       1. docker image の 取得
       1. redis server の起動
       1. redis-cli による Redis の操作
-      1. phpRedisAdmin (WebUI) による Redisの操作
-      1. python からの Redis の操作
-
-1. 参考: Redisを使ったGeospatial
-
-    ```Shell
-    test-server:6379> GEOADD sample-loc 139.700258 35.690921  "shinjuku-station"
-    (integer) 1
-    test-server:6379> GEOADD sample-loc 139.70121502876282 35.69271580036533  "shinjuku-alta"
-    (integer) 1
-    test-server:6379> GEOADD sample-loc 139.69163417816162 35.68947430993086 "tocho"
-    (integer) 1
-    test-server:6379> GEORADIUS sample-loc 139.700258 35.690921 500 m
-    1) "shinjuku-station"
-    2) "shinjuku-alta"
-    test-server:6379> GEODIST sample-loc shinjuku-station tocho
-    "795.2182"
-    ```
 
 ## あらすじ
 
 - Redis ざっくり説明
 - Redis を直接触ってみよう
-- プログラムで DB 登録しよう
-- 応用課題
+- 応用課題: プログラムで DB 登録しよう
 
 ## 資料
 
@@ -175,6 +112,8 @@ prior_knowledge: なし
         - トランザクション: Luaスクリプトなどを用意することで 複数の操作を一連の操作として行えることができる
         - Pub/Sub のメッセージング: 多対多の疎結合なやりとりをサポートしている。 これにより チャットや 配信の仕組みなどを 簡単に作れる
         - 地理データ用のコマンド: 二点間の距離とか 10km四方にある ラーメン屋の検索 とかができる
+    - シンプルに出来が良い
+        - 機能がコンパクトにまとまっており、信頼性が高く動かしていて気持ちがいい（主観）
 
 - 世間でのRedis の 使用例
     - Web server のセッション保持
@@ -186,52 +125,241 @@ prior_knowledge: なし
 
 ### Redis を直接触ってみよう
 
-- [Redis コマンド一覧](https://redis.io/commands)
+[Redis コマンド一覧](https://redis.io/commands) も見ながら色々触ってみましょう。
 
-- データベースの選択
-    - select: 0 番のデータベースを選ぶ, 1番のデータベースを選ぶ などできる。 デフォルトで 0-15 までの 16個がある
-    - info: サーバーのバージョンなど色々知ることができる 複数のdb があれば ここで 何個キーが有るのか,など知ることができる
-    - dbsize: select してる DB に何個キーが有るかがわかる
+#### 一番単純なkey-value
 
-- 基本操作と文字列型
-    - [set](https://redis.io/commands/set)/[get](https://redis.io/commands/get)
-        - ```set key value``` で入れて ```get key``` で 取り出す
-        - なお、 set の option で NX, EX, PX, XX などを渡して、上書きをするか、存在していないときだけセットするか またはその逆みたいに 動きを設定できる
-    - キーの操作
-        - [keys](https://redis.io/commands/keys): key の検索ができる
-        - [exists](https://redis.io/commands/exists): もうセットされてるのか とかがわかる
-        - [del](https://redis.io/commands/del): key を指定してそれを削除する
-        - [unlink](https://redis.io/commands/unlink): del に近いが、が、こっちは非同期で削除する
-        - [rename](https://redis.io/commands/rename): key の 名前を変えられる。 新しく変える名前がすでにあればデータは上書きされる用に見えるが 内部で DEL が走る。
-        - [renamenx](https://redis.io/commands/renamenx): rename と同じだが、こっちは 上書きをしない。
-    - カウンター系
-        - [incr](https://redis.io/commands/incr): 1足す
-        - [decr](https://redis.io/commands/decr): 1引く
-        - [incrby](https://redis.io/commands/incrby): n足す
-        - [decrby](https://redis.io/commands/decrby): n引く
-    - リスト処理
-        - [rpush](https://redis.io/commands/rpush): 右に 要素を足す
-        - [rpop](https://redis.io/commands/rpop): 右から一つ取り出す。それは消える
-        - [lpush](https://redis.io/commands/lpush): 左に 要素を足す
-        - [lpop](https://redis.io/commands/lpop): 左から一つ取り出す。それは消える
-        - [lrange](https://redis.io/commands/lrange): 左から 決められた範囲を得る
-    - まとめて操作
-        - [mset](https://redis.io/commands/mset): まとめてセットする。上書きあり
-        - [msetnx](https://redis.io/commands/msetnx): まとめてセットする。上書きなし
-        - [mget](https://redis.io/commands/mget): まとめて取得する
-    - 他
-        - [getset](https://redis.io/commands/getset): 取り出したあとセットする (0にリセットするとか)
-        - [setnx](https://redis.io/commands/setnx): もし、なかったら セットする
-        - [setex](https://redis.io/commands/setex): n秒だけ使えるキーを宣言する (set + expire)
+[set](https://redis.io/commands/set)/[get](https://redis.io/commands/get)
 
-- expiration(有効期限)
-    - [expire](https://redis.io/commands/expire): 何秒後に消すか設定する。 DEL,SET 等の操作をすると クリアされる、 INCR の操作では クリアされない
-    - [expireat](https://redis.io/commands/expireat): 何時になったら消すか設定する。
-    - [persist](https://redis.io/commands/persist): 有効期限を 削除する (消えなくなる)
-    - [ttl](https://redis.io/commands/ttl): 秒単位で消えるまでの時間を教えてくれる
-    - [pttl](https://redis.io/commands/pttl): ミリ秒単位で 消えるまでの時間を教えてくれる
+`set`で保存して`get`で取り出します。
 
-### プログラムから Redis を使おう
+```terminal
+172.17.0.2:6379> set key1 yamagarashi
+OK
+172.17.0.2:6379> set key2 kaizoku
+OK
+172.17.0.2:6379> get key1
+"yamagarashi"
+172.17.0.2:6379> get key2
+"kaizoku"
+172.17.0.2:6379> get key3
+(nil)
+```
+
+これがredisで最も基本的なkeyとvalueの扱いです。`set`や`get`を「コマンド」と呼び、その後ろは引数です。
+keyを色々操作してみましょう。
+
+[keys](https://redis.io/commands/keys) はkeyの検索ができます。`keys *`とすると存在するすべてのキーが出力されます。
+ちなみにredisはシングルスレッドで動作するソフトウェアで、`keys *`で大量のkeyを表示すると一定時間処理が止まってしまい、本番サーバに重大な影響を与えてしまうので注意しましょう。
+
+```terminal
+172.17.0.2:6379> keys key*
+1) "key1"
+2) "key2"
+```
+
+他にも色々
+
+- [exists](https://redis.io/commands/exists): もうセットされてるのか とかがわかる
+- [del](https://redis.io/commands/del): key を指定してそれを削除する
+- [rename](https://redis.io/commands/rename): key の 名前を変えられる
+
+```terminal
+172.17.0.2:6379> exists key2
+(integer) 1                           # 存在しているので1(true)
+172.17.0.2:6379> exists key3
+(integer) 0                           # 存在しないので0(false)
+172.17.0.2:6379> del key2
+(integer) 1
+172.17.0.2:6379> keys *
+1) "key1"
+172.17.0.2:6379> rename key1 key5
+OK
+172.17.0.2:6379> get key5
+"yamagarashi"
+```
+
+キーには有効期限を設定し、一定時間後に自動削除することができます。
+キャッシュなどの用途において、アプリケーション側でキャッシュ削除をしなくても勝手に削除されるのが非常に便利です。
+
+```terminal
+172.17.0.2:6379> set key7 kiemasu
+OK
+172.17.0.2:6379> expire key7 20         # 20秒後に消す
+(integer) 1
+172.17.0.2:6379> ttl key7               # ttlは残り秒数を表示する
+(integer) 17
+172.17.0.2:6379> ttl key7
+(integer) 14
+172.17.0.2:6379> get key7               # まだ見えてる
+"kiemasu"
+172.17.0.2:6379> ttl key7
+(integer) 8
+172.17.0.2:6379> ttl key7
+(integer) 3
+172.17.0.2:6379> ttl key7
+(integer) 1
+172.17.0.2:6379> ttl key7
+(integer) -2
+172.17.0.2:6379> get key7               # 消えた
+(nil)
+```
+
+#### 数値の扱い
+
+redisはよくランキング情報を一時的にキャッシュしたり数値を扱うことが多いため、そのためのコマンドが用意されています。
+
+- [incr](https://redis.io/commands/incr): 1足す
+- [decr](https://redis.io/commands/decr): 1引く
+- [incrby](https://redis.io/commands/incrby): n足す
+- [decrby](https://redis.io/commands/decrby): n引く
+
+```terminal
+172.17.0.2:6379> set boss_damage 0
+OK
+172.17.0.2:6379> incr boss_damage
+(integer) 1
+172.17.0.2:6379> incr boss_damage
+(integer) 2
+172.17.0.2:6379> get boss_damage
+"2"
+172.17.0.2:6379> incr boss_damage
+(integer) 3
+172.17.0.2:6379> get boss_damage
+"3"
+172.17.0.2:6379> decrby boss_damage 2
+(integer) 1
+172.17.0.2:6379> get boss_damage
+"1"
+172.17.0.2:6379> incrby boss_damage 10
+(integer) 11
+172.17.0.2:6379> get boss_damage
+"11"
+```
+
+#### 色々なデータ型(Lists)
+
+上で例に出したのは全てstring(文字列)型の単純なデータです。redisにはそれ以外にも面白いデータ型を用意しています。
+
+最初に紹介するのは [Lists](https://redis.io/docs/data-types/lists/) 型です。
+
+```terminal
+172.17.0.2:6379> rpush enemy_list slime
+(integer) 1
+172.17.0.2:6379> rpush enemy_list drakee
+(integer) 2
+172.17.0.2:6379> lrange enemy_list 0 -1
+1) "slime"
+2) "drakee"
+172.17.0.2:6379> lpush enemy_list magician
+(integer) 3
+172.17.0.2:6379> lrange enemy_list 0 -1
+1) "magician"
+2) "slime"
+3) "drakee"
+```
+
+`rpush`はリストの末尾に要素を追加するコマンド、`lpush`は逆に先頭に追加するコマンドです。
+`lrange`の引数がどういう意味なのか、色々試してみてください。
+
+#### 色々なデータ型(Sets)
+
+[Sets](https://redis.io/docs/data-types/sets/) はunique性が保証されたリストです。
+Setsは順序を考慮しませんが、勝手にソートしてくれる [Sorted sets](https://redis.io/docs/data-types/sorted-sets/) も存在します。
+
+```terminal
+172.17.0.2:6379> sadd favorites site1
+(integer) 1
+172.17.0.2:6379> sadd favorites siteABC
+(integer) 1
+172.17.0.2:6379> sadd favorites site3
+(integer) 1
+172.17.0.2:6379> sadd favorites siteABC
+(integer) 0
+172.17.0.2:6379> smembers favorites
+1) "site1"
+2) "siteABC"
+3) "site3"
+```
+
+#### 色々なデータ型(Hashes)
+
+[Hashes](https://redis.io/docs/data-types/hashes/) はプログラミング言語で言うところのMap的な、あるいはオブジェクトを表現できるデータです。
+
+```terminal
+172.17.0.2:6379> hset slime attack 5 deffence 3 hp 3 exp 1
+(integer) 4
+172.17.0.2:6379> hget slime hp
+"3"
+172.17.0.2:6379> hmget slime deffence hp
+1) "3"
+2) "3"
+172.17.0.2:6379> hmget slime attack deffence
+1) "5"
+2) "3"
+172.17.0.2:6379> hgetall slime
+1) "attack"
+2) "5"
+3) "deffence"
+4) "3"
+5) "hp"
+6) "3"
+7) "exp"
+8) "1"
+```
+
+例のようにオブジェクトを表現してもいいですし、key-value的な使い方もできます。
+
+#### Pub/sub
+
+redisはkey-valueストアとしてだけではなく、シンプルなpub/subとしても利用可能です。
+pub/subとは特定のチャンネルをsubscribe(購読)しているプログラムに対して、そのチャンネルにpublish(出版)することで多数のsubscriber(読者)に情報を届けることができるモデルです。
+publisherとsubscriberそれぞれのプログラムがお互いを知らなくても通信ができるため素結合に維持ができ、動的に通信相手が変わるようなユースケースに利用されます。
+
+pub/subモデルを利用したアーキテクチャは「イベント駆動型アーキテクチャ」とも呼ばれ、[Apache kafka](https://kafka.apache.org/) などが有名です。kafkaの場合はsubscriberが誰もいなかった時にデータを貯めておいて、確実に届けてくれたりもするのですが、redisのpub/subはリアルタイムにsubscribeしているプログラムにのみデータが送信され、届かなかったデータは破棄されるシンプルなものです。
+しかしシンプルであるがゆえ信頼性が高く、動作も軽いという特徴があります。
+
+ターミナルを２つ開いてください。
+
+ターミナル1で`subscribe`を実行すると、データ待ちの状態になります。
+```terminal
+172.17.0.2:6379> subscribe channelA
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "channelA"
+3) (integer) 1
+
+```
+
+ターミナル2でデータを`publish`してみましょう。
+```terminal
+172.17.0.2:6379> publish channelA hello
+(integer) 1
+172.17.0.2:6379> publish channelA I
+(integer) 1
+172.17.0.2:6379> publish channelA am
+(integer) 1
+172.17.0.2:6379>
+```
+
+subscribeしている側にどのように見えたでしょうか。
+
+### データの永続性
+
+redisはオンメモリで動くため、再起動するとデータは消えます。
+基本的には消えてもいいデータを扱うことが多いですが、再起動のたびに消えてしまうのも面倒なので永続化の仕組みが存在します。
+
+[persistence](https://redis.io/docs/management/persistence/)
+
+永続化には主に２つのやり方があります。
+
+- RDB(Redis Database): 一定時間ごとに全データをスナップショットしてファイルに残しておく。リレーショナルデータベース(RDB)とは関係ない
+- AOF(Append Only File): 更新をログとして記録していく。スナップショット作成が高コストなのに対して、小さいデータを追記していくので低コスト。一方でディスクサイズは大きくなる。
+
+どちらか、あるいは両方を使うかどうかはユースケース次第です。
+しかしいずれもデータの更新からファイルへの記録にはラグがあり、更新内容が必ず永続化される保証はないことに注意が必要です。
+
+### 応用課題: プログラムから Redis を使おう
 * それでは、実際にPythonでRedis を利用するコードを書いていきます。
 * 手元の環境で好きなエディタを使って Python のコードを書いた上で docker container の中から そのコードを読み出せるようにします。
 * 事前準備のおさらいも兼ねています
@@ -316,14 +444,6 @@ docker exec -it test-server redis-cli
 
 * 最初は真っ黒のままです。 何かしら redis に対して操作を行うと どんなことを行ったのか画面に表示されるようになります。
 * 今は開きっぱなしにしましょう
-
-#### WebUI 起動
-
-    * phpredisadmin を起動します。 これでRedis を操作するためのWebUI を起動します。
-    ```Shell
-    docker run -d --link test-server:redis --name test-web --rm -e REDIS_1_HOST=redis -e REDIS_1_AUTH= -p 9000:80 erikdubbelboer/phpredisadmin:v1.17.0
-    ```
-    * 9000番ポートにアクセスするとphpRedisAdmin の画面を開くことができます。ここでは既に接続をするための情報をコンテナの起動時に渡しているため、ログインの必要はなくRedis の中身を閲覧することができます。
 
 #### コンテナの中から Redis Server へ接続
 * 次に Redis へ接続するコードを書いてみます。
@@ -483,16 +603,6 @@ docker exec -it test-server redis-cli
 
 - [Pub/Sub](https://redis.io/topics/pubsub)
 - [Introduction to Redis Streams](https://redis.io/topics/streams-intro)
-
-### Advanced: Jupyter notebook イメージを使ってみよう
-
-```Shell
-cd iij_bootcamp_redis/app
-wget "https://raw.githubusercontent.com/iij/bootcamp/master/src/database/redis/Redis%20hands-on.ipynb"
-docker pull jupyter/base-notebook
-docker run --rm --link test-server:redis -p 8888:8888 -v `pwd`:/home/jovyan/work jupyter/base-notebook
-# copy and paste one of these URLs のメッセージを見て、ブラウザから接続する
-```
 
 ### Advanced: GIS で遊んでみよう
 * 今どき オープンデータとして 様々な施設の座標を公開している自治体があります。
