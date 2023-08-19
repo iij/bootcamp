@@ -84,6 +84,43 @@ Playbook の中には、1 つ以上の Play が含まれます。このトレイ
 
 では、実際にAnsibleを使ってみましょう。
 
+### Ansible のインストール
 
+これまで ansible のインストールは `dnf(yum)` によるインストールでした。
+しかしながら昨今のansible は pip にてインストールすることが推奨されています。
+従って、今回は`pip`を用いてインストールしてみましょう。
+
+ただし、演習環境には`pip`コマンドがインストールされていない為、
+まずは`pip`のインストールから行う必要があります。
+以下をそれぞれ実行し、ansible のインストールまで行ってください
+
+- pip のインストール
+   ```bash
+   dnf install python3-pip
+   ```
+- ansible のインストール
+   ```bash
+   pip install ansible
+   ```
+- ansible のインストール確認
+   ```bash
+   ansible --version
+   ```
+
+ここまで実行したならば以下のような出力が得られるはずです。
+
+```bash
+ ansible --version
+ansible [core 2.15.3]
+  config file = /ansible/ansible.cfg
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/local/bin/ansible
+  python version = 3.9.16 (main, May 29 2023, 00:00:00) [GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] (/usr/bin/python3)
+  jinja version = 3.
+```
+
+ansible-core の `2.5.13`やそれぞれのバージョンには実行する時期によって異なることがありますが問題ありません。
 
 <credit-footer/>

@@ -4,7 +4,7 @@ heroImage: "/barry-bootcamp.png"
 actionText: "IIJ Bootcampとは？"
 actionLink: /about/
 features:
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 ---
 
 ## 2022年度カリキュラム一覧
