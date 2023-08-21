@@ -1,90 +1,68 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 ---
 
-## 3. Ansible playbook の作成
+## 4. Ansible playbook の作成
 
-Ansible のアドホックコマンドは単純なオペレーションには便利ですが、
+皆さんはここまでで既にansible を使ってホストの管理を行っていました。
+先ほどの演習で使った`ansible`コマンドがそれであり、ほかにも様々なモジュールを用いることで
+例えばアプリケーションのインストールなども行うことができます。
+
+しかし、Ansible のアドホックコマンドは単純なオペレーションには便利ですが、
 複雑な構成管理や作業の定型化などには適していません。
+Ansible の真価を発揮するためには、Playbook の使用方法を学習し、一連のターゲットホストに対して複数の複雑なタスクを簡単に反復可能な方法で実行できるようにする必要があります。
 
-従って Ansible を実行するには playbook と呼ばれる YAML ファイルを作成し実行します。
-では、実際に playbook を作成してみましょう。
-
-### インベントリを作成する
-
-まずはじめに Inventory ファイルと呼ばれる物を作成します。
-Ansible において、Inventory ファイルは対象を示していて実行に欠かせない要素です。
-
-[教材](https://github.com/iij/ansible-exercise)のフォルダには
-先ほどのサンプル実行でも使われた inventory ファイルがありますので
-試しに開いてみましょう。
-
-```sh
- $ cat inventories/hosts
-[app]
-app1
-
-[db]
-db1
-
-[rp]
-rp1
-```
-
-Ansible の Inventory ファイルは INI 形式に近い記述によって作成されます。
-上記、Inventory ファイルの括弧内の見出し(`[app]`など)はグループ名を表し、
-ホストをグルーピングすることができます。
-なお、[]に属さないホストはデフォルトである`all`グループに属することになります
-
-では、host ファイルに `host000`, `host001`, `host002` を追加してみましょう。
-グループ名は`exercise`として下さい。
-
-#### Inventory ファイルのテスト
-
-先ほど作成した Inventory が正しいことを確かめるために、`ansible`コマンドで Ping モジュールを実行してみます。 コマンドと実行結果は下記のようになるはずです。
-
-```sh
-ansible -i inventories/hosts exercise -m ping
-host002 | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-host001 | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-host000 | SUCCESS => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python"
-    },
-    "changed": false,
-    "ping": "pong"
-}
-```
-
-### Playbook を作成する
+### Playbook について
 
 Playbook（プレイブック）は、管理対象に対してこうなってほしいという構成や手順を記述したファイルです。
-playbook は先ほど実行していたアドホックコマンドを複数取り込み、
-複数の task のセットとして利用することができるようになります。
+playbook は先ほど実行していたアドホックコマンドを複数取り込み、複数の task のセットとして利用することができるようになります。
+
+タスクは、特定の作業単位を実行するモジュールのアプリケーションです。
+つまり、Playbook とは、特定の順序で実行される 1 つ以上の task を含むテキストファイルです。
 
 では、これまでアドホックに行っていた ansible ping を行う playbook を作成してみましょう。
+PlaybookはYAMLと呼ばれる書式によって書く必要があります。
 
-```yml
----
-- hosts: exercise
+## [演習] Playbookの作成
 
-  tasks:
-    - ping:
-```
+- Ansibleのplaybookを作成します。今回は`playbook.yml`として作成してみます
+  - docker 上で作成する場合は以下の通りvi 等でテキストファイルを作成します
+  - 演習環境に沿って実施している人は ansible フォルダがそのままconsoleホストにマウントされているため、ansibleフォルダ配下にファイルを作成しvscodeで編集することが可能です
+- playbook.ymlの作成
+  - 以下のように記載します
+    ```yml
+    ---
+    - hosts: exercise
+      tasks:
+        - ping:
+    ```
+- playbookの実行
+  - Playbookの実行には`ansible-plyabook`というコマンドを使って実行します
+    ```bash
+    ansible-playbook playbooks.yml
+    ```
+  - 実行結果
+    ```bash
+    SSH password:
 
-#### 解説
+    PLAY [exercise] ***********************************************************************************************************
+
+    TASK [Gathering Facts] ****************************************************************************************************
+    ok: [host00]
+    ok: [host01]
+
+    TASK [ping] ***************************************************************************************************************
+    ok: [host01]
+    ok: [host00]
+
+    PLAY RECAP ****************************************************************************************************************
+    host00                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+    host01                     : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   ```
+    ```
+
+上記の通り exercise グループに属している host00, host01, の 2 台に対し、ping モジュールが実行され`OK`が表示されれば成功です。
+
+### 解説
 
 - 1 行目: `---`
   - Playbook の始まりを意味します
@@ -99,58 +77,45 @@ playbook は先ほど実行していたアドホックコマンドを複数取�
   - ここで`ping`モジュールを用いて操作する事（task)を宣言します
     - モジュールによって様々なオプションを追加することがあります
 
-#### Playbook の実行
+## [発展] gather の停止
 
-ここまでで Inventory ファイルと Playbook ファイルが作成できました。
-`ansible-plyabook`を使用する上での最低限のファイルが作成できたので実行してみましょう。
-コマンドと実行結果は下記のようになるはずです。
+先ほどの実行結果で `TASK[ping]` の前に `TASK[Gathering Facts]`というものがあったことに気づいたでしょうか。
+Ansible は通常、実行する際に実行対象となるホストから様々な情報の収集を行っています。
+これらはansible_factsと呼ばれる特殊な変数に格納され、続くtaskで活用したり、収集結果をファイルに出力するなどに活用することができます。
 
-```sh
-# ansible-playbook -i inventories/hosts playbooks.yml
+しかし一方でそういった情報を収集する必要が無い場合は、収集の分だけ実行時間が長引くことになってしまいます。
+従って収集する必要がない場合は明示的に情報収集を停止したり、設定ファイルを編集し、デフォルトの動作を切り替えることで収集を停止し、即座に記載したtaskを実行させることができます。
 
-PLAY [exercise] ****************************************************************************************************************************************************************
+以下のいずれかを実施することで下記の通り直ぐにpingモジュールの実行に移ることができます。
 
-TASK [Gathering Facts] *********************************************************************************************************************************************************
-ok: [host000]
-ok: [host001]
-ok: [host002]
+```bash
+ansible-playbook playbooks.yml
+SSH password:
 
-TASK [ping] ********************************************************************************************************************************************************************
-ok: [host001]
-ok: [host002]
-ok: [host000]
+PLAY [exercise] ***********************************************************************************************************
 
-PLAY RECAP *********************************************************************************************************************************************************************
-host000                    : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-host001                    : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-host002                    : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+TASK [ping] ***************************************************************************************************************
+ok: [host01]
+ok: [host00]
+
+PLAY RECAP ****************************************************************************************************************
+host00                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+host01                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-上記の通り exercise グループに属している host000, host001, host002 の 3 台に対し、ping モジュールが実行され`OK`が表示されれば成功です。
+### playbook単位での停止
 
-### コラム Inventory を YAML で書く
+- playbookに以下を宣言することで停止することができます
+  - 記載する場所どこでも構いませんが`hosts`等のセクションと同じレベル（同じインデントレベル）で宣言する必要があります。
+  ```yaml
+  gather_facts: false
+  ```
 
-Ansible のターゲットホストの情報を定義するインベントリファイルは、INI 形式の他にも YAML 形式でも定義できす。
+### 設定ファイルでの停止
 
-先ほど利用した INI 形式の Inventory ファイルを YAML 形式で記述すると以下の通りになります。
-YAML 形式で記述すると全てのグループが`all`グループの配下にあることが分かります。
+- ansible.cfg に以下の通り記載することでこのplaybookに宣言しなくともgatherを停止することができます
+  - 宣言する箇所は`[defaults]`セクションに宣言してください
+  ```
+  gathering = explicit
+  ```
 
-```
-all:
-  children:
-    app:
-      hosts:
-        app1: {}
-    db:
-      hosts:
-        db1: {}
-    exercise:
-      hosts:
-        host000: {}
-        host001: {}
-        host002: {}
-    rp:
-      hosts:
-        rp1: {}
-    ungrouped: {}
-```
