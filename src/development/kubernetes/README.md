@@ -235,7 +235,7 @@ spec:
     spec:
       containers:
       - name: bootcamp-app
-        image: gcr.io/google-samples/node-hello:1.0
+        image: registry.k8s.io/echoserver:1.4
         ports:
           - containerPort: 8080
       restartPolicy: Always
