@@ -15,25 +15,21 @@ prior_knowledge: 特になし
 Facebook発のUIライブラリ。https://react.dev
 
 ReactはデータとDOMの対応付けをやってくれるライブラリであり、さらにデータの更新に対して画面をリアクティブ(反応的)に更新してくれるフレームワークである。
-データバインディングされたUIを実現するためのライブラリと言える。
-
-ピンと来た人もいるかもしれないが、この後の説明はSvelteの講義でも言われていたことだと思うので、途中まで飛ばしても構わない。
-一応その講義を見ていない人のためにここでも説明をしておく。
+データバインディングされたUIを実現するためのライブラリとも言える。
+その辺りはSvelteと同様の位置付けのフレームワークである。
 
 ### Reactが解決してくれる課題
 
+この辺りもSvelteと同様なので適宜飛ばして欲しい。
 JavaScript基礎、DOM操作の講義でブラウザのAPIとして存在するDOM操作のメソッドを利用してDOMを操作し、それにより表示中の画面を書き換えられることは体感できたと思う。
-しかし、あれで大規模なアプリを組むのは辛い。一度使ってもらったみんなにはわかってもらえると思う。
-例えば次のような場合に特に辛いと思われる:
+しかしDOM操作を直接行う方法では、例えば次のような場合に特に辛いだろう。
 
-- 画面を定期的に更新が必要な場合
-- データの更新対象がそもそも複雑なDOMである場合
+- 画面の定期的に更新が必要な場合
+- 更新対象のDOMがそもそも複雑である場合
 - 更新の必要がない場合は更新したくない場合
   - 要素を作り直してしまうと `input` 要素のデータが失われてしまうなど
 
-思われる、というのは私がそもそもDOMを操作してこういう更新系の処理を書いた経験がないため想像で書いているためだ。
-
-複雑なDOMの例を出せば、以下のようなユーザプロフィールのリストを更新するような処理はDOM操作のAPIを利用して操作するのは辛いと思われる。
+複雑なDOMの例を出せば、以下のようなユーザプロフィールのリストを更新するような処理はDOM操作のAPIを利用して操作するのは辛いだろう。
 昨今のHTMLは入れ子が深く属性も山盛りである。
 
 ```html
@@ -52,50 +48,49 @@ JavaScript基礎、DOM操作の講義でブラウザのAPIとして存在するD
 <div>
 ```
 
-そしてこれもあくまで実際のウェブアプリの規模で言えばほんの画面の一部を占めるコンポーネントにしかすぎず、実際の画面全体のDOMはこれの数百倍だとしても珍しい話ではない。
-そこまで複雑でない業務用のアプリを作るとしても、これの数十倍のDOMにはなるだろう。
+これでも実際のウェブアプリの規模から考えればシンプルなものだろう。
+そしてその膨大なDOMに対して、変更内容に応じた要素に更新をかけるような処理をあの素朴なAPIを利用して開発するのは現実的ではない。
 
-そしてその膨大なDOMに対して、変更内容に応じた要素に更新をかけるような処理をあの素朴なAPIを利用して開発する必要が出てくる。
+これがReactを利用するとどうなるか、順序を追って体感していって欲しい。
 
-そんなの無理に決まっているじゃないか。
+## その前に
 
-### Reactを使うとどうなるか
+### TypeScript
 
-(Virtual DOMの説明)
+TypeScriptは...
 
-(一応Reconcileの説明をひとことくらいで)
+最近ではセットアップの手間はほとんどかからないため、利用して欲しい。
+この講義でもTypeScriptの利用をを前提として進める。
 
-Reactのコンポーネントは入力がデータで出力がVirtual DOMの関数である。
-実のところちょっと前はクラスを利用していたが、その時点で関数的な思想はあったと思うので気にせず「関数的」と言おうと思う。
+### JSX(TSX)
 
-```js
-{
+JSXは...
 
-}
+なれるとこちらの方が便利なため、この講義でもJSXの利用を前提として進める。
+
+### 実行環境の用意
+
+1. https://codesandbox.io/s/react-typescript-react-ts を利用する
+2. [Vite](https://vitejs.dev)を利用してローカルに環境を用意する
+
+Viteを利用した環境のセットアップを例示しておきます。
+
+```sh
+# NodeJSのインストール(インストール済みの場合はスキップ)
+asdf add-plugin nodejs
+asdf install nodejs latest
+asdf global nodejs latest
+
+# Viteを利用したプロジェクトのセットアップ
+npm create vite@latest bootcamp-react
+# React + TypeScript を選択する
+cd bootcamp-react
+npm install
+npm run dev
+# 開発サーバが起動し、localhost:5173で起動画面が見れれば成功
 ```
 
-みたいなデータが
-
-### というわけで実際に動作するところを見てみよう
-
-(カウンタプログラム)
-
-### 機能の説明
-
-(stateとhook)
-
-## コンポーネントをネストさせる
-
-コンポーネントはデータを受け取りVirtual DOMを出力する関数であり、Reactではこれをネストさせることができる。
-親コンポーネントが受け取ったデータを子コンポーネントの引数として渡し、子コンポーネントが返したVirtual DOMを含んだVirtual DOMを親コンポーネントが返すのである。
-見た方が早いのでやってみてくれ。
-
-```jsx
-
-
-```
-
-子コンポーネント
+また、必須ではありませんが、index.cssを[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)の内容で上書きしておいてください。
 
 ## ReactコンポーネントとProps
 
@@ -473,7 +468,7 @@ export default function App() {
 今回は`(event) =>`という書き方をしており、これによりイベントの送信元(この場合は`input`要素)の情報を参照することができる。
 `event.target.value`という書き方で、イベントの送信元である`input`要素が`event.target`で取得でき、更に`input`要素の`value`属性で入力された値が取得できる。
 
-イベントハンドラにもいろんな種類があり、`onChange`は入力欄の値が変わった場合に毎回送信され、この場合はキーによる入力が行われるごとに実行される。
+イベントハンドラにもいろんな種類があり、`onChange`は入力欄の値が変わった場合に毎回実行され、この場合はキーによる入力が行われるごとに実行される。
 `useState`は今回は文字列を保持するものとして定義しており、`setText(event.target.value)`を渡すことで、入力欄の値をStateとして保持している。
 
 ### フィルタ処理で見るもっとリアクティブな例
@@ -498,7 +493,6 @@ function ListFilter() {
   const filteredMembers = members.filter((member) => member.includes(text))
   return (
     <div>
-      <p>input: {text}</p>
       <input value={text} onChange={(event) => setText(event.target.value)} />
       {filteredMembers.map((member) => (
         <p key={member}>{member}</p>
@@ -528,7 +522,7 @@ export default function App() {
 フィルタの対象となるリストを`members`プロパティとして渡せるようにしている。
 プロパティの選び方によりよりコンポーネントの汎用性が高められることがわかると思う。
 
-```tsx{3-7,24-25}
+```tsx{3-7,23-24}
 import { useState } from "react";
 
 type ListFilterProps = {
@@ -540,7 +534,6 @@ function ListFilter({ members }: ListFilterProps) {
   const filteredMembers = members.filter((member) => member.includes(text))
   return (
     <div>
-      <p>input: {text}</p>
       <input value={text} onChange={(event) => setText(event.target.value)} />
       {filteredMembers.map((member) => (
         <p key={member}>{member}</p>
@@ -1383,6 +1376,10 @@ export default function App() {
 あとついでに言っておくとそこまできちんとした実装でもない気がする。
 「こうしたらいいんじゃないかな」という点は次の発展課題に上げておいた。
 すまない。いい感じにしてやってくれ。
+
+### サーバ
+
+Dockerfileを用意するつもりであるが間に合うかは不明。
 
 ### 発展課題
 
