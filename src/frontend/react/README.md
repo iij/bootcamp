@@ -103,6 +103,12 @@ TypeScriptは通常、そのままではブラウザやNodeJSなどのJavaScript
 手間が増えて面倒に見えるかもしれませんが、最近ではツール類が洗練され、設定の手間がほとんどかからなくなっています。
 便利ですし一般にReactで開発を行う際もTypeScriptがよく使われるため、この講義でもTypeScriptの利用を前提として進めます。
 
+:::tip TypeScript Playground
+
+TypeScriptでどのような表現が可能かは[TS Playground](https://www.typescriptlang.org/play)で実際に試すと理解がしやすいでしょう。
+
+:::
+
 ### JSX(TSX)
 
 JSXは簡単に言えば「JavaScriptのコード中にHTMLを書けるようにしたもの」です。
@@ -118,7 +124,7 @@ function Hello() {
 }
 ```
 
-3つだけルールを。
+ここでは2つだけルールを覚えてください。
 
 - `return`や変数への代入など、JavaScriptの「値」として、任意の場所で使える(より正確には式)
   - ただしルートの要素は1つでなければならない
