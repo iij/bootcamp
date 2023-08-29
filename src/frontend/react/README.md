@@ -31,9 +31,93 @@ prior_knowledge: ブラウザのDOM操作
 
 頑張っていきましょう😉
 
+## 実行環境の用意
+
+この講義では実行環境として以下の2つを想定します。
+環境構築に慣れていない人には1のCodeSandboxを、実際の開発環境に近いことをしたい人には2のViteをお勧めします。
+
+### 1. CodeSandboxを利用する
+
+[CodeSandbox](https://codesandbox.io/)を利用してReactの環境を用意します。
+
+React TypeScriptの環境である<https://codesandbox.io/s/react-typescript-react-ts>を開いてください。
+以下のようなページが表示されると思います。
+
+![](./images/setup-codesandbox.png)
+
+以上で環境のセットアップはほぼ完了です。簡単ですね😉
+
+この環境ではエディタとブラウザが左右に表示されており、ファイルをセーブすると自動でブラウザの内容が更新されます。
+
+ちょっとした作業として、`src/index.ts`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
+
+```tsx{4}
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./styles.css";
+```
+
+### 2. Viteを利用してローカル環境にプロジェクトの雛形を用意する
+
+[Vite](https://vitejs.dev)を利用してローカル環境にプロジェクトの雛形を用意します。
+
+注意点として`src/index.ts`に相当するファイルが`src/main.ts`という名称になるので、以降の解説は適宜読み替えてください。
+
+Viteを利用した環境のセットアップを例示しておきます。
+難しそうであればCodeSandboxを利用してください。
+
+```sh
+# NodeJSのインストール(インストール済みの場合はスキップ)
+# nodeコマンドとnpmコマンドが使えるようになれば方法は任意です
+# 以下はasdfを利用した一例です
+asdf plugin add nodejs
+asdf install nodejs latest
+asdf global nodejs latest
+
+# Viteを利用したプロジェクトのセットアップ
+npm create vite@latest bootcamp-react
+# => React => TypeScript を選択する
+cd bootcamp-react
+npm install
+npm run dev
+```
+
+開発サーバが起動し、ブラウザで<http://localhost:5173>にアクセスして以下のような画面が見れれば成功です😉
+
+![](./images/setup-vite.png)
+
+この環境ではファイルを更新すると自動でブラウザの表示も更新されます。
+開発のためのエディタは好きなものを利用してください。
+
+### フォルダ構成
+
+Reactのプロジェクトのフォルダにはいろんなファイルがありますが、この講義では`src`フォルダだけを気にしてもらえれば大丈夫です。`src`フォルダの中にもいろんなファイルがありますが、ひとまず以下に示す3つのファイルのみを気にしてください。
+
+```
+(プロジェクトのフォルダ)
+├── src
+│   ├── App.tsx     ← メインのアプリ実装
+│   ├── index.tsx   ← アプリのセットアップ (Viteの場合はmain.tsx)
+│   ├── styles.css  ← スタイルシート      (Viteの場合はindex.css)
+│   └── (その他諸々)
+└── (その他諸々)
+```
+
+この講義では主に`src/App.tsx`を編集してReactの動作を確認していきます。
+
+### スタイルの適用
+
+今回のハンズオン用のスタイルをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
+それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
+
+- CodeSandbox環境: `src/index.css`
+- Vite環境: `src/styles.css`
+
 ## 要素技術の軽い紹介
 
 手を動かす前に軽くReactと、Reactと共に使われる要素技術の紹介をしておきます。
+まだセットアップが間に合っていない人はTAを呼ぶなりして、この時間に頑張って間に合わせてください😉
 
 ### React
 
@@ -43,7 +127,7 @@ Reactとは一言で言えばデータとDOMの対応付けをやってくれる
 この「リアクティブな画面更新」を行う機能により複雑で画面が繊細に更新されるようなウェブアプリを効率的に開発することができます。
 その辺りはSvelteと同様の位置付けのフレームワークです。
 
-…こんなことを言われてもピンとこないですよね。そのためのハンズオンです😉
+…と、こんなことを言われてもピンとこないですよね。それを理解するためのハンズオンです😉
 
 ### Reactが解決してくれる課題
 
@@ -191,86 +275,6 @@ const element = React.createElement('div', { className: 'app' })
 このようにシンプルな変換処理(シンタックスシュガー)があるだけで実体としては純粋なJavaScriptと同じと思ってもらえると、初見での気持ち悪さはだいぶ軽減されると思います。
 
 :::
-
-## 実行環境の用意
-
-この講義では実行環境として以下の2つを想定します。
-環境構築に慣れていない人には1のCodeSandboxを、実際の開発環境に近いことをしたい人には2のViteをお勧めします。
-
-### 1. CodeSandboxを利用する
-
-[CodeSandbox](https://codesandbox.io/)を利用してReactの環境を用意します。
-
-React TypeScriptの環境である<https://codesandbox.io/s/react-typescript-react-ts>を開いてください。
-以下のようなページが表示されると思います。
-
-![](./images/setup-codesandbox.png)
-
-以上で環境のセットアップはほぼ完了です。簡単ですね😉
-
-ちょっとした作業として、`src/index.ts`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
-
-```tsx{4}
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./styles.css";
-```
-
-### 2. Viteを利用してローカル環境にプロジェクトの雛形を用意する
-
-[Vite](https://vitejs.dev)を利用してローカル環境にプロジェクトの雛形を用意します。
-
-注意点として`src/index.ts`に相当するファイルが`src/main.ts`という名称になるので、以降の解説は適宜読み替えてください。
-
-Viteを利用した環境のセットアップを例示しておきます。
-難しそうであればCodeSandboxを利用してください。
-
-```sh
-# NodeJSのインストール(インストール済みの場合はスキップ)
-# nodeコマンドとnpmコマンドが使えるようになれば方法は任意です
-# 以下はasdfを利用した一例です
-asdf plugin add nodejs
-asdf install nodejs latest
-asdf global nodejs latest
-
-# Viteを利用したプロジェクトのセットアップ
-npm create vite@latest bootcamp-react
-# => React => TypeScript を選択する
-cd bootcamp-react
-npm install
-npm run dev
-```
-
-開発サーバが起動し、<http://localhost:5173>で以下のような画面が見れれば成功です😉
-
-![](./images/setup-vite.png)
-
-開発のためのエディタは好きなものを利用してください。
-
-### フォルダ構成
-
-Reactのプロジェクトのフォルダにはいろんなファイルがありますが、この講義では`src`フォルダだけを気にしてもらえれば大丈夫です。`src`フォルダの中にもいろんなファイルがありますが、ひとまず以下に示す3つのファイルのみを気にしてください。
-
-```
-(プロジェクトのフォルダ)
-├── src
-│   ├── App.tsx     ← メインのアプリ実装
-│   ├── index.tsx   ← アプリのセットアップ (Viteの場合はmain.tsx)
-│   ├── styles.css  ← スタイルシート      (Viteの場合はindex.css)
-│   └── (その他諸々)
-└── (その他諸々)
-```
-
-この講義では主に`src/App.tsx`を編集してReactの動作を確認していきます。
-
-### スタイルの適用
-
-今回のハンズオン用のスタイルをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
-それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
-
-- CodeSandbox環境: `src/index.css`
-- Vite環境: `src/styles.css`
 
 ## Reactコンポーネントとプロパティ
 
