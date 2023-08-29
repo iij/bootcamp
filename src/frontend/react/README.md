@@ -10,6 +10,8 @@ prior_knowledge: 特になし
 
 # {{$page.frontmatter.title}}
 
+[[toc]]
+
 ## 講義の全体像
 
 この講義では **「ToDoアプリを作ってReactによる実践的な実装パターンを体感しよう」** を目標として、以下の構成で進めていきます。
@@ -45,8 +47,8 @@ Reactとは一言で言えばデータとDOMの対応付けをやってくれる
 
 ### Reactが解決してくれる課題
 
-DOM操作の講義を通して、ブラウザの標準APIとして存在するDOM操作のメソッドを利用し、表示中の画面を書き換えられることは体感できたと思います。
-しかしDOM操作を直接行う方法では、例えば次のような場合に手間がかかりすぎることはすぐにわかると思います。
+先に行われたDOMの講義を通して、ブラウザの標準APIとして存在するDOM操作のメソッドを利用し、表示中の画面を書き換えられることは体感できたと思います。
+しかしDOM操作を直接行う方法では、次のような場合に手間がかかります。
 
 - 更新対象のDOMがそもそも複雑である場合
 - 更新の必要がない場合は更新したくない場合
@@ -78,14 +80,15 @@ Reactを利用することでこのような処理が簡単に描けるように
 
 ### TypeScript
 
-TypeScriptはJavaScriptに型の概念を加えた拡張言語です。
+[TypeScript](https://www.typescriptlang.org)はMicrosoft発のJavaScriptに型の概念を加えた拡張言語です。
+
 例えば以下の関数定義は
 
 ```js
 const fn = (n) => n * 2
 ```
 
-TypeScriptでは以下のように書けます。
+TypeScriptでは次のように書けます。
 
 ```ts
 const fn = (n: number) => n * 2
@@ -105,11 +108,13 @@ const fn = (props: Props) => props.value * 2
 ```
 
 ここでは`Props`という型を定義して関数の引数に利用しています。
-Reactでは主にプロパティやStateの型、それからそのアプリが扱うデータの型を定義するのが便利になります。
+Reactでは主にプロパティやStateの型、それからそのアプリが扱うデータの型を定義するのに便利になります。
 
-:::tip TypeScript Playground
+:::tip TypeScriptを試してみる
 
 TypeScriptでどのような表現が可能かは[TS Playground](https://www.typescriptlang.org/play)で実際に試すと理解がしやすいでしょう。
+
+また[Deno](https://deno.com)というNodeJSとは別のJavaScript実行環境ではデフォルトでTypeScriptを実行できます。
 
 :::
 
@@ -117,9 +122,9 @@ TypeScriptでどのような表現が可能かは[TS Playground](https://www.typ
 
 TypeScriptは通常、そのままではブラウザやNodeJSなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
 
-1. TypeScriptで記述
+1. TypeScriptでソースコードを記述
 2. 型チェック
-3. コンパイラ(トランスパイラ)がJavaScriptに変換
+3. コンパイラ(トランスパイラ)がソースコードをJavaScriptに変換
 4. ブラウザ等JavaScriptの動作環境で実行
 
 実際にはこの流れはツール類がほぼ自動で実行してくれます。包括的なツールとして最近では[Vite](https://vitejs.dev)がよく使われます。
@@ -147,7 +152,7 @@ function Hello() {
 どうでしょうか。気持ち悪いですね😉
 
 JavaScriptとHTMLが入り混じっています。
-ここでは2つだけJSXのルールを紹介しておきますが、まだ覚える必要はなく、コードを書きながら慣れていければ十分です。
+ここでは2つだけJSXのルールを紹介しておきますが、まだ覚える必要はありません。
 
 - JSX要素は`return`や変数への代入など、JavaScriptの「値(より正確には式)」として、任意の場所で使える
   - ただしルートの要素は1つでなければならない
@@ -156,7 +161,9 @@ JavaScriptとHTMLが入り混じっています。
   - 例として`{1}`や`{fn(1, 'foo') + 1}`は正しいJSX中の表現ですが`{if ...}`は使えません
     - 条件分岐には`&&`や`?:`が、繰り返しには配列の`map`メソッドなどがよく使われます
 
-ウェブアプリを開発する上では、慣れるとこの表記の方が便利なため、この講義でもJSXの利用を前提として進めます。
+ハンズオンを進めながら、理解を深めたくなったらまた戻ってきてください。
+
+ウェブアプリを開発する上では慣れるとJSXの方が便利なのと、他のReactの解説でもほぼJSXが使われているため、この講義でもJSXの利用を前提として進めます。
 
 TypeScriptとJSXを合わせたものは特にTSXと呼ばれることもありますが、その場合でもJSXと呼ばれることが多いです。
 ただし拡張子は`.jsx`ではなく`.tsx`がよく使われます。
@@ -188,20 +195,41 @@ const element = React.createElement('div', { className: 'app' })
 ## 実行環境の用意
 
 この講義では実行環境として以下の2つを想定します。
-環境構築に慣れていない人には1を、実際の開発環境に近いことをしたい人には2をお勧めします。
+環境構築に慣れていない人には1のCodeSandboxを、実際の開発環境に近いことをしたい人には2のViteをお勧めします。
 
-1. https://codesandbox.io/s/react-typescript-react-ts を利用する
-   - React + TypeScript を選択
-   - その他の操作はSvelteの時の資料を参考にしてください
-2. [Vite](https://vitejs.dev)を利用してローカルに環境を用意する
-   - 以下にセットアップを例示
-   - src/index.tsの代わりにsrc/main.tsになるので適宜解説を読み替えてください
+### 1. CodeSandboxを利用する
+
+[CodeSandbox](https://codesandbox.io/)を利用してReactの環境を用意します。
+
+React TypeScriptの環境である<https://codesandbox.io/s/react-typescript-react-ts>を開いてください。
+以下のようなページが表示されると思います。
+
+![](./images/setup-codesandbox.png)
+
+以上で環境のセットアップはほぼ完了です。簡単ですね😉
+
+ちょっとした作業として、`src/index.ts`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
+
+```tsx{4}
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./styles.css";
+```
+
+### 2. Viteを利用してローカル環境にプロジェクトの雛形を用意する
+
+[Vite](https://vitejs.dev)を利用してローカル環境にプロジェクトの雛形を用意します。
+
+注意点として`src/index.ts`に相当するファイルが`src/main.ts`という名称になるので、以降の解説は適宜読み替えてください。
 
 Viteを利用した環境のセットアップを例示しておきます。
+難しそうであればCodeSandboxを利用してください。
 
 ```sh
-# asdfを利用した例、方法は任意
 # NodeJSのインストール(インストール済みの場合はスキップ)
+# nodeコマンドとnpmコマンドが使えるようになれば方法は任意です
+# 以下はasdfを利用した一例です
 asdf plugin add nodejs
 asdf install nodejs latest
 asdf global nodejs latest
@@ -212,8 +240,13 @@ npm create vite@latest bootcamp-react
 cd bootcamp-react
 npm install
 npm run dev
-# 開発サーバが起動し、http://localhost:5173で起動画面が見れれば成功
 ```
+
+開発サーバが起動し、<http://localhost:5173>で以下のような画面が見れれば成功です😉
+
+![](./images/setup-vite.png)
+
+開発のためのエディタは好きなものを利用してください。
 
 ### フォルダ構成
 
@@ -223,8 +256,8 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 (プロジェクトのフォルダ)
 ├── src
 │   ├── App.tsx     ← メインのアプリ実装
-│   ├── index.css   ← スタイルシート
 │   ├── index.tsx   ← アプリのセットアップ (Viteの場合はmain.tsx)
+│   ├── styles.css  ← スタイルシート      (Viteの場合はindex.css)
 │   └── (その他諸々)
 └── (その他諸々)
 ```
@@ -233,21 +266,11 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 
 ### スタイルの適用
 
-src/index.cssを[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)の内容でコピペして上書きしておいてください。
+今回のハンズオン用のスタイルをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
+それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
 
-またsrc/index.tsに`import "./styles.css"`の行がなければ追加しておいてください。
-
-```tsx{4}
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./styles.css";
-```
-
-### 各ステップでのコード
-
-各ステップでのコードは[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src)で管理しています。
-コードの全体像がわからなくなった場合にはこちらを参照してください。
+- CodeSandbox環境: `src/index.css`
+- Vite環境: `src/styles.css`
 
 ## Reactコンポーネントとプロパティ
 
