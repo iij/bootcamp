@@ -10,872 +10,1502 @@ prior_knowledge: 特になし
 
 # {{$page.frontmatter.title}}
 
-## 下準備
-講義を受講する前にコンテナイメージのpullと起動をしておくことをお勧めしています。
-また、Dockerの実行環境があることを前提として本講義を進めます。
+## 講義の全体像
 
-### 1. ハンズオン用のDockerイメージをpullしてくる
+この講義では以下の構成で進めていきます。
+人によって進行速度が異なると思いますので、この講義ではいくつかゴールを設けます。
 
-```bash
-# やや重たいので注意してください
-$ docker pull astk03/bootcamp-react:2022
-```
+- Reactの基本的な動作を体感する
+  - ReactコンポーネントとProps
+  - Stateとイベントハンドラ
+- ToDoアプリでより実践的な実装パターンを体感する
+  - ⛳️通常のゴール
+- ToDoアプリでサーバとやり取りする
+  - ⛳️進みが早い人のゴール
 
-### 2. コンテナを起動する
+人によっては既に知っている内容も含まれると思いますので、適宜先へ先へと進めていってください。
 
-```bash
-# コンテナを起動する
-$ docker run --name bootcamp-react -itd -p 3000:3000 astk03/bootcamp-react:2022
-```
+## 要素技術の軽い紹介
 
-### 3. アプリケーションの起動チェック
+### React
 
-```bash
-# コンテナの中にアタッチする
-$ docker exec -it bootcamp-react bash
-# Reactの開発用サーバーを起動する
-❯ npm start
-# ...
-# いろんなログが流れる
-```
+[React](https://react.dev)はMeta(旧Facebook)発のUIフレームワークです。
 
-### 4. 動作チェック
+Reactとは一言で言えばデータとDOMの対応付けをやってくれるフレームワークであり、さらにデータの更新に対して画面をリアクティブ(反応的)に更新してくれるフレームワークです。
+この「リアクティブな画面更新」を行う機能により複雑で画面が繊細に更新されるようなウェブアプリを効率的に開発することができます。
+その辺りはSvelteと同様の位置付けのフレームワークです。
 
-ホストマシンから適当なブラウザ(※IEを除く)から[localhost:3000](http://localhost:3000)にアクセスし、Welcomeページが表示されることを確認してください。
+### Reactが解決してくれる課題
 
-![welcome](./images/welcome.png)
+DOM操作の講義を通して、ブラウザの標準APIとして存在するDOM操作のメソッドを利用し、表示中の画面を書き換えられることは体感できたと思います。
+しかしDOM操作を直接行う方法では、例えば次のような場合に手間がかかりすぎることはすぐにわかるでしょう。
 
-:::tip 
+- 更新対象のDOMがそもそも複雑である場合
+- 更新の必要がない場合は更新したくない場合
+  - 要素を作り直してしまうと `input` 要素のデータが失われてしまうなど
 
-動作しなかった場合は2021年度版のイメージ ryusa/bootcamp-react:2021 を使ってみてください。
+複雑なDOMの例として、以下のようなユーザプロフィールのリストを更新するような処理を考えてみてください。
+昨今のHTMLは入れ子が深く属性も山盛りです。
 
-:::
-
-### 5. VSCode 拡張機能(オプション)
-
-"Remote - Container" と "Docker" 拡張機能を入れることでコンテナ内のファイルをVSCodeで直接編集できます。
-
-## 始めに
-
-本講義ではReactの動作原理を学びながら簡単なシングルページアプリケーションの作成を通して、今後の技術的な選択肢を増やすことを目的としています。
-
-### 達成目標
-
-- フロントエンド開発を経験する
-- コンポーネントベース開発を経験する
-- React開発の流れを理解する
-
-### 本講義の前提
-
-本講義ではプログラム言語共通の制御構文や概念、たとえばif文や型など、の解説は行いません。
-そのため、受講者は何らかのプログラミング言語で簡単な制御構文が書けることを前提とさせてください。
-
-### この資料のお約束
-:computer: は自分で操作する箇所を示しています。 また`$`はホストマシンのプロンプトを意味し、`❯`はコンテナ内部でのプロンプトを意味します。
-
-たとえば下記の通りです。
-
-```shell
-# ホストマシン上で git clone git@github.com:iij/bootcamp.git を実行する
-$ git clone git@github.com:iij/bootcamp.git
-
-# コンテナ上で curl localhost:3000 を実行する
-❯ curl localhost:3000
-```
-
-## Reactとは
-
-Reactは、もともとFacebook社が開発しているWebユーザーインタフェースのためのフレームワークです。
-2021年6月現在のGoogleトレンドをみる限りフロントエンドフレームワークとしてのシェアは世界一位となっており、多くの場所で利用されていることが見て取れます。
-IIJでもいくつかの製品のフロントエンドとしてReactが採用されています。
-
-公式サイト：[React - ユーザインターフェース構築のためのJavaScriptライブラリ](https://ja.reactjs.org/)
-
-ReactはVueやAngularと同じくコンポーネントベースでWebUIを実装していくフレームワークです。
-細かくコンポーネントを分離することでアトミックデザインなUIを実装しやすくなります。
-また型を持つTypeScriptと組み合わせて使うためのツール整備も進んでいるため、開発者からの評価も高いです。
-
-:::tip Reactでアプリを書くための環境づくり
-
-Reactを始めるための方法としては、いくつかの方法があります。
-
-- Reactの基礎を体験したい = オンラインサービスを使う
-  - [CodePen](https://reactjs.org/redirect-to-codepen/hello-world)
-  - [CodeSandbox](https://codesandbox.io/s/new)
-  - [Glitch](https://glitch.com/edit/#!/remix/starter-react-template)
-- 既存のHTMLページの中にReact埋め込みたい = 下記のチュートリアル
-  - [Add React to a WebSite](https://reactjs.org/docs/add-react-to-a-website.html)
-- フルにReactを使ってアプリケーションを作りたい = 下記のscaffolding(プロジェクトのひな形作成)ツール
-  - [Create React App](https://facebook.github.io/create-react-app/docs/getting-started)
-    - Reactが公式で出している
-  - [Vite](https://vitejs.dev/guide/#scaffolding-your-first-vite-project)
-    - 2022年現在勢いのあるツールで、create-react-appと比べて動作の軽量化のための工夫がされている
-    - React以外にもVueやAngularなどのフレームワークにも対応している
-
-このハンズオンでは、Create React Appを使ってプロジェクトのひな型を作成しています。
-詳細は[Dockerfile](https://github.com/iij/bootcamp/blob/master/src/frontend/react/Dockerfile)を参考にしてください。
-
-:::
-
-### シングルページアプリケーションとは
-シングルページアプリケーション(以下SPA)とはフロントエンドアプリケーションの構成のひとつです。
-
-[シングルページアプリケーション | Wikipedia](https://ja.wikipedia.org/wiki/シングルページアプリケーション)
-
-特徴として
-- HTMLとCSS、そしてJavaScriptのファイルのみで構成
-  - HTMLは単一
-  - サーバーとの通信は原則API経由
-- DOMの操作や変更はJavaScriptで実施
-  - 物理DOMの操作と比べて軽量
-  - 滑らかな画面遷移によるユーザー体験
-
-といったものが挙げられます。`create-react-app`で構成したReactプロジェクトはデフォルトでSPAがビルドできるようになっています。
-Reactプロジェクトをビルドすることで最終成果物である「HTML」「CSS」「JavaScript」が生成され、それらをNGINXなどのWebサーバーで配信することができます。
-
-なおすべてのWebアプリケーションがSPAであるわけではなく、SPAでないものとして、ブラウザのページ遷移を伴うマルチページなアプリケーションや、SSR(=サーバサイドレンダリング)が挙げられます。
-SSRはサーバー側でユーザーのリクエストに合わせてDOMを動的に構築し、HTMLとしてユーザーに配信する構成です。
-Angular Universalなどではこの方式でアプリケーションを配信します。
-
-## Reactハンズオン
-実際にReactに触れてみましょう。本講義では[TypeScript](https://www.typescriptlang.org)を使ってReactを書いていきます。
-
-TypeScriptに関する詳細な説明はこの講義では行わないため、
-構文などで迷ったら[TypeScript Playground](https://www.typescriptlang.org/play)あたりを使って解決してください。
-
-### Hello World
-
-Reactの開発サーバは、ソースコードの変更を検知してその変更をブラウザに伝えてくれます。
-さっそくひとつやってみましょう。
-
-これから先、ファイルを編集することになるので別のシェルを取得して進めてください。
-
-```bash
-# 別のターミナルでシェルを取得しておく
-$ docker exec -it bootcamp-react bash
-❯ 
-```
-
-:computer: src/App.tsxを開き下記の通りに編集してください。
-後ほど説明するTSXというTypeScriptの拡張構文を使っているため、初めての人は違和感があるかもしれませんね。
-
-```tsx{7}
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>Hello World!!</p>
-      </header>
+```html
+<div class="profile-list">
+  <div class="profile-container">
+    <div class="profile-pict">
+      <img src="...">
     </div>
-  );
-}
-
-export default App;
+    <div class="profile">
+      <p>...</p>
+    </div>
+  </div>
+  <div class="profile-container">
+    <!-- ...繰り返し... -->
+  </div>
+<div>
 ```
 
-編集して保存するとブラウザが自動的にリロードされ、下記のような画面に変わります。
+実際のウェブアプリはこの数十倍の複雑さになります。
+この膨大なDOMに対して、変更内容に応じた更新をかける処理をブラウザの素朴なAPIを利用して開発するのは現実的ではありません。
 
-![helloworld](./images/helloworld.png)
+Reactを利用することでこのような処理が簡単に描けるようになります。
 
-:::warning 自動的にリロードされない場合
-リロードがうまくいかない場合、開発用サーバーでエラーが起きてしまっている可能性があります。その場合は開発用サーバーを一度止め、再起動してあげてください。
+### TypeScript
 
-```bash
-❯ npm start
+TypeScriptはJavaScriptに型の概念を加えた拡張言語です。
+例えば以下の関数定義は
+
+```js
+const fn = (n) => n * 2
 ```
-:::
 
-#### チェックポイント
-- ReactでHello Worldを実施した
+TypeScriptでは以下のように書けます。
 
-### コンポーネントを作成してみる
+```ts
+const fn = (n: number) => n * 2
+```
 
-ReactはUIの部品をコンポーネントという単位に分割することで、ロジックやスタイルなどの再利用性を高めて実装を行います。
+これにより「この関数の引数はどのようなデータであるべきか」という、JavaScriptではコメントで表現するしかなかった部分を補完することができます。
+Reactでは主にプロパティやStateの型、それからそのアプリが扱うデータの型を定義するのが便利になります。
 
-:::tip コンポーネントを使わないとどうなるか
+TypeScriptは通常、そのままではブラウザやNodeJSなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
 
-ReactではなくVueですが、こちらの記事が非常にわかりやすい例です。VueとReactともにコンポーネントベースのフレームワークですので、根幹は一緒です。
-気になる人は読んでみてください。
+1. TypeScriptで記述
+2. 型チェック
+3. コンパイラ(トランスパイラ)がJavaScriptに変換
+4. ブラウザ等JavaScriptの動作環境で実行
 
-[ワイ「何でそんな小っさいコンポーネント作ってるん？ｗ」 | Qiita](https://qiita.com/Yametaro/items/e8cb39b1a20b762bfafa)
+実際にはこの流れはツール類がほぼ自動で実行してくれます。包括的なツールとして最近では[Vite](https://vitejs.dev)がよく使われます。
 
-:::
+手間が増えて面倒に見えるかもしれませんが、最近ではツール類が洗練され、設定の手間がほとんどかからなくなっています。
+便利ですし一般にReactで開発を行う際もTypeScriptがよく使われるため、この講義でもTypeScriptの利用を前提として進めます。
 
-まず小さなコンポーネントを作ってみましょう。コンポーネントを記述する方法はいくつかありますが、まずクラスベースのコンポーネントを作成してみます。
+### JSX(TSX)
 
-:computer: src/Note.tsxを作成し、下記の通り編集してください。
+JSXは簡単に言えば「JavaScriptのコード中にHTMLを書けるようにしたもの」です。
+
+例えば以下のような表現ができます。
 
 ```tsx
-import React from "react";
-
-// interface: TypeScriptにおけるインタフェース(抽象型)
-interface NoteProps {}
-
-interface NoteState {}
-
-export default class Note extends React.Component<NoteProps, NoteState> {
-  render() {
-    return <p>Component! Component!! Component!!!</p>;
-  }
+function Hello() {
+  const myName = 'asa-taka'
+  return (
+    <div>Hello <b>{myName}</b></div>
+  )
 }
 ```
 
-:computer: さらにsrc/App.tsxがNote.tsxを使うように修正してください。
+3つだけルールを。
 
-```tsx{2,8-9}
-import './App.css';
-import Note from './Note';
+- `return`や変数への代入など、JavaScriptの「値」として、任意の場所で使える(より正確には式)
+  - ただしルートの要素は1つでなければならない
+- JSXの中(要素の属性値or子要素)では`{}`の中はJavaScriptの表現が使える
+  - ただし値を返すもの(わかりづらければそのまま変数に代入できるもの)に限ります
+  - 例として`{1}`や`{fn(1, 'foo') + 1}`は正しいJSX中の表現ですが`{if ...}`は使えません
+    - 条件分岐には`&&`や`?:`が、繰り返しには`Array.prototype.map`などがよく使われます
 
-function App() {
+ウェブアプリを開発する上では、慣れるとこの表記の方が便利なため、この講義でもJSXの利用を前提として進めます。
+
+TypeScriptとJSXを合わせたものは特にTSXと呼ばれることもありますが、その場合でもJSXと呼ばれることが多いです。
+ただし拡張子は`.jsx`ではなく`.tsx`がよく使われます。
+
+:::tip JSXは何を返しているのか
+
+JSXが最終的なJavaScriptでどのような値になるかはコンパイラの設定によります。
+Reactの場合は`ReactElement`という特定の型のオブジェクトを返し、詳細は省きますがこれはReactによるVirtual DOMのノードの表現です。
+
+コンパイラの変換処理としては
+
+```tsx
+const element = <div className="app" />
+```
+
+というJSXのコードは
+
+```ts
+const element = React.createElement('div', { className: 'app' })
+```
+
+という純粋なJavaScriptのコードと等価です。
+`ReactElement`が具体的にどのようなオブジェクトなのか、気になる人は適当に`console.log(<div />)`を含めたコードの出力をブラウザのコンソールで覗いてみてください。
+
+このようにシンプルな変換処理(シンタックスシュガー)があるだけで実体としては純粋なJavaScriptと同じと思ってもらえると、初見での気持ち悪さはだいぶ軽減されると思います。
+
+:::
+
+## 実行環境の用意
+
+この講義では実行環境として以下の2つを想定します。
+
+1. https://codesandbox.io/s/react-typescript-react-ts を利用する
+   - React + TypeScript を選択
+   - その他の操作はSvelteの時の資料を参考にしてください
+2. [Vite](https://vitejs.dev)を利用してローカルに環境を用意する
+   - 以下にセットアップを例示
+
+Viteを利用した環境のセットアップを例示しておきます。
+
+```sh
+# NodeJSのインストール(インストール済みの場合はスキップ)
+asdf add-plugin nodejs
+asdf install nodejs latest
+asdf global nodejs latest
+
+# Viteを利用したプロジェクトのセットアップ
+npm create vite@latest bootcamp-react
+# => React + TS(TypeScript) を選択する
+cd bootcamp-react
+npm install
+npm run dev
+# 開発サーバが起動し、http://localhost:5173で起動画面が見れれば成功
+```
+
+また、src/index.cssを[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)の内容で上書きしておいてください。
+
+### 各ステップでのコード
+
+各ステップでのコードは[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src)で管理しています。
+コードの全体像がわからなくなった場合にはこちらを参照してください。
+
+## Reactコンポーネントとプロパティ
+
+Reactでは画面を構成する部品を「コンポーネント」という単位で定義します。
+ここでは最もシンプルなReactコンポーネントとして、プロパティを受け取り描画内容を返すだけのReactコンポーネントを作っていきましょう。
+
+### とりあえずReactを動作させる
+
+コンポーネントとは
+Reactでは...
+
+```tsx
+export default function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Note />
-        <Note />
-      </header>
+      <p>Hello, <b>React!</b></p>
     </div>
-  );
-}
-
-export default App;
-```
-
-さあ、[localhost:3000](http://localhost:3000)にアクセスするとブラウザに表示されている内容が変化したと思います。
-
-![componentcomponentcomponent](./images/componentcomponentcomponent.png)
-
-このようにReactではコンポーネントというUI部品を組み合わせることでデザイン、UIを作成していきます。
-
-#### チェックポイント
-
-- クラスベースコンポーネントの書き方を学んだ
-- コンポーネントの使い方を学んだ
-
-### コンポーネントの機能 - 子要素へのデータの共有 : Props
-
-`Note` コンポーネントを作成しましたが、今のままでは"Component! Component!! Component!!!"と叫ぶだけのコンポーネントで再利用性が悪いです。
-
-他も文字を叫ぶことができるように、叫ぶ文字を外から渡してあげることができるようにしましょう。
-
-:computer: src/Note.tsxを下記のように修正してみましょう。
-
-```tsx{5-6,11-18,22}
-import React from "react";
-
-// Noteコンポーネントを呼び出す側が指定するPropsを定義する
-interface NoteProps {
-  counter: number;
-  word: string;
-}
-
-interface NoteState {}
-
-// 指定された回数だけ文字列を繰り返す
-// repeatWord(3, "Component") -> "Component! Component!! Component!!!"
-const repeatWord = (counter: number, word: string) => {
-  const seq = [...Array(counter)].map((_, i) => i); // [0, 1, 2, ...]
-  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
-};
-
-export default class Note extends React.Component<NoteProps, NoteState> {
-  render() {
-    // このコンポーネントが評価されたときのPropsの値は this.props として参照できる
-    // this.propsを参照し、counterの数だけwordを叫ぶ
-    return <p>{repeatWord(this.props.counter, this.props.word)}</p>;
-  }
+  )
 }
 ```
 
-:computer: src/App.tsxを修正してください。
+![](./images/ex-props1.png)
 
-```tsx{8-10}
-import './App.css';
-import Note from './Note';
+### コンポーネントを切り分けてみる
 
-function App() {
+「切り分けられる」というのはコードの可読性を考える上で重要になってくる。
+ひとまず意味のない例だが以下のように変更してみよう。
+
+```tsx{1-5,10}
+function Hello() {
+  return (
+    <p>Hello, <b>React!</b></p>
+  )
+}
+
+export default function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Note counter={1} word={"Component"} />
-        <Note counter={2} word={"Hoge"} />
-        <Note counter={3} word={"Huga"} />
-      </header>
+      <Hello />
     </div>
-  );
+  )
 }
-
-export default App;
 ```
 
-ここまで修正すると、下記の通りにブラウザの表示が変わります。
+表示内容は特に変わらない。
 
-![props](./images/props.png)
+### Propsで親から値を渡す
 
-親コンポーネントからデータを注入できるように`props`を適切に定義することで、コンポーネントの再利用性をあげることができます。
+プロパティを渡せるようにしてみよう。
 
-注意が必要なこととして`props`はReadonlyなため、`props`の中身を書き換えたりすることはできません。
-`props` の流れは常に親から子への一方通行、というReactの基本的な考えを意識するといいでしょう。
-
-#### チェックポイント
-
-- コンポーネントにおける`Props`について学んだ
-- コンポーネントの親子間のパラメータの受け渡し方を学んだ
-
-### コンポーネントの機能 - 内部データストア : State
-
-`props`フィールドを通じてコンポーネント間のデータの受け渡しはできましたが、ユーザーからの入力や外部から取得した情報はどのように保存するべきでしょうか？
-コンポーネントにはStateというデータの保存する機構が付属されています。試しに、ユーザーがボタンを押した数だけ叫ぶ回数を増やすように実装してみましょう。
-
-:computer: src/Note.tsxを下記の通りに修正してください。
-
-```tsx{4,8,18-40}
-import React from "react";
-
-interface NoteProps {
-  word: string;
+```tsx{1-5,7,14}
+type HelloProps = {
+  yourName: string
 }
 
-interface NoteState {
-  counter: number;
+function Hello({ yourName }: HelloProps) {
+  return (
+    <p>Hello, <b>{yourName}!</b></p>
+  )
 }
 
-const repeatWord = (counter: number, word: string) => {
-  const seq = [...Array(counter)].map((_, i) => i);
-  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
-};
+export default function App() {
+  return (
+    <div className="App">
+      <Hello yourName="asa-taka" />
+    </div>
+  )
+}
+```
 
-export default class Note extends React.Component<NoteProps, NoteState> {
-  // Stateの初期化 (construct時)
-  state = {
-    counter: 1,
-  };
+![](./images/ex-props3.png)
 
-  // クリック時のハンドラ
-  onClickHandler = () => {
-    // StateをsetStateメソッド経由で更新
-    // setStateでStateを更新するとrenderの再評価が行われる
-    this.setState({
-      counter: this.state.counter + 1,
-    });
-  };
+これができたら、`Hello`コンポーネントの`yourName`プロパティを変更して複数回使用してみよう。
 
-  render() {
+```tsx{15-16}
+type HelloProps = {
+  yourName: string
+}
+
+function Hello({ yourName }: HelloProps) {
+  return (
+    <p>Hello, <b>{yourName}!</b></p>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <Hello yourName="asa-taka" />
+      <Hello yourName="igarashi" />
+      <Hello yourName="ueda" />
+    </div>
+  )
+}
+```
+
+表示はこうなる。
+
+![](./images/ex-props4.png)
+
+コンポーネントの切り分けと一部の要素をプロパティとして抜き出すことで整理されたコードが書けることがわかると思う。
+コンポーネントらしくなってきた。
+
+### 繰り返し処理
+
+JSXの中ではJavaScriptの表現がそのまま使えるので、これを利用して更に処理をプログラム的にしてみよう。
+繰り返し処理を利用して同じような要素の生成を行う。
+
+繰り返し処理といえば`for`文だが、これは文(statement)であり式(expression)ではない、つまり`for`文自体は値を返さないためJSXの中では(関数で包むなどしなければ)使えない。Reactのコードではこう言う場合には配列から生えているメソッドである[`Array.prototype.map`](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/map)をよく利用する。
+
+:::tip prototype
+
+`prototype`という書き方が気持ち悪いかもしれないが、JavaScriptではそのクラスのインスタンスから直接生えているメソッドをこう表記するので慣れると良い。
+
+:::
+
+`Array.prototype.map`は例えば以下のように使われるメソッドである。
+
+```js
+const list = [1, 2, 3, 4]
+const doubled = list.map((x) => x * 2)
+console.log(doubled) // => [2, 4, 6, 8]
+```
+
+というように、配列の全ての要素に対して引数で渡された関数による変換を行った新たな配列を生成する。
+この場合は`(x) => x * 2`という引数を倍にして返す関数を渡すことで、各要素を倍にした配列を得ることができる。
+Reactではこれを配列からJSXの要素を生成するためによく使う。
+つまり、配列の要素を受け取りJSXを返す関数を書くことでJSXの要素の配列を生成することができる。
+
+:::tip アロー関数
+
+アロー関数は`(arg1, arg2, ...) => { ... }`の形で定義される関数である。
+式(expression)が一つの場合は`{}`を省略でき、その場合はその式の値がそのまま返り値になる。
+
+`function`による関数定義とは何点か違いがあるが、この講義では以下のように使い分けている。
+
+- コンポーネント定義では`function`を利用する
+  - `function` による定義を行うとその関数に `.name` というプロパティで名前がつくため
+  - この名前により開発用の拡張機能やコンポーネントのエラーメッセージが読みやすくなる
+- それ以外の用途では`=>`を利用する
+  - シンプルで読みやすいため
+
+この辺りはプロジェクトごとに方針があるので、それに従うのが望ましい。
+
+:::
+
+さて、前置きが長くなったが以下のように`App.tsx`を書き換えて欲しい。
+
+```tsx{12,15-17}
+type HelloProps = {
+  yourName: string
+}
+
+function Hello({ yourName }: HelloProps) {
+  return (
+    <p>Hello, <b>{yourName}!</b></p>
+  )
+}
+
+export default function App() {
+  const members = ['asa-taka', 'igarashi', 'ueda']
+  return (
+    <div className="App">
+      {members.map((member) => (
+        <Hello key={member} yourName={member} />
+      ))}
+    </div>
+  )
+}
+```
+
+さて、配列の要素には`key`という特殊なプロパティが新たに必要になる点に注意して欲しい。
+ここでは配列の中で一意な値を設定する必要があるとだけ覚えておけば十分である。
+今回は`member`の値ががそもそも全て異なっているので、それをそのまま`key`に利用した。
+
+:::tip keyという特殊なプロパティ
+
+`key`はReactのJSXの中で配列を扱うときに必要となるプロパティで、要素のトラッキングのために利用される。
+配列の要素が更新された場合にDOMに正しくその更新を反映させるために使用される。
+コンポーネント側にはプロパティとして特に定義されている必要はない。
+
+参考: [ja.react.dev - リストのレンダー](https://ja.react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key)
+
+:::
+
+### 条件分岐で描画内容を変更する
+
+繰り返し処理の次は条件分岐を実装してみよう。
+
+```tsx{6-14}
+type HelloProps = {
+  yourName: string
+}
+
+function Hello({ yourName }: HelloProps) {
+  if (yourName.length > 5) {
     return (
-      <>
-        {/* ボタンをクリックされたらthis.onClickHandlerが発火し、Stateが更新される */}
-        <button onClick={this.onClickHandler}>Click me!!</button>
-        {/* Stateのカウンタの数だけ叫ぶ */}
-        <p>{repeatWord(this.state.counter, this.props.word)}</p>
-      </>
-    );
+      <p>こんにちは、<b>{yourName}!</b></p>
+    )
   }
+
+  return (
+    <p>Hello, <b>{yourName}!</b></p>
+  )
 }
-```
 
-:::tip <> - Fragment
-
-`<>`はFragmentといい、複数の要素(JSX Element, `<...>`で定義されるもの)をひとまとめにするためのJSXの構文の一つです。
-JSXはその構文の制約上、複数のJSX要素が横並びになったものを、コード中にそのままでは表現できないため、Fragmentが用意されています。
-これを利用することで、要素をまとめるだけの不要な`<div>`などの使用を避けることができます。
-
-Reactのプロジェクトでは`<>`は`React.Fragment`というコンポーネントに割り当てられています。
-
-参考: [React.Fragment](https://ja.reactjs.org/docs/react-api.html#reactfragment)
-
-ちなみに、Fragmentという言葉は、プログラミングの世界では一般的に「オブジェクトのいくつかのフィールドをまとめたもの」という意味で使われます。
-
-:::
-
-:computer: さらに下記の通りにsrc/App.tsxを修正してください。
-
-```tsx{8-10}
-import './App.css';
-import Note from './Note';
-
-function App() {
+export default function App() {
+  const members = ['asa-taka', 'igarashi', 'ueda']
   return (
     <div className="App">
-      <header className="App-header">
-        <Note word={"Component"} />
-        <Note word={"Hoge"} />
-        <Note word={"Huga"} />
-      </header>
+      {members.map((member) => (
+        <Hello key={member} yourName={member} />
+      ))}
     </div>
-  );
-}
-
-export default App;
-```
-
-ここまで修正すると下記の通りになります。
-
-![state](./images/state.png)
-
-Stateはコンポーネントの内部でのみ生きているデータベースのようなものです。
-Stateを`setState`メソッド経由で更新を行うと、そのコンポーネントのレンダリング内容であるDOMが自動で更新されます。
-
-実際に"Click me!!"のボタンをクリックしてみてください。
-
-#### チェックポイント
-
-- Stateを利用してコンポーネント内部で使えるローカルストアを作成できる
-- `setState` メソッドでStateを更新するとコンポーネントが自動で更新される
-
-### コンポーネントの機能 - ライフサイクルメソッド
-
-少しコンポーネントの複雑な機能について触れてみましょう。
-今まではコンポーネントそのものに注力しましたが、ここではコンポーネントの作成の方法に注視してみましょう。
-
-コンポーネントの中には[WebSocket](https://developer.mozilla.org/ja/docs/Web/API/WebSockets_API)や[HTTP SSE](https://developer.mozilla.org/ja/docs/Web/API/Server-sent_events/Using_server-sent_events)を利用した購読を行うものも多々あると思います。
-多くのWebサイトで「画面の初期表示のタイミングで外部からデータを取得して画面に表示する」というケースを見かけます。
-この機能はコンポーネントのライフサイクルを利用することで実現できます。実装してみましょう！
-
-:computer: src/Note.tsxを下記のように修正します。
-
-```tsx{9,17-23,29,32-45,55-56,61-64}
-import React from "react";
-
-interface NoteProps {
-  word: string;
-}
-
-interface NoteState {
-  counter: number;
-  isLoaded: boolean; // コンポーネントのロードステータス
-}
-
-const repeatWord = (counter: number, word: string) => {
-  const seq = [...Array(counter)].map((_, i) => i);
-  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
-};
-
-// データローディングを想定した、ただ時間待ちするだけのタスク
-// 2秒後にfullfilled(解決,履行)状態になるPromiseを返す
-const simulateLoading = () => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 2000);
-  });
-};
-
-export default class Note extends React.Component<NoteProps, NoteState> {
-  // Stateの初期化 (construct時)
-  state = {
-    counter: 1,
-    isLoaded: false,
-  };
-
-  // componentDidMountはReact.Componentに定義されており、
-  // DOMツリーにコンポーネントが追加された直後に呼び出されるメソッド
-  componentDidMount = () => {
-    simulateLoading()
-      // Promiseがfullfilled(解決,履行)状態になったとき
-      // thenに渡された関数が実行される
-      .then(() => {
-        // このコンポーネントのStateを更新する
-        // shallow-mergeされるので変更したいフィールドのみを指定できる
-        this.setState({
-          isLoaded: true,
-        });
-      });
-  };
-
-  onClickHandler = () => {
-    this.setState({
-      counter: this.state.counter + 1,
-    });
-  };
-
-  render() {
-    // 三項演算子(?:)でthis.state.isLoadedの値によりレンダリング内容を変える
-    return this.state.isLoaded ? (
-      // this.state.isLoaded: trueの場合に表示する内容
-      <>
-        <button onClick={this.onClickHandler}>Click me!!</button>
-        <p>{repeatWord(this.state.counter, this.props.word)}</p>
-      </>
-    ) : (
-      // this.state.isLoaded: falseの場合、"Loading..."が表示される
-      <p>Loading...</p>
-    );
-  }
+  )
 }
 ```
 
-一瞬"Loading..."という文字列が見えてから2秒程度経過したのち、元の画面が表示されるようになったと思います。
+これで5文字よりも長い名前のメンバーに「Hello」の代わりに「こんにちは」と表示されるようになる。
 
-![componentdidmount](./images/componentdidmount.gif)
+![](./images/ex-props6.png)
 
-初めて出てきた`componentDidMount`メソッドは`React.Component`で定義されているメソッドで、ブラウザ上にコンポーネントが描画された直後に走るメソッドです。
+さて、この書き方でも良いが、JSXの中で三項演算子`?:`を利用するともう少しシンプルに書ける。
 
-Reactのコンポーネントは`componentDidMount`のようにいくつかのライフサイクル用のメソッドが用意されています。
-これらのライフサイクルメソッドを利用することでコンポーネントの初期化や後処理を定義できます。
-
-[React lifecycle methods diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
-
-それぞれのタイミングで実施したい処理があれば、それぞれのメソッドの中に実装してあげると良いでしょう。
-
-詳しくはこちら > [state とライフサイクル | React Docs](https://ja.reactjs.org/docs/state-and-lifecycle.html)
-
-:::tip JavaScriptの非同期処理インタフェース - Promise
-
-[Promise](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Promise)は非同期処理を扱うためにES2015で導入されました。
-
-説明すると長くなりますし「習うより慣れよ」な仕組みなため、たくさんコードを書いて理解してください。
-
-:::
-
-#### チェックポイント
-- コンポーネントにライフサイクルがあることを理解した
-- ライフサイクルに合わせてフックを作成することができた
-
-### 関数コンポーネント
-ここまではReactのコンポーネントを表現する方法としてクラスベースなやり方を見てきました。
-ここからはもう一つのコンポーネントの定義の方法である、関数コンポーネントと、React 16.8から導入されたHookについて紹介していきます。
-私の経験上、業務で書くコンポーネントの9割以上は関数コンポーネントによるものです。
-
-まずは関数コンポーネントの基本的な形について紹介しておきます。
-クラスコンポーネントでは`React.Component`を継承したクラスの`render`メソッドを実装してレンダリング内容を定義しましたね。
-
-一番初めにクラスコンポーネントとして実装した`Note`コンポーネントを例にしましょう。
-
-```tsx
-export default class Note extends React.Component<NoteProps, NoteState> {
-  render() {
-    return <p>{repeatWord(this.props.counter, this.props.word)}</p>;
-  }
-}
-```
-
-これは関数コンポーネントでは以下のようになります。
-ただの紹介なので手元のコードは書き換えないでくださいね。
-
-```tsx
-export default function Note(props: NoteProps) {
-  return <p>{repeatWord(props.counter, props.word)}</p>;
-}
-```
-
-関数コンポーネントは`props`を受け取りレンダリング内容を返す関数として定義されます。
-シンプルですね。
-ただしStateを受け取れるようにはなっていません。
-関数コンポーネントでStateを扱うには次に紹介するHookを使う必要があります。
-
-### Hooksを導入する
-
-ReactにはReact Hooksという機能が存在しており、これは最初に紹介した関数型コンポーネントに簡単なライフサイクルの管理とステートの保持の機能を接続することができるものです。
-詳細は[フックの導入](https://ja.reactjs.org/docs/hooks-intro.html)が参考になります。
-
-それでは実際にReact Hooksの中の`useState`と`useEffect`を利用して、今までの実装を再実装してみましょう！
-
-:computer: 新たにsrc/NewNote.tsxを作成し、下記の通り記述してください。
-
-```tsx{1-5,18-50}
-import { useEffect, useState } from "react";
-
-interface NoteProps {
-  word: string;
+```tsx{7-10}
+type HelloProps = {
+  yourName: string
 }
 
-const simulateLoading = () => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 2000);
-  });
-};
-
-const repeatWord = (counter: number, word: string) => {
-  const seq = [...Array(counter)].map((_, i) => i);
-  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
-};
-
-// 関数型コンポーネントとして定義する
-// 処理は普通の関数と同じように上から順に評価していく
-export default function Note(props: NoteProps) {
-  // useState(Stateフック)でコンポーネントで保持するStateを定義する
-  // [Stateの値, Stateのセッター]という形式の値を返す
-  const [counter, setCounter] = useState<number>(1);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-
-  // useEffect(副作用フック)でライフサイクルメソッドに相当する処理を行える
-  // useEffectの第二引数により挙動が変わり、空配列[]を渡すとcomponentDidMountの挙動になる
-  useEffect(() => {
-    simulateLoading().then(() => {
-      setIsLoaded(true);
-    });
-    // 返り値にコールバック関数を指定することで、componentWillUnMountに相当する挙動を行える
-    // 例としてはWebSocketの破棄などがあるが、今回は特に何もしない
-    // return () => { yourCleanupTask() }
-  }, []);
-
-  const onClickHandler = () => {
-    setCounter(counter + 1);
-  };
-
-  // 関数型コンポーネントではクラスコンポーネントのrender相当の内容をreturnで返す
-  return isLoaded ? (
-    <>
-      <button onClick={onClickHandler}>Click me!!</button>
-      <p>{repeatWord(counter, props.word)}</p>
-    </>
-  ) : (
-    <p>Loading</p>
-  );
+function Hello({ yourName }: HelloProps) {
+  return (
+    <p>
+      {yourName.length > 5 ? 'こんにちは、' : 'Hello, '}
+      <b>{yourName}!</b>
+    </p>
+  )
 }
-```
 
-:::tip useEffectの第二引数でライフサイクル中の発火場所を限定する
-
-`useEffect`は第二引数に配列を渡すことができ、何を渡すかによって発火するタイミングが異なります。
-クラスコンポーネントの代表的なライフサイクルメソッドとの対応は以下のようになります。
-
-- `useEffect(task)`: `componentDidMount` + `componentDidUpdate` (毎評価ごと)のタイミングで実行
-- `useEffect(task, [])`: `componentDidMount`のタイミングで実行
-
-なぜこうなるかの説明は大変なので詳しくは[フック API リファレンス | useEffect](https://ja.reactjs.org/docs/hooks-reference.html#useeffect)を参考にしてください。
-
-:::
-
-:computer: src/App.tsxでNoteのimport元を差し替えてください。
-
-```tsx{2}
-import './App.css';
-import Note from './NewNote';
-
-function App() {
+export default function App() {
+  const members = ['asa-taka', 'igarashi', 'ueda']
   return (
     <div className="App">
-      <header className="App-header">
-        <Note word={"Component"} />
-        <Note word={"Hoge"} />
-        <Note word={"Huga"} />
-      </header>
+      {members.map((member) => (
+        <Hello key={member} yourName={member} />
+      ))}
     </div>
-  );
-}
-
-export default App;
-```
-
-今回はあくまでもUIコンポーネントの構造をクラスベースなものから関数ベースなものに差し替えただけなので、見た目上UIが変わっていないはずです。
-
-#### チェックポイント
-- React Hooksを利用してコンポーネントを実装した
-
-### カスタムHookに処理を切り分ける
-
-先ほどまではひとつの`Note`コンポーネント内に`useState`と`useEffect`を羅列しましたが、ローディングに関わる処理のみを別の関数`useLoadedState`に切り出してみましょう。
-
-```tsx{18-32,37-38}
-import { useEffect, useState } from "react";
-
-interface NoteProps {
-  word: string;
-}
-
-const simulateLoading = () => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 2000);
-  });
-};
-
-const repeatWord = (counter: number, word: string) => {
-  const seq = [...Array(counter)].map((_, i) => i);
-  return seq.map((i) => word + "!".repeat(i + 1)).join(" ");
-};
-
-// ローディングに関するuseStateとuseEffectをまとめたカスタムhookを定義する
-// Note内の他の処理では不要なsetIsLoadedを隠蔽できる
-const useLoadedState = () => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-
-  useEffect(() => {
-    simulateLoading().then(() => {
-      setIsLoaded(true);
-    });
-  }, []);
-
-  // 返すのは単体の値でも、配列でもオブジェクトでも良い
-  // 今回はNoteで利用するisLoadedのみを返す
-  return isLoaded;
-};
-
-export default function Note(props: NoteProps) {
-  const [counter, setCounter] = useState<number>(1);
-
-  // 新しくまとめたuseLoadedStateを使う
-  const isLoaded = useLoadedState();
-
-  const onClickHandler = () => {
-    setCounter(counter + 1);
-  };
-
-  return isLoaded ? (
-    <>
-      <button onClick={onClickHandler}>Click me!!</button>
-      <p>{repeatWord(counter, props.word)}</p>
-    </>
-  ) : (
-    <p>Loading...</p>
-  );
+  )
 }
 ```
 
-今回も処理を書き換えただけなので、表示は変わっていないはずです。
-ReactのHookは直接コンポーネント内にベタ書きする必要はないため、このように関数として切り分けることが可能です。
-直接Hookを呼ぶ場合と、動作に違いはありません。
+シンプルになった。常にこの書き方が読みやすいとは限らないので、状況に応じて可読性の高い方を選んでもらいたい。
 
-詳しくは[独自フックの作成](https://ja.reactjs.org/docs/hooks-custom.html)に書かれています。
+## Stateと変更に対するリアクティブな動作
 
-まとまった処理をHookとして切り出すことにより、以下の点でコードの再利用性や可読性が高まります。
+ここまでで、Reactのコンポーネントがプロパティを受け取りDOMのようなJSX要素を返す関数であることと、入れ子にしたり繰り返し処理や条件分岐で効率的に描画内容を定義できることを理解してもらえたと思う。
+ただし、ここまでは単なるテンプレートエンジン的な処理しかしておらず、実はちょっとした便利関数を書けばブラウザのDOM APIでも同じようなことはできてしまう。
 
-- 可読性が高まる点:
-  - 処理をまとめ、関数として意味のある名前を付けられる
-  - 中間生成物的な変数を関数内に閉じ込めることができる(スコープの限定)
-- 再利用性が高まる点:
-  - 複数のコンポーネントで実装を共有しやすい
+ここからはReactの真骨頂である、データの変更に応じて描画内容が変わるというリアクティブな描画更新処理を体感して欲しい。
+そのためには`State`(状態)にまつわる処理とイベントハンドラを理解する必要がある。
 
-機能を切り分ける際には「stateとそれに対しての変更操作のまとまりはどれか」という視点が有効です。
-(ただし今回の`useLoadedState`は時間経過で自動的に変わるStateを対象としたため、Stateに対する操作はありません…)
+### カウンタプログラム
 
-:::tip Hook登場以前の処理の共通化
+`State`(状態)という概念はReactに限らずいろんなフレームワークで取り扱われる概念である。
+親から(プロパティなどで)渡される値では**なく**、かつそのコンポーネントが動いている間に(ユーザとのやり取りの中などで)変化する値をコンポーネント自身で保持したい場合に使われる。
+この説明では分かりづらいと思うため、以下の「カウンタプログラム」で実際に動作を確かめて欲しい。
 
-Hook登場以前は、コンポーネント間で処理を共有する、もしくはライブラリからコンポーネントに機能を供給するためには一工夫必要でした。
-代表的な方法は[HOC(Higher-Order Component, 高階コンポーネント)](https://reactjs.org/docs/higher-order-components.html)と[render prop](https://reactjs.org/docs/render-props.html)です。
+「カウンタプログラム」はReactに限らず、そのフレームワークでStateがどのように実現されているかをデモするためによく使われる。
+動作としてはシンプルで、ボタンを押すとカウンタの値が1つずつ増えていくというものである。
 
-簡単にそれらの使いづらさを紹介すると、HOCはラップするコンポーネントのインタフェースを変えてしまうので、初心者が型定義したり処理を切り出すには難しいものでした。
-というより、ベテランでも頭を悩ませます。
-render propはHOCと比べると型定義は容易ですが、レンダリング内容のネストが深くなったり、また提供された機能にさらに処理を噛ませたい場合に不便でした。
+`App.tsx`を丸々書き換えて、以下のようにしてほしい。
 
-その点において、Hookにはどちらにもない利便性があります。
-機能を組み合わせるのも楽ですし、コードのネストも少なくなります。
-現在でもHOCやrender propにより機能を提供するライブラリは多くありますが、それらも今ではHookによる方法も併せて提供してくれることが多くなっています。
-例として[React Redux](https://react-redux.js.org/api/connect)にはHOCとHookのAPIがあり、[Formik](https://formik.org/docs/overview)にはrender propとHookのAPIがあります。
+```tsx
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0)
+  return (
+    <div>
+      <p>count: {count}</p>
+      <button value={count} onClick={() => setCount(count + 1)}>+1</button>
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <Counter />
+    </div>
+  )
+}
+```
+
+ボタンを押すごとに値が「1→2→3→...」のように増えていけば成功である。
+
+![](./images/ex-state1.png)
+
+新しく登場した`useState`とイベントハンドラについて少し詳しく説明しよう。
+
+Reactコンポーネントでは、自身で値を保持する場合、値が更新された場合に描画内容が再評価される必要があるため、そのための仕組みとして`useState`を利用する。
+`useState`は初期状態を引数(ここでは`0`)で渡し、状態の値(ここでは`count`)と状態を更新するための関数(ここでは`setCount`)を返す。
+
+```tsx
+const [count, setCount] = useState(0)
+```
+
+この方法で定義した`setCount`は、呼ばれるたびにコンポーネントの再評価のトリガーとなり、`count`が更新された状態でコンポーネントが再評価され、その変化をReactが検知して描画内容の更新が行われる。
+
+ちなみにこの変数の宣言方法は、配列の1番目の要素と2番目の要素をそれぞれ代入するという便利な書き方で、
+[分割代入(destructuring assignment)](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)と呼ばれる。
+
+状態を更新する手段を手にしたので、次にそれをユーザの操作により実行するためのReactにおけるイベントハンドラの説明をしよう。
+といってもDOMのイベントハンドラとほぼ同じように使える。
+
+```tsx
+<button value={count} onClick={() => setCount(count + 1)}>+1</button>
+```
+
+`button`がクリックされた際に評価される任意の関数を書くことができ、ここでは`setCount(count + 1)`を渡すことで、ボタンを押すたびに`count`の値が更新される。
+
+描画が更新される流れをまとめると以下のようになる。
+
+1. `button`をクリックする
+2. `onClick`の`setCount(cout + 1)`が実行される
+3. `setCount`が実行されたことによりコンポーネントが再評価される
+4. コンポーネントが返す内容が変わったことをReactが検知する
+5. それに合わせてブラウザの描画内容が更新される
+
+初めは難しいと思うので **「コンポーネントで値を保持したい場合は`useState`を使い、値の更新には第二引数の関数を使う」** とだけ覚えておけばまずは十分である。
+
+この`useState`とイベントハンドラによる描画内容のリアクティブな更新パターンは、Reactによるアプリを作る上でいろんな形で現れるため、しっかり慣れ親しんで欲しい。
+Reactではこのパターンを基本としてアプリのパーツを作り、それらを組み合わせることで、ブラウザのDOM APIを直接触る場合とは比較にならないくらい複雑で細やかに画面が更新されるアプリを「整理された形で」構築することができる。
+
+:::tip useStateのようなものが必要となる理由をもう少し詳しく説明するなら
+
+Reactのコンポーネントは一般的に、アプリが実行されている間に何度も関数として評価される。
+具体的には親コンポーネントが再評価された場合や、自身に渡されるプロパティが変更された場合に再評価される。
+その再評価を跨いでオブジェクトや文字列、数値などの値を保持したい場合に`useState`を利用する。
+これだけなら関数のスコープ外の適当な変数に値を保持することも考えられるが、その変更を検知して再評価する必要があるため`useState`のようなものが必要となるのである。
+
+ただし、フレームワークは使って覚えるものなので、今はこういった詳細を把握する必要はない。
 
 :::
 
-#### チェックポイント
-- カスタムHookとして処理を抽出できることを理解した
+### 文字列のStateとonChange
 
-### Reactアプリケーションをデプロイする
-さてこれまでは開発サーバーでReactを動かしてきました。実際にReactプロジェクトをビルドし、SPAをNGINXで配信してみましょう。
+カウンタプログラムでは実際に作るアプリのイメージが湧きづらいと思われるので、今度は入力された文字列をStateとして保持するパターンを見てみよう。
 
-:computer: Reactプロジェクトをビルドします。
-
-```bash
-# プロジェクトルート上でビルドします
-❯ npm run build
-# 成果物があることを確認します
-❯ ls build/
-asset-manifest.json  index.html   logo512.png    robots.txt
-favicon.ico          logo192.png  manifest.json  static
-```
-
-:computer: 成果物をホストマシンにコピーしてきます
-
-```bash
-# 成果物を適当なディレクトリにコピーしてきます
-$ docker cp bootcamp-react:/app/build ./
-```
-
-:computer: nginx上にSPAをデプロイ
-
-```bash
-# buildディレクトリをそのままマウント
-$ docker run --rm -d -p 9000:80 --name react-prod -v ${PWD}/build/:/usr/share/nginx/html/ nginx:latest
-```
-
-以降ホストマシン側の[localhost:9000](http://localhost:9000)へアクセスすると、先ほど作成したSPAが画面に表示されているはずです。
-
-
-## 発展的課題
-
-余裕のある人はチャレンジしてみてください。
-
-### `simulateLoading`を実際のサーバアクセスっぽくする
-
-実際のアプリケーションでは`fetch`などのリクエストの結果をコンポーネントで表示することが多いですが、ここまでの`simulateLoading`は単純に2秒後にfullfilledになるだけの関数でした。
+`App.tsx`を**丸ごと**、以下のように書き換えて欲しい。
 
 ```tsx
-const simulateLoading = () => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 2000);
-  });
-};
-```
+import { useState } from "react";
 
-これを以下のように書き換えて、より実際のAPIアクセスに近いものにしてみましょう。
-`API message!`という文字列をレスポンスとして返すサーバにアクセスしている、というシミュレーションです。
-
-```tsx
-const simulateLoading = (): Promise<string> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("API message!")
-    }, 2000);
-  });
-};
-```
-
-この新しい`simulateLoading`で取得したデータを`Note`コンポーネントで表示するように変更してみましょう。
-カスタムフックの戻り値にも変更が必要になります。
-
-`Promise`に関するヒントとして、この`simulateLoading`の`resolve`の値は
-
-```tsx
-simulateLoading().then((message: string) => { ... })
-```
-
-のように利用できます。
-また、更に余裕があれば`simulateLoading`を以下のように変更してみましょう。
-
-- 一定確率でエラーを発生させる
-  - エラーの場合は`Note`コンポーネントでその旨を表示する
-- 文字列ではなくオブジェクトやJSON文字列を返す
-
-### 更にそれらしくする
-
-更にそれらしいコードとして、Noteで表示すべきデータをサーバから取得する、というケースを想定したコードに変更してみましょう。
-
-以下のコードを`App.tsx`に追加して`fetchNoteData`で取得したデータの一覧を`Note`で表示する、というコードにしてみましょう。
-
-```tsx
-type NoteData = {
-  word: string
+function TextInput() {
+  const [text, setText] = useState('')
+  return (
+    <div>
+      <p>input: {text}</p>
+      <input value={text} onChange={(event) => setText(event.target.value)} />
+    </div>
+  )
 }
 
-const noteData: NoteData[] = [
-  { word: "Component" },
-  { word: "Hoge" },
-  { word: "Fuga" },
+export default function App() {
+  return (
+    <div className="App">
+      <TextInput />
+    </div>
+  )
+}
+```
+
+`input`に入力された値が下にそのまま表示されていれば成功である。
+
+![](./images/ex-state2.png)
+
+カウンタプログラムではクリックが起きたことのみを検知すれば十分だったため`() =>`という書き方をしていたが、
+今回は`(event) =>`という書き方をしており、これによりイベントの送信元(この場合は`input`要素)の情報を参照することができる。
+`event.target.value`を解説すると、イベントの送信元である`input`要素が`event.target`で取得でき、更に`input`要素の`value`属性で入力された値が取得できる。
+
+イベントハンドラにもいろんな種類があり、`onChange`は入力欄の値が変わった場合に毎回実行され、この場合はキーによる入力が行われるごとに実行される。
+`useState`は今回は文字列を保持するものとして定義しており、`setText(event.target.value)`を渡すことで、入力欄の値をStateとして保持している。
+
+### フィルタ処理で見るもっとリアクティブな例
+
+今の段階で理解できる、実践的な実装パターンとしてフィルタ処理を書いてみよう。
+`Array.prototype.filter`と`String.prototype.includs`を利用すると、配列要素のフィルタ処理が簡単に書けてしまう。
+それぞれ以下のようなメソッドになっている。
+
+- [`Array.prototype.filter`](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
+  - 各要素に対して関数を適用して、関数が`true`を返すもののみを含んだ新しい配列を返す
+- [`String.prototype.includs`](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/includes)
+  - 文字列が部分文字列を含む場合に`true`を返す
+
+これを利用して`App.tsx`を**丸ごと**以下のように書き換えて欲しい。
+
+```tsx
+import { useState } from "react";
+
+function ListFilter() {
+  const [text, setText] = useState('')
+  const members = ['asa-taka', 'igarashi', 'ueda']
+  const filteredMembers = members.filter((member) => member.includes(text))
+  return (
+    <div>
+      <input value={text} onChange={(event) => setText(event.target.value)} />
+      {filteredMembers.map((member) => (
+        <p key={member}>{member}</p>
+      ))}
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <ListFilter />
+    </div>
+  )
+}
+```
+
+入力欄に適当な文字列を入力すると、それを含む要素だけ表示されるようになれば成功である。
+
+![](./images/ex-state3.png)
+
+例えば`as`と入力するとそれを含む`asa-taka`と`igarashi`が表示される。
+シンプルな検索機能として有用な実装パターンである。
+`members.filter`に、各要素が`text`(入力欄の値)を部分文字列として含む場合に`true`を返す関数を渡すことで実現している。
+
+これができたら更に以下のように書き換えて欲しい。
+フィルタの対象となるリストを`members`プロパティとして渡せるようにしている。
+プロパティの選び方によりよりコンポーネントの汎用性が高められることがわかると思う。
+
+```tsx{3-7,23-24}
+import { useState } from "react";
+
+type ListFilterProps = {
+  members: string[]
+}
+
+function ListFilter({ members }: ListFilterProps) {
+  const [text, setText] = useState('')
+  const filteredMembers = members.filter((member) => member.includes(text))
+  return (
+    <div>
+      <input value={text} onChange={(event) => setText(event.target.value)} />
+      {filteredMembers.map((member) => (
+        <p key={member}>{member}</p>
+      ))}
+    </div>
+  )
+}
+
+export default function App() {
+  return (
+    <div className="App">
+      <ListFilter members={['asa-taka', 'igarashi', 'ueda']} />
+      <ListFilter members={['endo', 'ogata', 'kataoka']} />
+    </div>
+  )
+}
+```
+
+表示は以下のようになる。
+
+![](./images/ex-state4.png)
+
+ここまででプロパティとStateを利用して、なんとなくリアクティブに動作するアプリが作れそうだと感じてもらえると嬉しい。
+
+## ToDoアプリ
+
+さて、ここからはもう少し実践的な複雑さを持ったアプリとしてToDoアプリを作っていこう。
+完成すると以下のようになる。
+
+![](./images/todo-final.png)
+
+これを実装するためにコンポーネントの切り分け、Stateやイベントハンドラ、フィルタ処理を全部使っていこう。
+
+### ToDoアプリを作る意義
+
+実装に入る前に少しだけ、なぜToDoアプリを題材として選んだかについて説明しておきたい。
+新しくフレームワークを使おうとする場合、よく「ToDoアプリを作ると良い」と言われる(それをまとめた[ToDoMVC](https://todomvc.com)というサイトもある)。
+理由としてはデータ操作に必要な「CRUD操作」を最小限の題材で網羅できるためだと思われる。
+
+CRUD操作とはデータに対する以下の4種類の操作をまとめたものである。
+
+- Create: 作成
+- Read: 閲覧 
+- Update: 更新・変更
+- Delete: 削除
+
+これらはAPIを設計する際やそれに対するフロントエンドを作成する際に基本となる考えになる。
+例えばブログシステムを作ろうとする場合、記事に対するCRUD操作や、コメントに対するCRUD操作がそれぞれ必要になりそうだ、というように必要となる機能を洗い出すために参照したりする。
+
+そしてこれらの操作に対してはそれぞれある程度決まった実装パターンがあるため、このCRUDという操作の分類は「この機能ははこんな感じに実装できる」という感覚を自身の中で体系化するためにも有意義である。このToDoアプリを実装することでそれらの実装パターンを体感してもらいたい。
+
+:::tip
+
+今回の講義ではシングルページで組むこととしたため、CRUD操作の実装パターンや悩みどころについては触れられていない部分が多い。
+実際[React Router](https://reactrouter.com/en/main)などを使いマルチページにすることで、イベントハンドラでの連携や各操作のAPIレスポンスとして返されると嬉しい値など、ノウハウの貯めどころは格段に増えてくる。
+
+ただし大きなアプリの機能の一部として「リストをページ遷移なしで編集する」というケースは存在するため、その点ではToDoアプリも十分に応用しがいのある実装例と言える。
+
+:::
+
+:::tip
+
+ToDoアプリは基礎になりこそすれ、より実践的なアプリを組む場合には不足している要素がたくさんある。
+
+[RealWorld](https://codebase.show/projects/realworld)のような、より実践的な要素を網羅した実装例をまとめたサイトもあるため、参考にするといいかもしれない
+(が、申し訳ないが適当に探してヒットしただけなので私はまだ参照したことがない。試してみて良いものであれば教えて欲しい)。
+
+:::
+
+### フィルタ付きリストからToDoアプリの基礎を作る
+
+まずはスタート地点として以下のように`App.tsx`を**丸ごと**書き換えて欲しい。
+実装としてはフィルタ処理のものと比べてほぼ新しいことはしていないので、書き換えはコピペで済ませ、何をしていてどういう構成になっているかの把握に時間を使って欲しい。
+
+```tsx
+import { useState } from 'react'
+
+/** リスト表示の対象となる、個々のToDoを表す型。*/
+export type TodoItem = {
+  /** 表示や操作の対象を識別するために利用する、全ての`TodoItem`の中で一意な値。 */
+  id: number
+  /** ToDoの内容となる文字列。 */
+  text: string
+  /** 完了すると`true`となる。 */
+  done: boolean
+}
+
+type TodoListItemProps = {
+  item: TodoItem
+}
+
+/** ToDoリストの個々のToDoとなるReactコンポーネント。 */
+function TodoListItem({ item }: TodoListItemProps) {
+  return (
+    <div className="TodoItem">
+      <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
+    </div>
+  )
+}
+
+/** ToDoリストの初期値。 */
+const INITIAL_TODO: TodoItem[] = [
+  { id: 1, text: 'todo-item-1', done: false },
+  { id: 2, text: 'todo-item-2', done: true },
 ]
 
-const fetchNoteData = (): Promise<NoteData[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(noteData)
-    }, 2000);
-  });
-};
+/** アプリケーション本体となるReactコンポーネント。 */
+export default function App() {
+  const todoItems = INITIAL_TODO
+  const [keyword, setKeyword] = useState("")
+
+  const filteredTodoItems = todoItems.filter(item => {
+    return item.text.includes(keyword)
+  })
+
+  return (
+    <div className="App">
+      <h1>ToDo</h1>
+      <div className="App_todo-list-control">
+        <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
+      </div>
+      {filteredTodoItems.length === 0 ? (
+        <div className="dimmed">該当するToDoはありません</div>
+      ) : (
+        <div className="App_todo-list">
+          {filteredTodoItems.map((item, i) => (
+            <TodoListItem key={item.id} item={item} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 ```
 
-初めの方にほんの少しだけ触れましたが、同じような要素を大量に生成したい場合には、JSXの中で配列の`map`メソッドを使うことができます。
+ちょっとした新しいこととして`style`プロパティを利用して`item.done`が`true`の場合、つまりToDoが完了している場合に`text-decoration: line-throug`で取り消し線を表示するようにしている。
 
 ```tsx
-<div>リスト: {[1,2,3].map(n => <span>{n}</span>)}</div>
+<p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
 ```
 
-どうでしょうか。
-ここまでくると「サーバからデータを引っ張ってきて一覧で表示する」というシンプルな業務用のアプリケーションが実装できそうな気がしてこないでしょうか(そんな気持ちになってもらえると嬉しいです)。
+他にはクラス指定によりスタイルを適用しているが、Reactの処理の本質とは離れるためここでは割愛する。
 
-本当はもう少し、要素の追加や認証の処理を想定したコードを体験してもらいたかったのですが、今回はここまでです。
+表示としては以下のようになっていれば想定通りである。
 
-# 最後に
+![](./images/todo1.png)
 
-以上でReactのハンズオンは終了です。
+現時点での機能としては単純にフィルタ付きのリストである。
 
-昨今のフロントエンド界隈は比較的落ち着いてきた(=デファクトが固まりつつある)印象がありますが、それでも変化の早い世界です。この文書も、いつ時代遅れになるかもわかりません。
+### 動作確認用コンポーネントを追加する
 
-ですが、フロントエンドはアプリケーションの花形です。ぜひフロントエンドの知見を日々広げ、花形の開発者として活躍してもらえればうれしいです。
+ここからは「コンポーネントが現在どのような値を持っているか」を確認できると理解がしやすいため、そのための動作確認用コンポーネント`ValueViewer`を追加する。
+以下のように`ValueViewer`を追加して欲しい。
+
+```jsx{1-12,43}
+type ValueViewerProps = {
+  value: any
+}
+
+/** `value`の内容を`JSON.stringify`して表示する、動作確認用コンポーネント。 */
+function ValueViewer({ value }: ValueViewerProps) {
+  return (
+    <pre className="ValueViewer">
+      {JSON.stringify(value, undefined, 2)}
+    </pre>
+  )
+}
+
+/** ToDoリストの初期値。 */
+const INITIAL_TODO: TodoItem[] = [
+  { id: 1, text: 'todo-item-1', done: false },
+  { id: 2, text: 'todo-item-2', done: true },
+]
+
+/** アプリケーション本体となるReactコンポーネント。 */
+export default function App() {
+  const todoItems = INITIAL_TODO
+  const [keyword, setKeyword] = useState("")
+
+  const filteredTodoItems = todoItems.filter(item => {
+    return item.text.includes(keyword)
+  })
+
+  return (
+    <div className="App">
+      <h1>ToDo</h1>
+      <div className="App_todo-list-control">
+        <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
+      </div>
+      {filteredTodoItems.length === 0 ? (
+        <div className="dimmed">該当するToDoはありません</div>
+      ) : (
+        <div className="App_todo-list">
+          {filteredTodoItems.map((item, i) => (
+            <TodoListItem key={item.id} item={item} />
+          ))}
+        </div>
+      )}
+      <ValueViewer value={{ keyword, todoItems, filteredTodoItems }} />
+    </div>
+  )
+}
+```
+
+ToDoリストの下にJSONが表示されれば成功となる。
+ここで定義した`ValueViewer`は`value`で渡された値を「整形されたJSON」として表示するコンポーネントである。
+
+![](./images/todo2.png)
+
+:::tip JSON
+
+[JSON](https://ja.wikipedia.org/wiki/JavaScript_Object_Notation)はJavaScriptに限らず幅広く利用される構造化データの記述方式である。
+雑な表現をするが、ここでは「文字列化されたJavaScriptのオブジェクト」程度に考えてもらえればよい。
+要は任意のデータを手軽に表示する手段として利用しているだけである。
+
+:::
+
+更に動作を確認するためにフィルタ入力欄を操作してみて欲しい。
+フィルタの文字列によってJSON内の`filteredTodoItems`が変わるとともに、表示されるToDoリストの要素が変わるのがわかると思う。
+Reactがデータの変更に対して描画内容をリアクティブに更新するということを、これにより体感できるだろう。
+
+### データの更新処理(Update)に対応する
+
+ここまではフィルタ処理も含め「閲覧操作」の実装にとどまってきたが、アプリケーションの実装の複雑さは「変更操作」によって生まれると言える。
+つまりここを理解するには頭を使う必要があるかもしれないが、理解に取り組んだ分「ちょっとできる人」になれると言うことである。
+
+変更操作の手始めとして、CRUDのUpdateに該当する更新処理を実装してみよう。
+具体的にはToDoのチェックボックスによりデータの`done`を操作することを可能にする。
+
+:::tip ここからはdiffによる差分表示
+
+ここからは資料を作るのが大変すぎたので`diff`コマンドによる差分表示になることを許して欲しい。
+各行頭の`+`が追加すべき行(緑)、`-`が消すべき行(赤)になる。
+
+```diff
++ 追加してほしい行
+- 削除してほしい行
+```
+
+`@@ -44,9 +50,13 @@`のような記述は`diff`による位置表示の出力であり、数字は気にせず「行のまとまりの区切り」程度に捉えて欲しい。
+
+:::
+
+`App.tsx`に以下の変更を加えて欲しい。
+
+```diff
+ type TodoListItemProps = {
+   item: TodoItem
++  onCheck: (checked: boolean) => void
+ }
+ 
+ /** ToDoリストの個々のToDoとなるReactコンポーネント。 */
+-function TodoListItem({ item }: TodoListItemProps) {
++function TodoListItem({ item, onCheck }: TodoListItemProps) {
+   return (
+     <div className="TodoItem">
++      <input
++        type="checkbox"
++        checked={item.done}
++        onChange={ev => { onCheck(ev.currentTarget.checked) }}
++      />
+       <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
+     </div>
+   )
+@@ -44,9 +50,13 @@
+ 
+ /** アプリケーション本体となるReactコンポーネント。 */
+ export default function App() {
+-  const todoItems = INITIAL_TODO
++  const [todoItems, setTodoItems] = useState(INITIAL_TODO)
+   const [keyword, setKeyword] = useState("")
+ 
++  const updateItem = (newItem: TodoItem) => {
++    setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
++  }
++
+   const filteredTodoItems = todoItems.filter(item => {
+     return item.text.includes(keyword)
+   })
+@@ -62,7 +72,11 @@
+       ) : (
+         <div className="App_todo-list">
+           {filteredTodoItems.map((item, i) => (
+-            <TodoListItem key={item.id} item={item} />
++            <TodoListItem
++              key={item.id}
++              item={item}
++              onCheck={checked => { updateItem({ ...item, done: checked }) }}
++            />
+           ))}
+         </div>
+       )}
+```
+
+![](./images/todo3.png)
+
+動作としては前述の通り、チェックボックスにより`TodoItem`の`done`の値が変わり、それが表示に随時反映されていれば想定通りである。
+チェックボタンが機能することで一気にToDoらしくなった。
+
+いくつか説明が必要な箇所があると思う。
+
+- `todoItems`の定義に`useState`を使用した
+  - ToDoが追加された際に表示を更新する必要があるため
+  - つまり`App`コンポーネントが`todoItems`というStateを持ったということ
+- `TodoListItem`に`onCheck`プロパティを追加した
+- `App`に`updateItem`を定義して`TodoListItem`の`onCheck`に渡している
+  - 実装としては`Array.prototype.map`を利用し「`id`が一致するToDoを引数の`newItem`と入れ替えた新しい配列」でStateを更新している
+  - `todoItems[id] = newItem`のように直接変更しないのは、Reactの変更検知のために「入れ物」を更新する必要があるため(後述)
+
+### 終了したToDoを非表示にするフィルタ条件を追加する
+
+`done`の更新処理が実装できたところで、次にそれに対するフィルタ条件を追加してみよう。
+更新処理の追加に比べれば小さい変更で実装できる。
+
+以下のように`App.tsx`を修正して欲しい。
+
+```diff
+@@ -52,12 +52,14 @@
+ export default function App() {
+   const [todoItems, setTodoItems] = useState(INITIAL_TODO)
+   const [keyword, setKeyword] = useState("")
++  const [showingDone, setShowingDone] = useState(true)
+ 
+   const updateItem = (newItem: TodoItem) => {
+     setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
+   }
+ 
+   const filteredTodoItems = todoItems.filter(item => {
++    if (!showingDone && item.done) return false
+     return item.text.includes(keyword)
+   })
+ 
+@@ -66,6 +68,8 @@
+       <h1>ToDo</h1>
+       <div className="App_todo-list-control">
+         <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
++        <input id="showing-done" type="checkbox" checked={showingDone} onChange={ev => setShowingDone(ev.target.checked)} />
++        <label htmlFor="showing-done">完了したものも表示する</label>
+       </div>
+       {filteredTodoItems.length === 0 ? (
+         <div className="dimmed">該当するToDoはありません</div>
+@@ -80,7 +84,7 @@
+           ))}
+         </div>
+       )}
+-      <ValueViewer value={{ keyword, todoItems, filteredTodoItems }} />
++      <ValueViewer value={{ keyword, showingDone, todoItems, filteredTodoItems }} />
+     </div>
+   )
+ }
+```
+
+これにより「完了したものを表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りである。
+
+![](./images/todo4.png)
+
+やっていることは新しいフィルタ条件用チェックボックスの状態を保持する`useState`と、それを参照するフィルタ関数の処理の追加のみであるため説明は省略する。
+
+### データの追加処理に対応する
+
+TBD
+
+```diff
+@@ -29,6 +29,26 @@
+   )
+ }
+ 
++type CreateTodoFormProps = {
++  onSubmit: (text: string) => void
++}
++
++/** 新しくToDoを追加するためのフォームとなるReactコンポーネント。 */
++function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
++  const [text, setText] = useState("")
++  return (
++    <div className="CreateTodoForm">
++      <input
++        placeholder="新しいTodo"
++        size={60}
++        value={text}
++        onChange={ev => { setText(ev.currentTarget.value) }}
++      />
++      <button onClick={() => { onSubmit(text) }}>追加</button>
++    </div>
++  )
++}
++
+ type ValueViewerProps = {
+   value: any
+ }
+@@ -48,12 +68,22 @@
+   { id: 2, text: 'todo-item-2', done: true },
+ ]
+ 
++/** 
++ * ID用途に重複しなさそうな数値を適当に生成する。 
++ * 今回は適当にUnix Epoch(1970-01-01)からの経過ミリ秒を利用した。
++ */
++const generateId = () => Date.now()
++
+ /** アプリケーション本体となるReactコンポーネント。 */
+ export default function App() {
+   const [todoItems, setTodoItems] = useState(INITIAL_TODO)
+   const [keyword, setKeyword] = useState("")
+   const [showingDone, setShowingDone] = useState(true)
+ 
++  const createItem = (text: string) => {
++    setTodoItems([...todoItems, { id: generateId(), text, done: false }])
++  }
++
+   const updateItem = (newItem: TodoItem) => {
+     setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
+   }
+@@ -84,6 +114,7 @@
+           ))}
+         </div>
+       )}
++      <CreateTodoForm onSubmit={async text => { createItem(text) }} />
+       <ValueViewer value={{ keyword, showingDone, todoItems, filteredTodoItems }} />
+     </div>
+   )
+```
+
+![](./images/todo5.png)
+
+### 状態とそれに対する操作をカスタムHookとしてまとめる
+
+`App`コンポーネントの実装が増えてきたため、ある程度の塊で処理を分割したいと思う。
+ReactではHookをまとめて独自のHookを定義でき、これをカスタムHookと呼ぶ。
+Reactではこれを利用し「状態とそれに対する操作」をまとめてカスタムHookとして定義し、処理を抽出したりする。
+
+`todoItems`とそれに対する操作をまとめたいと思う。
+`App.tsx`を以下のように変えてみよう。
+
+```diff
+@@ -74,24 +74,28 @@
+  */
+ const generateId = () => Date.now()
+ 
++/** ToDoのStateとそれに対する操作をまとめたカスタムHook。 */
++const useTodoState = () => {
++  const [todoItems, setTodoItems] = useState(INITIAL_TODO)
++  const createItem = (text: string) => {
++    setTodoItems([...todoItems, { id: generateId(), text, done: false }])
++  }
++  const updateItem = (newItem: TodoItem) => {
++    setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
++  }
++  return [todoItems, createItem, updateItem] as const
++}
++
+ /** アプリケーション本体となるReactコンポーネント。 */
+ export default function App() {
+-  const [todoItems, setTodoItems] = useState(INITIAL_TODO)
++  const [todoItems, createItem, updateItem] = useTodoState()
+   const [keyword, setKeyword] = useState("")
+   const [showingDone, setShowingDone] = useState(true)
+ 
+-  const createItem = (text: string) => {
+-    setTodoItems([...todoItems, { id: generateId(), text, done: false }])
+-  }
+-
+-  const updateItem = (newItem: TodoItem) => {
+-    setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
+-  }
+-
+   const filteredTodoItems = todoItems.filter(item => {
+     if (!showingDone && item.done) return false
+     return item.text.includes(keyword)
+```
+
+この変更では表示内容は変わらない。
+
+ここでは`todoItems`と`createItem`と`updateItem`を`useTodoState`という名前の関数でまとめた。
+この`use***`というのは内部でReact Hookを使っていることをわかりやすくするためのただの命名規則である。
+
+ひとつ注目して欲しいのはこれにより`setTodoItems`というメソッドが`App`コンポーネントからはアクセスできなくなった点である。
+`setTodoItems`は`todoItems`に対しては、いわばどのような変更も行えるメソッドである。
+それを隠蔽し、追加や変更など、ある特定の操作に特化したメソッドのみを利用者側に見せることで、そのStateがどのような変更操作を意図しているのかを明確にし、コードの可読性を上げることができる。
+
+### データの削除処理に対応する
+
+最後に残りのCRUD操作である削除(Delete)処理を実装する。
+データに対する削除操作は概ね「削除ボタン」として実装されることが多い。
+ここでも「削除ボタン」として実装する。
+
+方針としては`TodoListItem`に`onCheck`を追加した時と大体同じようなことをする。
+以下のように`App.tsx`を修正して欲しい。
+
+```diff
+@@ -13,10 +13,11 @@
+ type TodoListItemProps = {
+   item: TodoItem
+   onCheck: (checked: boolean) => void
++  onDelete: () => void
+ }
+ 
+ /** ToDoリストの個々のToDoとなるReactコンポーネント。 */
+-function TodoListItem({ item, onCheck }: TodoListItemProps) {
++function TodoListItem({ item, onCheck, onDelete }: TodoListItemProps) {
+   return (
+     <div className="TodoItem">
+       <input
+@@ -25,6 +26,7 @@
+         onChange={ev => { onCheck(ev.currentTarget.checked) }}
+       />
+       <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
++      <button className="button-small" onClick={() => onDelete()}>×</button>
+     </div>
+   )
+ }
+@@ -83,12 +85,15 @@
+   const updateItem = (newItem: TodoItem) => {
+     setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
+   }
++  const deleteItem = (id: number) => {
++    setTodoItems(todoItems.filter(item => item.id !== id))
++  }
+-  return [todoItems, createItem, updateItem] as const
++  return [todoItems, createItem, updateItem, deleteItem] as const
+ }
+ 
+ /** アプリケーション本体となるReactコンポーネント。 */
+ export default function App() {
+-  const [todoItems, createItem, updateItem] = useTodoState()
++  const [todoItems, createItem, updateItem, deleteItem] = useTodoState()
+   const [keyword, setKeyword] = useState("")
+   const [showingDone, setShowingDone] = useState(true)
+ 
+@@ -114,6 +119,7 @@
+               key={item.id}
+               item={item}
+               onCheck={checked => { updateItem({ ...item, done: checked }) }}
++              onDelete={() => { deleteItem(item.id) }}
+             />
+           ))}
+         </div>
+```
+
+以下のように各ToDoに削除ボタンがつけば想定通りである。
+
+![](./images/todo-final.png)
+
+以上でToDoアプリの一通りの実装ができた。
+もし2時間でここまでついて来れていたら大したものです。
+お疲れ様でした。
+
+### 発展課題
+
+時間に余裕があれば挑戦してみて欲しい。
+
+- [`localStorage`](https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage)を利用してリロードしても変更した内容が保たれるようにしよう
+  - 現在の実装ではリロードすると値が消えてしまうが、ブラウザには`localStorage`という値の保存場所がある
+  - `localStorage`には文字列しか格納できないため、保存する前には`JSON.stringify`で文字列にし、取り出した後には`JSON.parse`でJavaScriptの値(オブジェクト・数値・文字列・etc)として変換する
+    - こういう文字列変換する処理をシリアライズ、その逆変換をデシリアライズという言う
+  - これができると、自分の手元で動作すればいいだけのアプリであれば実用性が増す
+- `CreateItemForm`の入力後に入力欄の値がクリアされるようにしてみよう
+  - この方が使用感は上がるはず
+- 削除処理の前に確認メッセージを入れてみよう
+  - [`window.confirm`](https://developer.mozilla.org/ja/docs/Web/API/Window/confirm)というブラウザ標準のAPIを使うと割と簡単に実装できる
+  - ただしToDoアプリ程度だと邪魔かもしれない
+- その他、好きに機能を拡張してみよう
+  - ToDoに締切を入力できるようにする、など
+
+## APIサーバとのやりとりを行うToDoアプリ
+
+:::info エクストラステージ
+
+ここからはおそらくほとんどの人は2時間では到達できないだろうが、駆け足で進められた人への暇つぶしとして書いておく。
+
+:::
+
+ここまではブラウザ内で完結した処理のみを実装してきたが、ここからはさらに実践的な例としてサーバとのやり取りを想定した実装に挑戦してみる。
+一般的にウェブアプリといえば、ほぼこの形態である。
+サーバに対してデータを保存することができれば、別のPCや他の人が同じ情報にアクセスできる。
+ここまでできると、ちょっとしたSaaS(Software as a Service)である。
+
+コードの量が増えるためファイルを2つに分ける。
+まず、以下の内容の`api.tsx`を新たに作成してほしい。
+
+```tsx
+/** 個々のToDoを表す型。*/
+export type TodoItem = {
+  /** 全てのToDoで一意な値 */
+  id: number
+  /** ToDoの内容 */
+  text: string
+  /** 完了すると`true`となる。 */
+  done: boolean
+}
+
+/**
+ * ブラウザ上で動作するAPIクライアントのモック(=それらしく動くもの)。
+ * 今回はあまり内部の処理について理解する必要はなく、ToDoの配列を保持して
+ * それを操作するためのメソッドを提供している、という程度の理解で十分。
+ * 
+ * ネットワーク越しのリクエストを再現するため、各メソッドには遅延時間を設けている。
+ */
+export class TodoApiMock {
+  constructor(private todoItems: TodoItem[]) { }
+
+  /** 条件に該当するToDoを配列で返す。 */
+  async queryItems(keyword: string, includeDone: boolean) {
+    await this.simulateNetworkDelay()
+    return this.todoItems.filter(item => {
+      if (!includeDone && item.done) return false
+      return keyword ? item.text.includes(keyword) : true
+    })
+  }
+
+  /** 新しくToDoを作成する。 */
+  async createItem(text: string) {
+    await this.simulateNetworkDelay()
+    const newItem = { id: this.generateId(), text, done: false }
+    this.todoItems.push(newItem)
+    return newItem
+  }
+
+  /** 既存のToDoを置き換える。 */
+  async updateItem(newItem: TodoItem) {
+    await this.simulateNetworkDelay()
+    this.todoItems = this.todoItems.map(item => item.id === newItem.id ? newItem : item)
+  }
+
+  /** 既存のToDoを削除する。 */
+  async deleteItem(id: number) {
+    await this.simulateNetworkDelay()
+    this.todoItems = this.todoItems.filter(item => item.id !== id)
+  }
+
+  private simulateNetworkDelay() {
+    return new Promise(resolve => setTimeout(resolve, 500))
+  }
+
+  /** ID用途に重複しなさそうな数値を適当に生成する。 */
+  private generateId() {
+    // モックなので適当に1970-01-01からの経過ミリ秒を利用した
+    return Date.now()
+  }
+}
+
+/**
+ * APIサーバに対してリクエストを行う実際のAPIクライアント。
+ * REST風のAPIを想定している。
+ * 
+ * ここではブラウザ標準の`fetch`を利用しているが、[Axios](https://www.npmjs.com/package/axios)
+ * というライブラリを使うとこれよりも楽に書け、特にJSONの扱いが便利になる。
+ */
+export class TodoApiClient {
+
+  /**
+   * @example
+   * new TodoApiClient('http://localhost:8080')
+   */
+  constructor(private baseUrl: string) { }
+
+  /** 条件に該当するToDoを配列で返す。 */
+  async queryItems(keyword: string, includeDone: boolean) {
+    const url = new URL(`${this.baseUrl}/todo`)
+    if (keyword !== "") {
+      url.searchParams.set("keyword", keyword)
+    }
+    if (includeDone) {
+      url.searchParams.set("include_done", "true")
+    }
+    return fetch(url).then(res => res.json())
+  }
+
+  /** 新しくToDoを作成する。 */
+  async createItem(text: string) {
+    return fetch(`${this.baseUrl}/todo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+      .then(res => res.json())
+  }
+
+  /** 既存のToDoを置き換える。 */
+  async updateItem(newItem: TodoItem) {
+    return fetch(`${this.baseUrl}/todo/${newItem.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newItem),
+    })
+      .then(res => res.json())
+  }
+
+  /** 既存のToDoを削除する。 */
+  async deleteItem(id: number) {
+    return fetch(`${this.baseUrl}/todo/${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+  }
+}
+```
+
+このファイルは`TodoApiClient`と`TodoApiMock`を主に定義している。
+`TodoApiClient`は実際にサーバにアクセスするクライアントクラスであり、`TodoApiMock`はブラウザ上で処理が完結している「それらしく動作する」クライアントもどきである。
+実際の開発でもモックを利用しながらウェブアプリの実装を進め、ある程度形になったところで実際のサーバにアクセスし、動作を結合させたりする。
+
+次に`App.tsx`を以下のように**丸ごと**書き換えて欲しい。
+
+```tsx
+import { useEffect, useState } from 'react'
+
+import { TodoItem, TodoApiMock, TodoApiClient } from './api'
+
+const INITIAL_TODO: TodoItem[] = [
+  { id: 1, text: 'todo-item-1', done: false },
+  { id: 2, text: 'todo-item-2', done: true },
+]
+
+// サーバにアクセスする場合はコメントアウトを入れ替えて、TodoApiClientを有効化する
+const todoApi = new TodoApiMock(INITIAL_TODO)
+// const todoApi = new TodoApiClient('http://localhost:8080')
+
+type TodoListItemProps = {
+  item: TodoItem
+  onCheck: (checked: boolean) => void
+  onDelete: () => void
+}
+
+function TodoListItem({ item, onCheck, onDelete }: TodoListItemProps) {
+  return (
+    <div className="TodoItem">
+      <input
+        type="checkbox"
+        checked={item.done}
+        onChange={ev => { onCheck(ev.currentTarget.checked) }}
+      />
+      <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
+      <button className="button-small" onClick={() => onDelete()}>×</button>
+    </div>
+  )
+}
+
+type CreateTodoFormProps = {
+  onSubmit: (text: string) => void
+}
+
+function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
+  const [text, setText] = useState("")
+  return (
+    <div className="CreateTodoForm">
+      <input
+        placeholder="新しいTodo"
+        size={60}
+        value={text}
+        onChange={ev => { setText(ev.currentTarget.value) }}
+      />
+      <button onClick={() => { onSubmit(text) }}>追加</button>
+    </div>
+  )
+}
+
+type ValueViewerProps = {
+  value: any
+}
+
+function ValueViewer({ value }: ValueViewerProps) {
+  return (
+    <pre className="ValueViewer">
+      {JSON.stringify(value, undefined, 2)}
+    </pre>
+  )
+}
+
+export default function App() {
+  const [todoItems, setTodoItems] = useState<TodoItem[] | null>(null)
+  const [keyword, setKeyword] = useState("")
+  const [showingDone, setShowingDone] = useState(false)
+
+  const reloadTodoItems = async () => {
+    setTodoItems(await todoApi.queryItems(keyword, showingDone))
+  }
+
+  useEffect(() => {
+    reloadTodoItems()
+  }, [])
+
+  return (
+    <div className="App">
+      <h1>ToDo</h1>
+      <div className="App_todo-list-control">
+        <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
+        <input id="showing-done" type="checkbox" checked={showingDone} onChange={ev => setShowingDone(ev.target.checked)} />
+        <label htmlFor="showing-done">完了したものも表示する</label>
+        <button onClick={() => reloadTodoItems()}>更新</button>
+      </div>
+      {todoItems === null ? (
+        <div className="dimmed">データを取得中です...</div>
+      ) : todoItems.length === 0 ? (
+        <div className="dimmed">該当するToDoはありません</div>
+      ) : (
+        <div className="App_todo-list">
+          {todoItems.map(item => (
+            <TodoListItem
+              key={item.id}
+              item={item}
+              onCheck={async checked => {
+                await todoApi.updateItem({ ...item, done: checked })
+                reloadTodoItems()
+              }}
+              onDelete={async () => {
+                await todoApi.deleteItem(item.id)
+                reloadTodoItems()
+              }}
+            />
+          ))}
+        </div>
+      )}
+      <CreateTodoForm
+        onSubmit={async text => {
+          await todoApi.createItem(text)
+          reloadTodoItems()
+        }}
+      />
+      <ValueViewer value={todoItems} />
+    </div>
+  )
+}
+```
+
+実装としてはかなり複雑になったことがわかると思う。
+
+主な変更点としては以下の点がある。
+
+- `useTodoState`の代わりに`todoApi`のメソッドを利用している
+  - つまり`todoItems`の管理の主体がコンポーネントからサーバに移動したということ
+    - ただし取得したデータを保持するために`useState`を利用している
+  - ここから先は常に「マスターデータはサーバにある」という認識を持つのが良い
+    - 言い換えるとウェブアプリが持っているのはあくまで「ある瞬間にサーバから取得したデータのコピーである」という認識を持つのが良い
+- `async/await`による非同期処理に対応している
+- `useEffect`により初回のデータ取得を自動でおこなっている
+- 値を追加・更新・削除した際にリストを再取得している
+  - リストを取得する際に条件を与えているため、値の変更後にその条件にマッチした要素は何か、クライアント側では判断がつかないためリストを再取得する必要がある
+
+しかし、ここまで来れた人に多くは説明しない。
+というか申し訳ないが資料を用意している時間がもうないためここから先は好きなようにやって欲しい。
+あとついでに言っておくとそこまできちんとした実装でもない気がする。
+「こうしたらいいんじゃないかな」という点は次の発展課題に上げておいた。
+すまない。いい感じにしてやってくれ。
+
+### サーバ
+
+Dockerfileを用意するつもりであるが間に合うかは不明。
+
+### 発展課題
+
+時間に余裕があれば挑戦してみて欲しい。
+
+- 更新中の状態をユーザに伝えたい
+- 条件を変更した時に自動でリストを更新したい
+- apiを呼ぶ処理はTodoItemの方に寄せてもいい
+  - reloadする処理をどうするか？
+- エラーが出たらどうするか？
+
+## ここから先の実践で必要になること
+
+ここまでしきりに「実践」と言ってきたが、より本格的なアプリを作ろうとする場合、今回のようなToDoアプリは基礎にはなっても実践的な技術を網羅するには足りない要素がたくさんある。
+
+- サーバの用意: データの永続化に必要
+  - ネットワーク越しにAPIを利用してCRUD操作を行う必要も出てくる
+  - 非同期処理ができなくてはこの先生き残れない
+- 認証: 社内で業務上の情報を扱うツールを作る場合は避けられない
+- ルーティングライブラリを利用したマルチページ化(react-routerなど)
+  - アプリ開発の世界ではURLと画面の対応付けのことを「ルーティング」と呼ぶ
+  - IPルーティングとかとは違う
+- NextJS
+  - React公式でもプロジェクト作成の最初の選択肢はこれになっている: https://react.dev/learn/start-a-new-react-project
+
+## 参考になるサイト
+
+- React公式: https://react.dev
+  - 日本語版: https://ja.react.dev
+- MDN: https://developer.mozilla.org/ja/docs/Web
+  - JavaScriptについては一番わかりやすいと思う
 
 <credit-footer/>
