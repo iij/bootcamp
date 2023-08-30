@@ -983,7 +983,7 @@ export default function App() {
         <div className="dimmed">該当するToDoはありません</div>
       ) : (
         <div className="App_todo-list">
-          {filteredTodoItems.map((item, i) => (
+          {filteredTodoItems.map((item) => (
             <TodoListItem key={item.id} item={item} />
           ))}
         </div>
