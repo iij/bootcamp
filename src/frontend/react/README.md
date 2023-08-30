@@ -355,7 +355,7 @@ Reactではコンポーネントを「DOMのようなもの」を返す関数と
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{1-6,11}
+```tsx{1-6,12}
 function Hello() {
   return (
     <p>
