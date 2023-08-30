@@ -49,7 +49,7 @@ React TypeScriptの環境である<https://codesandbox.io/s/react-typescript-rea
 
 この環境ではエディタとブラウザが左右に表示されており、ファイルをセーブすると自動でブラウザの内容が更新されます。
 
-残るちょっとした作業として、`src/index.ts`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
+残るちょっとした作業として、`src/index.tsx`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
 
 ```tsx{4}
 import React from "react";
