@@ -58,7 +58,7 @@ import App from "./App";
 import "./styles.css";
 ```
 
-これから`App.tsx`は頻繁に書き換えるため、特に触ることのない`index.ts`からスタイルシートを`import`するようにします。
+これから`App.tsx`は頻繁に書き換えるため、代わりに特に触ることのない`index.ts`からスタイルシートを`import`するようにします。
 
 ### 2. Viteを利用してローカル環境にプロジェクトの雛形を用意する
 
@@ -1092,7 +1092,7 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 `App.tsx`を以下のように変更してください。
 
 ```diff
-@@ -12,12 +12,20 @@
+@@ -12,12 +12,18 @@
  
  type TodoListItemProps = {
    item: TodoItem;
@@ -1107,14 +1107,12 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 +      <input
 +        type="checkbox"
 +        checked={item.done}
-+        onChange={(ev) => {
-+          onCheck(ev.currentTarget.checked);
-+        }}
++        onChange={(ev) => onCheck(ev.currentTarget.checked)}
 +      />
        <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
          {item.text}
        </p>
-@@ -44,9 +52,15 @@
+@@ -44,9 +50,15 @@
  
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
@@ -1131,10 +1129,10 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
    const filteredTodoItems = todoItems.filter((item) => {
      return item.text.includes(keyword);
    });
-@@ -66,7 +80,13 @@
+@@ -66,7 +78,13 @@
        ) : (
          <div className="App_todo-list">
-           {filteredTodoItems.map((item, i) => (
+           {filteredTodoItems.map((item) => (
 -            <TodoListItem key={item.id} item={item} />
 +            <TodoListItem
 +              key={item.id}
@@ -1199,7 +1197,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 以下のように`App.tsx`を修正してください。
 
 ```diff
-@@ -54,6 +54,7 @@
+@@ -52,6 +52,7 @@
  export default function App() {
    const [todoItems, setTodoItems] = useState(INITIAL_TODO);
    const [keyword, setKeyword] = useState("");
@@ -1207,7 +1205,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
  
    const updateItem = (newItem: TodoItem) => {
      setTodoItems(
-@@ -62,6 +63,7 @@
+@@ -60,6 +61,7 @@
    };
  
    const filteredTodoItems = todoItems.filter((item) => {
@@ -1215,7 +1213,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
      return item.text.includes(keyword);
    });
  
-@@ -74,6 +76,13 @@
+@@ -72,6 +74,13 @@
            value={keyword}
            onChange={(ev) => setKeyword(ev.target.value)}
          />
@@ -1229,7 +1227,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
        </div>
        {filteredTodoItems.length === 0 ? (
          <div className="dimmed">該当するToDoはありません</div>
-@@ -90,7 +99,9 @@
+@@ -88,7 +97,9 @@
            ))}
          </div>
        )}
@@ -1244,7 +1242,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 
 コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step4.tsx>
 
-これにより「完了したものを表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りです😉
+これにより「完了したものも表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りです😉
 
 ![](./images/todo4.png)
 
@@ -1257,7 +1255,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 以下のように`App.tsx`を編集してください。
 
 ```diff
-@@ -33,6 +33,34 @@
+@@ -31,6 +31,26 @@
    );
  }
  
@@ -1274,17 +1272,9 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 +        placeholder="新しいTodo"
 +        size={60}
 +        value={text}
-+        onChange={(ev) => {
-+          setText(ev.currentTarget.value);
-+        }}
++        onChange={(ev) => setText(ev.currentTarget.value)}
 +      />
-+      <button
-+        onClick={() => {
-+          onSubmit(text);
-+        }}
-+      >
-+        追加
-+      </button>
++      <button onClick={() => onSubmit(text)}>追加</button>
 +    </div>
 +  );
 +}
@@ -1292,7 +1282,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
  type ValueViewerProps = {
    value: any;
  };
-@@ -50,12 +78,22 @@
+@@ -48,12 +68,22 @@
    { id: 2, text: "todo-item-2", done: true },
  ];
  
@@ -1315,15 +1305,11 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
    const updateItem = (newItem: TodoItem) => {
      setTodoItems(
        todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
-@@ -99,6 +137,11 @@
+@@ -97,6 +127,7 @@
            ))}
          </div>
        )}
-+      <CreateTodoForm
-+        onSubmit={async (text) => {
-+          createItem(text);
-+        }}
-+      />
++      <CreateTodoForm onSubmit={(text) => createItem(text)} />
        <ValueViewer
          value={{ keyword, showingDone, todoItems, filteredTodoItems }}
        />
@@ -1334,6 +1320,8 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 以下のように「新しいToDo」という入力欄が表示され、テキストを入力し追加ボタンを押すと新しいToDoが追加されれば成功です😉
 
 ![](./images/todo5.png)
+
+`ValueViewer`で見ても`todoItems`に新しいToDoが追加されたのがわかると思います。
 
 これで最低限、ToDoアプリとして動作するようになりましたね。
 
@@ -1384,7 +1372,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 `App.tsx`を以下のように変更してください。
 
 ```diff
-@@ -84,6 +84,20 @@
+@@ -74,6 +74,20 @@
   */
  const generateId = () => Date.now();
  
@@ -1403,7 +1391,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 +};
 +
  
-@@ -97,20 +111,10 @@
+@@ -84,20 +98,10 @@
  
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
@@ -1463,7 +1451,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
    return (
      <div className="TodoItem">
        <input
-@@ -29,6 +30,9 @@
+@@ -27,6 +28,9 @@
        <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
          {item.text}
        </p>
@@ -1473,7 +1461,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
      </div>
    );
  }
-@@ -95,12 +99,15 @@
+@@ -85,12 +89,15 @@
        todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
      );
    };
@@ -1491,13 +1479,11 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
    const [keyword, setKeyword] = useState("");
    const [showingDone, setShowingDone] = useState(true);
  
-@@ -137,6 +144,9 @@
+@@ -127,6 +134,7 @@
                onCheck={(checked) => {
                  updateItem({ ...item, done: checked });
                }}
-+              onDelete={() => {
-+                deleteItem(item.id);
-+              }}
++              onDelete={() => deleteItem(item.id)}
              />
            ))}
          </div>
@@ -1508,6 +1494,8 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 以下のように各ToDoに削除ボタンがついて、ボタンを押してその項目が削除されれば想定通りです😉
 
 ![](./images/todo-final.png)
+
+`ValueViewer`で`todoItems`を見てもそのデータが消えているのがわかると思います。
 
 以上でToDoアプリの一通りの実装ができました。やったね。
 
@@ -1590,7 +1578,8 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 ここまでできると、ちょっとしたSaaS(Software as a Service)ですね。
 
 コードの量が増えるためファイルを2つに分けます。
-まず、以下の内容の`api.tsx`を`App.tsx`と同じ階層(`src`の直下)に新たに作成してください。
+まず、APIクライアントの定義である、以下の内容の`api.tsx`を`App.tsx`と同じ階層(`src`の直下)に新たに作成してください。
+このようなコードは実際の開発ではAPI定義より自動生成する場合もあるため、コピペで作成しても大丈夫です。
 
 ```tsx
 /** 個々のToDoを表す型。*/
@@ -1710,7 +1699,8 @@ export class TodoApiClient {
 
 このファイルは`TodoApiClient`と`TodoApiMock`を主に定義しています。
 
-`TodoApiClient`は実際にサーバにアクセスするクライアントクラスであり、`TodoApiMock`はブラウザ上で処理が完結している「それらしく動作する」モック(=クライアントもどき)です。
+`TodoApiClient`は実際にサーバにアクセスするクライアントクラスです。
+`TodoApiMock`はブラウザ上で処理が完結している「それらしく動作する」モック(=クライアントもどき)です。
 実際の開発でもモックを利用しながらウェブアプリの実装を進め、ある程度形になったところで実際のサーバにアクセスし、動作を結合させたりします。
 
 次に`App.tsx`を以下のように**丸ごと**書き換えてください。
@@ -1725,6 +1715,7 @@ const INITIAL_TODO: TodoItem[] = [
   { id: 2, text: "todo-item-2", done: true },
 ];
 
+/** モックと実際のAPIクライアントを切り替えるためのコメントアウト */
 const todoApi = new TodoApiMock(INITIAL_TODO);
 // const todoApi = new TodoApiClient('http://localhost:8080')
 
@@ -1740,9 +1731,7 @@ function TodoListItem({ item, onCheck, onDelete }: TodoListItemProps) {
       <input
         type="checkbox"
         checked={item.done}
-        onChange={(ev) => {
-          onCheck(ev.currentTarget.checked);
-        }}
+        onChange={(ev) => onCheck(ev.currentTarget.checked)}
       />
       <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
         {item.text}
@@ -1766,17 +1755,9 @@ function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
         placeholder="新しいTodo"
         size={60}
         value={text}
-        onChange={(ev) => {
-          setText(ev.currentTarget.value);
-        }}
+        onChange={(ev) => setText(ev.currentTarget.value)}
       />
-      <button
-        onClick={() => {
-          onSubmit(text);
-        }}
-      >
-        追加
-      </button>
+      <button onClick={() => onSubmit(text)}>追加</button>
     </div>
   );
 }
