@@ -305,9 +305,11 @@ Reactでは画面を構成する部品を「コンポーネント」という単
 export default function App() {
   return (
     <div className="App">
-      <p>Hello, <b>React!</b></p>
+      <p>
+        Hello, <b>React!</b>
+      </p>
     </div>
-  )
+  );
 }
 ```
 
@@ -329,11 +331,13 @@ Reactではコンポーネントを「DOMのようなもの」を返す関数と
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{1-5,10}
+```tsx{1-6,11}
 function Hello() {
   return (
-    <p>Hello, <b>React!</b></p>
-  )
+    <p>
+      Hello, <b>React!</b>
+    </p>
+  );
 }
 
 export default function App() {
@@ -341,7 +345,7 @@ export default function App() {
     <div className="App">
       <Hello />
     </div>
-  )
+  );
 }
 ```
 
@@ -361,15 +365,17 @@ export default function App() {
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{1-5,7,14}
+```tsx{1-5,8,16}
 type HelloProps = {
-  yourName: string
-}
+  yourName: string;
+};
 
 function Hello({ yourName }: HelloProps) {
   return (
-    <p>Hello, <b>{yourName}!</b></p>
-  )
+    <p>
+      Hello, <b>{yourName}!</b>
+    </p>
+  );
 }
 
 export default function App() {
@@ -377,7 +383,7 @@ export default function App() {
     <div className="App">
       <Hello yourName="asa-taka" />
     </div>
-  )
+  );
 }
 ```
 
@@ -393,15 +399,17 @@ Reactではこのように汎用性を持たせた描画内容の切り出しを
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{15-16}
+```tsx{17-18}
 type HelloProps = {
-  yourName: string
-}
+  yourName: string;
+};
 
 function Hello({ yourName }: HelloProps) {
   return (
-    <p>Hello, <b>{yourName}!</b></p>
-  )
+    <p>
+      Hello, <b>{yourName}!</b>
+    </p>
+  );
 }
 
 export default function App() {
@@ -411,7 +419,7 @@ export default function App() {
       <Hello yourName="igarashi" />
       <Hello yourName="ueda" />
     </div>
-  )
+  );
 }
 ```
 
@@ -462,26 +470,28 @@ Reactではこれを、配列からJSXの要素を生成するためによく使
 
 さて、前置きが長くなりましたが以下のように`App.tsx`を書き換えてください。
 
-```tsx{12,15-17}
+```tsx{14,17-19}
 type HelloProps = {
-  yourName: string
-}
+  yourName: string;
+};
 
 function Hello({ yourName }: HelloProps) {
   return (
-    <p>Hello, <b>{yourName}!</b></p>
-  )
+    <p>
+      Hello, <b>{yourName}!</b>
+    </p>
+  );
 }
 
 export default function App() {
-  const members = ['asa-taka', 'igarashi', 'ueda']
+  const members = ["asa-taka", "igarashi", "ueda"];
   return (
     <div className="App">
       {members.map((member) => (
         <Hello key={member} yourName={member} />
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -507,32 +517,36 @@ export default function App() {
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{6-14}
+```tsx{6-12}
 type HelloProps = {
-  yourName: string
-}
+  yourName: string;
+};
 
 function Hello({ yourName }: HelloProps) {
   if (yourName.length > 5) {
     return (
-      <p>こんにちは、<b>{yourName}!</b></p>
-    )
+      <p>
+        こんにちは、<b>{yourName}!</b>
+      </p>
+    );
   }
 
   return (
-    <p>Hello, <b>{yourName}!</b></p>
-  )
+    <p>
+      Hello, <b>{yourName}!</b>
+    </p>
+  );
 }
 
 export default function App() {
-  const members = ['asa-taka', 'igarashi', 'ueda']
+  const members = ["asa-taka", "igarashi", "ueda"];
   return (
     <div className="App">
       {members.map((member) => (
         <Hello key={member} yourName={member} />
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -544,29 +558,29 @@ export default function App() {
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{7-10}
+```tsx{8-9}
 type HelloProps = {
-  yourName: string
-}
+  yourName: string;
+};
 
 function Hello({ yourName }: HelloProps) {
   return (
     <p>
-      {yourName.length > 5 ? 'こんにちは、' : 'Hello, '}
+      {yourName.length > 5 ? "こんにちは、" : "Hello, "}
       <b>{yourName}!</b>
     </p>
-  )
+  );
 }
 
 export default function App() {
-  const members = ['asa-taka', 'igarashi', 'ueda']
+  const members = ["asa-taka", "igarashi", "ueda"];
   return (
     <div className="App">
       {members.map((member) => (
         <Hello key={member} yourName={member} />
       ))}
     </div>
-  )
+  );
 }
 ```
 
@@ -610,13 +624,13 @@ State(状態)という概念はReactに限らずいろんなフレームワー�
 import { useState } from "react";
 
 function Counter() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
   return (
     <div>
-      <p>count: {count}</p>
       <button onClick={() => setCount(count + 1)}>+1</button>
+      <p>count: {count}</p>
     </div>
-  )
+  );
 }
 
 export default function App() {
@@ -624,7 +638,7 @@ export default function App() {
     <div className="App">
       <Counter />
     </div>
-  )
+  );
 }
 ```
 
@@ -703,13 +717,13 @@ Reactのコンポーネントは一般的に、アプリが実行されている
 import { useState } from "react";
 
 function TextInput() {
-  const [text, setText] = useState('')
+  const [text, setText] = useState("");
   return (
     <div>
-      <p>input: {text}</p>
       <input value={text} onChange={(event) => setText(event.target.value)} />
+      <p>input: {text}</p>
     </div>
-  )
+  );
 }
 
 export default function App() {
@@ -717,7 +731,7 @@ export default function App() {
     <div className="App">
       <TextInput />
     </div>
-  )
+  );
 }
 ```
 
@@ -749,9 +763,9 @@ export default function App() {
 import { useState } from "react";
 
 function ListFilter() {
-  const [text, setText] = useState('')
-  const members = ['asa-taka', 'igarashi', 'ueda']
-  const filteredMembers = members.filter((member) => member.includes(text))
+  const [text, setText] = useState("");
+  const members = ["asa-taka", "igarashi", "ueda"];
+  const filteredMembers = members.filter((member) => member.includes(text));
   return (
     <div>
       <input value={text} onChange={(event) => setText(event.target.value)} />
@@ -759,7 +773,7 @@ function ListFilter() {
         <p key={member}>{member}</p>
       ))}
     </div>
-  )
+  );
 }
 
 export default function App() {
@@ -767,7 +781,7 @@ export default function App() {
     <div className="App">
       <ListFilter />
     </div>
-  )
+  );
 }
 ```
 
@@ -789,12 +803,12 @@ export default function App() {
 import { useState } from "react";
 
 type ListFilterProps = {
-  members: string[]
-}
+  members: string[];
+};
 
 function ListFilter({ members }: ListFilterProps) {
-  const [text, setText] = useState('')
-  const filteredMembers = members.filter((member) => member.includes(text))
+  const [text, setText] = useState("");
+  const filteredMembers = members.filter((member) => member.includes(text));
   return (
     <div>
       <input value={text} onChange={(event) => setText(event.target.value)} />
@@ -802,16 +816,16 @@ function ListFilter({ members }: ListFilterProps) {
         <p key={member}>{member}</p>
       ))}
     </div>
-  )
+  );
 }
 
 export default function App() {
   return (
     <div className="App">
-      <ListFilter members={['asa-taka', 'igarashi', 'ueda']} />
-      <ListFilter members={['endo', 'ogata', 'kataoka']} />
+      <ListFilter members={["asa-taka", "igarashi", "ueda"]} />
+      <ListFilter members={["endo", "ogata", "kataoka"]} />
     </div>
-  )
+  );
 }
 ```
 
@@ -872,51 +886,57 @@ CRUD操作とはデータに対する基本的な操作である、以下の4種
 実装としてはフィルタ処理のものと比べてほぼ新しいことはしていないので、書き換えはコピペで済ませ「何をしていてどういう構成になっているか」の把握に時間を使って欲しいです。
 
 ```tsx
-import { useState } from 'react'
+import { useState } from "react";
 
 /** リスト表示の対象となる、個々のToDoを表す型。*/
 export type TodoItem = {
   /** 表示や操作の対象を識別するために利用する、全ての`TodoItem`の中で一意な値。 */
-  id: number
+  id: number;
   /** ToDoの内容となる文字列。 */
-  text: string
+  text: string;
   /** 完了すると`true`となる。 */
-  done: boolean
-}
+  done: boolean;
+};
 
 type TodoListItemProps = {
-  item: TodoItem
-}
+  item: TodoItem;
+};
 
 /** ToDoリストの個々のToDoとなるReactコンポーネント。 */
 function TodoListItem({ item }: TodoListItemProps) {
   return (
     <div className="TodoItem">
-      <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
+      <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
+        {item.text}
+      </p>
     </div>
-  )
+  );
 }
 
 /** ToDoリストの初期値。 */
 const INITIAL_TODO: TodoItem[] = [
-  { id: 1, text: 'todo-item-1', done: false },
-  { id: 2, text: 'todo-item-2', done: true },
-]
+  { id: 1, text: "todo-item-1", done: false },
+  { id: 2, text: "todo-item-2", done: true },
+];
 
 /** アプリケーション本体となるReactコンポーネント。 */
 export default function App() {
-  const todoItems = INITIAL_TODO
-  const [keyword, setKeyword] = useState("")
+  const todoItems = INITIAL_TODO;
+  const [keyword, setKeyword] = useState("");
 
-  const filteredTodoItems = todoItems.filter(item => {
-    return item.text.includes(keyword)
-  })
+  const filteredTodoItems = todoItems.filter((item) => {
+    return item.text.includes(keyword);
+  });
 
   return (
     <div className="App">
       <h1>ToDo</h1>
       <div className="App_todo-list-control">
-        <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
+        <input
+          placeholder="キーワードフィルタ"
+          value={keyword}
+          onChange={(ev) => setKeyword(ev.target.value)}
+        />
       </div>
       {filteredTodoItems.length === 0 ? (
         <div className="dimmed">該当するToDoはありません</div>
@@ -928,7 +948,7 @@ export default function App() {
         </div>
       )}
     </div>
-  )
+  );
 }
 ```
 
@@ -941,7 +961,7 @@ export default function App() {
 ちょっとした新しいこととして`style`プロパティを利用して`item.done`が`true`の場合、つまりToDoが完了している場合に`text-decoration: line-throug`で取り消し線を表示するようにしています。
 
 ```tsx
-<p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
+<p style={{ textDecoration: item.done ? "line-through" : "none" }}>{item.text}</p>
 ```
 
 他にはクラス指定によりスタイルを適用していますが、Reactの処理の本質とは離れるためここでは割愛します。
@@ -968,35 +988,35 @@ export default function App() {
 :::
 
 ```diff
-@@ -23,6 +23,19 @@
-   )
+@@ -25,6 +25,17 @@
+   );
  }
  
 +type ValueViewerProps = {
-+  value: any
-+}
++  value: any;
++};
 +
 +/** `value`の内容を`JSON.stringify`して表示する、動作確認用コンポーネント。 */
 +function ValueViewer({ value }: ValueViewerProps) {
 +  return (
-+    <pre className="ValueViewer">
-+      {JSON.stringify(value, undefined, 2)}
-+    </pre>
-+  )
++    <pre className="ValueViewer">{JSON.stringify(value, undefined, 2)}</pre>
++  );
 +}
 +
  /** ToDoリストの初期値。 */
  const INITIAL_TODO: TodoItem[] = [
-   { id: 1, text: 'todo-item-1', done: false },
-@@ -53,6 +66,7 @@
+   { id: 1, text: "todo-item-1", done: false },
+@@ -59,6 +70,7 @@
            ))}
          </div>
        )}
 +      <ValueViewer value={{ keyword, todoItems, filteredTodoItems }} />
      </div>
-   )
+   );
  }
 ```
+
+コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step2.tsx>
 
 ToDoリストの下にJSONが表示されれば成功です😉
 
@@ -1030,10 +1050,12 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 `App.tsx`を以下のように変更してください。
 
 ```diff
+@@ -12,12 +12,20 @@
+ 
  type TodoListItemProps = {
-   item: TodoItem
-+  onCheck: (checked: boolean) => void
- }
+   item: TodoItem;
++  onCheck: (checked: boolean) => void;
+ };
  
  /** ToDoリストの個々のToDoとなるReactコンポーネント。 */
 -function TodoListItem({ item }: TodoListItemProps) {
@@ -1043,27 +1065,31 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 +      <input
 +        type="checkbox"
 +        checked={item.done}
-+        onChange={ev => { onCheck(ev.currentTarget.checked) }}
++        onChange={(ev) => {
++          onCheck(ev.currentTarget.checked);
++        }}
 +      />
-       <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
-     </div>
-   )
-@@ -44,9 +50,13 @@
+       <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
+         {item.text}
+       </p>
+@@ -44,9 +52,15 @@
  
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
--  const todoItems = INITIAL_TODO
-+  const [todoItems, setTodoItems] = useState(INITIAL_TODO)
-   const [keyword, setKeyword] = useState("")
+-  const todoItems = INITIAL_TODO;
++  const [todoItems, setTodoItems] = useState(INITIAL_TODO);
+   const [keyword, setKeyword] = useState("");
  
 +  const updateItem = (newItem: TodoItem) => {
-+    setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
-+  }
++    setTodoItems(
++      todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
++    );
++  };
 +
-   const filteredTodoItems = todoItems.filter(item => {
-     return item.text.includes(keyword)
-   })
-@@ -62,7 +72,11 @@
+   const filteredTodoItems = todoItems.filter((item) => {
+     return item.text.includes(keyword);
+   });
+@@ -66,7 +80,13 @@
        ) : (
          <div className="App_todo-list">
            {filteredTodoItems.map((item, i) => (
@@ -1071,12 +1097,16 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 +            <TodoListItem
 +              key={item.id}
 +              item={item}
-+              onCheck={checked => { updateItem({ ...item, done: checked }) }}
++              onCheck={(checked) => {
++                updateItem({ ...item, done: checked });
++              }}
 +            />
            ))}
          </div>
        )}
 ```
+
+コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step3.tsx>
 
 動作としては前述の通り、チェックボックスにより`TodoItem`の`done`の値が変わり、それが表示に随時反映されていれば成功です😉
 
@@ -1127,40 +1157,50 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 以下のように`App.tsx`を修正してください。
 
 ```diff
-@@ -52,12 +52,14 @@
+@@ -54,6 +54,7 @@
  export default function App() {
-   const [todoItems, setTodoItems] = useState(INITIAL_TODO)
-   const [keyword, setKeyword] = useState("")
-+  const [showingDone, setShowingDone] = useState(true)
+   const [todoItems, setTodoItems] = useState(INITIAL_TODO);
+   const [keyword, setKeyword] = useState("");
++  const [showingDone, setShowingDone] = useState(true);
  
    const updateItem = (newItem: TodoItem) => {
-     setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
-   }
+     setTodoItems(
+@@ -62,6 +63,7 @@
+   };
  
-   const filteredTodoItems = todoItems.filter(item => {
-+    if (!showingDone && item.done) return false
-     return item.text.includes(keyword)
-   })
+   const filteredTodoItems = todoItems.filter((item) => {
++    if (!showingDone && item.done) return false;
+     return item.text.includes(keyword);
+   });
  
-@@ -66,6 +68,8 @@
-       <h1>ToDo</h1>
-       <div className="App_todo-list-control">
-         <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
-+        <input id="showing-done" type="checkbox" checked={showingDone} onChange={ev => setShowingDone(ev.target.checked)} />
+@@ -74,6 +76,13 @@
+           value={keyword}
+           onChange={(ev) => setKeyword(ev.target.value)}
+         />
++        <input
++          id="showing-done"
++          type="checkbox"
++          checked={showingDone}
++          onChange={(ev) => setShowingDone(ev.target.checked)}
++        />
 +        <label htmlFor="showing-done">完了したものも表示する</label>
        </div>
        {filteredTodoItems.length === 0 ? (
          <div className="dimmed">該当するToDoはありません</div>
-@@ -80,7 +84,7 @@
+@@ -90,7 +99,9 @@
            ))}
          </div>
        )}
 -      <ValueViewer value={{ keyword, todoItems, filteredTodoItems }} />
-+      <ValueViewer value={{ keyword, showingDone, todoItems, filteredTodoItems }} />
++      <ValueViewer
++        value={{ keyword, showingDone, todoItems, filteredTodoItems }}
++      />
      </div>
-   )
+   );
  }
 ```
+
+コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step4.tsx>
 
 これにより「完了したものを表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りです😉
 
@@ -1175,65 +1215,79 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 以下のように`App.tsx`を編集してください。
 
 ```diff
-@@ -29,6 +29,26 @@
-   )
+@@ -33,6 +33,34 @@
+   );
  }
  
 +type CreateTodoFormProps = {
-+  onSubmit: (text: string) => void
-+}
++  onSubmit: (text: string) => void;
++};
 +
 +/** 新しくToDoを追加するためのフォームとなるReactコンポーネント。 */
 +function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
-+  const [text, setText] = useState("")
++  const [text, setText] = useState("");
 +  return (
 +    <div className="CreateTodoForm">
 +      <input
 +        placeholder="新しいTodo"
 +        size={60}
 +        value={text}
-+        onChange={ev => { setText(ev.currentTarget.value) }}
++        onChange={(ev) => {
++          setText(ev.currentTarget.value);
++        }}
 +      />
-+      <button onClick={() => { onSubmit(text) }}>追加</button>
++      <button
++        onClick={() => {
++          onSubmit(text);
++        }}
++      >
++        追加
++      </button>
 +    </div>
-+  )
++  );
 +}
 +
  type ValueViewerProps = {
-   value: any
- }
-@@ -48,12 +68,22 @@
-   { id: 2, text: 'todo-item-2', done: true },
- ]
+   value: any;
+ };
+@@ -50,12 +78,22 @@
+   { id: 2, text: "todo-item-2", done: true },
+ ];
  
-+/** 
-+ * ID用途に重複しなさそうな数値を適当に生成する。 
++/**
++ * ID用途に重複しなさそうな数値を適当に生成する。
 + * 今回は適当にUnix Epoch(1970-01-01)からの経過ミリ秒を利用した。
 + */
-+const generateId = () => Date.now()
++const generateId = () => Date.now();
 +
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
-   const [todoItems, setTodoItems] = useState(INITIAL_TODO)
-   const [keyword, setKeyword] = useState("")
-   const [showingDone, setShowingDone] = useState(true)
+   const [todoItems, setTodoItems] = useState(INITIAL_TODO);
+   const [keyword, setKeyword] = useState("");
+   const [showingDone, setShowingDone] = useState(true);
  
 +  const createItem = (text: string) => {
-+    setTodoItems([...todoItems, { id: generateId(), text, done: false }])
-+  }
++    setTodoItems([...todoItems, { id: generateId(), text, done: false }]);
++  };
 +
    const updateItem = (newItem: TodoItem) => {
-     setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
-   }
-@@ -84,6 +114,7 @@
+     setTodoItems(
+       todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
+@@ -99,6 +137,11 @@
            ))}
          </div>
        )}
-+      <CreateTodoForm onSubmit={async text => { createItem(text) }} />
-       <ValueViewer value={{ keyword, showingDone, todoItems, filteredTodoItems }} />
-     </div>
-   )
++      <CreateTodoForm
++        onSubmit={async (text) => {
++          createItem(text);
++        }}
++      />
+       <ValueViewer
+         value={{ keyword, showingDone, todoItems, filteredTodoItems }}
+       />
 ```
+
+コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step5.tsx>
 
 以下のように「新しいToDo」という入力欄が表示され、テキストを入力し追加ボタンを押すと新しいToDoが追加されれば成功です😉
 
@@ -1260,41 +1314,50 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 `App.tsx`を以下のように変更してください。
 
 ```diff
-@@ -74,24 +74,28 @@
+@@ -84,6 +84,20 @@
   */
- const generateId = () => Date.now()
+ const generateId = () => Date.now();
  
 +/** ToDoのStateとそれに対する操作をまとめたカスタムHook。 */
 +const useTodoState = () => {
-+  const [todoItems, setTodoItems] = useState(INITIAL_TODO)
++  const [todoItems, setTodoItems] = useState(INITIAL_TODO);
 +  const createItem = (text: string) => {
-+    setTodoItems([...todoItems, { id: generateId(), text, done: false }])
-+  }
++    setTodoItems([...todoItems, { id: generateId(), text, done: false }]);
++  };
 +  const updateItem = (newItem: TodoItem) => {
-+    setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
-+  }
-+  return [todoItems, createItem, updateItem] as const
-+}
++    setTodoItems(
++      todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
++    );
++  };
++  return [todoItems, createItem, updateItem] as const;
++};
 +
+ 
+@@ -97,20 +111,10 @@
+ 
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
--  const [todoItems, setTodoItems] = useState(INITIAL_TODO)
-+  const [todoItems, createItem, updateItem] = useTodoState()
-   const [keyword, setKeyword] = useState("")
-   const [showingDone, setShowingDone] = useState(true)
+-  const [todoItems, setTodoItems] = useState(INITIAL_TODO);
++  const [todoItems, createItem, updateItem] = useTodoState();
+   const [keyword, setKeyword] = useState("");
+   const [showingDone, setShowingDone] = useState(true);
  
 -  const createItem = (text: string) => {
--    setTodoItems([...todoItems, { id: generateId(), text, done: false }])
--  }
+-    setTodoItems([...todoItems, { id: generateId(), text, done: false }]);
+-  };
 -
 -  const updateItem = (newItem: TodoItem) => {
--    setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
--  }
+-    setTodoItems(
+-      todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
+-    );
+-  };
 -
-   const filteredTodoItems = todoItems.filter(item => {
-     if (!showingDone && item.done) return false
-     return item.text.includes(keyword)
+   const filteredTodoItems = todoItems.filter((item) => {
+     if (!showingDone && item.done) return false;
+     return item.text.includes(keyword);
 ```
+
+コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step6.tsx>
 
 この変更では表示内容は変わりません。
 
@@ -1319,10 +1382,10 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 ```diff
 @@ -13,10 +13,11 @@
  type TodoListItemProps = {
-   item: TodoItem
-   onCheck: (checked: boolean) => void
-+  onDelete: () => void
- }
+   item: TodoItem;
+   onCheck: (checked: boolean) => void;
++  onDelete: () => void;
+ };
  
  /** ToDoリストの個々のToDoとなるReactコンポーネント。 */
 -function TodoListItem({ item, onCheck }: TodoListItemProps) {
@@ -1330,41 +1393,47 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
    return (
      <div className="TodoItem">
        <input
-@@ -25,6 +26,7 @@
-         onChange={ev => { onCheck(ev.currentTarget.checked) }}
-       />
-       <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
-+      <button className="button-small" onClick={() => onDelete()}>×</button>
+@@ -29,6 +30,9 @@
+       <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
+         {item.text}
+       </p>
++      <button className="button-small" onClick={() => onDelete()}>
++        ×
++      </button>
      </div>
-   )
+   );
  }
-@@ -83,12 +85,15 @@
-   const updateItem = (newItem: TodoItem) => {
-     setTodoItems(todoItems.map(item => item.id === newItem.id ? newItem : item))
-   }
+@@ -95,12 +99,15 @@
+       todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
+     );
+   };
 +  const deleteItem = (id: number) => {
-+    setTodoItems(todoItems.filter(item => item.id !== id))
-+  }
--  return [todoItems, createItem, updateItem] as const
-+  return [todoItems, createItem, updateItem, deleteItem] as const
- }
++    setTodoItems(todoItems.filter((item) => item.id !== id));
++  };
+-  return [todoItems, createItem, updateItem] as const;
++  return [todoItems, createItem, updateItem, deleteItem] as const;
+ };
  
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
--  const [todoItems, createItem, updateItem] = useTodoState()
-+  const [todoItems, createItem, updateItem, deleteItem] = useTodoState()
-   const [keyword, setKeyword] = useState("")
-   const [showingDone, setShowingDone] = useState(true)
+-  const [todoItems, createItem, updateItem] = useTodoState();
++  const [todoItems, createItem, updateItem, deleteItem] = useTodoState();
+   const [keyword, setKeyword] = useState("");
+   const [showingDone, setShowingDone] = useState(true);
  
-@@ -114,6 +119,7 @@
-               key={item.id}
-               item={item}
-               onCheck={checked => { updateItem({ ...item, done: checked }) }}
-+              onDelete={() => { deleteItem(item.id) }}
+@@ -137,6 +144,9 @@
+               onCheck={(checked) => {
+                 updateItem({ ...item, done: checked });
+               }}
++              onDelete={() => {
++                deleteItem(item.id);
++              }}
              />
            ))}
          </div>
 ```
+
+コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step-final.tsx>
 
 以下のように各ToDoに削除ボタンがついて、ボタンを押してその項目が削除されれば想定通りです😉
 
@@ -1457,114 +1526,114 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 /** 個々のToDoを表す型。*/
 export type TodoItem = {
   /** 全てのToDoで一意な値 */
-  id: number
+  id: number;
   /** ToDoの内容 */
-  text: string
+  text: string;
   /** 完了すると`true`となる。 */
-  done: boolean
-}
+  done: boolean;
+};
 
 /**
  * ブラウザ上で動作するAPIクライアントのモック(=それらしく動くもの)。
  * 今回はあまり内部の処理について理解する必要はなく、ToDoの配列を保持して
  * それを操作するためのメソッドを提供している、という程度の理解で十分。
- * 
+ *
  * ネットワーク越しのリクエストを再現するため、各メソッドには遅延時間を設けている。
  */
 export class TodoApiMock {
-  constructor(private todoItems: TodoItem[]) { }
+  constructor(private todoItems: TodoItem[]) {}
 
   /** 条件に該当するToDoを配列で返す。 */
   async queryItems(keyword: string, includeDone: boolean) {
-    await this.simulateNetworkDelay()
-    return this.todoItems.filter(item => {
-      if (!includeDone && item.done) return false
-      return keyword ? item.text.includes(keyword) : true
-    })
+    await this.simulateNetworkDelay();
+    return this.todoItems.filter((item) => {
+      if (!includeDone && item.done) return false;
+      return keyword ? item.text.includes(keyword) : true;
+    });
   }
 
   /** 新しくToDoを作成する。 */
   async createItem(text: string) {
-    await this.simulateNetworkDelay()
-    const newItem = { id: this.generateId(), text, done: false }
-    this.todoItems.push(newItem)
-    return newItem
+    await this.simulateNetworkDelay();
+    const newItem = { id: this.generateId(), text, done: false };
+    this.todoItems.push(newItem);
+    return newItem;
   }
 
   /** 既存のToDoを置き換える。 */
   async updateItem(newItem: TodoItem) {
-    await this.simulateNetworkDelay()
-    this.todoItems = this.todoItems.map(item => item.id === newItem.id ? newItem : item)
+    await this.simulateNetworkDelay();
+    this.todoItems = this.todoItems.map((item) =>
+      item.id === newItem.id ? newItem : item,
+    );
   }
 
   /** 既存のToDoを削除する。 */
   async deleteItem(id: number) {
-    await this.simulateNetworkDelay()
-    this.todoItems = this.todoItems.filter(item => item.id !== id)
+    await this.simulateNetworkDelay();
+    this.todoItems = this.todoItems.filter((item) => item.id !== id);
   }
 
   private simulateNetworkDelay() {
-    return new Promise(resolve => setTimeout(resolve, 500))
+    return new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   /** ID用途に重複しなさそうな数値を適当に生成する。 */
   private generateId() {
     // モックなので適当に1970-01-01からの経過ミリ秒を利用した
-    return Date.now()
+    return Date.now();
   }
 }
 
 /**
  * APIサーバに対してリクエストを行う実際のAPIクライアント。
  * REST風のAPIを想定している。
- * 
+ *
  * ここではブラウザ標準の`fetch`を利用しているが、[Axios](https://www.npmjs.com/package/axios)
  * というライブラリを使うとこれよりも楽に書け、特にJSONの扱いが便利になる。
  */
 export class TodoApiClient {
-
   /**
    * @example
    * new TodoApiClient('http://localhost:8080')
    */
-  constructor(private baseUrl: string) { }
+  constructor(private baseUrl: string) {}
 
   /** 条件に該当するToDoを配列で返す。 */
   async queryItems(keyword: string, includeDone: boolean) {
-    const url = new URL(`${this.baseUrl}/todo`)
+    const url = new URL(`${this.baseUrl}/todo`);
     if (keyword !== "") {
-      url.searchParams.set("keyword", keyword)
+      url.searchParams.set("keyword", keyword);
     }
     if (includeDone) {
-      url.searchParams.set("include_done", "true")
+      url.searchParams.set("include_done", "true");
     }
-    return fetch(url).then(res => res.json())
+    return fetch(url).then((res) => res.json());
   }
 
   /** 新しくToDoを作成する。 */
   async createItem(text: string) {
     return fetch(`${this.baseUrl}/todo`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
-    })
-      .then(res => res.json())
+    }).then((res) => res.json());
   }
 
   /** 既存のToDoを置き換える。 */
   async updateItem(newItem: TodoItem) {
     return fetch(`${this.baseUrl}/todo/${newItem.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newItem),
-    })
-      .then(res => res.json())
+    }).then((res) => res.json());
   }
 
   /** 既存のToDoを削除する。 */
   async deleteItem(id: number) {
-    return fetch(`${this.baseUrl}/todo/${id}`, { method: 'DELETE' })
-      .then(res => res.json())
+    return fetch(`${this.baseUrl}/todo/${id}`, { method: "DELETE" }).then(
+      (res) => res.json(),
+    );
   }
 }
 ```
@@ -1577,24 +1646,23 @@ export class TodoApiClient {
 次に`App.tsx`を以下のように**丸ごと**書き換えてください。
 
 ```tsx
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-import { TodoItem, TodoApiMock, TodoApiClient } from './api'
+import { TodoItem, TodoApiMock, TodoApiClient } from "./api";
 
 const INITIAL_TODO: TodoItem[] = [
-  { id: 1, text: 'todo-item-1', done: false },
-  { id: 2, text: 'todo-item-2', done: true },
-]
+  { id: 1, text: "todo-item-1", done: false },
+  { id: 2, text: "todo-item-2", done: true },
+];
 
-// サーバにアクセスする場合はコメントアウトを入れ替えて、TodoApiClientを有効化する
-const todoApi = new TodoApiMock(INITIAL_TODO)
+const todoApi = new TodoApiMock(INITIAL_TODO);
 // const todoApi = new TodoApiClient('http://localhost:8080')
 
 type TodoListItemProps = {
-  item: TodoItem
-  onCheck: (checked: boolean) => void
-  onDelete: () => void
-}
+  item: TodoItem;
+  onCheck: (checked: boolean) => void;
+  onDelete: () => void;
+};
 
 function TodoListItem({ item, onCheck, onDelete }: TodoListItemProps) {
   return (
@@ -1602,64 +1670,85 @@ function TodoListItem({ item, onCheck, onDelete }: TodoListItemProps) {
       <input
         type="checkbox"
         checked={item.done}
-        onChange={ev => { onCheck(ev.currentTarget.checked) }}
+        onChange={(ev) => {
+          onCheck(ev.currentTarget.checked);
+        }}
       />
-      <p style={{ textDecoration: item.done ? 'line-through' : 'none' }}>{item.text}</p>
-      <button className="button-small" onClick={() => onDelete()}>×</button>
+      <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
+        {item.text}
+      </p>
+      <button className="button-small" onClick={() => onDelete()}>
+        ×
+      </button>
     </div>
-  )
+  );
 }
 
 type CreateTodoFormProps = {
-  onSubmit: (text: string) => void
-}
+  onSubmit: (text: string) => void;
+};
 
 function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
-  const [text, setText] = useState("")
+  const [text, setText] = useState("");
   return (
     <div className="CreateTodoForm">
       <input
         placeholder="新しいTodo"
         size={60}
         value={text}
-        onChange={ev => { setText(ev.currentTarget.value) }}
+        onChange={(ev) => {
+          setText(ev.currentTarget.value);
+        }}
       />
-      <button onClick={() => { onSubmit(text) }}>追加</button>
+      <button
+        onClick={() => {
+          onSubmit(text);
+        }}
+      >
+        追加
+      </button>
     </div>
-  )
+  );
 }
 
 type ValueViewerProps = {
-  value: any
-}
+  value: any;
+};
 
 function ValueViewer({ value }: ValueViewerProps) {
   return (
-    <pre className="ValueViewer">
-      {JSON.stringify(value, undefined, 2)}
-    </pre>
-  )
+    <pre className="ValueViewer">{JSON.stringify(value, undefined, 2)}</pre>
+  );
 }
 
 export default function App() {
-  const [todoItems, setTodoItems] = useState<TodoItem[] | null>(null)
-  const [keyword, setKeyword] = useState("")
-  const [showingDone, setShowingDone] = useState(false)
+  const [todoItems, setTodoItems] = useState<TodoItem[] | null>(null);
+  const [keyword, setKeyword] = useState("");
+  const [showingDone, setShowingDone] = useState(false);
 
   const reloadTodoItems = async () => {
-    setTodoItems(await todoApi.queryItems(keyword, showingDone))
-  }
+    setTodoItems(await todoApi.queryItems(keyword, showingDone));
+  };
 
   useEffect(() => {
-    reloadTodoItems()
-  }, [])
+    reloadTodoItems();
+  }, []);
 
   return (
     <div className="App">
       <h1>ToDo</h1>
       <div className="App_todo-list-control">
-        <input placeholder="キーワードフィルタ" value={keyword} onChange={ev => setKeyword(ev.target.value)} />
-        <input id="showing-done" type="checkbox" checked={showingDone} onChange={ev => setShowingDone(ev.target.checked)} />
+        <input
+          placeholder="キーワードフィルタ"
+          value={keyword}
+          onChange={(ev) => setKeyword(ev.target.value)}
+        />
+        <input
+          id="showing-done"
+          type="checkbox"
+          checked={showingDone}
+          onChange={(ev) => setShowingDone(ev.target.checked)}
+        />
         <label htmlFor="showing-done">完了したものも表示する</label>
         <button onClick={() => reloadTodoItems()}>更新</button>
       </div>
@@ -1669,31 +1758,31 @@ export default function App() {
         <div className="dimmed">該当するToDoはありません</div>
       ) : (
         <div className="App_todo-list">
-          {todoItems.map(item => (
+          {todoItems.map((item) => (
             <TodoListItem
               key={item.id}
               item={item}
-              onCheck={async checked => {
-                await todoApi.updateItem({ ...item, done: checked })
-                reloadTodoItems()
+              onCheck={async (checked) => {
+                await todoApi.updateItem({ ...item, done: checked });
+                reloadTodoItems();
               }}
               onDelete={async () => {
-                await todoApi.deleteItem(item.id)
-                reloadTodoItems()
+                await todoApi.deleteItem(item.id);
+                reloadTodoItems();
               }}
             />
           ))}
         </div>
       )}
       <CreateTodoForm
-        onSubmit={async text => {
-          await todoApi.createItem(text)
-          reloadTodoItems()
+        onSubmit={async (text) => {
+          await todoApi.createItem(text);
+          reloadTodoItems();
         }}
       />
       <ValueViewer value={todoItems} />
     </div>
-  )
+  );
 }
 ```
 
