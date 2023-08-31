@@ -106,13 +106,19 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 
 この講義では主に`src/App.tsx`を編集してReactの動作を確認していきます。
 
+:::warning 以降はCodeSandboxのファイル構成で説明します
+
+Vite環境の方は適宜読み替えをお願いします。
+
+:::
+
 ### スタイルシートの適用
 
 今回のハンズオン用のスタイルシートをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
 それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
 
-- CodeSandbox環境: `src/index.css`
-- Vite環境: `src/styles.css`
+- CodeSandbox環境: `src/styles.css`
+- Vite環境: `src/index.css`
 
 ### 🚩チェックポイント
 
@@ -197,6 +203,8 @@ type Props = {
 }
 
 const fn = (props: Props) => props.value * 2
+
+fn({ value: 12 }) // => エラーなし
 ```
 
 ここでは`Props`という型を定義して関数の引数に利用しています。
@@ -310,7 +318,7 @@ const element = React.createElement('div', { className: 'app' })
 この章では以下のことを説明しましたが、まだそこまで理解できていなくても大丈夫です😉
 
 - **React**はデータの変更に対しリアクティブに画面を更新することで細やかな画面更新が必要なアプリを開発できるフレームワークである
-- Reactの開発では**TypeScript**という、JavaScriptに型を追加した拡張源を使うと便利である
+- Reactの開発では**TypeScript**という、JavaScriptに型を追加した拡張言語を使うと便利である
 - Reactの開発では**JSX**という、JavaScriptの中にHTMLを書けるような拡張言語を使うのが主流である
 
 ## Reactコンポーネントとプロパティ
@@ -1928,6 +1936,12 @@ docker run --rm -p 9000:80 todo-web
 この状態で<http://localhost:9000>にアクセスして、今までと同様のウェブアプリが表示されれば成功です😉
 
 アプリをコンテナイメージとしてまとめることで、利用者がアプリを動かすためのセットアップが簡単にできたり、Kubernetes環境でアプリを動作させることができます。
+
+:::tip えっ、ここまでできたんですか？
+
+ちょっと、できる人すぎですよ😉
+
+:::
 
 ## 参考になるサイト
 
