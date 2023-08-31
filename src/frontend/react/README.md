@@ -203,6 +203,8 @@ type Props = {
 }
 
 const fn = (props: Props) => props.value * 2
+
+fn({ value: 12 }) // => エラーなし
 ```
 
 ここでは`Props`という型を定義して関数の引数に利用しています。
