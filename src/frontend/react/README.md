@@ -49,7 +49,7 @@ React TypeScriptの環境である<https://codesandbox.io/s/react-typescript-rea
 
 この環境ではエディタとブラウザが左右に表示されており、ファイルをセーブすると自動でブラウザの内容が更新されます。
 
-残るちょっとした作業として、`src/index.ts`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
+残るちょっとした作業として、`src/index.tsx`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
 
 ```tsx{4}
 import React from "react";
@@ -58,7 +58,7 @@ import App from "./App";
 import "./styles.css";
 ```
 
-これから`App.tsx`は頻繁に書き換えるため、特に触ることのない`index.ts`からスタイルシートを`import`するようにします。
+これから`App.tsx`は頻繁に書き換えるため、代わりに特に触ることのない`index.tsx`からスタイルシートを`import`するようにします。
 
 ### 2. Viteを利用してローカル環境にプロジェクトの雛形を用意する
 
@@ -106,9 +106,9 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 
 この講義では主に`src/App.tsx`を編集してReactの動作を確認していきます。
 
-### スタイルの適用
+### スタイルシートの適用
 
-今回のハンズオン用のスタイルをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
+今回のハンズオン用のスタイルシートをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
 それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
 
 - CodeSandbox環境: `src/index.css`
@@ -116,9 +116,12 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 
 ### 🚩チェックポイント
 
-ここまでで以下の準備が終わっているようにしましょう。
+ここまでで以下の準備が終わっていれば完璧です😉
 
 - CodeSandbox、もしくはViteを利用してReactの開発環境の準備ができた
+  - コードを編集する準備と、ブラウザの表示を確認する準備ができた
+- Reactのプロジェクトの`src`フォルダが確認できた
+- ハンズオン用のスタイルシートの適用が終わった
 
 ## 要素技術の軽い紹介
 
@@ -183,7 +186,8 @@ const fn = (n: number) => n * 2
 ```
 
 引数に`number`という型をつけることができます。
-これにより「この関数の引数はどのような値であるべきか」という、JavaScriptではコメントで表現するしかなかった部分を補完することができます。逆に型以外の点ではJavaScriptとほぼ同じ表記になります。
+これにより「この関数の引数はどのような値であるべきか」という、JavaScriptではコメントで表現するしかなかった部分を補完することができます。
+逆に型以外の点ではJavaScriptとほぼ同じ表記になります。
 
 もう少し複雑なオブジェクトを定義して用いることもできます。
 
@@ -200,7 +204,7 @@ Reactでは主にプロパティやStateの型、それからそのアプリが�
 
 :::tip TypeScriptを試してみる
 
-TypeScriptでどのような表現が可能かは[TS Playground](https://www.typescriptlang.org/play)で実際に試すと理解がしやすいでしょう。
+TypeScriptでどのような表現が可能かは[TS Playground](https://www.typescriptlang.org/play)で実際に試すと理解しやすいでしょう。
 
 また[Deno](https://deno.com)というNodeJSとは別のJavaScript実行環境ではデフォルトでTypeScriptを実行できます。
 
@@ -211,11 +215,11 @@ TypeScriptでどのような表現が可能かは[TS Playground](https://www.typ
 TypeScriptは通常、そのままではブラウザやNodeJSなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
 
 1. TypeScriptでソースコードを記述
-2. 型チェック
-3. コンパイラ(トランスパイラ)がソースコードをJavaScriptに変換
-4. ブラウザ等JavaScriptの動作環境で実行
+2. コンパイラ(トランスパイラ)が型チェックをしながらソースコードをJavaScriptに変換
+3. ブラウザ等JavaScriptの動作環境で実行
 
-実際にはこの流れはツール類がほぼ自動で実行してくれます。包括的なツールとして最近では[Vite](https://vitejs.dev)がよく使われます。
+実際にはこの流れはツール類がほぼ自動で実行してくれます。
+包括的なツールとして最近では[Vite](https://vitejs.dev)がよく使われます。
 
 面倒に見えるかもしれませんが、最近ではツール類が洗練され、設定の手間がほとんどかからなくなっています。
 一般にReactで開発を行う際もTypeScriptがよく使われるため、この講義でもTypeScriptの利用を前提として進めます。
@@ -243,12 +247,16 @@ function Hello() {
 JavaScriptとHTMLが入り混じっています。
 ここでは2つだけJSXのルールを紹介しておきますが、まだ覚える必要はありません。
 
-- JSX要素は`return`や変数への代入など、JavaScriptの「値(より正確には式)」として、任意の場所で使える
+:::warning JSXのルール
+
+- **JSX要素は`return`や変数への代入など、JavaScriptの「値(より正確には式)」として、任意の場所で使える**
   - ただしルートの要素は1つでなければならない
-- JSXの中(要素の属性値or子要素)では`{}`の中はJavaScriptの表現が使える
+- **JSXの中(要素の属性値or子要素)では`{}`で囲むことでJavaScriptの表現が使える**
   - ただし値を返すもの(簡単に言えばそのまま変数に代入できるもの)に限ります
   - 例として`{1}`や`{fn(1, 'foo') + 1}`は正しいJSX中の表現ですが`{if ...}`は使えません
     - 条件分岐には`&&`や`?:`が、繰り返しには配列の`map`メソッドなどがよく使われます
+
+:::
 
 ハンズオンを進めながら、理解を深めたくなったらまた戻ってきてください。
 
@@ -256,6 +264,22 @@ JavaScriptとHTMLが入り混じっています。
 
 TypeScriptとJSXを合わせたものは特にTSXと呼ばれることもありますが、その場合でもJSXと呼ばれることが多いです。
 ただし拡張子は`.jsx`ではなく`.tsx`がよく使われます。
+
+:::warning HTMLとは属性名が異なる場合がある
+
+`class`が`className`になっているなど、JavaScriptの予約語の都合上、属性名が通常のHTMLとは異なるものがあるので気をつけてください。
+他にも`for`が`htmlFor`になっていたりします。
+
+ただしこれらはJSX独自の仕様というよりは[Web API](https://developer.mozilla.org/en-US/docs/Web/API/Element/className)の仕様から来るものに思われます。
+
+:::
+
+:::tip JSXにも変換処理が必要
+
+TypeScriptと同様、JSXも純粋なJavaScriptではないため、ブラウザ上で動作させるためにはJavaScriptに変換する処理が必要になります。
+ただしこの変換も、今回セットアップしたようなツールにより自動化されています。
+
+:::
 
 :::tip JSXは実際には何を表しているのか
 
@@ -283,7 +307,7 @@ const element = React.createElement('div', { className: 'app' })
 
 ### 🚩チェックポイント
 
-この章では以下のことを説明しました。
+この章では以下のことを説明しましたが、まだそこまで理解できていなくても大丈夫です😉
 
 - **React**はデータの変更に対しリアクティブに画面を更新することで細やかな画面更新が必要なアプリを開発できるフレームワークである
 - Reactの開発では**TypeScript**という、JavaScriptに型を追加した拡張源を使うと便利である
@@ -331,7 +355,7 @@ Reactではコンポーネントを「DOMのようなもの」を返す関数と
 
 以下のように`App.tsx`を書き換えてください。
 
-```tsx{1-6,11}
+```tsx{1-6,12}
 function Hello() {
   return (
     <p>
@@ -354,6 +378,8 @@ export default function App() {
 新しく`Hello`というコンポーネントを定義し、`App`の中にあった「Hello, React!」の`p`要素を切り分けました。
 そして新しい表現として、その`Hello`コンポーネントを`App`の中で`<Hello />`として利用しています。
 このように他のコンポーネントもJSXの表記により利用することができます。
+
+この`App`の中で`Hello`が使われる、という関係を指してそれぞれを **親コンポーネント** (ここでは`App`)、**子コンポーネント** (ここでは`Hello`)と呼びます。
 
 ### プロパティで親コンポーネントから値を渡す
 
@@ -393,7 +419,7 @@ export default function App() {
 
 `type HelloProps`というのはTypeScriptの表現であり、ここでは`Hello`コンポーネントがプロパティとして何を受け付けるかを表すための型を定義しています。
 そして受け取った`yourName`プロパティを`{yourName}`としてJSXの中で参照しています。
-Reactではこのように汎用性を持たせた描画内容の切り出しを行います。
+Reactではこのように汎用性を持たせながら、機能や描画内容の切り出しを行います。
 
 さて、これができたら続けて`Hello`コンポーネントの`yourName`プロパティを変更して複数回使用してみましょう。
 
@@ -442,7 +468,8 @@ JSXの中では`{}`で囲むことでJavaScriptの表現がそのまま使える
 ```js
 const list = [1, 2, 3, 4]
 const doubled = list.map((x) => x * 2)
-console.log(doubled) // => [2, 4, 6, 8]
+console.log(doubled)
+// => [2, 4, 6, 8]
 ```
 
 というように、配列の全ての要素に対して引数で渡された関数による変換を行った新たな配列を生成します。
@@ -590,26 +617,26 @@ export default function App() {
 
 ### 🚩チェックポイント
 
-ここまでで、以下のことが理解できていると素晴らしいです。
+ここまでで、以下のことが理解できていると素晴らしいです😉
 
-- Reactでは**プロパティ**を受け取りJSX要素を返す**関数**を**コンポーネント**として定義し、画面を構成する
-- プロパティを利用することでコンポーネントの表示内容にバリエーションを持たせることができる
+- Reactでは**プロパティ**を受け取り**JSX要素**を返す**関数**を**コンポーネント**として定義し、画面を構成する
+- プロパティを利用することでコンポーネントの表示内容にバリエーションを持たせ、汎用性を高められる
 - 繰り返し処理や条件分岐を利用することで効率的に画面を構成することができる
 
 ## Stateとその変更に対するリアクティブな動作
 
-ここまでの内容で「Reactのコンポーネントがプロパティを受け取りDOMのようなJSX要素を返す関数であること」と、入れ子にしたり繰り返し処理や条件分岐により、効率的に画面を構築できることを理解してもらえたと思います。
+ここまでの内容でReactのコンポーネントの基本的な表現を理解してもらえたと思います。
 ただし、ここまでは単なるテンプレートエンジン的な処理しかしておらず、実はちょっとした便利関数を書けばブラウザのDOM APIでも同じようなことはできてしまいます。
 
-ここからはReactの真骨頂である「データの変更に応じて描画内容が変わる」というリアクティブな描画更新処理を体感してもらいます。
-そのためにはState(状態)にまつわる処理とイベントハンドラを理解する必要があります。
+ここからはReactの真骨頂である **「データの変更に応じて描画内容が変わる」** というリアクティブな描画更新処理を体感してもらいます。
+そのためには **State(状態)** にまつわる処理と **イベントハンドラ** を理解する必要があります。
 
 少し難易度が増しますが、頑張ってついてきてください😉
 
 ### カウンタプログラム
 
-State(状態)という概念はReactに限らずいろんなフレームワークで取り扱われる概念です。
-親から(プロパティなどで)渡される値**ではなく**、かつそのコンポーネントが動いている間に(ユーザとのやり取りの中などで)変化する値をコンポーネント自身で保持したい場合に使われます。
+**State(状態)** という概念はReactに限らずいろんなフレームワークで取り扱われる概念です。
+親から(プロパティなどで)渡される値**ではなく**、かつそのコンポーネントが動いている間に(ユーザとのやり取りの中などで)変化する値を **コンポーネント自身** で保持したい場合に使われます。
 
 …こんなことを言われてもピンとこないですよね。そのためのハンズオ😉(略)
 
@@ -646,7 +673,7 @@ export default function App() {
 
 ![](./images/ex-state1.png)
 
-新しく登場した`useState`とイベントハンドラについて少し詳しく説明しましょう。
+新しく登場した`useState`と **イベントハンドラ** について少し詳しく説明しましょう。
 
 Reactコンポーネントでは、自身で値を保持する場合、値が更新された場合に描画内容が再評価される必要があるため、そのための仕組みとして`useState`を利用します。
 `useState`は初期状態を引数(ここでは`0`)で渡し、状態の値(ここでは`count`)と状態を更新するための関数(ここでは`setCount`)を返します。
@@ -655,7 +682,8 @@ Reactコンポーネントでは、自身で値を保持する場合、値が更
 const [count, setCount] = useState(0)
 ```
 
-この方法で定義した`setCount`は、呼ばれるたびにコンポーネントの再評価のトリガーとなり、それにより`count`が更新された状態でコンポーネントが再評価され、コンポーネントの返す値の変化をReactが検知することで描画内容の更新が行われます。
+この方法で定義した`setCount`は、呼ばれるたびにコンポーネントの再評価のトリガーとなります。
+これにより`count`が更新された状態でコンポーネントが再評価され、コンポーネントの返す値の変化をReactが検知することで描画内容の更新が行われます。
 
 :::tip 分割代入
 
@@ -664,7 +692,7 @@ const [count, setCount] = useState(0)
 
 :::
 
-状態を更新する手段を手にしたので、次にそれをユーザの操作により実行するためのReactにおけるイベントハンドラの説明をしましょう。
+状態を更新する手段を手にしたので、次にそれをユーザの操作により実行するためのReactにおける **イベントハンドラ** の説明をしましょう。
 といってもDOMのイベントハンドラとほぼ同じように扱えます。
 
 ```tsx
@@ -681,16 +709,16 @@ const [count, setCount] = useState(0)
 4. コンポーネントが返す内容が変わったことをReactが検知する
 5. それに合わせてブラウザの描画内容が更新される
 
-初めは難しいと思うので **「コンポーネントで値を保持したい場合は`useState`を使い、値の更新には第2引数の関数を使う」** とだけ覚えておけば十分です。
+初めは難しいと思うので **「コンポーネントで値を保持したい場合は`useState`を使い、値の更新には第2引数の関数を使えば描画内容も更新される」** とだけ覚えておけば十分です。
 
-この`useState`とイベントハンドラによる描画内容のリアクティブな更新パターンは、Reactによるアプリを作る上でいろんな形で現れるため、しっかり慣れ親しむことをお勧めします。
+この`useState`とイベントハンドラによる描画内容のリアクティブな更新パターンは、Reactによるアプリを作る上でいろんな形で現れるため、しっかり慣れ親しめるといいですね😉
 
 :::tip State(状態)の具体例
 
 状態と言われても何が状態になりうるのかピンとこない人も多いと思いますので、具体例をいくつか挙げておきます。
 
 - UIの状態: パネルの開閉状態、フィルタ条件、input要素の値、など
-- データの取得系: サーバから取得したデータ自体、取得に失敗した場合のエラー、取得中か否か、など
+- データの取得状態: サーバから取得したデータ自体、取得に失敗した場合のエラー、取得中か否か、など
 
 これらの状態を保持するのにも一般的に`useState`が使われます。
 
@@ -745,6 +773,17 @@ export default function App() {
 
 イベントハンドラにもいろんな種類があり、`onChange`は入力欄の値が変わった場合に毎回実行され、この場合はキーによる入力が行われるごとに実行されます。
 `useState`は今回は文字列を保持するものとして定義しており、`setText(event.target.value)`を渡すことで、入力欄の値をStateとして保持しています。
+
+:::tip Reactには双方向バインディングがない
+
+ReactにはVueJSやSvelteのような双方向バインディングがないため「`input`要素の値」のような、素朴な感覚ではその`input`要素自身が持っていそうなStateを親コンポーネントが参照する場合には、(プロパティ経由で)そのStateの管理を親コンポーネントが担う必要があります。
+
+今回のコードの場合は`input`が「何を値として表示するか」と「その値を更新する手段」を親コンポーネントである`TextInput`が管理し、それを子コンポーネントである`input`要素に`value`と`onChange`プロパティで与えているという図式です。
+
+[制御されたコンポーネントと非制御コンポーネント](https://ja.react.dev/learn/sharing-state-between-components#controlled-and-uncontrolled-components)
+の言葉を使うなら、これは「制御されたコンポーネント」のパターンになります。
+
+:::
 
 ### フィルタ処理で見るもっとリアクティブな例
 
@@ -840,9 +879,9 @@ export default function App() {
 
 ### 🚩チェックポイント
 
-ここまでで、以下のことが理解できていると素晴らしいです。
+ここまでで、以下のことが理解できていると素晴らしいです😉
 
-- `useState`を利用するとコンポーネントに**State(状態)**を持たせることができる
+- `useState`を利用するとコンポーネントに **State(状態)** を持たせることができる
 - Stateと**イベントハンドラ**を組み合わせることで、**ユーザの操作に対してリアクティブ**な動作を実装することができる
 
 :::tip ⛳️初心者の人向けのゴール
@@ -861,9 +900,8 @@ export default function App() {
 
 これを実装するために、ここまでに学んできたコンポーネントの切り分け、Stateやイベントハンドラ、フィルタ処理を全部使っていきましょう😉
 
-### ToDoアプリを作る意義
+:::tip ToDoアプリを作る意義
 
-実装に入る前に少しだけ、なぜToDoアプリを題材として選んだかについて説明させてください。
 新しくフレームワークを使おうとする場合、よく「ToDoアプリを作ると良い」と言われます(それをまとめた[ToDoMVC](https://todomvc.com)というサイトもある)。
 
 理由としてはデータ操作に必要な「CRUD操作」を最小限の題材で網羅できるためだと思われます。
@@ -871,14 +909,17 @@ export default function App() {
 CRUD操作とはデータに対する基本的な操作である、以下の4種類の操作の頭文字をとったものです。
 
 - Create: 新規作成
-- Read: 閲覧 
+- Read: 閲覧
 - Update: 更新・変更
 - Delete: 削除
 
 これらはAPIを設計する際やそれに対するフロントエンドを作成する際に基本となる考えになります。
 例えばブログシステムを作ろうとする場合、記事に対するCRUD操作や、コメントに対するCRUD操作がそれぞれ必要になりそうだ、というように必要となる機能を洗い出すために参照できます。
 
-そしてこれらの操作に対してはそれぞれある程度決まった実装パターンがあるため、このCRUDという操作の分類は「この機能ははこんな感じに実装できる」という感覚を自身の中で体系化するためにも役立ちます。このToDoアプリを実装することでそれらの実装パターンを体感してもらえると嬉しいです😉
+そしてこれらの操作に対してはそれぞれある程度決まった実装パターンがあるため、このCRUDという操作の分類は **「この機能ははこんな感じに実装できる」** という感覚を自身の中で体系化するためにも役立ちます。
+このToDoアプリを実装することでそれらの実装パターンを体感してもらえると嬉しいです😉
+
+:::
 
 ### フィルタ付きリストからToDoアプリの基礎を作る
 
@@ -942,7 +983,7 @@ export default function App() {
         <div className="dimmed">該当するToDoはありません</div>
       ) : (
         <div className="App_todo-list">
-          {filteredTodoItems.map((item, i) => (
+          {filteredTodoItems.map((item) => (
             <TodoListItem key={item.id} item={item} />
           ))}
         </div>
@@ -966,12 +1007,11 @@ export default function App() {
 
 他にはクラス指定によりスタイルを適用していますが、Reactの処理の本質とは離れるためここでは割愛します。
 
-### 動作確認用コンポーネントを追加する
+### 状態確認用コンポーネントを追加する
 
-ここからは「コンポーネントが現在どのような値を持っているか」を確認できると理解がしやすいため、そのための動作確認用コンポーネント`ValueViewer`を追加します。
-以下のように`App.tsx`に`ValueViewer`を追加してください。
+ここからは「コンポーネントが現在どのような値を持っているか」を確認できると理解がしやすいため、そのための状態確認用コンポーネント`ValueViewer`を追加します。
 
-:::tip ここからはdiffコマンドによる差分表示
+:::warning ここからはdiffコマンドによる差分表示
 
 ここからはコード量が増えてきたため、`diff`コマンドを利用した差分表示でコードの変更箇所を示します。
 各行頭の`-`が削除してほしい行(赤)、`+`が追加してほしい行(緑)を表しているので、その通りに変更してください。
@@ -986,6 +1026,8 @@ export default function App() {
 コードの全体像を確認したい場合は [github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/tree/main/src/todo) に各ステップのコードがまとめられているため、参考にしたり、どうしても動かなくなった場合はここからコピペをしてリカバリーしてください。
 
 :::
+
+以下のように`App.tsx`に`ValueViewer`を追加してください。
 
 ```diff
 @@ -25,6 +25,17 @@
@@ -1026,7 +1068,7 @@ ToDoリストの下にJSONが表示されれば成功です😉
 
 :::tip JSON
 
-[JSON](https://ja.wikipedia.org/wiki/JavaScript_Object_Notation)はJavaScriptに限らず幅広く利用される構造化データの記述方式です。
+[JSON](https://developer.mozilla.org/ja/docs/Learn/JavaScript/Objects/JSON)はJavaScriptに限らず幅広く利用される構造化データの記述方式です。
 雑な表現をすると、ここでは「文字列化されたJavaScriptのオブジェクト」程度に考えてもらえれば十分です。
 要は任意のデータを手軽に表示する手段として利用しているだけです。
 
@@ -1050,7 +1092,7 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 `App.tsx`を以下のように変更してください。
 
 ```diff
-@@ -12,12 +12,20 @@
+@@ -12,12 +12,18 @@
  
  type TodoListItemProps = {
    item: TodoItem;
@@ -1065,14 +1107,12 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 +      <input
 +        type="checkbox"
 +        checked={item.done}
-+        onChange={(ev) => {
-+          onCheck(ev.currentTarget.checked);
-+        }}
++        onChange={(ev) => onCheck(ev.currentTarget.checked)}
 +      />
        <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
          {item.text}
        </p>
-@@ -44,9 +52,15 @@
+@@ -44,9 +50,15 @@
  
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
@@ -1089,10 +1129,10 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
    const filteredTodoItems = todoItems.filter((item) => {
      return item.text.includes(keyword);
    });
-@@ -66,7 +80,13 @@
+@@ -66,7 +78,13 @@
        ) : (
          <div className="App_todo-list">
-           {filteredTodoItems.map((item, i) => (
+           {filteredTodoItems.map((item) => (
 -            <TodoListItem key={item.id} item={item} />
 +            <TodoListItem
 +              key={item.id}
@@ -1138,7 +1178,7 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 
 Reactではこのパターンを基本としてアプリのパーツを作り、それらを組み合わせることで、ブラウザのDOM APIを直接触る場合とは比較にならないくらい複雑で細やかに画面が更新されるアプリを「整理された形で」構築することができます。
 
-:::tip Stateの更新時には「入れ物」を更新しよう
+:::warning Stateの更新時には「入れ物」を更新しよう
 
 `todoItems[id] = newItem`のように直接代入しないのは「それをするとReactの変更検知がうまく動かない」ためです。
 詳しくは[state 内の配列の更新](https://ja.react.dev/learn/updating-arrays-in-state)を見てください。
@@ -1157,7 +1197,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 以下のように`App.tsx`を修正してください。
 
 ```diff
-@@ -54,6 +54,7 @@
+@@ -52,6 +52,7 @@
  export default function App() {
    const [todoItems, setTodoItems] = useState(INITIAL_TODO);
    const [keyword, setKeyword] = useState("");
@@ -1165,7 +1205,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
  
    const updateItem = (newItem: TodoItem) => {
      setTodoItems(
-@@ -62,6 +63,7 @@
+@@ -60,6 +61,7 @@
    };
  
    const filteredTodoItems = todoItems.filter((item) => {
@@ -1173,7 +1213,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
      return item.text.includes(keyword);
    });
  
-@@ -74,6 +76,13 @@
+@@ -72,6 +74,13 @@
            value={keyword}
            onChange={(ev) => setKeyword(ev.target.value)}
          />
@@ -1187,7 +1227,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
        </div>
        {filteredTodoItems.length === 0 ? (
          <div className="dimmed">該当するToDoはありません</div>
-@@ -90,7 +99,9 @@
+@@ -88,7 +97,9 @@
            ))}
          </div>
        )}
@@ -1202,20 +1242,20 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 
 コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step4.tsx>
 
-これにより「完了したものを表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りです😉
+これにより「完了したものも表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りです😉
 
 ![](./images/todo4.png)
 
 やっていることは新しいフィルタ条件用チェックボックスの状態を保持する`useState`と、それを参照するフィルタ関数の処理の追加のみであるため説明は省略します。
 
-### データの追加処理に対応する
+### データの追加処理(Create)に対応する
 
 どんどんいきましょう。次は新しくToDoを追加するための`CreateTodoForm`を追加しましょう。
 
 以下のように`App.tsx`を編集してください。
 
 ```diff
-@@ -33,6 +33,34 @@
+@@ -31,6 +31,26 @@
    );
  }
  
@@ -1232,17 +1272,9 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 +        placeholder="新しいTodo"
 +        size={60}
 +        value={text}
-+        onChange={(ev) => {
-+          setText(ev.currentTarget.value);
-+        }}
++        onChange={(ev) => setText(ev.currentTarget.value)}
 +      />
-+      <button
-+        onClick={() => {
-+          onSubmit(text);
-+        }}
-+      >
-+        追加
-+      </button>
++      <button onClick={() => onSubmit(text)}>追加</button>
 +    </div>
 +  );
 +}
@@ -1250,7 +1282,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
  type ValueViewerProps = {
    value: any;
  };
-@@ -50,12 +78,22 @@
+@@ -48,12 +68,22 @@
    { id: 2, text: "todo-item-2", done: true },
  ];
  
@@ -1273,15 +1305,11 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
    const updateItem = (newItem: TodoItem) => {
      setTodoItems(
        todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
-@@ -99,6 +137,11 @@
+@@ -97,6 +127,7 @@
            ))}
          </div>
        )}
-+      <CreateTodoForm
-+        onSubmit={async (text) => {
-+          createItem(text);
-+        }}
-+      />
++      <CreateTodoForm onSubmit={(text) => createItem(text)} />
        <ValueViewer
          value={{ keyword, showingDone, todoItems, filteredTodoItems }}
        />
@@ -1293,10 +1321,40 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 
 ![](./images/todo5.png)
 
+`ValueViewer`で見ても`todoItems`に新しいToDoが追加されたのがわかると思います。
+
 これで最低限、ToDoアプリとして動作するようになりましたね。
 
 `generateId`は`map`関数で利用する`key`として使うための値を生成するものです。
 他の点は更新処理の実装時と比べて新しいことはしていないため説明を省略します。
+
+:::tip スプレッド演算子(`...`)
+
+`...`は「スプレッド演算子」と呼ばれ、配列の中身を別の配列の中に展開することができます。
+
+```ts
+const list = [1, 2, 3]
+const newList = [...list, 4, 5]
+console.log(newList)
+// => [ 1, 2, 3, 4, 5 ]
+```
+
+同様にオブジェクトに対しても以下のように働きます。
+
+```tsx
+const obj = { a: 12, b: 'foo' }
+const newObj = { ...obj, c: 99 }
+console.log(newObj)
+// => { a: 12, b: 'foo', c: 99 }
+```
+
+これらを利用することで他の要素を引き継ぎ、特定の要素のみを更新・追加した、**新しい** 配列やオブジェクトを作ることができます。
+
+Reactでは先述の通り、変更検知の都合上、状態を更新するときには「入れ物」を新しく作り直す必要があるためこの表現がよく使われます。
+
+参考: [スプレッド構文を使ったオブジェクトのコピー](https://ja.react.dev/learn/updating-objects-in-state#copying-objects-with-the-spread-syntax)
+
+:::
 
 ### 状態とそれに対する操作をカスタムHookとしてまとめる
 
@@ -1314,7 +1372,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 `App.tsx`を以下のように変更してください。
 
 ```diff
-@@ -84,6 +84,20 @@
+@@ -74,6 +74,20 @@
   */
  const generateId = () => Date.now();
  
@@ -1333,7 +1391,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 +};
 +
  
-@@ -97,20 +111,10 @@
+@@ -84,20 +98,10 @@
  
  /** アプリケーション本体となるReactコンポーネント。 */
  export default function App() {
@@ -1370,7 +1428,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 
 「Stateとそれに対する操作をまとめる」というパターンはよく使うため覚えておくと良いでしょう😉
 
-### データの削除処理に対応する
+### データの削除処理(Delete)に対応する
 
 最後に残りのCRUD操作である削除(Delete)処理を実装します。
 データに対する削除操作は概ね「削除ボタン」として実装されることが多いです。
@@ -1393,7 +1451,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
    return (
      <div className="TodoItem">
        <input
-@@ -29,6 +30,9 @@
+@@ -27,6 +28,9 @@
        <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
          {item.text}
        </p>
@@ -1403,7 +1461,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
      </div>
    );
  }
-@@ -95,12 +99,15 @@
+@@ -85,12 +89,15 @@
        todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
      );
    };
@@ -1421,13 +1479,11 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
    const [keyword, setKeyword] = useState("");
    const [showingDone, setShowingDone] = useState(true);
  
-@@ -137,6 +144,9 @@
+@@ -127,6 +134,7 @@
                onCheck={(checked) => {
                  updateItem({ ...item, done: checked });
                }}
-+              onDelete={() => {
-+                deleteItem(item.id);
-+              }}
++              onDelete={() => deleteItem(item.id)}
              />
            ))}
          </div>
@@ -1438,6 +1494,8 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 以下のように各ToDoに削除ボタンがついて、ボタンを押してその項目が削除されれば想定通りです😉
 
 ![](./images/todo-final.png)
+
+`ValueViewer`で`todoItems`を見てもそのデータが消えているのがわかると思います。
 
 以上でToDoアプリの一通りの実装ができました。やったね。
 
@@ -1463,7 +1521,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 この先の「APIサーバとのやりとりを行うToDoアプリ」に進んでも構いません。
 
 - [`localStorage`](https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage)を利用してリロードしても変更した内容が保たれるようにしよう
-  - 現在の実装ではリロードすると値が消えてしまうが、ブラウザには`localStorage`という値の保存場所があります
+  - 現在の実装ではリロードすると値が消えてしまいますが、ブラウザには`localStorage`という値の保存場所があります
   - `localStorage`には文字列しか格納できないため、任意のデータを保存する場合は、保存する前には`JSON.stringify`で文字列にし、取り出した後には`JSON.parse`でJavaScriptの値(オブジェクト・数値・文字列・etc)として変換します
     - こういう文字列変換する処理をシリアライズ、その逆変換をデシリアライズという言います
   - これができると、自分の手元で動作すればいいだけのアプリであればグッと実用性が増します
@@ -1492,7 +1550,7 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 
 - サーバとのやりとり
   - ブラウザを跨いだデータの永続化に必要になります
-  - ネットワーク越しにAPIを利用してCRUD操作を行う必要が出てきます
+  - ネットワーク越しにAPIを利用してCRUDやその他の操作を行う必要が出てきます
   - `Promise`などの非同期処理の理解やHTTPについての理解も必要になります
 - 認証
   - 社内で業務上の情報を扱うツールを作る場合は避けられないでしょう
@@ -1508,7 +1566,7 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 
 ## APIサーバとのやりとりを行うToDoアプリ
 
-:::info エクストラステージへようこそ
+:::tip エクストラステージへようこそ
 
 ここからはほとんどの人は2時間では到達できないと思いますが、駆け足で進められた人への暇つぶしとして書いておきます😉
 
@@ -1520,7 +1578,8 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 ここまでできると、ちょっとしたSaaS(Software as a Service)ですね。
 
 コードの量が増えるためファイルを2つに分けます。
-まず、以下の内容の`api.tsx`を`App.tsx`と同じ階層(`src`の直下)に新たに作成してください。
+まず、APIクライアントの定義である、以下の内容の`api.tsx`を`App.tsx`と同じ階層(`src`の直下)に新たに作成してください。
+このようなコードは実際の開発ではAPI定義より自動生成する場合もあるため、コピペで作成しても大丈夫です。
 
 ```tsx
 /** 個々のToDoを表す型。*/
@@ -1640,7 +1699,8 @@ export class TodoApiClient {
 
 このファイルは`TodoApiClient`と`TodoApiMock`を主に定義しています。
 
-`TodoApiClient`は実際にサーバにアクセスするクライアントクラスであり、`TodoApiMock`はブラウザ上で処理が完結している「それらしく動作する」モック(=クライアントもどき)です。
+`TodoApiClient`は実際にサーバにアクセスするクライアントクラスです。
+`TodoApiMock`はブラウザ上で処理が完結している「それらしく動作する」モック(=クライアントもどき)です。
 実際の開発でもモックを利用しながらウェブアプリの実装を進め、ある程度形になったところで実際のサーバにアクセスし、動作を結合させたりします。
 
 次に`App.tsx`を以下のように**丸ごと**書き換えてください。
@@ -1655,6 +1715,7 @@ const INITIAL_TODO: TodoItem[] = [
   { id: 2, text: "todo-item-2", done: true },
 ];
 
+/** モックと実際のAPIクライアントを切り替えるためのコメントアウト */
 const todoApi = new TodoApiMock(INITIAL_TODO);
 // const todoApi = new TodoApiClient('http://localhost:8080')
 
@@ -1670,9 +1731,7 @@ function TodoListItem({ item, onCheck, onDelete }: TodoListItemProps) {
       <input
         type="checkbox"
         checked={item.done}
-        onChange={(ev) => {
-          onCheck(ev.currentTarget.checked);
-        }}
+        onChange={(ev) => onCheck(ev.currentTarget.checked)}
       />
       <p style={{ textDecoration: item.done ? "line-through" : "none" }}>
         {item.text}
@@ -1696,17 +1755,9 @@ function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
         placeholder="新しいTodo"
         size={60}
         value={text}
-        onChange={(ev) => {
-          setText(ev.currentTarget.value);
-        }}
+        onChange={(ev) => setText(ev.currentTarget.value)}
       />
-      <button
-        onClick={() => {
-          onSubmit(text);
-        }}
-      >
-        追加
-      </button>
+      <button onClick={() => onSubmit(text)}>追加</button>
     </div>
   );
 }
@@ -1807,7 +1858,9 @@ export default function App() {
 
 「こうしたらいいんじゃないかな」という点は次の発展課題に上げておいたので、どうかいい感じにしてやってください…🥺すみません…
 
-### サーバ
+### サーバを立ててアクセスしてみる(Vite環境のみ)
+
+残念ながらCodeSandboxでは実行できないためモックで我慢してください🥺
 
 APIサーバのコンテナイメージを用意してありますので、以下のようにローカルでサーバを立ててサーバへのアクセスを実際に試してみてください。
 
@@ -1815,9 +1868,15 @@ APIサーバのコンテナイメージを用意してありますので、以�
 docker run --rm -p 8080:8080 ghcr.io/asa-taka/bootcamp-todo-api --port=8080 --host=0.0.0.0
 ```
 
-これを実行すると<http://localhost:8080/todo>でAPIサーバが動作します。
+これを実行すると<http://localhost:8080>でAPIサーバが動作します。
+試しにブラウザで<http://localhost:8080/todo>を表示するとToDoのデータのJSONが表示されれば成功です😉
 
-残念ながらCodeSandboxでは実行できないためモックで我慢してください🥺
+この状態でコード中の、モックと切り替えるためのコメントアウトを入れ替えると、ウェブアプリからもアクセスされるようになるはずです。
+
+```tsx
+// const todoApi = new TodoApiMock(INITIAL_TODO);
+const todoApi = new TodoApiClient('http://localhost:8080')
+```
 
 ### 発展課題
 
@@ -1830,6 +1889,45 @@ docker run --rm -p 8080:8080 ghcr.io/asa-taka/bootcamp-todo-api --port=8080 --ho
 - エラーレスポンスに対してはどうするか
 
 ただし、実際にはこのあたりの実装は[react-query](https://tanstack.com/query/v3/)などのパッケージを利用することが多いです。
+
+### アプリをビルドしてコンテナ化する(Vite環境のみ)
+
+発展課題のついでのおまけのおまけです。アプリをビルドしてついでにコンテナ化しましょう😉
+
+ウェブアプリケーションの「ビルド」とは **ブラウザが解釈できる純粋なHTMLとCSSとJavaScript** をソースコードから生成することを指します。
+
+プロジェクトのルートディクトリ(フォルダの一番上の階層)に移動して、以下の内容で`Dockerfile` という名前のファイルを作ってください。
+
+```dockerfile
+FROM nginx:1.25.2
+COPY ./dist /usr/share/nginx/html
+```
+
+フォルダ内の構成はこのようになります。
+
+```
+(ルートディレクトリ)
+├── Dockerfile
+├── src
+└── (その他のファイル)
+```
+
+この状態で、同じくルートディレクトリで以下のコマンドを実行することで、コンテナイメージを作成することができます(ちょっと雑な作り方です)。
+
+```sh
+# distフォルダにビルドされたウェブアプリが生成される。
+npm run build
+
+# distフォルダを取り込んだnginx(ウェブサーバ)のコンテナイメージを作成する。
+docker build . -t todo-web
+
+# コンテナを動かし9000番ポートでウェブアプリを公開する。
+docker run --rm -p 9000:80 todo-web
+```
+
+この状態で<http://localhost:9000>にアクセスして、今までと同様のウェブアプリが表示されれば成功です😉
+
+アプリをコンテナイメージとしてまとめることで、利用者がアプリを動かすためのセットアップが簡単にできたり、Kubernetes環境でアプリを動作させることができます。
 
 ## 参考になるサイト
 
@@ -1850,5 +1948,7 @@ docker run --rm -p 8080:8080 ghcr.io/asa-taka/bootcamp-todo-api --port=8080 --ho
 - TypeScript公式: https://www.typescriptlang.org
   - 英語しかないので難しいかもしれません
 - [TypeScript Deep Dive 日本語版](https://typescript-jp.gitbook.io/deep-dive/type-system)
+
+以上で講義は終わりです。よいReactライフを😉
 
 <credit-footer/>
