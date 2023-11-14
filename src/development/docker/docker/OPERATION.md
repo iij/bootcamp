@@ -54,7 +54,7 @@ f908c593f036   docker/getting-started   "/docker-entrypoint.…"   2 seconds ago
 #### コンテナの起動
 
 ```bash
- $ docker run -d -p 8080:80 docker/getting-started
+ $ docker run --name iij-bootcamp_docker01 -d -p 8080:80 docker/getting-started
 ```
 
 #### 起動確認
@@ -76,8 +76,11 @@ CONTAINER ID   IMAGE                    COMMAND                  CREATED        
 `docker rm` と`docker rmi` は、それぞれDocker コンテナ、Docker イメージの削除を行うコマンドです。それぞれ引数に「CONTAINER ID」や「IMAGE ID」を設定する必要があります。また、削除したいDocker イメージを元に作成したDocker コンテナが存在する場合削除できません。その際は、事前にDocker コンテナを削除した後に、Docker イメージを削除してください。
 
 ```bash
-$ docker rm docker/getting-started
-docker/getting-started
+$ docker rm  iij-bootcamp_docker01
+iij-bootcamp_docker01
+```
+
+```bash
 $ docker rmi docker/getting-started
 docker/getting-started
 ```

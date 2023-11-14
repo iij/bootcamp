@@ -3,8 +3,28 @@ services:
   web:
     container_name: iijbootcamp-flask
     build: .
+    # networks:
+    #   - iijbootcamp
     ports:
       - "8088:5000"
+    # volumes:
+    #   - ./index /app/index
+    logging:
+      driver: "json-file" # defaults if not specified
+      options:
+        max-size: "1m"
+        max-file: "30"
   redis:
     container_name: iijbootcamp-backend
     image: "redis:alpine"
+    # networks:
+    #   - iijbootcamp
+    logging:
+      driver: "json-file" # defaults if not specified
+      options:
+        max-size: "1m"
+        max-file: "30"
+
+# networks:
+#   iijbootcamp:
+#     external: true

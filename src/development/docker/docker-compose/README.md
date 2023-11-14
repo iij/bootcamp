@@ -20,7 +20,6 @@ prior_knowledge: docker
 $ docker compose version
 ```
 
-
 ### Windows, macOS向け
 * [ハンズオン事前準備](https://iij.github.io/bootcamp/init/hello-bootcamp/) で Docker Desktop for Windowsや、Docker Desktop for Mac を導入済みであれば、すでにインストールされているはずです。
 
@@ -32,9 +31,30 @@ $ docker compose version
 
 ## Docker Compose 概要
 
-Docker Compose とは、複数のコンテナから構成されるようなアプリケーションの管理をしやすくしたものです。
-Docker Compose を利用することで、各コンテナの起動・停止が一括して行えたり、後述する1つの設定ファイルに各コンテナの情報を記述するため可視性が高くなり管理もしやすくなります。
-また、各コンテナ間のネットワークや依存関係も設定ファイルとして管理することが出来る点も利点です。
+Docker-composeは、Dockerコンテナを管理し、複数のコンテナから成るアプリケーションを定義、実行、管理するためのツールです。
+Docker-composeを使用することで、複数のDockerコンテナを1つのアプリケーションとして簡単に扱うことができます。
+Docker-composeの主な機能は以下の通りです。
+
+- アプリケーションの定義
+  - docker-composeでは、YAML形式のファイルである`docker-compose.yml`を使用して、アプリケーションの構成やサービスの定義を行います。
+  - このファイルには、各コンテナのイメージ、ポートマッピング、環境変数、ボリュームのマウントなど、アプリケーションの構成情報が含まれます。
+- 複数コンテナの一括管理
+  - docker-composeは、複数のコンテナを一括して管理するためのコマンドを提供します。
+    - 例えば`docker-compose up`コマンドを実行すると、定義されたすべてのコンテナが自動的に起動します。
+    - 同様に`docker-compose stop`コマンドを使用すると、すべてのコンテナが停止されます。
+- サービス間の依存関係の管理
+  - docker-composeでは、複数のコンテナ間の依存関係を簡単に管理することができます。
+    - 例えば、アプリケーションがデータベースコンテナとWebサーバーコンテナから成る場合、依存関係を定義することで、データベースが正しく起動した後にWebサーバーが起動するようにすることができます。
+- 環境変数とシークレットの管理
+  - docker-composeでは、環境変数やシークレットの値を`docker-compose.yml`ファイルに定義することができます
+    - これにより、アプリケーションの設定情報や機密情報を簡単かつ安全に管理することができます。
+- スケーリングと更新
+  - docker-composeを使用すると、アプリケーションのスケーリングや更新も簡単に行うことができます。
+    - 例えば、`docker-compose scale`コマンドを使用すると、特定のサービスのコンテナ数をスケールアップまたはスケールダウンすることができます。また、新しいイメージのビルドや既存のコンテナの更新もdocker-composeコマンドで行うことができます。
+
+docker-composeを使用することで、開発、テスト、本番環境など、さまざまな環境でアプリケーションを簡単かつ一貫して管理することができます。
+
+### Docker compose の用途
 
 例えば、以下の2つのコンポーネントから構成されるWebサービスをDockerコンテナを用いた場合を想定してみましょう。
 
@@ -43,7 +63,10 @@ Docker Compose を利用することで、各コンテナの起動・停止が�
 
 通常、この構成のWeb サービスを起動する際、各コンテナを立ち上げるため、`docker run` コマンドを2回実行する必要がでてきます。従って停止する際も同様に2回の操作が必要です。
 
-しかし、Docker Compose を用いて管理を行うと、各コンテナの定義をした設定ファイルである「**docker-compose.yml**」に基づいて一括管理することが可能となります。具体的には、上記の各コンテナの起動・停止などは、`docker compose` コマンドを1回実行するだけで済みます。また、コンテナの起動順序も適切な順番で起動することが可能となります。特に開発する際やテストなどの際には、サービスの起動停止は複数回繰り返したりすることも考えられるため効率化につながります。
+しかし、Docker Compose を用いて管理を行うと、各コンテナの定義をした設定ファイルである「**docker-compose.yml**」に基づいて一括管理することが可能となります。
+具体的には、上記の各コンテナの起動・停止などは、`docker compose` コマンドを1回実行するだけで済みます。
+また、コンテナの起動順序も適切な順番で起動することが可能となります。
+特に開発する際やテストなどの際には、サービスの起動停止は複数回繰り返したりすることも考えられるため効率化につながります。
 
 本講義では、実際に複数コンテナをDocker Composeを用いて管理を行っていきます。Docker Composeを使ったアプリケーションを実行するまでの一般的な流れは以下の通りです。
 
@@ -71,41 +94,15 @@ Webアプリケーション自体の作成は本質ではないので、サン�
 
 ### サンプルアプリケーションの作成
 
-テキストエディタを開き `app.py` というpythonコードを書きます
+今回は Docker composeの項であるため Pythonアプリケーションについては言及しません。
+アプリケーションはそれぞれ以下から取得してください。
 
-```python
-import time
-
-import redis
-from flask import Flask
-
-app = Flask(__name__)
-cache = redis.Redis(host="redis", port=6379)
-
-
-def get_hit_count():
-    retries = 5
-    while True:
-        try:
-            return cache.incr("hits")
-        except redis.exceptions.ConnectionError as exc:
-            if retries == 0:
-                raise exc
-            retries -= 1
-            time.sleep(0.5)
-
-
-@app.route("/")
-def hello():
-    count = get_hit_count()
-    return "Hello IIJBootcamp ! I have been seen {} times.\n".format(count)
+```bash
+ curl https://raw.githubusercontent.com/iij/bootcamp/master/src/development/docker/docker-compose/solution/app.py -O app.py
 ```
 
-続いてアプリケーションの実行に必要なモジュールリストファイル `requirements.txt` を作ります。
-
-```text
-flask
-redis
+```bash
+ curl https://raw.githubusercontent.com/iij/bootcamp/master/src/development/docker/docker-compose/solution/requirements.txt -O requirements.txt
 ```
 
 ### Dockerfile の作成
@@ -115,20 +112,21 @@ redis
 以下の内容をファイル名「Dockerfile」で作成してください。
 
 ```Dockerfile
-# syntax=docker/dockerfile:1
-FROM python:3.7-alpine
+FROM python:3.11-slim
 WORKDIR /code
+
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
-RUN apk add --no-cache gcc musl-dev linux-headers
+
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
 EXPOSE 5000
-COPY . .
+COPY app.py app.py
 CMD ["flask", "run"]
 ```
 
-### 2.2 docker-compose.yml の作成と解説
+### docker-compose.yml の作成と解説
 
 次に、以下の内容をファイル名「docker-compose.yml」で新規作成してください。
 
@@ -138,11 +136,31 @@ services:
   web:
     container_name: iijbootcamp-flask
     build: .
+    # networks:
+    #   - iijbootcamp
     ports:
       - "8088:5000"
+    # volumes:
+    #   - ./index /app/index
+    logging:
+      driver: "json-file" # defaults if not specified
+      options:
+        max-size: "1m"
+        max-file: "30"
   redis:
     container_name: iijbootcamp-backend
     image: "redis:alpine"
+    # networks:
+    #   - iijbootcamp
+    logging:
+      driver: "json-file" # defaults if not specified
+      options:
+        max-size: "1m"
+        max-file: "30"
+
+# networks:
+#   iijbootcamp:
+#     external: true
 ```
 
 では、ファイルの各設定について見ていきたいと思います。
@@ -176,7 +194,7 @@ $ docker compose up
 
 初回実行時は必要な image の取得や Dockerfile.backend を利用した docker build などが実行されるため、時間がかかります。
 
-また、もし プロキシ 環境下で 正常に go get が成功しない場合は 以下のように ```docker compose build``` してから試してみてください。
+また、もし プロキシ 環境下で 正常に apk 等が成功しない場合は 以下のように ```docker compose build``` してから試してみてください。
 
 ```bash
 $ docker compose build --build-arg https_proxy=http://<proxy>:<port>
