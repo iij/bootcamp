@@ -18,6 +18,8 @@ Docker では、「**Dockerfile**」というファイルを用いて、Docker �
 
 今回は、ubuntu というDocker イメージを元にカスタマイズしながら、nginx によるWeb サーバのDocker イメージを作成します。また、作成したDocker イメージを使ってDocker コンテナを立ち上げ、HTML ファイルがレスポンスされることを確認します。
 
+### 演習7. DockerFileを記述し、コンテナを作る
+
 では、実際にDockerfile を作成し、Docker イメージを作成していきましょう。以下の内容をファイル名「Dockerfile」として作成してください。
 
 ```Dockerfile
@@ -120,9 +122,9 @@ $ curl http://localhost:8888
 $ curl --noproxy localhost http://localhost:8888
 ```
 
-**curlコマンドによってHTMLが取得できることを確認してください**
+## 参考情報
 
-## Docker イメージの共有方法
+### Docker イメージの共有方法
 
 皆さんが作成したDocker イメージなどを他の人に共有したい場合、Dockerfile をファイルサーバやGitHub 等で共有する以外に、[Docker Hub](https://hub.docker.com/)を始めとする「**Docker イメージレジストリ**」で公開し、それを利用してもらうことが可能です。例えば、本講義で利用した「getting-started」や「ubuntu」のDocker イメージは、Docker Hubで公開されているものを利用しています。
 

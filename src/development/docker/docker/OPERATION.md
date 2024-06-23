@@ -17,7 +17,7 @@ prior_knowledge: 仮想化、CUI 操作
 コンテナの活用にはこういったDockerコンテナの管理が必要不可欠になります。
 従って本講では、Dockerコンテナを管理する為のコマンドを学習します。
 
-### docker images
+### 演習3 docker images
 
 `docker images` コマンドは、ローカル環境に存在するDocker イメージの一覧を表示するコマンドです。現状では、「getting-started」イメージのみが存在すると思います。
 
@@ -28,7 +28,7 @@ docker/getting-started                                                    latest
 ```
 
 Dockerイメージには、名前の他に「TAG」を付けることができます。TAGでは、主にバージョンを管理していることが多いです。今回表示されている「latest」は最新版であることを意味しています。
-### docker ps
+### 演習4 docker ps
 
 `docker ps` コマンドは、ローカル環境に存在するDockerコンテナに関する情報を表示してくれます。現在起動しているコンテナは`docker ps` と入力すると表示されます。
 しかしながら今の状態で本コマンドを実行してもヘッダー情報だけで何も表示されないと思います。
@@ -41,15 +41,15 @@ CONTAINER ID   IMAGE                    COMMAND                  CREATED        
 f908c593f036   docker/getting-started   "/docker-entrypoint.…"   2 seconds ago   Created             getting-started
 ```
 
-### docker start、stop
+### 演習5 docker start、stop
 
 `docker start` は、コンテナの起動を行うコマンドで、`docker stop` は、コンテナを停止するコマンドです。これらのコマンドでは、起動・停止対象のコンテナを選択する必要があるため、引数として`docker ps` の表示結果にあった「CONTAINER ID」を設定します。
 
-先ほどの項では`docker/getting-started`コンテナの起動に`docker start`を使用していました。
-従って、`docker/getting-started`コンテナの停止したい時は`docker stop`を使う事になります。
+先ほどの項では`docker/getting-started`コンテナの起動に`docker run`を使用していました。`docker run`は`docker create`と`docker start`双方を兼ねる大変便利なコマンドですが、既にコンテナ化されており停止しているだけの物を起動したいと思った時に`docker run`を使用すると思わぬ動作を引き起こすことがあります。
 
-では、実際に`docker stop`を使う演習をしてみましょう。
-先ほどは、`docker/getting-started`をそのまま起動していましたが今回は、daemon動作として簡単なコンテナを作り、それを停止してみましょう。
+従って、`docker run`は初回起動時に使う物として考え、`docker stop`で停止しただけのコンテナを再び起動させたい場合は`docker start`を用いましょう。
+
+では、実際に`docker stop`と`docker start`を使う演習をしてみましょう。
 
 #### コンテナの起動
 
@@ -71,7 +71,13 @@ CONTAINER ID   IMAGE                    COMMAND                  CREATED        
  $ docker stop <CONTAINER ID>
 ```
 
-### docker rm、rmi
+#### コンテナの開始(再開)
+
+```bash
+ $ docker start <CONTAINER ID>
+```
+
+### 演習6 docker rm、rmi
 
 `docker rm` と`docker rmi` は、それぞれDocker コンテナ、Docker イメージの削除を行うコマンドです。それぞれ引数に「CONTAINER ID」や「IMAGE ID」を設定する必要があります。また、削除したいDocker イメージを元に作成したDocker コンテナが存在する場合削除できません。その際は、事前にDocker コンテナを削除した後に、Docker イメージを削除してください。
 
