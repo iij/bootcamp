@@ -1,8 +1,8 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 ---
 
-## 1. Ansible とは
+## Ansible とは
 
 Ansible とは、IT 自動化ツールです。
 Ansible を利用するとシステムの構成、ソフトウェアの展開、より高度な IT タスク (継続的なデプロイメントやダウンタイムなしのローリング更新など) のオーケストレーションが可能になります。
@@ -19,7 +19,7 @@ github: <https://github.com/ansible/ansible>
 Ansible is a radically simple IT automation system. It handles configuration management, application deployment, cloud provisioning, ad-hoc task execution, network automation, and multi-node orchestration. Ansible makes complex changes like zero-downtime rolling updates with load balancers easy. More information on the Ansible website.
 ```
 
-### Ansible の特徴
+## Ansible の特徴
 
 - エージェントレスである
   - Ansible は対象の管理は基本的に[OpenSSH](https://www.openssh.com/)を利用する為、専用のクライアント/デーモンを必要としません
@@ -30,7 +30,15 @@ Ansible is a radically simple IT automation system. It handles configuration man
 
 Ansible の記述には基本的に[YAML](https://yaml.org/)と呼ばれる記述（解読）言語が用いられておりユーザにも読み書きしやすいようになっています。
 
-2.10 以降、Ansible のパッケージ方針には大幅な変更がなされ、Ansible-core, Ansible-collection といった物が登場しており、パッケージングについては未だ流動的ですが Ansible は基本的にモジュール・プラグインといった形で機能追加ができるようになっている為、必要に応じて自らモジュールを作成することも可能です。
+## Ansible の構成
+
+Ansibleは、コントロールノードと管理対象ホストという 2 種類のマシンで構成されています。Ansible はコントロールノードからインストールおよび実行されます。
+
+Ansibleはエージェントレス、ということからAnsibleのインストールはコントロールノードのみに行えばよく、管理対象にインストールする必要はありません。
+
+Ansible のインストールはRPMによる提供もされていますが、現在では`pip`によるインストールが推奨されています。
+
+Ansibleパッケージは長らく単一のパッケージとなっていましたが、2.10 以降、Ansible のパッケージ方針には大幅な変更がなされ、Ansibleの実行部分と、タスクを実行する（モジュール）の分離がなされ、それぞれ別のパッケージで提供されるようになっています。
 
 - [モジュール一覧](https://docs.ansible.com/ansible/latest/modules/list_of_all_modules.html)
 - [プラグイン一覧](https://docs.ansible.com/ansible/latest/plugins/plugins.html)
@@ -71,5 +79,48 @@ Ansible において対象に対して何かを実施する際に用いる最小
 Ansible において、自動化の手順書にあたります。
 
 Playbook の中には、1 つ以上の Play が含まれます。このトレイルマップでは Playbook には 1 つの Play のみの構成となっています。
+
+## [演習]Ansible の導入
+
+では、実際にAnsibleを使ってみましょう。
+
+### Ansible のインストール
+
+これまで ansible のインストールは `dnf(yum)` によるインストールでした。
+しかしながら昨今のansible は pip にてインストールすることが推奨されています。
+従って、今回は`pip`を用いてインストールしてみましょう。
+
+ただし、演習環境には`pip`コマンドがインストールされていない為、
+まずは`pip`のインストールから行う必要があります。
+以下をそれぞれ実行し、ansible のインストールまで行ってください
+
+- pip のインストール
+   ```bash
+   dnf install python3-pip
+   ```
+- ansible のインストール
+   ```bash
+   pip install ansible
+   ```
+- ansible のインストール確認
+   ```bash
+   ansible --version
+   ```
+
+ここまで実行したならば以下のような出力が得られるはずです。
+
+```bash
+ ansible --version
+ansible [core 2.15.3]
+  config file = /ansible/ansible.cfg
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/local/bin/ansible
+  python version = 3.9.16 (main, May 29 2023, 00:00:00) [GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] (/usr/bin/python3)
+  jinja version = 3.
+```
+
+ansible-core の `2.5.13`やそれぞれのバージョンには実行する時期によって異なることがありますが問題ありません。
 
 <credit-footer/>

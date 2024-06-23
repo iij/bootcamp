@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 ---
 
 # Jenkins を触ってみよう
@@ -122,7 +122,7 @@ This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
 
 ![create-job](./images/create-job.png)
 
-作成するとジョブの設定画面が開きます。色々設定がありますが、まずは「ビルド」からスクリプトを登録してみましょう。「ビルド手順の追加」から「シェルの実行」を選ぶとスクリプトを登録できます。
+作成するとジョブの設定画面が開きます。色々設定がありますが、まずは「Build Steps」からスクリプトを登録してみましょう。「ビルド手順の追加」から「シェルの実行」を選ぶとスクリプトを登録できます。
 
 ![job-build-script](./images/job-build-script.png)
 
@@ -166,14 +166,15 @@ Webhook などの HTTP リクエストからジョブを実行するトリガを
 画像の通り 右上の admin -> 設定 -> API トークン から token を生成します。
 このとき生成された token をコピー&ペーストするのを忘れないでください。
 
-画面上部のパンくずリストなどからジョブのトップ画面に移動し、「設定」をクリックして設定画面に移動しましょう。「ビルド・トリガ」はこのジョブを実行するトリガを設定できます。「リモートからビルド」を選ぶと HTTP リクエストによるビルドを登録しましょう。
+画面上部のパンくずリストなどからジョブのトップ画面に移動し、「設定」をクリックして設定画面に移動しましょう。「ビルド・トリガ」はこのジョブを実行するトリガを設定できます。「リモートからビルド」を選ぶと HTTP リクエストをトリガーにビルドを実行することができます。
 
 ![build-trigger](./images/build-trigger.png)
 
-認証トークンを設定できるので適当な文字列を設定して保存します。保存後、設定画面に書かれているように`JENKINS_URL/job/test-project-<アカウント名>/build`にリクエストしてみましょう。先ほど取得した API token を使用するため、上で入力した JOB ごとの認証トークンは使用しません。
+認証トークンを設定できるので適当な文字列を設定して保存します。ややこしいですが、ここで入力する「認証トークン」は先ほど作成したものとは関係なく、ジョブに紐づけられる認証トークンになります。今回はアカウントに生成した認証トークンを使用するため、ここで入力する文字列は適当なもので構いません。
+保存後、設定画面に書かれているように`: JENKINS_URL/job/<ジョブ名>/build`にリクエストしてみましょう。先ほどアカウントに作成した API token を使用します。
 
 ```bash
-curl -X POST --user '<アカウント名>:<API token>' 'JENKINS_URL/job/test-project-<アカウント名>/build'
+curl -X POST --user '<アカウント名>:<API token>' 'JENKINS_URL/job/<ジョブ名>/build'
 ```
 
 上記を実行するとジョブが実行されます。
@@ -218,11 +219,11 @@ Jenkins ではパスワードなど秘密情報を取り扱う機能がありま
 
 ![password2](./images/password2.png)
 
-すると秘密情報の登録画面に移るので、画像の通り入力して「追加」を選択してください。「種類」は「Secret text」、「ID」には`secret`、「Secret」には適当なパスワード文字列を設定しておきます。
+すると秘密情報の登録画面に移るので、画像の通り入力して「追加」を選択してください。「種類」は「Secret text」、「ID」には`secret-<アカウント名>`、「Secret」には適当なパスワード文字列を設定しておきます。
 
 ![secret-add](./images/secret-add.png)
 
-secret を追加したら先ほどの画面で`secret`が選べるようになっているので、選択して保存しましょう。
+secret を追加したら先ほどの画面で`secret-<アカウント名>`が選べるようになっているので、選択して保存しましょう。
 
 ![secret-config](./images/secret-config.png)
 
@@ -231,9 +232,11 @@ secret を追加したら先ほどの画面で`secret`が選べるようにな�
 ```bash
 pwd
 echo $password >> welcome.txt
+
+cat welcome.txt
 ```
 
-`welcome.txt`を見てみると、先ほど設定したパスワードが入力されているのが確認できます。
+`welcome.txt`を見てみると、先ほど設定したパスワードが入力されているのが確認できます（手元で立てている場合のみ）。
 
 ```bash
 $ cat jenkins/workspace/test-project/welcome.txt
