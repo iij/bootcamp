@@ -26,21 +26,21 @@
 |8.1.x～8.4.x|      省略|      省略|          省略|            省略|
 |9.0 |              2010/9/20| 9.0.23|        2015/10/8|       2010/10/8|
 |9.1.x～9.6.x|      省略|      省略|          省略|            省略|
-|10 |               2017/10/5| 10.22|         2022/8/11|       2022/11/10|
-|11 |               2018/10/18|11.20 |        2023/5/11|       2023/11/9|
-|12 |               2019/10/3| 12.15|         2023/5/11|       2024/11/14|
-|13 |               2020/9/24| 13.11|         2023/5/11|       2025/11/13|
-|14 |               2021/9/30| 14.8|          2023/5/11|       2026/11/12|
-|15 |               2022/10/13|15.3|          2023/5/11| -
-
+|10 |               2017/10/5|10.23|         2022/11/10|      2022/11/10|
+|11 |               2018/10/18|11.22|        2023/11/9|       2023/11/9|
+|12 |               2019/10/3|12.19|         2024/5/9|        2024/11/14|
+|13 |               2020/9/24|13.15|         2024/5/9|        2025/11/13|
+|14 |               2021/9/30|14.12|         2024/5/9|        2026/11/12|
+|15 |               2022/10/13|15.7|         2024/5/9|        2027/11/11|
+|16 |               2023/9/14|16.3|          2024/5/9|        2028/11/9|
 
 　※バージョン体系がPostgreSQL10より変更されました。  
 
-　　　Postgresql 10以前　⇒　  <span style="font-size: 200%; color: red;"> **9.0</span>  .<span style="font-size: 200%; color: blue;">23**</span>  
-　　　　　　　　　　　　　　　<span style="font-size: 100%; color: red;">9.0の部分がメジャーバージョン</span>で<span style="font-size: 100%; color: blue;">23がマイナーバージョン</span>となります。  
+Postgresql 10以前　⇒　  <span style="font-size: 200%; color: red;"> **9.0</span>  .<span style="font-size: 200%; color: blue;">23**</span>  
+<span style="font-size: 100%; color: red;">9.0の部分がメジャーバージョン</span>で<span style="font-size: 100%; color: blue;">23がマイナーバージョン</span>となります。  
 　  
-　　　Postgresql 10以降　⇒　  <span style="font-size: 200%; color: red;"> **10</span> .<span style="font-size: 200%; color: blue;">22**</span>  
-　　　　　　　　　　　　　　　<span style="font-size: 100%; color: red;">10の部分がメジャーバージョン</span>で<span style="font-size: 100%; color: blue;">22がマイナーバージョン</span>  となります。
+Postgresql 10以降　⇒　  <span style="font-size: 200%; color: red;"> **10</span> .<span style="font-size: 200%; color: blue;">22**</span>  
+<span style="font-size: 100%; color: red;">10の部分がメジャーバージョン</span>で<span style="font-size: 100%; color: blue;">22がマイナーバージョン</span>  となります。
 
 ### ライセンス				
 PostgreSQLは、<span style="font-size: 100%; color: red;">オープンソースのリレーショナルデータベース</span>管理システムです。  
@@ -277,31 +277,31 @@ create table sch_jpn.tbl_proper(id_user serial,username varchar(40),id_pref int,
 　上記で作成したテーブルにデータを登録します。  
 　データを追加するコマンドはinsert文となります。
 ``` 
-insert into sch_jpn.tbl_region(reg_name)  values ('hokkaido');
-insert into sch_jpn.tbl_region(reg_name)  values ('tohoku');
-insert into sch_jpn.tbl_region(reg_name)  values ('kanto');
-insert into sch_jpn.tbl_region(reg_name)  values ('chubu');
-insert into sch_jpn.tbl_region(reg_name)  values ('kinki');
-insert into sch_jpn.tbl_region(reg_name)  values ('shikoku');
-insert into sch_jpn.tbl_region(reg_name)  values ('kyushu');
+insert into sch_jpn.tbl_region(reg_name) values ('hokkaido');
+insert into sch_jpn.tbl_region(reg_name) values ('tohoku');
+insert into sch_jpn.tbl_region(reg_name) values ('kanto');
+insert into sch_jpn.tbl_region(reg_name) values ('chubu');
+insert into sch_jpn.tbl_region(reg_name) values ('kinki');
+insert into sch_jpn.tbl_region(reg_name) values ('shikoku');
+insert into sch_jpn.tbl_region(reg_name) values ('kyushu');
 
-insert into sch_jpn.tbl_pref(pref_name,id_reg)  values ('hokkaido',1);
-insert into sch_jpn.tbl_pref(pref_name,id_reg)  values ('yamanashi',4);
-insert into sch_jpn.tbl_pref(pref_name,id_reg)  values ('osaka',5);
-insert into sch_jpn.tbl_pref(pref_name,id_reg)  values ('nagasaki',7);
-insert into sch_jpn.tbl_pref(pref_name,id_reg)  values ('tokyo',3);
-insert into sch_jpn.tbl_pref(pref_name,id_reg)  values ('chiba',3);
+insert into sch_jpn.tbl_pref(pref_name,id_reg) values ('hokkaido',1);
+insert into sch_jpn.tbl_pref(pref_name,id_reg) values ('yamanashi',4);
+insert into sch_jpn.tbl_pref(pref_name,id_reg) values ('osaka',5);
+insert into sch_jpn.tbl_pref(pref_name,id_reg) values ('nagasaki',7);
+insert into sch_jpn.tbl_pref(pref_name,id_reg) values ('tokyo',3);
+insert into sch_jpn.tbl_pref(pref_name,id_reg) values ('chiba',3);
 
-insert into sch_jpn.tbl_food(fd_name,price)  values ('hamburger',500);
-insert into sch_jpn.tbl_food(fd_name,price)  values ('ramen',1500);
-insert into sch_jpn.tbl_food(fd_name,price)  values ('takoyaki',800);
-insert into sch_jpn.tbl_food(fd_name,price)  values ('gyoza',350);
+insert into sch_jpn.tbl_food(fd_name,price) values ('hamburger',500);
+insert into sch_jpn.tbl_food(fd_name,price) values ('ramen',1500);
+insert into sch_jpn.tbl_food(fd_name,price) values ('takoyaki',800);
+insert into sch_jpn.tbl_food(fd_name,price) values ('gyoza',350);
 
-insert into sch_jpn.tbl_proper(username,id_pref,id_fd)  values ('suzuki',1,1);
-insert into sch_jpn.tbl_proper(username,id_pref,id_fd)  values ('satou',2,4);
-insert into sch_jpn.tbl_proper(username,id_pref,id_fd)  values ('tanaka',3,2);
-insert into sch_jpn.tbl_proper(username,id_pref,id_fd)  values ('ito',4,3);
-insert into sch_jpn.tbl_proper(username,id_pref,id_fd)  values ('watanabe',5,4);
+insert into sch_jpn.tbl_proper(username,id_pref,id_fd) values ('suzuki',1,1);
+insert into sch_jpn.tbl_proper(username,id_pref,id_fd) values ('satou',2,4);
+insert into sch_jpn.tbl_proper(username,id_pref,id_fd) values ('tanaka',3,2);
+insert into sch_jpn.tbl_proper(username,id_pref,id_fd) values ('ito',4,3);
+insert into sch_jpn.tbl_proper(username,id_pref,id_fd) values ('watanabe',5,4);
 ``` 
 
 ※全て「INSERT 0 1」と表示されることを確認してください。
@@ -453,7 +453,7 @@ pp.username
 ### ★8-1 データの更新
 　データを変更するには「update」文を使用します。
 ``` 
-update  sch_jpn.tbl_pref set id_reg=4  where id_pref=2;
+update sch_jpn.tbl_pref set id_reg=4 where id_pref=2;
 ``` 
 　◆変更されているか確認してみよう。  
 　　⇒　上記で使用したSELECT文を使い「tbl_pref」を参照してください。
@@ -464,10 +464,10 @@ update  sch_jpn.tbl_pref set id_reg=4  where id_pref=2;
 ### ★9-1 データの削除
 　データを削除するには「delete」文を使用します。
 ``` 
-delete from sch_jpn.tbl_food  where fd_name='ramen';
+delete from sch_jpn.tbl_food where fd_name='ramen';
 ``` 
 　◆削除されているか確認してみよう。  
-　　⇒　上記で使用したSELECT文を使い「tbl_food」 を参照してください。
+　　⇒　上記で使用したSELECT文を使い「tbl_food」を参照してください。
 		
 <br>
 <br>
