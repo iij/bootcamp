@@ -1,7 +1,7 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
 title: Dockerを触ってみよう
-description: Docker の概要を学び、コンテナ操作を体験します
+description: Dockerコンテナで仮想環境プラットフォームを構築する
 time: 1h
 prior_knowledge: 仮想化、CUI 操作
 ---
@@ -10,8 +10,8 @@ prior_knowledge: 仮想化、CUI 操作
 
 ## おさらい
 
-それでは実際にDockerを使って仮想環境プラットフォームを作る前にまずは環境の確認をしましょう。
-
+それでは実際にDockerを使って仮想環境プラットフォームを作ってみましょう。
+事前準備の項を済ませているならばDocker環境は構築されているはずです。
 下記コマンドを入力し、コマンドが実行できるか確認してください。
 
 ```bash
@@ -20,136 +20,91 @@ $ docker version
 
 上記コマンドが実行できない方は事前にDocker（及びコマンド）のインストールが終わっているか否か確認し、未完了の人は、Docker のインストールを行ってください。
 
-## Dockerコンテナで仮想環境プラットフォームを構築する
+## Docker コンテナを起動する
 
-本章では、**Dockerイメージ**を取得し、実際に**Dockerコンテナ**を使って仮想環境プラットフォームを構築します。
-
-Dockerコンテナを使って仮想環境プラットフォームを構築するためには、以下の作業が必要になります。
+Dockerコンテナを使って仮想環境プラットフォームを構築するには、大きく分けて以下のステップを踏む必要があります。
 
 - Dockerイメージのビルド
 - Dockerコンテナの作成
 - Dockerコンテナの起動
 
-## Docker イメージのビルド
+従って、Dockerコンテナを起動する為に最初にすべきことは**Dockerコンテナイメージ**を取得する事になります。
 
-Dockerコンテナを使って仮想環境プラットフォームを作成するためには、Dockerイメージが必要となります。
+Dockerコンテナイメージは、自分で作成(ビルド)して取得する方法と、作成済みのDockerコンテナイメージを取得する方法の2種類があります。
+まずは、作成済みのイメージを利用してコンテナを起動することを試してみましょう。
 
-通常であれば、`Dockerfile`を使用して自分のアプリケーションのDockerイメージを作成します。
-`Dockerfile`は、アプリケーションの依存関係や設定、実行コマンドなどを指定するためのテキストファイルです。
-`DockerFile`が作成できたらDockerイメージをビルドして作成します。その際に使うコマンドは`docker build`になります。
+### 演習1 Dockerコンテナを起動する
 
-通常であればテキストエディタを開いて`DockerFile`を作成しますが、完全にゼロの状態から`DockerFile`を作成するのは難しい為、先ずはチュートリアル用に公開されている物を使用すると良いでしょう
+- **docker run**コマンドを使用して**getting-started**コンテナを起動する
+  ```bash
+  docker run --rm -p 80:80 docker/getting-started
+  ```
+<details><summary>実行中のログ</summary>
 
-### 基本演習
+```
+Unable to find image 'docker/getting-started:latest' locally
+latest: Pulling from docker/getting-started
+c158987b0551: Pull complete
+1e35f6679fab: Pull complete
+cb9626c74200: Pull complete
+b6334b6ace34: Pull complete
+f1d1c9928c82: Pull complete
+9b6f639ec6ea: Pull complete
+ee68d3549ec8: Pull complete
+33e0cbbb4673: Pull complete
+4f7e34c2de10: Pull complete
+Digest: sha256:d79336f4812b6547a53e735480dde67f8f8f7071b414fbd9297609ffb989abc1
+Status: Downloaded newer image for docker/getting-started:latest
+89e2c9780f5caf3b5250013e002e8aaf9f8ea74c2e940eca49b890dfc019ab5e
+```
+</details>
 
-基本演習では予め作成済みである`DockerFile`を使用してDockerイメージを作成します。
-
-1. DockerFileの取得
-    ```bash
-    git clone https://github.com/docker/getting-started.git
+- 起動の確認
+  - ブラウザを開き、以下のURLを入力します
     ```
-2. イメージのビルド
-    ```bash
-    cd getting-started
-    docker build -t iijbootcamp_docker01 .
+    http://localhost:80
     ```
-3. コンテナの起動
-    ```bash
-    docker run --rm --name iijbootcamp_docker01-tutorial iijbootcamp_docker01
-    ```
+  - 以下のような画面が表示されれば成功です
+    ![getting-started](./images/getting-started.png)
+- コンテナの終了
+ **Ctrl + c** を押す
+- ターミナルが戻ってくる
 
-ここまでできた方は、プロンプトに以下のように出力されているはずです。
-
-```
-/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
-10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
-10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
-/docker-entrypoint.sh: Configuration complete; ready for start up
-2022/06/17 04:10:18 [notice] 1#1: using the "epoll" event method
-2022/06/17 04:10:18 [notice] 1#1: nginx/1.21.6
-2022/06/17 04:10:18 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027)
-2022/06/17 04:10:18 [notice] 1#1: OS: Linux 4.18.0-348.2.1.el8_5.x86_64
-2022/06/17 04:10:18 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
-2022/06/17 04:10:18 [notice] 1#1: start worker processes
-2022/06/17 04:10:18 [notice] 1#1: start worker process 32
-```
-
-ここまでできたらDockerコンテナによる仮想環境プラットフォームの構築は完了です。
-とりあえずここでは **Ctrl+C** で停止してください。
-
-#### ビルドがうまくいかない人の為に
-
-`git clone` できない、 `docker build` ができないという方は以下を試してみましょう。
-getting-startedでは予めビルド済みイメージを公開している為、ビルド済みのイメージを使って起動することが可能です。
-
-
-```bash
- docker run --rm --name iijbootcamp_docker01-tutorial docker/getting-started
-```
-
-また、 この ```docker/getting-started``` image を ```iijbootcamp_docker01``` と呼べるようにしておきましょう
-
-```
-docker tag docker/getting-started iijbootcamp_docker01
-```
-
-```docker images``` コマンドで今 pull してあったり build して用意した image が確認できます。
-
-```bash
-$ docker images
-
-REPOSITORY               TAG       IMAGE ID       CREATED          SIZE
-docker/getting-started   latest    3e4394f6b72f   6 months ago     47MB
-iijbootcamp_docker01     latest    3e4394f6b72f   6 months ago     47MB
-```
-
-### 発展課題
+### 発展課題1
 
 先ほどの作業ではフォアグラウンドで実行している為、ターミナルが占有されてしまいます。
 また、このような起動では例えばssh等で接続している場合はセッション切断と共にコンテナが停止してしまう為、発展課題ではこれを永続化する事をやってみましょう。
 
 デーモン起動をすると、ターミナルは返ってきてしまうため起動確認は `docker ps`を使って確認します。
 
-1. コンテナのデーモン起動
-   ```bash
-    docker run -d --name iijbootcamp_docker01-tutorial iijbootcamp_docker01
+- コンテナのデーモン起動
+  ```bash
+  docker run --rm -p 80:80 docker/getting-started
+  ```
+- コンテナの起動確認
+  ```bash
+  CONTAINER ID   IMAGE                    COMMAND                   CREATED         STATUS         PORTS                               NAMES
+  38ebcf110f45   docker/getting-started   "/docker-entrypoint.…"   3 seconds ago   Up 2 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   fervent_shaw
+  ```
+  - ここで**NAMES**に表示されている値を記憶、若しくは記録しておいてください
+- 起動の確認
+  - ブラウザを開き、以下のURLを入力します
     ```
-2. コンテナの起動確認
-    ```bash
-    CONTAINER ID   IMAGE                  COMMAND                  CREATED         STATUS         PORTS     NAMES
-    41ee2d91a50a   iijbootcamp_docker01   "/docker-entrypoint.…"   3 minutes ago   Up 3 seconds   80/tcp    iijbootcamp_docker01-tutorial
+    http://localhost:80
     ```
-3. コンテナの停止
-    ```bash
-    docker stop iijbootcamp_docker01-tutorial
+  - 以下のような画面が表示されれば成功です
+    ![getting-started](./images/getting-started.png)
+- コンテナの終了
+  - **docker stop**コマンドを用いてdockerコンテナを停止します
+  ```
+  docker stop <NAME>
+  ```
+- コンテナが停止したことの確認
+  - ブラウザにて **http://localhost**にアクセスし、アクセスできないことを確認する
+  - **docker ps**コマンドを用いて、何も表示されないことを確認する
     ```
-4. コンテナの再起動
-    - 先ほど停止したコンテナを再起動してみましょう。
-5. コンテナの削除
-   - 停止したコンテナを削除してみましょう
-
-#### 発展課題Tips
-
-4. 5. は発展自己学習です。以下のコマンドを使うことで実現可能です。
-他にもコマンドがあるので調べながら色々やってみましょう。
-
-  - `docker start`
-  - `docker ps -a`
-  - `docker rm`
-
-
-## まとめ
-
-さて、ここまでやってみて作業が面倒だと感じたことは無いでしょうか。
-また、事前準備ではdockerの動作確認で`docker run`を実行したのでは無いかと思います。
-実は`docker run`はこれらのコマンドを包含した物となっています。
-
-従って、ここまでの作業であれば通常は`docker run docker/getting-started`とする事になります。
-
-しかしながら、場合によってはイメージのみを予め取得しておきたい、
-取得済みのイメージを起動したい、など順を踏んで実行する事もあるためそれぞれの動作について理解して頂ければと思います。
+    docker ps
+    CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+    ```
 
 <credit-footer/>
