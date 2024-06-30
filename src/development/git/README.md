@@ -462,10 +462,10 @@ $ git branch
 
 ### 6.3. ブランチを移動する
 
-:computer: "fix" Branch へ移動するために Checkout する。
+:computer: "fix" Branch へ移動するために Switch する。
 
 ```
-$ git checkout fix
+$ git switch fix
 ```
 
 :computer: 現在のブランチを確認する
@@ -523,10 +523,10 @@ $ git show
 
 ### 6.5. "master"ブランチへ戻る
 
-:computer: `master` へ移動するために Checkout します。
+:computer: `master` へ移動するために Switch します。
 
 ```
-$ git checkout master
+$ git switch master
 ```
 
 ![masterブランチに戻った](./images/git_return_master_branch.drawio.svg)
@@ -600,7 +600,7 @@ $ git merge <取り込みたいブランチ名>
 :computer: "master"ブランチへ移動してから"fix"ブランチの変更内容を、メインである"master"ブランチへ取り込みましょう
 
 ```
-$ git checkout master
+$ git switch master
 $ git merge fix
 ```
 

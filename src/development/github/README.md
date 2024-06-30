@@ -264,7 +264,7 @@ Blameボタンを押してください。
 :computer: ローカルリポジトリでブランチを切ります
 
 ```
-$ git checkout -b fix
+$ git switch -c fix
 ```
 
 `README.md`に何か1行足してコミットしてください。
@@ -315,7 +315,7 @@ Pull Requestを作成する画面になったら、どういった変更を入�
 :computer: ローカルリポジトリの`main`ブランチに移動してファイルの内容がGitHubの表示とは異なる（マージ前の状態である）ことを確認しましょう。
 
 ```bash
-$ git checkout main
+$ git switch main
 ```
 
 この状態ではリモートリポジトリ（GitHub）ではマージされているが、ローカルリポジトリには反映されていない状態です。
