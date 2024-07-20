@@ -64,7 +64,7 @@ Dockerのインストールが完了していない方は、「ハンズオン�
 ## Chapters
 
 - [Dockerコンテナで仮想環境プラットフォームを構築する](./GETSTART.md)
-- [Dockerコンテナイメージを作成して起動する](./RUN_AS_IMAGE.md.md)
+- [Dockerコンテナイメージを作成して起動する](./RUN_AS_IMAGE.md)
 - [Dockerコンテナの管理](./OPERATION.md)
 - [Dockerイメージの作成](./BUILD.md)
 
