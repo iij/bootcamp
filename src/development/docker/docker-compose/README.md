@@ -102,11 +102,11 @@ Webアプリケーション自体の作成は本質ではないので、サン�
 アプリケーションはそれぞれ以下から取得してください。
 
 ```bash
- curl https://raw.githubusercontent.com/iij/bootcamp/master/src/development/docker/docker-compose/solution/app.py -O app.py
+ curl https://raw.githubusercontent.com/iij/bootcamp/master/src/development/docker/docker-compose/solution/app.py -o app.py
 ```
 
 ```bash
- curl https://raw.githubusercontent.com/iij/bootcamp/master/src/development/docker/docker-compose/solution/requirements.txt -O requirements.txt
+ curl https://raw.githubusercontent.com/iij/bootcamp/master/src/development/docker/docker-compose/solution/requirements.txt -o requirements.txt
 ```
 
 ### 1-2. Dockerfile の作成
