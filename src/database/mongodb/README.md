@@ -198,6 +198,14 @@ db.people.aggregate([
 ```
 
 ここでは`address.city`が`tokyo`になってる人のデータを集計し、`age`を合計して表示しています。
+年齢を合計するのもおかしいので、平均を取ってみましょう。平均を取るコマンドは`$avg`です。
+
+```terminal
+db.people.aggregate([
+  { $match: {"address.city": "tokyo"} },
+  { $group: {_id: "$address.city", age_avg: {$avg: "$age"}} }
+])
+```
 
 aggregationで使える機能はたくさんあるので、色々と試してみてください。=> [Aggregation Pipeline Stages](https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/)
 
@@ -248,10 +256,11 @@ MongoDBでは [レプリカセット](https://docs.mongodb.com/manual/replicatio
 
 Aribiterにはデータのreplicationが行われず、データの書き込みも読み込みもできません。レプリカセットに参加しPrimaryを選出するための投票処理しか行わないため、低スペックで安いサーバに構築することが可能です。
 
-このハンズオンではArbiterのホストをMongoDB clientを起動するためのホストとして利用しています。
+ちなみにこのハンズオンでは、ArbiterのホストをMongoDB clientを起動するためのホストとしても利用しています。
 :::
 
 先ほどと同様に、mongo-arbiterホストから`mongo-primary`のコンソールに入り、レプリカセットの設定をします。
+（先程までのコンソールを使い回しても大丈夫です）
 
 ```terminal
 $ docker compose exec mongo-arbiter mongosh --port 27017 --host mongo-primary
@@ -281,7 +290,8 @@ rs.reconfig( {
 }
 ```
 
-すると残りの2台にも設定が反映され、レプリカセットが構築されます。mongo-secondaryのコンソールで`rs.status()`を実行し、設定状況を確認してみてください。
+すると残りの2台にも設定が反映され、レプリカセットが構築されます。
+新しいコンソールで以下のようにmongo-secondaryを開き、`rs.status()`を実行して設定状況を確認してみてください。
 
 ```terminal
 $ docker compose exec mongo-arbiter mongosh --port 27018 --host mongo-secondary
@@ -291,7 +301,7 @@ mongo-set [direct: secondary] test> rs.status() # 設定確認
 
 `"ok" : 1`などでレプリカセットの正常性を確認できます。
 
-以下のようにsecondaryにprimaryからデータがreplicateされていることが確認できます。
+以下のようにsecondaryにprimaryからデータがreplicateされていることを確認します。
 
 ```terminal
 mongo-set [direct: secondary] test> use bootcamp-db
@@ -330,6 +340,8 @@ mongo-set [direct: secondary] bootcamp-db> db.people.find()
 ]
 ```
 
+最初にprimaryに登録したデータが、secondaryにも保存されていました。これはprimaryからsecandaryにデータがコピー（replicate）されているからです。
+
 ここで別のターミナルを開き、PrimaryのMongoDBを落としてみましょう
 
 ```terminal
@@ -353,5 +365,32 @@ mongo-set [direct: primary] bootcamp-db>
 ```
 
 `rs.status()`をもう一度Secondaryで叩いてみてください。先ほどとどう変わったでしょうか。
+
+`rs.status()`が確認できたら、Primaryを起動してみましょう。
+
+```terminal
+$ sudo docker compose start mongo-primary
+[+] Running 1/1
+ ✔ Container bootcamp-mongodb-sample-mongo-primary-1  Started                                                                    0.3s
+~/w/b/t/bootcamp-mongodb-sample (main|✔) $
+```
+
+するとsecondaryが再度secondaryに戻ります。
+
+```terminal
+mongo-set [direct: primary] bootcamp-db>
+
+mongo-set [direct: primary] bootcamp-db>
+
+mongo-set [direct: primary] bootcamp-db>
+
+mongo-set [direct: secondary] bootcamp-db>
+
+mongo-set [direct: secondary] bootcamp-db>
+```
+
+これは`rs.reconfig()`で設定した`priority`というパラメータに従い、より値の大きいホストがPrimaryになるように設定されているためです。
+
+このようにMongoDBのレプリカセットでは、一台が落ちても自動的に他がPrimaryに昇格し、データの保存を継続できる構成を簡単に作ることができます。
 
 <credit-footer/>
