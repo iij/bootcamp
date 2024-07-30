@@ -44,7 +44,7 @@ Building dependency tree... Done
 Reading state information... Done
 10 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
-root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx vim
+root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx neovim
 Reading package lists... Done
 Building dependency tree... Done
 Reading state information... Done
@@ -52,7 +52,6 @@ The following additional packages will be installed:
   apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
   libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
   libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
-  libsub-override-perl libsys-hostname-long-perl libuchardet0 libxtables12 man-db nginx-common po-debconf ssl-cert vim-common vim-runtime xxd
 
 ~~~略~~~
 
@@ -212,7 +211,6 @@ Listen 82
         Listen 443
 </IfModule>
 
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
 
 VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行きます。
@@ -271,7 +269,7 @@ root@a0da070e286f:/# service apache2 reload
 80 portはすでにApacheが使っているため、nginxのサイトは88 portでリクエストを受け付けるようにします。
 
 ```bash
-root@a0da070e286f:/# vim /etc/nginx/sites-enabled/default
+root@a0da070e286f:/# nvim /etc/nginx/sites-enabled/default
 ```
 
 ```nginx
@@ -543,7 +541,7 @@ Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI
 
 以下のようなPythonコードを`/var/www/html/site-80`以下に置いておきましょう。
 
-`vim /var/www/html/site-80/app.py`
+`nvim /var/www/html/site-80/app.py`
 
 ```python
 def application(environ, start_response):
@@ -580,7 +578,7 @@ Successfully installed mod-wsgi-4.9.4
 ls /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
 ```
 
-このファイルを読み込むように、`vim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
+このファイルを読み込むように、`nvim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
 
 ```xml
 LoadModule wsgi_module /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
@@ -593,7 +591,7 @@ a2enmod wsgi
 ```
 
 準備が整ったのでsite-80に先ほどのPythonアプリケーションを読み込ませましょう。
-`vim /etc/apache2/sites-available/site-80.conf`
+`nvim /etc/apache2/sites-available/site-80.conf`
 
 ```xml
 <VirtualHost *:80>
@@ -635,7 +633,7 @@ ab -n 1000 -c 1000 localhost:80/app
 
 これだけでは面白くないので、pythonアプリにわざとディレイを入れてみましょう。
 
-`vim /var/www/html/site-80/app.py`
+`nvim /var/www/html/site-80/app.py`
 
 ```python
 import time
