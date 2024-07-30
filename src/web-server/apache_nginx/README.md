@@ -6,6 +6,8 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 ## 事前準備
 
+このハンズオンでは、dockerをただの隔離環境として扱っています。
+
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
 ```shell-session
@@ -44,7 +46,7 @@ Building dependency tree... Done
 Reading state information... Done
 10 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
-root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx vim
+root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx neovim
 Reading package lists... Done
 Building dependency tree... Done
 Reading state information... Done
@@ -52,7 +54,6 @@ The following additional packages will be installed:
   apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
   libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
   libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
-  libsub-override-perl libsys-hostname-long-perl libuchardet0 libxtables12 man-db nginx-common po-debconf ssl-cert vim-common vim-runtime xxd
 
 ~~~略~~~
 
@@ -69,8 +70,8 @@ root@a0da070e286f:/#
 
 ```shell-session
 root@a0da070e286f:/# apache2 -v
-Server version: Apache/2.4.57 (Debian)
-Server built:   2023-04-13T03:26:51
+Server version: Apache/2.4.61 (Debian)
+Server built:   2024-07-07T12:08:26
 root@a0da070e286f:/# nginx -v
 nginx version: nginx/1.22.1
 ```
@@ -110,7 +111,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
 「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられ、nginxと並んで2大勢力を誇ります。
-(参考: [June 2023 Web Server Survey](https://www.netcraft.com/blog/june-2023-web-server-survey/))
+(参考: [June 2024 Web Server Survey](https://www.netcraft.com/blog/june-2024-web-server-survey/))
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
@@ -122,6 +123,10 @@ nginxは2004年頃、当時のWebサーバーが抱えていたパフォーマ�
 当時からApache 2.2は高機能で信頼性が高く、ある種成熟したソフトウェアでしたが、それに対してnginxは軽量さと高パフォーマンスに焦点をあてて開発されており、Apacheのカバーしきれないユースケースに対して力を発揮しました。
 
 特に後段のサーバーにリクエストを流すリバースプロキシ・ロードバランサ機能がとても使いやすく、どちらかというと軽量なリクエストを大量に捌くのに向いています。
+
+2019にF5 Networksに買収された後もNGINXブランドのオープンソースとして提供されていますが、
+2024年2月に元開発者がnginxのフォーク版であるfreenginxを立ち上げられています。
+また、nginxのディストリビューションとして、luaのjitなどをパッケージングしたOpenRestyも昨今少しずつシェアを伸ばしています。
 
 ## Apache ハンズオン
 
@@ -212,7 +217,6 @@ Listen 82
         Listen 443
 </IfModule>
 
-# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 ```
 
 VitrualHostの設定は`/etc/apache2/sites-available`の下に作成して行きます。
@@ -271,7 +275,7 @@ root@a0da070e286f:/# service apache2 reload
 80 portはすでにApacheが使っているため、nginxのサイトは88 portでリクエストを受け付けるようにします。
 
 ```bash
-root@a0da070e286f:/# vim /etc/nginx/sites-enabled/default
+root@a0da070e286f:/# nvim /etc/nginx/sites-enabled/default
 ```
 
 ```nginx
@@ -348,148 +352,46 @@ root@a0da070e286f:/# service nginx restart
 [http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
 site-80とsite-82がランダムで表示されたでしょうか。
 
-### https 対応(check5)
+### コンテンツをキャッシュしてみる(check5)
 
-HTTP は基本的に平文でデータをやりとりします。
+Webサーバを多段で使う目的の一つとして、キャッシュを行う、というのもあります。
+前段のWebサーバでキャッシュすることにより、後段への問い合わせ回数が減り、
+レスポンスの高速化を図れます。
 
-ということは、途中でパケットキャプチャをすると、やり取りの内容を読み取ることができます。
+参考: [エンジニアブログのキャッシュについての連載記事](https://eng-blog.iij.ad.jp/archives/18584)
 
-もしそこにパスワード情報など見られてはいけない情報が含まれていたら...怖いですね。
+nginx ではデフォルトでそのための機能をもっているため、nginx に設定して使ってみましょう。
 
-そこで、SSL/TLS (Secure Socket Layer/Transport Layer Securityの技術)を用いて通信路の暗号化を行うHTTP over SSL いわゆるHTTPS を重要な情報のやりとりを行う際には用いるのが一般的です。
-
-各種Web サーバはこのHTTPS もサポートしており、証明書とそれに対応する秘密鍵さえあれば、簡単に設定することができます。
-
-#### 証明書と秘密鍵の用意
-
-HTTPS で用いる証明書は、権威ある証明局から、これは正当な証明書である、とお墨付きをもらうことで正当性が担保されています。
-
-通常、証明書は以下の手順で入手します。
-
-1. 秘密鍵を生成する
-2. 秘密鍵からCSR (Certificate Signing Request) を生成する
-3. CSR を証明書に提出し、審査を受け、証明局の持つ秘密鍵で署名された証明書を発行してもらう
-
-ここでは、３を簡略化して1 で生成した鍵で署名する、自己署名証明書(いわゆるオレオレ証明書)を作ります。
-このdocker image に既にインストールされている、openssl ツールで一通りの操作を行うことができます。
-
-##### 1. 秘密鍵を生成する
-
-ここではRSA の2048 bit の秘密鍵を生成します。
-
-::: tip
-サブコマンドであるgenrsa はRSA 暗号の秘密鍵を生成するものとなります。
-:::
-
-```sh
-root@a0da070e286f:/# mkdir /etc/nginx/ssl
-root@a0da070e286f:/# openssl genrsa 2048 > /etc/nginx/ssl/private.key
-Generating RSA private key, 2048 bit long modulus (2 primes)
-........................+++++
-...........................................................................................................................+++++
-e is 65537 (0x010001)
+```bash
+root@a0da070e286f:/# nvim /etc/nginx/conf.d/cache.conf
 ```
 
-##### 2. 秘密鍵からCSR (Certificate Signing Request) を生成する
-
-1 で作った秘密鍵から、CSR を生成します。
-
-::: tip
-サブコマンドであるreq はCSR を扱うためのものとなります。
-:::
-
-証明書で表示する情報をここで入力することになります。
-実際に発行する際は、正当性を担保したい対象であるCommon Name は特に間違わないようにしましょう。
-
-```sh
-root@a0da070e286f:/# openssl req -new -sha256 -key /etc/nginx/ssl/private.key -out /etc/nginx/ssl/server.csr
-You are about to be asked to enter information that will be incorporated
-into your certificate request.
-What you are about to enter is what is called a Distinguished Name or a DN.
-There are quite a few fields but you can leave some blank
-For some fields there will be a default value,
-If you enter '.', the field will be left blank.
------
-Country Name (2 letter code) [AU]:JP
-State or Province Name (full name) [Some-State]:Tokyo
-Locality Name (eg, city) []:Chiyoda
-Organization Name (eg, company) [Internet Widgits Pty Ltd]:IIJ
-Organizational Unit Name (eg, section) []:TU
-Common Name (e.g. server FQDN or YOUR name) []:localhost
-Email Address []:
-
-Please enter the following 'extra' attributes
-to be sent with your certificate request
-A challenge password []:
-An optional company name []:
+```nginx
+proxy_cache_path /var/cache/nginx keys_zone=zone1:1m inactive=1d max_size=100m;
+proxy_temp_path /var/cache/nginx_tmp;
 ```
 
-##### 3. 署名された証明書を発行する
-
-1 で作った秘密鍵、2 で作ったCSR から証明書を発行します。
-
-::: tip
-サブコマンドであるx509 は、証明書の標準規格を指しています。
--req でinput がCSR であることを示し、signkey に1 で作った秘密鍵を指定することでこれで署名します。
-:::
-
-
-```sh
-root@a0da070e286f:/# openssl x509 -req -in /etc/nginx/ssl/server.csr -out /etc/nginx/ssl/server.crt -signkey /etc/nginx/ssl/private.key -days 365
-Certificate request self-signature ok
-subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+```bash
+root@a0da070e286f:/# nvim /etc/nginx/sites-enabled/proxy
 ```
 
-出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
+```nginx
+upstream backend {
+        server localhost:80 weight=1;
+        server localhost:82 weight=1;
+}
 
-```sh
-root@a0da070e286f:/# openssl x509 -in /etc/nginx/ssl/server.crt -text
-Certificate:
-    Data:
-        Version: 1 (0x0)
-        Serial Number:
-            45:ef:45:48:8c:89:e0:e5:38:74:f7:fc:21:32:35:eb:2b:bc:10:6b
-        Signature Algorithm: sha256WithRSAEncryption
-        Issuer: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
-        Validity
-            Not Before: Aug  1 16:29:36 2022 GMT
-            Not After : Aug  1 16:29:36 2023 GMT
-        Subject: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
-        Subject Public Key Info:
-(...省略...)
-```
-
-実際に発行されたものを確認する際は、期間(Not BeforeとNot After)とSubject (CN が正しいか)に特に注意しましょう。
-
-秘密鍵と証明書のペアが正しいかを確認するには、RSA のものならmodulus を比較するのが簡単です。
-
-```sh
-root@a0da070e286f:/# openssl rsa -in /etc/nginx/ssl/private.key -modulus -noout
-Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
-
-root@a0da070e286f:/# openssl x509 -in /etc/nginx/ssl/server.crt -modulus -noout
-Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3F8011419BDAF8882B6E610C097D7016D173A14B7343E8D1381B8CF7FCD14CAA5717594B6F5CD586BF13EB90D2673E03B73EB25463333BD8D4384477C7910E87C8CEB2E71C83E59DD3BAC61E9B19DB97545AA9DB96DC995B01B2F96FA62CD8C777C0DA3A0377F71E0F6251CE7511964F2B4604D7F88472759C0178ECA1C7B21F9D9198166F28097A6EDF76925247119B7BEBDA73DD387607BD6320444E0242E127108C234B7F0D6CD6EB7E496747BDE7249E606BA44024E1FCC61E9ADBBE1BDABE51B342AF7DA5801AE36393E11EFFFAE60047EA7FE1E8E9A12FFF57B
-```
-
-#### https の設定
-
-check4 で作ったhttp で受けていたproxy をhttps でも受けられるようにしてみます。
-
-`/etc/nginx/sites-enabled/proxy` の一番下に以下を追記していきます。
-
-
-```sh
 server {
-        listen 443 default_server;
-        listen [::]:443 default_server;
-
-        ssl on;
-        ssl_certificate /etc/nginx/ssl/server.crt;
-        ssl_certificate_key /etc/nginx/ssl/private.key;
+        listen 89 default_server;
+        listen [::]:89 default_server;
 
         index index.html index.htm index.nginx-debian.html;
 
         server_name _;
+
+        proxy_cache zone1;                                # 追記 zone1としてキャッシュを行う
+        proxy_cache_valid 200 1m;                         # 追記 200を返すものについて1分保持する
+        add_header X-Nginx-Cache $upstream_cache_status;  # 追記 キャッシュの利用状態をヘッダに詰めて返す
 
         location / {
                 proxy_pass http://backend;
@@ -497,29 +399,37 @@ server {
 }
 ```
 
-追記したら、nginx をリスタートしましょう。
+変更したらnginxをリスタートしましょう。
 
-```sh
-root@dea1ac0e1edb:/# service nginx restart
+```shell-session
+root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
-https での通信となるため、URL の先頭がhttp ではなくhttps となっています。
+[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
+ブラウザの開発者モードなどでヘッダを覗いてみると、X-Nginx-CacheにMISS、あるいはHITが入っています。
+今回、わざとキャッシュの保持期間を1分と短くしていますが、2分ほど待った後で改めてアクセスしてみると、MISSが入っているものが観測できるかと思います。
 
-[https://localhost:8443/](https://localhost:8443/)
+キャッシュが利用できた場合、裏のapacheへのアクセスも省略されたことをログから確認できるはずです。
 
-今回は自己署名証明書であるため、ほとんどのブラウザは正当な証明書ではないと判断し、注意喚起の画面が表示されます。
-危険性を承知で閲覧すると、Check4 の時と同様のものが表示されます。
-
-また、ブラウザ上で暗号化に使っている証明書の内容が確認できるので、確認もしてみましょう。
+キャッシュの実体はこの設定だと/var/cache/nginx 下に置かれます。
+catしてみてどういうものがキャッシュされているのかも見てみましょう。
 
 ## 追加課題（時間の余った人用）
+### サーバ側でキャッシュを制御してみる
 
-### apache でもhttpsを設定してみよう
+本編では、nginxに施した設定に従ってキャッシュを行っていました。
+保持期間などの設定は、コンテンツサーバであるapacheからこのnginxに返したレスポンスにつけたヘッダによっても制御できます。
+URLや条件に従って細かく制御したい場合は、コンテンツサーバ側での制御を行うのがよいでしょう。
 
-- Apache でもhttps を受けられるようにしてみましょう。
-- 8444 を444 にポートフォワードする設定も予め入れてあるので、444 で受ける設定を入れれば、外から8444 でアクセスできます。証明書は同じものを使い回しで構いません。
+この用途として、主にCache-Controlヘッダが用いられます。
+no-cacheでこのレスポンスをキャッシュとして使わせない、max-ageで保持期間を指定、などが行えます。
+
+Apacheの設定でHeaderディレクティブを用いてCache-Controlヘッダを付与してみて、挙動の変化を確認してみましょう。
+
+参考:
+[エンジニアブログのCache-Control についての詳細](https://eng-blog.iij.ad.jp/archives/18666)
+[Mozillaのリファレンス](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control)
 
 ### Basic認証を追加してみよう
 
@@ -543,7 +453,7 @@ Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI
 
 以下のようなPythonコードを`/var/www/html/site-80`以下に置いておきましょう。
 
-`vim /var/www/html/site-80/app.py`
+`nvim /var/www/html/site-80/app.py`
 
 ```python
 def application(environ, start_response):
@@ -580,7 +490,7 @@ Successfully installed mod-wsgi-4.9.4
 ls /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
 ```
 
-このファイルを読み込むように、`vim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
+このファイルを読み込むように、`nvim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
 
 ```xml
 LoadModule wsgi_module /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
@@ -593,7 +503,7 @@ a2enmod wsgi
 ```
 
 準備が整ったのでsite-80に先ほどのPythonアプリケーションを読み込ませましょう。
-`vim /etc/apache2/sites-available/site-80.conf`
+`nvim /etc/apache2/sites-available/site-80.conf`
 
 ```xml
 <VirtualHost *:80>
@@ -635,7 +545,7 @@ ab -n 1000 -c 1000 localhost:80/app
 
 これだけでは面白くないので、pythonアプリにわざとディレイを入れてみましょう。
 
-`vim /var/www/html/site-80/app.py`
+`nvim /var/www/html/site-80/app.py`
 
 ```python
 import time
