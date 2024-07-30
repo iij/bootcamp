@@ -68,8 +68,8 @@ root@a0da070e286f:/#
 
 ```shell-session
 root@a0da070e286f:/# apache2 -v
-Server version: Apache/2.4.57 (Debian)
-Server built:   2023-04-13T03:26:51
+Server version: Apache/2.4.61 (Debian)
+Server built:   2024-07-07T12:08:26
 root@a0da070e286f:/# nginx -v
 nginx version: nginx/1.22.1
 ```
@@ -109,7 +109,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
 「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられ、nginxと並んで2大勢力を誇ります。
-(参考: [June 2023 Web Server Survey](https://www.netcraft.com/blog/june-2023-web-server-survey/))
+(参考: [June 2024 Web Server Survey](https://www.netcraft.com/blog/june-2024-web-server-survey/))
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
@@ -121,6 +121,10 @@ nginxは2004年頃、当時のWebサーバーが抱えていたパフォーマ�
 当時からApache 2.2は高機能で信頼性が高く、ある種成熟したソフトウェアでしたが、それに対してnginxは軽量さと高パフォーマンスに焦点をあてて開発されており、Apacheのカバーしきれないユースケースに対して力を発揮しました。
 
 特に後段のサーバーにリクエストを流すリバースプロキシ・ロードバランサ機能がとても使いやすく、どちらかというと軽量なリクエストを大量に捌くのに向いています。
+
+2019にF5 Networksに買収された後もNGINXブランドのオープンソースとして提供されていますが、
+2024年2月に元開発者がnginxのフォーク版であるfreenginxを立ち上げられています。
+また、nginxのディストリビューションとして、luaのjitなどをパッケージングしたOpenRestyも昨今少しずつシェアを伸ばしています。
 
 ## Apache ハンズオン
 
