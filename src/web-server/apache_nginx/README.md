@@ -6,6 +6,8 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 ## 事前準備
 
+このハンズオンでは、dockerをただの隔離環境として扱っています。
+
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
 ```shell-session
