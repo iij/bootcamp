@@ -346,8 +346,85 @@ root@a0da070e286f:/# service nginx restart
 [http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
 site-80とsite-82がランダムで表示されたでしょうか。
 
+### コンテンツをキャッシュしてみる(check5)
+
+Webサーバを多段で使う目的の一つとして、キャッシュを行う、というのもあります。
+前段のWebサーバでキャッシュすることにより、後段への問い合わせ回数が減り、
+レスポンスの高速化を図れます。
+
+参考: [エンジニアブログのキャッシュについての連載記事](https://eng-blog.iij.ad.jp/archives/18584)
+
+nginx ではデフォルトでそのための機能をもっているため、nginx に設定して使ってみましょう。
+
+```bash
+root@a0da070e286f:/# nvim /etc/nginx/conf.d/cache.conf
+```
+
+```nginx
+proxy_cache_path /var/cache/nginx keys_zone=zone1:1m inactive=1d max_size=100m;
+proxy_temp_path /var/cache/nginx_tmp;
+```
+
+```bash
+root@a0da070e286f:/# nvim /etc/nginx/sites-enabled/proxy
+```
+
+```nginx
+upstream backend {
+        server localhost:80 weight=1;
+        server localhost:82 weight=1;
+}
+
+server {
+        listen 89 default_server;
+        listen [::]:89 default_server;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        proxy_cache zone1;                                # 追記 zone1としてキャッシュを行う
+        proxy_cache_valid 200 1m;                         # 追記 200を返すものについて1分保持する
+        add_header X-Nginx-Cache $upstream_cache_status;  # 追記 キャッシュの利用状態をヘッダに詰めて返す
+
+        location / {
+                proxy_pass http://backend;
+        }
+}
+```
+
+変更したらnginxをリスタートしましょう。
+
+```shell-session
+root@a0da070e286f:/# service nginx restart
+[ ok ] Restarting nginx: nginx.
+```
+
+[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
+ブラウザの開発者モードなどでヘッダを覗いてみると、X-Nginx-CacheにMISS、あるいはHITが入っています。
+今回、わざとキャッシュの保持期間を1分と短くしていますが、2分ほど待った後で改めてアクセスしてみると、MISSが入っているものが観測できるかと思います。
+
+キャッシュが利用できた場合、裏のapacheへのアクセスも省略されたことをログから確認できるはずです。
+
+キャッシュの実体はこの設定だと/var/cache/nginx 下に置かれます。
+catしてみてどういうものがキャッシュされているのかも見てみましょう。
 
 ## 追加課題（時間の余った人用）
+### サーバ側でキャッシュを制御してみる
+
+本編では、nginxに施した設定に従ってキャッシュを行っていました。
+保持期間などの設定は、コンテンツサーバであるapacheからこのnginxに返したレスポンスにつけたヘッダによっても制御できます。
+URLや条件に従って細かく制御したい場合は、コンテンツサーバ側での制御を行うのがよいでしょう。
+
+この用途として、主にCache-Controlヘッダが用いられます。
+no-cacheでこのレスポンスをキャッシュとして使わせない、max-ageで保持期間を指定、などが行えます。
+
+Apacheの設定でHeaderディレクティブを用いてCache-Controlヘッダを付与してみて、挙動の変化を確認してみましょう。
+
+参考:
+[エンジニアブログのCache-Control についての詳細](https://eng-blog.iij.ad.jp/archives/18666)
+[Mozillaのリファレンス](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Cache-Control)
+
 ### Basic認証を追加してみよう
 
 - ApacheとnginxそれぞれにBasic認証を導入し、アクセスした時にユーザー名とパスワードの入力を求められるようにしてください。
