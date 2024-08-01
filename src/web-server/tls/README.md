@@ -532,12 +532,72 @@ curl: (35) OpenSSL/3.0.9: error:0A000410:SSL routines::sslv3 alert handshake fai
 
 ```
 
-#### 証明書について
+#### 証明書について(check5)
 
 証明書については、発行形式は証明局側がよしなにするので、こちらで主に気にすべきは秘密鍵の方です。
-RSAであれば2048bit、ECDSAであれば256bit のものを使うのがよいでしょう。
-長ければ長いほどセキュリティ強度は高まりますが、復号するために余計にリソースを消費することになるため、
+鍵長長ければ長いほどセキュリティ強度は高まりますが、復号するために余計にリソースを消費することになるため、
 そこはトレードオフとなります。
+
+ECDSAは暗号の特性上、短い鍵長でも高いセキュリティ強度を保つことができます。
+RSAであれば2048bit、ECDSAであれば256bit のものを使うのがよいでしょう。
+
+ここでは、試しにECDSAの秘密鍵を用いて証明書を作って使用してみます。
+openssl コマンドで、ECDSAの秘密鍵も生成可能です。
+
+```sh
+root@a0da070e286f:/# openssl ecparam -genkey -name prime256v1 > /etc/nginx/ssl/ecdsa.key
+```
+
+生成した鍵を見てみると、形式がRSAのものと異なり、短くなっていることが見て取れるかと思います。
+ここから先の手順は、RSAの時と同様です。出力も同様なので省略します。
+
+```sh
+root@34cfcf7b6f05:/# openssl req -new -sha256 -key /etc/nginx/ssl/ecdsa.key -out /etc/nginx/ssl/ecdsa.csr
+root@34cfcf7b6f05:/# openssl x509 -req -in /etc/nginx/ssl/ecdsa.csr -out /etc/nginx/ssl/ecdsa.crt -signkey /etc/nginx/ssl/ecdsa.key -days 365
+```
+出来上がったものを見てみると、Public Key Info が変わっています。
+
+```sh
+root@34cfcf7b6f05:/# openssl x509 -in /etc/nginx/ssl/ecdsa.crt -text
+(中略)
+  Subject Public Key Info:
+    Public Key Algorithm: id-ecPublicKey
+      Public-Key: (256 bit)
+      pub:
+        04:6b:b0:f6:cc:b5:8d:6a:b9:93:f2:1d:50:ec:4e:
+        59:82:39:70:33:61:f3:b4:3b:13:42:39:1d:68:27:
+        5a:27:3d:0a:df:14:78:3d:aa:fb:ec:f5:a8:8b:87:
+        3b:bc:cc:f7:47:b3:84:db:85:a5:e5:2e:9c:03:44:
+        8f:37:65:2e:e4
+      ASN1 OID: prime256v1
+      NIST CURVE: P-256
+Signature Algorithm: ecdsa-with-SHA256
+```
+
+後は、nginx の参照を変更し、この証明書を使ってhttpsを提供してみましょう。
+
+```sh
+root@34cfcf7b6f05:/# nvim /etc/nginx/sites-enabled/default
+(中略)
+
+server {
+        listen 443 default_server;
+        listen [::]:443 default_server;
+
+        ssl on;
+        ssl_certificate /etc/nginx/ssl/ecdsa.crt;           # <= ここを書き換え
+        ssl_certificate_key /etc/nginx/ssl/ecdsa.key;       # <= ここを書き換え
+
+        root /var/www/html;
+
+        index index.html index.htm index.nginx-debian.html;
+(後略)
+root@34cfcf7b6f05:/# service nginx restart
+```
+ECDSAの鍵を用いたものでも問題なく接続できるかと思います。
+
+パフォーマンスの観点からはECDSAの方が有利ですが、中にはECDSAに対応していないサービスもあります。
+利用してみたい場合も証明書を使用するサービスで使えるかどうか確認してから発行するようにしましょう。
 
 #### 安全とされている設定
 
