@@ -363,3 +363,194 @@ https での通信となるため、URL の先頭がhttp ではなくhttps と�
 
 また、ブラウザ上で暗号化に使っている証明書の内容が確認できるので、確認もしてみましょう。
 
+### 詳細な暗号設定 
+
+TLSの設定としては、主に、プロトコルのバージョン、暗号スイート、証明書、に何を使うかが大事になります。
+
+#### protocol を設定してみる(check3)
+
+プロトコルについては、既に1.1 までは2021に禁止扱いになっていたりします。
+
+nginx だと、`ssl_protocols`で設定します。
+
+まずは、デフォルトの状態で接続を確認してみましょう。TLSv1.2で接続できています。
+
+::: tip
+nginx上ではデフォルトで後述設定の通りTLSv1, 1.1 が有効に見えますが、接続できないようです。
+そのため、ここでは差異が見えるようわざとTLSv1.2 で試してみています。
+:::
+
+```sh
+root@34cfcf7b6f05:/# curl -vvv -k --tls-max 1.2 https://localhost:443
+*   Trying 127.0.0.1:443...
+* Connected to localhost (127.0.0.1) port 443 (#0)
+* ALPN: offers h2,http/1.1
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+(中略)
+> GET / HTTP/1.1
+> Host: localhost
+> User-Agent: curl/7.88.1
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Server: nginx/1.22.1
+< Date: Thu, 01 Aug 2024 01:58:28 GMT
+< Content-Type: text/html
+< Content-Length: 17
+< Last-Modified: Mon, 29 Jul 2024 23:13:24 GMT
+< Connection: keep-alive
+< ETag: "66a82214-11"
+< Accept-Ranges: bytes
+<
+Hello Bootcamp!!
+* Connection #0 to host localhost left intact
+```
+
+
+では、/etc/nginx/nginx.conf に設定があるので、書き換えてみましょう。
+書き換えたら再起動して反映させます。
+
+
+```sh
+root@34cfcf7b6f05:/# nvim /etc/nginx/nginx.conf
+(前後省略)
+        ##
+        # SSL Settings
+        ##
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE  <= ここからTLSv1 TLSv1.1 TLSv1.2 を消してみる
+        ssl_prefer_server_ciphers on;
+
+        ##
+        # Logging Settings
+        ##
+(前後省略)
+root@34cfcf7b6f05:/# service nginx restart
+```
+
+設定してみたら、接続できなくなることを確認してみましょう。
+
+```sh
+root@34cfcf7b6f05:/# curl -vvv -k --tls-max 1.2 https://localhost:443
+*   Trying 127.0.0.1:443...
+* Connected to localhost (127.0.0.1) port 443 (#0)
+* ALPN: offers h2,http/1.1
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS alert, protocol version (582):
+* OpenSSL/3.0.9: error:0A00042E:SSL routines::tlsv1 alert protocol version
+* Closing connection 0
+curl: (35) OpenSSL/3.0.9: error:0A00042E:SSL routines::tlsv1 alert protocol version
+
+```
+
+#### 暗号スイートを設定してみる(check4)
+
+暗号スイートは、
+
+- 鍵交換方式
+- 署名方式
+- 暗号化方式
+- ハッシュ関数
+
+の組で構成されます。TLS1.3からは、ここから鍵交換方式、署名方式が外されて暗号化方式、ハッシュ関数で構成されます。(鍵交換や署名の部分がプロトコルに最初から組み込まれるようになったため、指定する必要がなくなりました)
+
+openssl コマンドで、扱える暗号スイートの一覧を見ることが出来るので、見てみましょう。
+
+```sh
+root@34cfcf7b6f05:/# openssl ciphers -v
+TLS_AES_256_GCM_SHA384         TLSv1.3 Kx=any      Au=any   Enc=AESGCM(256)            Mac=AEAD
+TLS_CHACHA20_POLY1305_SHA256   TLSv1.3 Kx=any      Au=any   Enc=CHACHA20/POLY1305(256) Mac=AEAD
+TLS_AES_128_GCM_SHA256         TLSv1.3 Kx=any      Au=any   Enc=AESGCM(128)            Mac=AEAD
+ECDHE-ECDSA-AES256-GCM-SHA384  TLSv1.2 Kx=ECDH     Au=ECDSA Enc=AESGCM(256)            Mac=AEAD
+ECDHE-RSA-AES256-GCM-SHA384    TLSv1.2 Kx=ECDH     Au=RSA   Enc=AESGCM(256)            Mac=AEAD
+DHE-RSA-AES256-GCM-SHA384      TLSv1.2 Kx=DH       Au=RSA   Enc=AESGCM(256)            Mac=AEAD
+(以下略)
+```
+一番上のものは、TLS1.3 のものなので、暗号化がAES256のGCMモード、ハッシュ関数がSHA384
+4番目のものは、TLS1.2 のものなので、鍵交換がECDHE、署名がECDSA、暗号化がAES256のGCMモード、ハッシュ関数がSHA384
+といった感じになります。
+
+注意する点として、この表記はOpenSSL流のものですが、世の中にはIANAが定めた表記も存在しています。
+技術文書で出てきたものが見当たらないな、と思ったら別表記のものかもしれません。
+
+参考
+- [testssl.sh が出してるマッピング](https://testssl.sh/openssl-iana.mapping.html)
+- [変換してくれるサイト](https://ciphersuite.info/)
+
+
+nginxでは、`ssl_ciphers`を用いて設定します。
+
+```sh
+root@34cfcf7b6f05:/# nvim /etc/nginx/nginx.conf
+(前後省略)
+        ##
+        # SSL Settings
+        ##
+
+        ssl_protocols TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE  <= TLSv1.2 を元に戻す
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305;
+        # ↑↑↑ この行を追加
+        ssl_prefer_server_ciphers on;
+
+        ##
+        # Logging Settings
+        ##
+(前後省略)
+root@34cfcf7b6f05:/# service nginx restart
+```
+
+::: tip
+ssl\_ciphers の設定部分は、openssl ciphers の引数に食わせることで、この設定で使えるcipher の一覧を表示させることができます。
+今回は列挙した形ですが、!EXP のようにブラックリストな書き方もできるため、よくわからなくなったらこれで実際に設定されるものを確認するとよいでしょう。
+openssl ciphers -v "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305"
+:::
+
+`openssl ciphers`の一覧から適当なものを選んで接続してみて、nginx.confで設定したものは接続でき、設定しなかったものは接続できないことを確認してください。
+
+```sh
+root@34cfcf7b6f05:/# curl -vvv -k --tls-max 1.2 --ciphers ECDHE-RSA-AES128-GCM-SHA256 https://localhost:443
+*   Trying 127.0.0.1:443...
+* Connected to localhost (127.0.0.1) port 443 (#0)
+* ALPN: offers h2,http/1.1
+* Cipher selection: ECDHE-RSA-AES128-GCM-SHA256
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+(中略)
+Hello Bootcamp!!
+
+root@34cfcf7b6f05:/# curl -vvv -k --tls-max 1.2 --ciphers AES256-SHA256 https://localhost:443
+*   Trying 127.0.0.1:443...
+* Connected to localhost (127.0.0.1) port 443 (#0)
+* ALPN: offers h2,http/1.1
+* Cipher selection: AES256-SHA256
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS alert, handshake failure (552):
+* OpenSSL/3.0.9: error:0A000410:SSL routines::sslv3 alert handshake failure
+* Closing connection 0
+curl: (35) OpenSSL/3.0.9: error:0A000410:SSL routines::sslv3 alert handshake failure
+
+```
+
+#### 証明書について
+
+証明書については、発行形式は証明局側がよしなにするので、こちらで主に気にすべきは秘密鍵の方です。
+RSAであれば2048bit、ECDSAであれば256bit のものを使うのがよいでしょう。
+長ければ長いほどセキュリティ強度は高まりますが、復号するために余計にリソースを消費することになるため、
+そこはトレードオフとなります。
+
+#### 安全とされている設定
+
+日本における暗号設定のセキュリティ上の最低ラインは先の暗号設定ガイドラインの3.1に記載されています。
+
+[TLS 暗号設定ガイドライン](https://www.ipa.go.jp/security/crypto/guideline/ssl_crypt_config.html)
+
+表14がわかりやすいでしょう。ビットセキュリティについては、2.6の表11がわかりやすいです。
+
+mozilla の推奨暗号スイートも参考になります。
+
+[mozilla Server Side TLS](https://wiki.mozilla.org/Security/Server_Side_TLS)
+
+今回のcipher設定についてはmozilla のintermediate のものを利用しています。
+[こちら](https://ssl-config.mozilla.org/)で対応する設定を出力してくれるのも便利です。
+
