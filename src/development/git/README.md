@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 title: Gitの使い方
 description: バージョン管理システムとしてgitを利用し、変更を管理することの大切さを学びます。
 time: 1.5時間
@@ -68,7 +68,7 @@ git clone git@github.com:iij/bootcamp.git
 先にテキストエディタをインストールしておきましょう。
 メモ帳ではデフォルトの文字コードがUTF-8になっていないことがあります。
 この講義では[VSCode](https://azure.microsoft.com/ja-jp/products/visual-studio-code/)を推奨します。
-[Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Nodepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
+[Atom](https://atom.io/)や[Sublime Text](https://www.sublimetext.com/3)、[Notepad++](https://notepad-plus-plus.org/)を使ってもかまいません。Vimに慣れている人はVimを使ってもよいです。
 メモ帳、サクラエディタは非推奨です。
 
 [Downloading Git](https://git-scm.com/download/win)から「64-bit Git for Windows Setup」を選んでインストールしてください。
@@ -462,10 +462,10 @@ $ git branch
 
 ### 6.3. ブランチを移動する
 
-:computer: "fix" Branch へ移動するために Checkout する。
+:computer: "fix" Branch へ移動するために Switch する。
 
 ```
-$ git checkout fix
+$ git switch fix
 ```
 
 :computer: 現在のブランチを確認する
@@ -523,10 +523,10 @@ $ git show
 
 ### 6.5. "master"ブランチへ戻る
 
-:computer: `master` へ移動するために Checkout します。
+:computer: `master` へ移動するために Switch します。
 
 ```
-$ git checkout master
+$ git switch master
 ```
 
 ![masterブランチに戻った](./images/git_return_master_branch.drawio.svg)
@@ -600,7 +600,7 @@ $ git merge <取り込みたいブランチ名>
 :computer: "master"ブランチへ移動してから"fix"ブランチの変更内容を、メインである"master"ブランチへ取り込みましょう
 
 ```
-$ git checkout master
+$ git switch master
 $ git merge fix
 ```
 

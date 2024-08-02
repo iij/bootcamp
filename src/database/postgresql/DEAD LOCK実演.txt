@@ -1,0 +1,29 @@
+①Aさんは山梨県の所属を「関東」にかえ、地方の名称を「chu-bu」にかえたい。
+②Bさんは地方の名称を「tyubu」にかえ、山梨県の所属を「中部」にかえたい。
+
+
+【準備】ターミナル①、② 共通
+su - postgres
+psql
+\c db_world user01
+select * from sch_jpn.tbl_pref;
+select * from sch_jpn.tbl_region;
+
+
+★ターミナル①（Aさん）
+begin;
+update sch_jpn.tbl_pref set id_reg=3 where id_pref=2;
+
+★ターミナル②（Bさん）
+begin;
+update sch_jpn.tbl_region set reg_name='tyubu' where id_reg=4;
+update sch_jpn.tbl_pref set id_reg=4 where id_pref=2;
+
+★ターミナル①（Aさん）
+update sch_jpn.tbl_region set reg_name='chu-bu' where id_reg=4;
+
+
+【確認】ターミナル①、② 共通
+end;
+select * from sch_jpn.tbl_region;
+select * from sch_jpn.tbl_pref;

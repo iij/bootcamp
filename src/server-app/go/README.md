@@ -154,7 +154,12 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 もしコンテナを実行していないようであれあば、以下のコマンドを実行してください。  
 ```shell
 :# TERMINAL 0
-$ docker run --name go-tutor -it --rm hinoshiba/go-tutor:v2021r2 /bin/bash
+
+:# vim,emacs,nano派の人はこちら
+$ docker run --name go-tutor -it --rm jo7oem/go-tutor:v2022 /bin/bash
+
+:# VSCode派の人はこちら
+$ docker run --name go-tutor-vscode -p 8888:8888 -d --rm jo7oem/go-tutor-vscode:v2022
 ```
 
 ハンズオンでは、こちらから指示したpathに、ディレクトリやファイルを作成してもらい、Go言語に触れてもらいます。  
@@ -182,6 +187,8 @@ Go言語で作成されたソースコードの実行方法は2つあります�
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+
+$ cd /go/src/go_tutorial/2_helloworld/hello/ 
 $ <お好きなエディタ> main.go
 $ go run main.go
 ```
@@ -198,6 +205,7 @@ $ go run main.go
 :recycle: 2.1.1.1. 結果
 ```shell
 :# TERMINAL 0
+
 $ go run main.go
 Hello, W0rld!!
 ```
@@ -206,6 +214,7 @@ Hello, W0rld!!
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+
 $ go build main.go
 $ ls
 $ file ./main
@@ -215,6 +224,7 @@ $ ./main
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+
 $ go build main.go
 $ ls
 main  main.go
@@ -235,6 +245,7 @@ Hello, W0rld!!
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
 $ file ./main.exe
@@ -243,6 +254,7 @@ $ file ./main.exe
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
 main main.exe main.go
@@ -262,11 +274,54 @@ android/arm64
 #...省略
 ```
 
-# 3. 変数の定義方法確認 ( 10 min )
-本章では、変数の定義方法の確認と、変数定義に失敗しているソースコードを修正してもらいます。  
+# 3. 変数とその定義方法 ( 15 min )
+本章では、変数とその定義方法についての確認と、変数定義に失敗しているソースコードを修正してもらいます。  
 
-## 3.1. 変数定義方法
-Go言語では、変数の定義記法が3つあります。  
+## 3.1. 変数の種類
+Go言語は、静的型付け言語であるためコンパイル時に変数に紐付いた型の情報に整合性があるか検証されます。
+この講義では深く触れませんが、下にGo言語における方の種類について簡単な説明を記載します。
+興味のある方は[公式ドキュメント](https://go.dev/ref/spec#Types)を見てみてください。
+* 組み込み型
+  * 整数
+    * `int`,`int8`,`int16`,`int32`,`int64`
+    * `uint`,`uint8`,`uint16`,`uint32`,`uint64`
+    * `uintptr`
+    * `byte`
+      * :rocket: uint8 のエイリアス(別名)です
+	* `rune`
+		* :rocket: int32 のエイリアス(別名)です
+  * 浮動小数点
+    * `float32`,`float64`
+  * 複素数
+    * `complex64`,`complex128`
+  * 文字列
+    * `string`
+  
+		:rocket: `string`を構成する文字は`rune`で構成されます
+  * 真偽値
+    * `bool`
+  * エラー
+    * `error`
+* コンポジット型
+	
+	0個以上の変数をひとまとまりの集合として表した型です
+  * 構造体 (`struct`)
+  * 配列 (`array`) 
+  * スライス (`slice`)
+  * マップ (`map`)
+  * チャンネル (`channel`)
+* ユーザー定義型
+
+	組み込み型やコンポジット型を元にユーザーが定義した型です
+* `Interface型` 
+
+	:rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
+	この`interface型`は方がどう振る舞うか(型にどんなメソッドが実装されているか)という観点で区別され、0個以上のメソッドから構成されます。
+	また、[Go1.18からGenericsが追加](https://tip.golang.org/doc/go1.18#generics)されました。これにより、`interface`に型の情報を組み込むことができるようになりました。
+	
+
+## 3.2. 変数定義方法
+Go言語では、変数の定義方法が3つあります。
 
 1. `var <変数名> <型>`
 	* 例: `var Hensu string`
@@ -279,16 +334,15 @@ Go言語では、変数の定義記法が3つあります。
 	* 型指定有り。変数初期値の指定有り
 
 予期せぬ型が変数に定義されないよう、最初のうち（書いている型をイメージできるまで）は、1か3の書き方をお勧めします。  
-予期せぬ型が変数に定義されうる例として、`interface型` というものが存在します。  
-本講義では、`interface型` は扱わない為、説明は割愛しますが、使い方として、`なんでも型` のような使い方ができます。  
+予期せぬ型が変数に定義されうる例として、`interface型` があります。  
+本講義では、`interface型` は扱わない為説明は割愛しますが、`なんでも型(any)` のような使い方ができます。  
 変数`なんでも型`が示しているのは、int型だと思っていたらstring型だった。というようなケースもおきえるので、注意が必要です。  
-:rocket: 同一PublicMethodを保有する、異なる型のポインタを同じ変数として扱うポインタ変数領域のようなものです。同一PublicMethodをAny指定することで、なんでも渡せるポインタ領域を作成できます。  
 
 ##### :rocket: Tips: privateとPublicの指定方法
 Go言語の名前空間は、`private`は先頭小文字。`Public`が先頭大文字と決まっています。  
 packageに含める要素（変数や関数、構造体や構造体の要素など）をpackageの外部から参照させたい場合、先頭大文字の変数名とするようご注意ください。  
 
-## 3.2. 不具合箇所は、最高の講師に教えてもらおう
+## 3.3. 不具合箇所は、最高の講師に教えてもらおう
 Go言語では、書き方を間違えているととても丁寧に教えてくれる強い味方がいます。  
 それは、コンパイラ（`go build`）です。  
 「うーん、あ、この辺のソースみた？」とだけ返してくる先輩に比べ、「3行目、6文字目。変数定義されていないよ！？」と場所まで指定して教えてくれます。  
@@ -301,28 +355,32 @@ Go言語では、書き方を間違えているととても丁寧に教えてく
 エラーが多いと、数個のエラーの後に`too many error....`と続き、全てのエラーを教えてくれないことがあります。  
 しょうがないので、教えてもらっているエラーから対処していきましょう。  
 
-### :computer: 3.2.1. 以下のコマンドを実行して、修正箇所を認識てみよう。  
+### :computer: 3.3.1. 以下のコマンドを実行して、修正箇所を認識てみよう。  
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+
+$ cd /go/src/go_tutorial/3_var/plzfixme/
 $ go run main.go
 ```
 
-:recycle: 3.2.1. 結果
+:recycle: 3.3.1. 結果
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+
 $ go run main.go
 # command-line-arguments
 ./main.go:6:2: undefined: WatashiNoHensu
 ./main.go:7:14: undefined: WatashiNoHensu
 ```
 
-## 3.3. 不具合の修正
+## 3.4. 不具合の修正
 ### :computer: 3.3.1. ソースコードを修正し、エラーを無くしてみよう。  
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+
 $ <お好きなエディタ> main.go
 $ go run main.go
 ```
@@ -337,23 +395,26 @@ $ go run main.go
 		fmt.Println(Watashi_no_Hensu)     //./main.go:7:14: undefined: Watashi_no_Hensu
 	}
 	```
-:recycle: 3.3.1. 結果
+:recycle: 3.4.1. 結果
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+
 $ <お好きなエディタ> main.go
 $ go run main.go
 GYUDON
 ```
-### :rocket: :computer: 3.3.2. 変数定義方法が3種類を全て試してみよう。
+### :rocket: :computer: 3.4.2. 変数定義方法が3種類を全て試してみよう。
 
 # 4. 関数 ( 10 min )
 本章では、関数の定義方法と、Goっぽい関数の扱われ方について、確認してもらいます。  
 
 ## 4.1. 関数の定義
-Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです  
+Go言語では、`func`から始まる形で、関数を定義できます。フォーマットは以下の通りです。
+
+:rocket: 
 ```go
-func <関数名>([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
+func <関数名>[[<型パラメータ1>,<型パラメータ2> ...]]([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
 	<処理>
 }
 ```
@@ -382,7 +443,8 @@ func myFunc(name string, age uint) (bool, error) {
 	return find, result
 }
 ```
-関数の基本的な定義方法は以上です。  
+関数の基本的な定義方法は以上です。
+
 
 ##### :rocket: 変数名を戻り値の定義で、合わせて定義する方法もあります。  
 変数の名前スコープが、関数内全体のスコープになり、認識すべき範囲が広がるため、執筆者は、あまり扱いません。  
@@ -390,6 +452,21 @@ func myFunc(name string, age uint) (bool, error) {
 func myFunc(name string, age uint) (find bool, result error) {
 	<処理>
 	return find, result
+}
+```
+
+##### :rocket: 型パラメータの使用 (Generics)
+`interface型`を用いることで任意の型を受け付けられる関数を作成できます。
+便利なようですが、実行時に型を解決するため意図しない挙動を取る可能性があります。
+Go1.18でGenericsが導入されコンパイル時に型を解決することが可能になりました。
+興味のあるひとは[Genericsのチュートリアル](https://go.dev/doc/tutorial/generics)をやってみてください。
+```go
+type Number interface {
+	int64 | float64
+}
+func myFunc[T any,N Number](hoge []T, fuga N) []T {
+	<処理>
+	return res
 }
 ```
 
@@ -449,6 +526,8 @@ func main() {
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
+
+$ cd /go/src/go_tutorial/4_funcy/monkey/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
@@ -460,8 +539,10 @@ $ go run eaters.go
 
 	func Eat(name string) bool {
 		<nameが空白か比較する>
+		<nameが空白ならば> {
+ 			<`return false`を行う>
+		 }
 		<nameが空白以外ならば、`fmt.Println(name)`を実行し、`return true`を行う>
-		<nameが空白ならば、`return false`を行う>
 	}
 
 	func main() {
@@ -480,6 +561,7 @@ $ go run eaters.go
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
+
 $ go run eaters.go
 GYUDON
 cannt eat: 
@@ -532,6 +614,9 @@ if _, err := Writer(); err != nil {
 :# TERMINAL 0
 :# COPY /go/src/go_tutorial/4_funcy/monkey/eaters.go /go/src/go_tutorial/4_funcy/likego/eaters.go
 :# WORKPATH /go/src/go_tutorial/4_funcy/likego/
+
+$ cp /go/src/go_tutorial/4_funcy/monkey/eaters.go /go/src/go_tutorial/4_funcy/likego/eaters.go
+$ cd /go/src/go_tutorial/4_funcy/likego/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
@@ -552,12 +637,12 @@ $ go run eaters.go
 	func main() {
 		var name1 string = "GYUDON"
 		if _, err := Eat(name1); err != nil {
-			fmt.Println("cannt eat: ", err)
+			fmt.Println("cannot eat: ", err)
 		}
 
 		var name2 string = ""
 		if _, err := Eat(name2); err != nil {
-			fmt.Println("cannt eat: ", err)
+			fmt.Println("cannot eat: ", err)
 		}
 	}
 	```
@@ -565,6 +650,7 @@ $ go run eaters.go
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/4_funcy/likego/
+
 $ go run eaters.go
 GYUDON
 cannot eat: name is empty.
@@ -647,6 +733,8 @@ import (
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+
+$ cd /go/src/go_tutorial/5_package/fixFunckyMonkey/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 $ go run eaters.go > /dev/null
@@ -684,6 +772,7 @@ $ go run eaters.go > /dev/null
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+
 $ go run eaters.go
 GYUDON
 cannot eat: 'name is empty.'
@@ -703,6 +792,9 @@ cannot eat: 'name is empty.'
 :# TERMINAL 0
 :# COPY /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
 :# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+
+$ cp /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
+$ cd /go/src/go_tutorial/5_package/notKinkyuJi/ 
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
@@ -749,6 +841,7 @@ $ go run eaters.go
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
@@ -922,6 +1015,10 @@ type GYUDONYA struct {
 :# COPY /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
 :# COPY /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
 :# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+
+$ cp /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
+$ cp /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
+$ cd /go/src/go_tutorial/6_struct/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
@@ -977,6 +1074,7 @@ $ go run eaters.go
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run eaters.go
@@ -991,6 +1089,7 @@ NegitamaGyudon
 ## 7.0. 準備
 本章以降、複数のターミナルを用い、ハンズオンいただきます。  
 既存のコンテナに接続し利用するため、それぞれターミナルを起動し、以下コマンドを実行ください。  
+VSCodeをお使いの方はターミナルを追加で起動してください。
 ```shell
 :# TERMINAL 1
 $ docker exec -it go-tutor /bin/bash
@@ -1011,6 +1110,9 @@ func httphandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", httphandler)   //どこのPathで、どんな処理をするか
 	http.ListenAndServe("localhost:8080", nil) //どの接続元(ホスト名:ポート)で、サーバを起動するか
+	if err != nil {
+		panic(err)
+	}
 }
 ```
 
@@ -1023,9 +1125,14 @@ func main() {
 :# COPY /go/src/go_tutorial/6_struct/weakShop/shop/shop.go /go/src/go_tutorial/7_webapp/weakShop/shop/shop.go
 :# COPY /go/src/go_tutorial/6_struct/weakShop/eaters.go /go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+
+$ cp /go/src/go_tutorial/6_struct/weakShop/shop/shop.go /go/src/go_tutorial/7_webapp/weakShop/shop/shop.go
+$ cp /go/src/go_tutorial/6_struct/weakShop/eaters.go /go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
+$ cd /go/src/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run gyudon-httpd.go
+
 
 :# TERMINAL 1
 $ curl http://localhost:8080/
@@ -1073,16 +1180,21 @@ $ curl http://localhost:8080/
 	func main() {
 		myshop := shop.NewGyudon()
 		http.HandleFunc("/", myshop.Eat)
-		http.ListenAndServe("localhost:8080", nil)
+		err := http.ListenAndServe("localhost:8080", nil)
+		if err != nil {
+			panic(err)
+		}
 	}
 	```
 :recycle: 7.2. 結果
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run gyudon-httpd.go
+
 
 :# TERMINAL 1
 $ curl http://localhost:8080/
@@ -1092,7 +1204,7 @@ $ curl http://localhost:8080/
 :computer: 7.2. 後処理
 ```shell
 :# TERMINAL 0
-:# Ctrl + C で、gyudon-httpd.goをKillください
+:# Ctrl + C で、gyudon-httpd.goをKillしてください
 ```
 
 ## 7.3. Goroutineに触れる
@@ -1116,11 +1228,14 @@ HTTPサーバで、他者の処理が終わらないと利用できないなん�
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+
 $ go run gyudon-httpd.go
+
 
 :# TERMINAL 1
 $ time curl http://localhost:8080/
 :# 10秒程度待機する
+
 
 :# TERMINAL 2
 $ time curl http://localhost:8080/
@@ -1130,8 +1245,10 @@ $ time curl http://localhost:8080/
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+
 $ go run gyudon-httpd.go
 :# 何も出力されない場合、実行中です。続くハンズオンを実施ください
+
 
 :# TERMINAL 1
 $ time curl http://localhost:8080/
@@ -1183,9 +1300,11 @@ AさんとBさんに、同時に牛丼を食べてもらう方法は、簡単で
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+
 $ <お好きなエディタ> http/zakohttp.go
 $ go run gyudon-httpd.go
 :# 何も出力されない場合、実行中です。続くハンズオンを実施ください
+
 
 :# TERMINAL 1
 $ time curl http://localhost:8080/
@@ -1204,9 +1323,11 @@ $ time curl http://localhost:8080/
 ```shell
 :# TERMINAL 0
 :# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+
 $ <お好きなエディタ> http/zakohttp.go
 $ go run gyudon-httpd.go
 :# 何も出力されない場合、実行中です。続くハンズオンを実施ください
+
 
 :# TERMINAL 1
 $ docker exec -it go-tutor /bin/bash
@@ -1251,7 +1372,119 @@ Goroutineが迷子になったり、データが壊れたり、リソースの�
 [net/http](https://golang.org/src/net/http) パッケージは、通信に関する処理や、同期処理、書き込み処理やハンドラの登録など、Goで触っておくと良さそうな表現が色々と存在します。  
 腕試しをされるのであれば、zakohttpの問題を考え、アップグレードし続けてみてください。  
 
-# 8. 最後に ( 2 min )
+# 8. テスト ( 10 min )
+本章では、これまで作り上げてきたGyudon型にテストを追加してもらいます。
+
+## 8.1. Go言語でのテストのやり方
+Go言語にはテストをサポートする標準パッケージ [testing](https://pkg.go.dev/testing) があります。
+そのためなにかテストフレームワークを使うのではなく、標準のライブラリを使用してテストを行うケースが多いです。
+
+テストは以下のコマンドだけで実行できます。
+`./...`でカレントディレクトリ以下のすべてのファイルが対象となります。
+```shell
+$ go test ./...
+```
+
+`<機能>.go`というファイルがある時、テストは`<機能>_test.go`という名前のファイルに記述していきます。
+
+テストの関数は下のような書き出しで始めます。
+
+```go
+func Test<テスト名>(*testing.T)
+```
+
+このような関数のテストを書くときを考えます。
+
+```go
+func IsTopping(food string)bool{
+	switch food {
+	    case "BeniShoga":
+		    return true
+		
+	    case "Egg":
+			retuen true
+			
+    }
+	return false
+}
+```
+
+簡単なテストを書くとこのようになります。
+panicしたり、Errorに書き込まれなければテストは成功です。
+
+```go
+func TestIsTopping(t *testing){
+	food := "BeniShoga"
+	
+	if got:=IsTopping(food); !got{
+		t.Errorf("food = %s , want",got)
+    }
+}
+```
+
+## 8.2. :computer: テストの実行と修正
+では、基本的なテストのやり方を知ってもらったので、実際に試してみましょう。  
+本講義では5章で作った関数Eatにテストを追加する形で進めます。
+
+手始めに関数TestGyudon_EatSimpleをいじってテストの挙動を確認してみましょう。
+
+### 試してみてほしいこと
+1. `want`と`got`を比較して、違っていたら`t.Errorf()`にメッセージを表示するように修正する
+2. テストを実行する
+3. 文字が一致してテストが成功するパターンを試す
+4. 文字が一致せずテストが失敗するパターンを試す
+
+```shell
+:# TERMINAL 0
+:# WORKPATH /go/src/go_tutorial/8_test/test/
+
+$ cd /go/src/go_tutorial/8_test/test/
+$ <お好きなエディタ> shop/shop_test.go
+$ go test ./...
+```
+
+* `/go/src/go_tutorial/8_test/test/shop/shop_test.go`
+    ```go
+    func TestGyudon_EatSimple(t *testing.T) {
+    w := bytes.Buffer{}
+    r := http.Request{}
+
+	gd := NewGyudon()
+	gd.menu="<入れたい文字列>"
+	gd.Eat(&w, &r)
+	/// 関数の結果を格納
+	got := w.String()
+
+	/// 判定処理を書く
+    }
+  ```
+  
+:recycle: 8.2. 結果
+
+```shell
+:# TERMINAL 0
+:# WORKPATH /go/src/go_tutorial/8_test/test/
+
+$ cd /go/src/go_tutorial/8_test/test/
+$ <お好きなエディタ> shop/shop_test.go
+$ go test ./...
+```
+
+* `/go/src/go_tutorial/8_test/test/shop/shop_test.go`
+    ```go
+    if want != got {
+        t.Errorf("want = %s, got = %s\n", want, got)
+    }   
+    ```
+
+## 8.3. :rocket: その他のテストの書き方
+
+8.2.で試したテスト関数 TestGyudon_EatSimple のやり方の場合、引きすうごとにテストの関数を追加せねばならず不便です。
+そのため、テスト関数 TestGyudon_Eat のように一つの関数内で複数のパターンのテストを記述することもよくあります。
+時間に余裕があったり、興味があるひとはテスト関数 TestGyudon_Eat にあるテストパターンの間違いを修正したり、関数 Eat が参照する変数が空の場合のテストケースを追加してみてください。
+
+
+# 9. 最後に ( 2 min )
 今回は、Goを知ってもらうために、Goの概要説明、実行やコンパイル、関数や構造体、そして、Goroutineをサクッと追っていきました。  
 今回紹介しきれていない`interface`や`channel`、`context` 辺りを学習するとよりGo言語が、選択肢としての幅が広がっていくと思います。  
 もしGo言語をもっと知ってみたいと思っているのであれば、Goが学習できる [go tour(日本語)](https://go-tour-jp.appspot.com/list) を、まずは一周してみることをお勧めします。  

@@ -14,7 +14,8 @@ module.exports = {
       md.set({
         linkify: true
       })
-    }
+    },
+    lineNumbers: true
   },
   base: '/bootcamp/',
   dest: 'docs',

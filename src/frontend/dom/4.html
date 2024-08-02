@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="module">
+    const inputElement = document.body.children[0];
+    inputElement.addEventListener("input", (event) => {
+      console.log("適当な文字列を入力しました:", event.target.value);
+    });
+    </script>
+    <title></title>
+  </head>
+  <body>
+    <input type="text" placeholder="適当な文字列">
+  </body>
+</html>

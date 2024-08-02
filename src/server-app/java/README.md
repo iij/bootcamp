@@ -46,7 +46,7 @@ $ git clone git@github.com:iij/bootcamp.git
 
 ```bash
 # やや重たいので注意してください
-$ docker pull ryusa/bootcamp-springboot:2021
+$ docker pull tamago0224/bootcamp-springboot:2023
 ```
 
 2. コンテナを起動する
@@ -58,14 +58,12 @@ $ PROXY_PORT=YOUR_PROXY_PORT
 $ JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
 # プロキシ設定ここまで
 # コンテナを起動する
-$ docker run --name bootcamp-springboot -itd -p 8080:8080 -e JAVA_OPT=${JAVA_OPT} ryusa/bootcamp-springboot:2021
+$ docker run --name bootcamp-springboot -it -p 8080:8080 -e JAVA_OPT="${JAVA_OPT}" tamago0224/bootcamp-springboot:2023
 ```
 
 3. アプリケーションの起動チェック
 
 ```bash
-# コンテナの中にアタッチする
-$ docker exec -it bootcamp-springboot bash
 # Spring Bootを起動する
 ❯ ./gradlew bootrun
 # ...
@@ -79,20 +77,10 @@ $ docker exec -it bootcamp-springboot bash
 ![初回起動 - WhitelabelErrorPage](./images/white-label-error.png)
 
 
-:::details オプション設定
-ハンズオンにおいて必須ではありませんが、Visual Studio Code(以下 VSCode)を利用することでより良い開発体験ができます。
-
-1. VSCodeをインストールする
-2. 拡張機能`RemoteDevelopment`をインストールする
-3. 拡張機能`Java Extention Pack`をインストールする
-4. 拡張機能`Remote-Container`を使って起動したコンテナの中へアタッチする
-:::
-
-
 ## Javaの基本
 
-JavaはOracle社が開発しているプログラミング言語です。\
-古くから利用されているプログラミング言語/プラットフォームである一方、2021年現在でもSIや大規模開発の現場などでよく利用されています。
+JavaはOpenJDKコミュニティによって開発され、各ベンダからリリースされているプログラミング言語です。
+古くから利用されているプログラミング言語/プラットフォームである一方、2022年現在でもSIや大規模開発の現場などでよく利用されています。
 
 ### 言語としての特徴
 
@@ -109,7 +97,7 @@ package com.github.iij.bootcamp.serverapp; // パッケージ名(世界でユニ
 import java.util.List; // 外部モジュールの利用(JavaではIDEに任せてしまうのが一般的)
 
 /**
- * 複数行に渡るコメント文、特にメソッドとクラスに付与する複数行のコメント文をJavaDocと呼ぶ
+ * 複数行に渡るコメント文
  *
  * - 一般的にはJavaのクラス名の命名はパスカルケース - クラス名とjavaファイルの名前は一致させる方が良い(1クラス1ファイル)
  */
@@ -196,7 +184,7 @@ Mavenを使わずにGradleを利用する理由は、Gradleの方が優れてい
 
 
 ## Spring Bootの基本
-SprinbBootはJavaのWebフレームワークのひとつです。Spring Bootの規約に従ってアプリケーションロジックを実装することで簡単にWebアプリケーションを構築できます。
+Spring BootはJavaのWebフレームワークのひとつです。Spring Bootの規約に従ってアプリケーションロジックを実装することで簡単にWebアプリケーションを構築できます。
 
 このフレームワークは大規模な主幹システムやWebアプリケーションを実装/構築する際によく利用されており、IIJがホストしているいくつかのサービスもSpring Bootを利用して実装されています。
 
@@ -226,31 +214,31 @@ package com.github.iij.bootcamp.serverapp;
 public class User {
 
   private String name;
-  private String slug;
+  private String id;
 
-  public User(String name, String slug) {
+  public User(String name, String id) {
     this.name = name;
-    this.slug = slug;
+    this.id = id;
   }
 
   public String getName() {
     return this.name;
   }
 
-  public String getSlug() {
-    return this.slug;
+  public String getId() {
+    return this.id;
   }
 
   public void setName(String name) {
     this.name = name;
   }
 
-  public void setSlug(String slug) {
-    this.slug = slug;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String toString() {
-    return "name: " + this.name + "," + "slug: " + this.slug;
+    return "name: " + this.name + "," + "id: " + this.id;
   }
 }
 ```
@@ -286,22 +274,22 @@ public class ServerAppApplication {
 }
 ```
 
-再起動時にログに"name: アリス,slug: alice"と表示されていればOKです。
+再起動時にログに"name: アリス,id: alice"と表示されていればOKです。
 
 #### チェックポイント
 - Javaのクラスを作成した
 - クラスをインスタンス化し、標準出力に文字列を表示した
 
 #### 解説
-純粋なJavaのクラスを作成し、インスタンス化とメソッドの呼び出しを行いました。`User`クラスを眺めてもらうとわかるとおり、`getName`や`getSlug`などJavaにはかなり冗長なコードが多いです。これらのコードはよく「ボイラーテンプレート」と呼ばれ、開発者が嫌うコードです。
+純粋なJavaのクラスを作成し、インスタンス化とメソッドの呼び出しを行いました。`User`クラスを眺めてもらうとわかるとおり、`getName`や`getId`などJavaにはかなり冗長なコードが多いです。これらのコードはよく「ボイラープレート」と呼ばれ、開発者が嫌うコードです。
 
-JavaにはLombokなどのボイラーテンプレートを解消するツールなどありますが、本講義はあえて紹介しません。興味がある人は調べてみてください。
+JavaにはLombokなどのボイラープレートを解消するツールなどありますが、本講義はあえて紹介しません。興味がある人は調べてみてください。
 
 ### 簡単なHTTPのインタフェースを作成してみる
 それではSpring Bootを使ってみましょう。\
 簡単なHTTPのインタフェースを作成し、実際にSpring Bootがどのように動作しているのかを見てみます。
 
-:computer: DemoApplication.javaを修正し、サーバを再起動してみてください。
+:computer: ServerAppApplication.javaを修正し、サーバを再起動してみてください。
 
 ```bash
 # 下記の通りに修正する
@@ -323,14 +311,14 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 public class ServerAppApplication {
 
-	public static void main(String[] args) {
-		User user = new User("アリス", "alice");
-		System.out.println(user.toString());
-		SpringApplication.run(ServerAppApplication.class, args);
-	}
+  public static void main(String[] args) {
+    User user = new User("アリス", "alice");
+    System.out.println(user.toString());
+    SpringApplication.run(ServerAppApplication.class, args);
+  }
 
   // 追記BEGIN
-	@RestController
+  @RestController
   public class HelloController {
     @GetMapping(path = "/")
     public String helloWorld() {
@@ -402,8 +390,8 @@ public class UserController {
   private User secretUser = new User("ボブ", "bob");
 
   @GetMapping(path = "/user")
-  public User find(@RequestParam String slug) {
-    if ("bob".equals(slug)) {
+  public User find(@RequestParam String id) {
+    if ("bob".equals(id)) {
       return this.secretUser;
     } else {
       return null;
@@ -414,8 +402,8 @@ public class UserController {
 
 ```bash
 # 動作確認
-$ curl 'localhost:8080/user?slug=bob'
-{"name":"ボブ","slug":"bob"}
+$ curl 'localhost:8080/user?id=bob'
+{"name":"ボブ","id":"bob"}
 ```
 
 #### チェックポイント
@@ -427,7 +415,7 @@ $ curl 'localhost:8080/user?slug=bob'
 
 `UserController`クラスの持つメソッド`find`には`@GetMapping`アノテーションがついているため、`GET /user`宛のリクエストのハンドラとして登録されることになります。そのため、Spring Bootアプリケーションの`/user`へGETリクエストを送ることでこの`find`メソッドがコールされます。
 
-さらに`find`メソッドの引数`slug`に`@RequestParam`アノテーションが付与されています。これにより、HTTPリクエストのクエリパラメータの値がこの変数に注入されます。つまり`GET /user?slug=bob`へのリクエストをSpring Bootアプリケーションへ送ることで`find`メソッドがコールされ引数`slug=bob`が引き渡されます。
+さらに`find`メソッドの引数`id`に`@RequestParam`アノテーションが付与されています。これにより、HTTPリクエストのクエリパラメータの値がこの変数に注入されます。つまり`GET /user?id=bob`へのリクエストをSpring Bootアプリケーションへ送ることで`find`メソッドがコールされ引数`id=bob`が引き渡されます。
 
 
 ### 責任を分離する
@@ -463,16 +451,16 @@ public class UserService {
   private List<User> userPool = new ArrayList<User>(Arrays.asList(new User("ボブ", "bob")));
   
   /**
-   * ユーザープールからslug値で検索し、その結果を返却します slugと一致するユーザーが見つからない場合nullを返却します
+   * ユーザープールからid値で検索し、その結果を返却します idと一致するユーザーが見つからない場合nullを返却します
    * TODO 本当にこの実装で問題ないか、考えてみましょう
-   *   - 同一のslugをもつインスタンスがいる場合は？データ構造はこれで良いか？
+   *   - 同一のidをもつインスタンスがいる場合は？データ構造はこれで良いか？
    *   - nullは`User`インスタンスではない、では見つからない場合は何を返すべき？
    */
-  public User findBySlug(String slug) {
+  public User findById(String id) {
     // Java8から導入されたStreamAPI
     User user = this.userPool
       .stream() // Streamを作成
-      .filter(u -> slug.equals(u.getSlug())) // slugと一致する`User`インスタンスのみを抽出
+      .filter(u -> id.equals(u.getId())) // idと一致する`User`インスタンスのみを抽出
       .findFirst() // 抽出結果の先頭1つだけを取り出す
       .orElse(null); // もし抽出した結果何も残らなかった場合、nullを返却する
     return user;
@@ -499,8 +487,8 @@ public class UserController {
   private UserService userService;
 
   @GetMapping(path = "/user")
-  public User find(@RequestParam String slug) {
-    return this.userService.findBySlug(slug);
+  public User find(@RequestParam String id) {
+    return this.userService.findById(id);
   }
   // 修正END
 }
@@ -508,8 +496,8 @@ public class UserController {
 
 ```bash
 # 動作確認
-$ curl 'localhost:8080/user?slug=bob'
-{"name":"ボブ","slug":"bob"}
+$ curl 'localhost:8080/user?id=bob'
+{"name":"ボブ","id":"bob"}
 ```
 
 #### チェックポイント
@@ -526,7 +514,7 @@ $ curl 'localhost:8080/user?slug=bob'
 
 ### 少し複雑なリクエストを受け取ってみる
 最後に、POSTリクエストとリクエストボディを指定して`User`インスタンスを登録してみましょう。\
-`User`インスタンスには`slug`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
+`User`インスタンスには`id`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
 
 :computer: UserService.javaとUserController.javaを修正し、サーバを再起動してください。
 
@@ -554,12 +542,12 @@ public class UserService {
   private List<User> userPool = new ArrayList<User>(Arrays.asList(new User("ボブ", "bob")));
   
   /**
-   * ユーザープールからslug値で検索し、その結果を返却します slugと一致するユーザーが見つからない場合nullを返却します
+   * ユーザープールからid値で検索し、その結果を返却します idと一致するユーザーが見つからない場合nullを返却します
    */
-  public User findBySlug(String slug) {
+  public User findById(String id) {
     User user = this.userPool
       .stream()
-      .filter(u -> slug.equals(u.getSlug()))
+      .filter(u -> id.equals(u.getId()))
       .findFirst()
       .orElse(null);
     return user;
@@ -571,8 +559,8 @@ public class UserService {
    */
   public User save(User user) {
     this.userPool.add(user);
-		return user;
-	}
+    return user;
+  }
   // 追記END
 }
 ```
@@ -596,8 +584,8 @@ public class UserController {
   private UserService userService;
 
   @GetMapping(path = "/user")
-  public User find(@RequestParam String slug) {
-    return this.userService.findBySlug(slug);
+  public User find(@RequestParam String id) {
+    return this.userService.findById(id);
   }
 
   // 追記BEGIN
@@ -605,28 +593,28 @@ public class UserController {
   // POST /user 宛のリクエストボディスキーマ
   public static class UserCreateRequest {
     private String name;
-    private String slug;
+    private String id;
 
     public String getName() {
       return name;
     }
 
-    public String getSlug() {
-      return slug;
+    public String getId() {
+      return id;
     }
 
     public void setName(String name) {
       this.name = name;
     }
 
-    public void setSlug(String slug) {
-      this.slug = slug;
+    public void setId(String id) {
+      this.id = id;
     }
   }
 
   @PostMapping(path = "/user")
   public User create(@RequestBody UserCreateRequest request) {
-    User newUser = new User(request.getName(), request.getSlug());
+    User newUser = new User(request.getName(), request.getId());
     return this.userService.save(newUser);
   }
   // 追記END
@@ -636,11 +624,11 @@ public class UserController {
 
 ```bash
 # 動作確認
-$ curl localhost:8080/user -X POST -H 'Content-Type: application/json' -d '{"name": "アリス", "slug": "alice"}'
-{"name": "アリス", "slug": "alice"}
+$ curl localhost:8080/user -X POST -H 'Content-Type: application/json' -d '{"name": "アリス", "id": "alice"}'
+{"name": "アリス", "id": "alice"}
 
-$ curl 'localhost:8080/user?slug=alice'
-{"name": "アリス", "slug": "alice"}
+$ curl 'localhost:8080/user?id=alice'
+{"name": "アリス", "id": "alice"}
 ```
 
 #### チェックポイント

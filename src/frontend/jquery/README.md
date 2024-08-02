@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2021, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 title: jQueryを触ってみよう
 description: JavaScriptライブラリであるjQueryを通してHTMLのDOM操作などについて学びます。
 time: 1h
