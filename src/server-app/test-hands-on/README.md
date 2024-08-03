@@ -26,45 +26,32 @@ prior_knowledge: Python3
   - [TDDをやってみる](#tddをやってみる)
 - [おわりに](#おわりに)
 
-<br />
 
 # はじめに
 
 本講義はdockerを使用します。
 dockerコンテナのpullには時間を要するため、概論の聴講と並行して「準備 ⇒ [dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」を実施することを推奨します。
 
-<br />
 
 # 概論
-
 ## なぜテストを行うのか
 
 昨今ではIT技術が普及し、炊飯器・電子レンジ・洗濯機といった身の回りのものから、航空機や車など、普段の生活に必須になるものにまで。ソフトウェアが使用されています。
 また、世の中に流通しているソフトウェアはテストが実施されており、その挙動で問題が起こらないことを保証されています。
 
-<br />
-
 例えばソフトウェアに対し、テストを行われていないと仮定して、個人的に運営しているブログなどで不具合が発生した場合はどうなるでしょうか。
 その不具合によってサーバがダウンしている間は、運営者に広告費が入らないなど、ある程度小規模で済みます。
 （ブログ収益で生計を立てている場合、致命的ですが。）
 
-<br />
-
 例えば自動車や医療機器などで不具合が発生してしまった場合、どうなるでしょうか。
 最悪の場合、ブレーキが効かない、医療機器のレーザーの出力が多すぎたなど、ソフトウェアの欠陥によって人命が失われてしまう可能性もあります。
-
-<br />
 
 上記2つの例を上げましたが、大なり小なり、ソフトウェアの不具合によって、どこかの誰かが被害を被ってしまいます。
 そのため、自身が作成するプログラムでは必ず動作のテストを行い、極力不具合を発生させないソフトウェアを作ることを目指す必要があります。
 
-<br />
-
 ## 効率的なテストとは
 
 テストを作成する場合には、不具合をなくすことも重要ですが、テストにコストをかけないことも重要になります。
-
-<br />
 
 例えば、あるプロダクトに使用される、以下のような仕様の関数```f(x)```があるとします。
 - 関数```f```は、任意の数字```x```の値を取ります。
@@ -76,8 +63,6 @@ dockerコンテナのpullには時間を要するため、概論の聴講と並�
 
 そのため、後述する「同値クラス・境界値テスト」などの手法によって、最低限かつ最適な回数でテストを行うことが求められます。
 
-<br />
-
 ## いつテストを作るのか
 
 開発を行う際、ウォーターフォール型の開発では、下記の流れになるかと思います。
@@ -88,17 +73,11 @@ dockerコンテナのpullには時間を要するため、概論の聴講と並�
 設計における各要素は、テスト工程の各要素に対応することになります。
 例えば、まずは要求定義を行い、ソフトウェアに必要な要件を決めますが、この時点で明確な要件が定義できているのであれば、システムテストで実施するテスト項目を作成しておくことができます。
 
-<br />
-
 このように各設計段階でテスト項目を作成することで、要件に沿ったテストを作成することができます。
 （何年も開発を行っているとわかるのですが、ものを作ってからテストを作成すると、「今動くものを通すテスト」を無意識的に書いてしまい、要件も網羅できないテストを作ってしまう傾向が出てきます。）
 
-<br />
-
 また、後述するTDD（テスト駆動開発）のように、テストを作成して開発を進める手法もあります。
 今回のハンズオンではコーディング・単体テスト段階で実施するテストプログラミングをやってみましょう。
-
-<br />
 
 # 準備
 
@@ -130,8 +109,6 @@ $ cd bootcamp/src/server-app/test-hands-on
 $ docker-compose exec bootcamp-test bash
 ```
 
-<br />
-
 下記のコマンドで、テストを実行してみましょう。
 ```bash
 # ソースは全て"/test-hands-on"配下にあります。
@@ -140,8 +117,6 @@ $ cd /test-hands-on
 # 任意のテストを実行します。
 $ python -m unittest -v exercises.exercise0.test_challenge
 ```
-
-<br />
 
 ## 関数・テストの修正方法
 
@@ -162,8 +137,6 @@ AssertionError: "hello world" != "goodbye world?"
 + goodbye world?
 ```
 
-<br />
-
 試しに、このテストを修正してみましょう。
 テストソースである、 ```/test-hands-on/exercises/exercise0/test_challenge.py``` を開いてみます。
 
@@ -179,8 +152,6 @@ class HelloTestCase(unittest.TestCase):
         self.assertEqual(hello(), "goodbye world?")
 ```
 
-<br />
-
 では、テスト対象である ```hello()``` 関数を見てみましょう。
 どうやら、この関数は文字列"hello world"を返すようです。
 
@@ -188,8 +159,6 @@ class HelloTestCase(unittest.TestCase):
 def hello():
     return "hello world"
 ```
-
-<br />
 
 しかし、これではテストソースで期待されている関数の返り値と、実際の関数の返り値が異なってしまっています。
 これがテストが失敗してしまう原因となるため、テストの期待する値を"goodbye world?"から"hello world"に変えてみましょう。
@@ -216,26 +185,18 @@ Ran 1 test in 0.000s
 OK
 ```
 
-<br />
-
 このように、テストソースというものは、テストを実施したい関数に対して動作を確認するように作成・実行します。
 
 本講義では、テストを実施したい関数に対し、テストソースで期待する返り値を設定し、関数の動作確認を行っていきます。
 
-<br />
-
 ちなみに、ローカルのソースファイルの変更は、コンテナ内にも自動で同期されます。
 以降はローカルでファイルを変更し、コンテナ内でテストを実行してみましょう。
-
-<br />
 
 # テストを実行する
 
 ## 1. 同値クラス・境界値テスト
 
 この項では「同値クラステスト」と「境界値テスト」という手法のテストを実施し、効率的なテストについて学びます。
-
-<br />
 
 ### 同値クラステストとは
 同値クラステストとは「任意の関数```g(x)```の引数```x```に対し、有効である値、無効である値のグループ（有効同値クラス、無効同値クラス）を定義してテストを実施する」ものになります。
@@ -250,8 +211,6 @@ OK
 
 すなわち、関数```f(x)```に対する同値クラステストとは、有効同値である *10* , *50* , *90* など、いくつかの値のグループと、無効同値である *-500* , *-10* , *110* , *500* などの値のグループのテストを実施すればよいことになります。
 
-<br />
-
 ### 境界値テストとは
 同値クラステストでは「有効/無効と定義した値に対する処理が正しく動くか」を確認できました。
 
@@ -259,8 +218,6 @@ OK
 こういった場合は境界値テストを実施し、有効値/無効値の境界が、正しく実行されるかのテストを行います。
 
 本書冒頭の関数```f(x)```を例にすると、下限の境界値は *-1* , *0* 、上限の境界値は *100* , *101* となります。
-
-<br />
 
 ### テスト実装例
 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。
@@ -271,8 +228,6 @@ def f(x):
   else:
     return False
 ```
-
-<br />
 
 上記の関数に対し、同値クラスのテストを定義すると、下記のように書くことができます。
 下記のテストでは、関数```f(x)```に有効同値クラスの値を入力すると```True```、そうでない値を入力すると```False```が返却されることを確認しています。
@@ -293,8 +248,6 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(f(500), False)
 ```
 
-<br />
-
 境界値テストを定義すると、下記のように書くことができます。
 下記のテストでは、関数```f(x)```に下限の境界値 *-1* , *0* 、上限の境界値 *100* , *101* を入力し、適宜```True```か```False```が返却されることを確認しています。
 ```python
@@ -311,8 +264,6 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(f(101), False)
 ```
 
-<br />
-
 ### 問題にチャレンジしよう
 dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に、商品の申し込みを行う関数```apply(quantity)```が定義されています。
 
@@ -324,21 +275,15 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に
 
 dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py```に、作成途中のテストクラス```ApplyTestCase```が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。
 
-<br />
-
 ## 2. APIと関数のモック
 
 この項では、Pythonで実行できるAPI（FastAPI）のフレームワークを使用し、APIに対するテストや、関数のモックに触れてみましょう。
-
-<br />
 
 ### モックとは
 「モックアップ」の略称であり、工業製品などの試作や、店頭展示などのためにつくられる実物大模型のことを指します。
 「[goo辞書 モックアップ（mock-up）](https://dictionary.goo.ne.jp/word/%e3%83%a2%e3%83%83%e3%82%af%e3%82%a2%e3%83%83%e3%83%97/)」より
 
 テストにおけるモックとは、主にクラスや関数の動作をシミュレートするためのオブジェクトになります。
-
-<br />
 
 例えば、以下のような仕様の関数```rock_paper_scissors(shoot)```があるとします。
 - 関数```rock_paper_scissors(shoot)```は、じゃんけんを行う関数で、引数```shoot```は文字列"rock", "paper", "scissors"の、いずれかを取ります。
@@ -350,8 +295,6 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py`
 （例えば、1回目の```my_shoot()```を実行した時に"rock"が返却されたとしても、2回目も"rock"が返却されるとは限らないですよね）
 
 こういった場合、関数のモックを使用して、テスト対象の関数内で使用されているクラスや関数をモックし、返り値を固定してシミュレーションを行う必要があります。
-
-<br />
 
 ### テスト実装例
 関数```rock_paper_scissors(shoot)```が、Pythonで以下のように定義されているとします。
@@ -375,8 +318,6 @@ def rock_paper_scissors(shoot):
   # 敗北
   return -1
 ```
-
-<br />
 
 上記の関数に対し、モックを使用したテストを定義すると、下記のように書くことができます。
 ```python
@@ -402,14 +343,10 @@ class ExampleTestCase(unittest.TestCase):
             self.assertEqual(rock_paper_scissors("rock"), -1)
 ```
 
-<br />
-
 ### FastAPIについて
 IIJ Bootcamp「FastAPI でwebアプリを作る」にて紹介されているため、詳細の説明は省きます。
 
 下記「テスト実装例」にサンプルを記載するように、簡単にAPIを実装できるフレームワークになっています。
-
-<br />
 
 ### テスト実装例
 FastAPIは、下記のようにAPIを実装できます。
@@ -423,8 +360,6 @@ app = FastAPI()
 async def get_hello():
     return {"response": "hello"}
 ```
-
-<br />
 
 上記のAPIに対し、HTTPステータスやレスポンスを検証するテストは、下記のように書くことができます。
 ```python
@@ -445,8 +380,6 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(data, {"response": "hello"})
 ```
 
-<br />
-
 ### 問題にチャレンジしよう
 dockerコンテナ内の```/test-hands-on/exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。
 
@@ -455,14 +388,10 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise2/challenge.py```に
 $ python3 -m uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
 ```
 
-<br />
-
 API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
 ```
 http://localhost:8000/
 ```
-
-<br />
 
 また、APIは下記のエンドポイントがあります。
 |パス|詳細|
@@ -473,15 +402,11 @@ http://localhost:8000/
 
 dockerコンテナ内の```/test-hands-on/exercises/exercise2/test_challenge.py```に、作成途中のテストクラス```ApiTestCase```が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。
 
-<br />
-
 ## 3. TDDをやってみる
 
 TDDとは、「テスト駆動開発( *Test-Driven* )」のことを指し「テストファースト（テスト優先）」を掲げて開発を行う、 **開発手法** のことになります。　　
 
 テスト手法じゃないよ !!!!
-
-<br />
 
 ### TDDのやり方
 
@@ -496,8 +421,6 @@ TDDは、任意の開発を行う設計があるうえで、下記のサイク�
 
 上記 *1~3* のサイクルを実行し、動きつつコードとリファクタリングによって最適化されたコードを、着実に作っていく手法になります。
 
-<br />
-
 ### テスト実装例
 この項で実際に、TDDのサイクルを見てみましょう。
 
@@ -507,8 +430,6 @@ TDDは、任意の開発を行う設計があるうえで、下記のサイク�
 - 3でも5の倍数でもないカウントに対しては、そのカウントを返します。
 
 上記のコードをTDDで作成していきましょう。
-
-<br />
 
 ### サイクル1 Red
 
@@ -520,14 +441,10 @@ class FizzBuzz:
         pass
 ```
 
-<br />
-
 次に、動作をしないテストを書きましょう。
 ```do()```が最初に実行する時は、下記の仕様が適用されます。
 
 > 3でも5の倍数でもないカウントに対しては、そのカウントを返します。
-
-<br />
 
 とりあえず1回目の実行では「1」が返ってくるはずなので、テストでは「1」を期待してみます。
 
@@ -565,8 +482,6 @@ class FizzBuzz:
         return 1
 ```
 
-<br />
-
 動いたよ！！！！やったね！！！！！！！！！
 
 ```bash
@@ -574,13 +489,9 @@ $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
 
-<br />
-
 ### サイクル1 Refactoring
 現在の```FizzBuzz```は、この世界に存在するどんなものよりも洗練されているため、リファクタリングは必要ないですね。
 素晴らしい。
-
-<br />
 
 ### サイクル2 Red
 
@@ -615,8 +526,6 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(fb.do(), 15)
 ```
 
-<br />
-
 ```FizzBuzz```は既に完成されているため、テストをいくら加えようが失敗するはずがないのですが、試してみましょう。
 まあ、やる意味はないと思うのですが（笑）
 
@@ -624,8 +533,6 @@ class ExampleTestCase(unittest.TestCase):
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
 ```
-
-<br />
 
 ### サイクル2 Green
 
@@ -644,15 +551,11 @@ class FizzBuzz:
         return count
 ```
 
-<br />
-
 だいぶ雑なコードですが、たぶん動くと思うからテストしましょう。
 ```bash
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
-
-<br />
 
 ### サイクル2 Refactoring
 現在の```FizzBuzz```はグローバル変数が使用されているなど、あまり美しくありません。
@@ -668,22 +571,16 @@ class FizzBuzz:
         return self.count
 ```
 
-<br />
-
 コードを変更しましたが、テストの結果が成功のままであることを確認します。
 ```bash
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
 
-<br />
-
 ### サイクル3 Red
 さて、ここまでで以下の仕様を実装することができました。
 - 内部でカウントを保持する。
 - 3でも5でもないカウントは、その値を返す。
-
-<br />
 
 次は「3の倍数なら"Fizz"を返す」を実装してみましょう。
 
@@ -706,15 +603,11 @@ test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 +        self.assertEqual(fb.do(), "Fizz")
 ```
 
-<br />
-
 テストは失敗しますね。
 ```bash
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
 ```
-
-<br />
 
 ### サイクル3 Green
 さて、"Fizz"を返せるように```FizzBuzz```を修正しましょう。
@@ -732,20 +625,14 @@ class FizzBuzz:
         return self.count
 ```
 
-<br />
-
 テストはオールグリーンです。
 ```bash
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
 
-<br />
-
 ### サイクル3 Refactoring
 特にリファクタリング箇所がないので省きます。
-
-<br />
 
 ### サイクル4 Red
 最後の仕様になります。
@@ -764,8 +651,6 @@ test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 +        self.assertEqual(fb.do(), "FizzBuzz")
 ```
 
-<br />
-
 「手がかかる子ほど可愛い」というのは、このことを言うのでしょうか。
 だんだんコンソールに出力される「FAIL」が愛おしく思えてきました。
 
@@ -777,8 +662,6 @@ test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
 ```
-
-<br />
 
 ### サイクル4 Green
 "Buzz"および"FizzBuzz"を返せるようにしましょう。
@@ -800,16 +683,12 @@ class FizzBuzz:
         return self.count
 ```
 
-<br />
-
 テストも通ります。
 やったか！？（まだ終わりじゃないです。）
 ```bash
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
-
-<br />
 
 ### サイクル4 Refactoring
 最後のリファクタリングになります。
@@ -837,16 +716,12 @@ class FizzBuzz:
         return result[index]
 ```
 
-<br />
-
 多分これが一番美しいと思います。
 
 ```bash
 $ python -m unittest -v example.test_fizzbuzz
 test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
 ```
-
-<br />
 
 ### 問題にチャレンジしよう
 dockerコンテナ内の```/test-hands-on/exercises/exercise3/challenge.py```には、FastAPIで書かれた作りかけのAPIがあります。
@@ -856,14 +731,10 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise3/challenge.py```に
 $ python3 -m uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
 ```
 
-<br />
-
 API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
 ```
 http://localhost:8000/
 ```
-
-<br />
 
 みなさんには、TDDを使って上記のAPIを完成させてもらいます。
 作ってもらいたいAPIの仕様は、下記のものになります。
@@ -872,8 +743,6 @@ http://localhost:8000/
   また、値は0始まりになります。
 - ```/add, /sub, /mul, /div```にパスパラメータを与えると、保持されている値に対し、四則演算を行います（後述）。
 - 本APIでは、全てint型で計算を行います。
-
-<br />
 
 以下、APIのパスについて
 
@@ -884,8 +753,6 @@ http://localhost:8000/
 |/sub/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から減算します。|
 |/mul/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値に乗算します。|
 |/div/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から除算します。|
-
-<br />
 
 サーバでの値の保持・取得関数は、ソース内に定義されています。
 以下に、使い方の例を記載します。
@@ -905,8 +772,6 @@ got_data = get_current_number()
 dockerコンテナ内の```/test-hands-on/exercises/exercise3/test_challenge.py```には、本APIが完成すると通るようになる、テスト```test_success()```が定義されています。
 
 上記のテストがOKになるよう、各種APIをTDDを使って作成してみましょう。　
-
-<br />
 
 # おわりに
 
