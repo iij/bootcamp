@@ -1,13 +1,18 @@
 services:
-  golang:
+  # golang:
     #build:
     #  context: ./
     #  dockerfile: ./Dockerfile
-    image: jo7oem/go-tutor:2023
+  #  image: jo7oem/go-tutor:2023
   vscode:
-    #build:
-    #  context: ./
-    #  dockerfile: ./Dockerfile-VScode
-    image: jo7oem/go-tutor-vscode:2023
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-VScode
+    #image: jo7oem/go-tutor-vscode:2023
+    volumes:
+      - ./samples:/root/go-tutor/samples
+      - ./go_tutorial:/root/go-tutor/go_tutorial
+      - ./.vscode:/root/go-tutor/.vscode
+
     ports:
-      - 80:8888
+      - 5009:8888
