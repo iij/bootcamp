@@ -24,6 +24,9 @@ RUN code-server \
   --install-extension golang.Go
 ADD ./VSCode_config.yaml /root/.config/code-server/config.yaml
 ADD ./VSCode_settings.json /root/.local/share/code-server/User/settings.json
+ADD ./.vscode /root/go-tutor/.vscode
+ADD ./samples /root/go-tutor/samples
+ADD ./go_tutorial /root/go-tutor/go_tutorial
 
 ENV GO111MODULE=off
 EXPOSE 8888

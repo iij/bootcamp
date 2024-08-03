@@ -9,10 +9,6 @@ services:
     #  context: ./
     #  dockerfile: ./Dockerfile-VScode
     image: jo7oem/go-tutor-vscode:2024
-    volumes:
-      - ./samples:/root/go-tutor/samples
-      - ./go_tutorial:/root/go-tutor/go_tutorial
-      - ./.vscode:/root/go-tutor/.vscode
 
     ports:
       - 5009:8888
