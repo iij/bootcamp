@@ -5,10 +5,10 @@ services:
     #  dockerfile: ./Dockerfile
   #  image: jo7oem/go-tutor:2023
   vscode:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile-VScode
-    #image: jo7oem/go-tutor-vscode:2023
+    #build:
+    #  context: ./
+    #  dockerfile: ./Dockerfile-VScode
+    image: jo7oem/go-tutor-vscode:2024
     volumes:
       - ./samples:/root/go-tutor/samples
       - ./go_tutorial:/root/go-tutor/go_tutorial
