@@ -163,14 +163,14 @@ $ docker run --name go-tutor-vscode -p 8888:8888 -d --rm jo7oem/go-tutor-vscode:
 ```
 
 ハンズオンでは、こちらから指示したpathに、ディレクトリやファイルを作成してもらい、Go言語に触れてもらいます。  
-基本的なフォルダ構成は、 `/go/src/go_tutorial/<セクション名>/<プログラム名>/***.go` のようになります。  
+基本的なフォルダ構成は、 `/root/go-tutor/go_tutorial/<セクション名>/<プログラム名>/***.go` のようになります。  
 
-講師側が説明で用いるソースコード（答え）は、`/go/src/samples/<セクション名>/<プログラム名>/***.go` の形で格納してあります。  
-講師側が想定している出力結果を確認したい際は、`/go/src/samples/`配下を実行することで、容易に確認できます。  
+講師側が説明で用いるソースコード（答え）は、`/root/go-tutor/samples/<セクション名>/<プログラム名>/***.go` の形で格納してあります。  
+講師側が想定している出力結果を確認したい際は、`/root/go-tutor/samples/`配下を実行することで、容易に確認できます。  
 また、ハンズオンがうまく行かない際には、以下のように差分を確認することで、課題解決を助ける可能性があります。  
 ```shell
 :# TERMINAL 0
-$ diff /go/src/go_tutorial/<セクション名>/<プログラム名>/***.go /go/src/samples/<セクション名>/<プログラム名>/***.go
+$ diff /root/go-tutor/go_tutorial/<セクション名>/<プログラム名>/***.go /root/go-tutor/samples/<セクション名>/<プログラム名>/***.go
 ```
 
 # 2. Hello, World ( 10 min )
@@ -186,13 +186,13 @@ Go言語で作成されたソースコードの実行方法は2つあります�
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+:# WORKPATH /root/go-tutor/go_tutorial/2_helloworld/hello/
 
-$ cd /go/src/go_tutorial/2_helloworld/hello/ 
+$ cd /root/go-tutor/go_tutorial/2_helloworld/hello/ 
 $ <お好きなエディタ> main.go
 $ go run main.go
 ```
-* /go/src/go_tutorial/2_helloworld/hello/main.go
+* /root/go-tutor/go_tutorial/2_helloworld/hello/main.go
 	```go
 	package main
 
@@ -213,7 +213,7 @@ Hello, W0rld!!
 #### :computer: 2.1.1.2. 以下のコマンドを実行して、Goをコンパイルしてみよう。  
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+:# WORKPATH /root/go-tutor/go_tutorial/2_helloworld/hello/
 
 $ go build main.go
 $ ls
@@ -223,7 +223,7 @@ $ ./main
 :recycle: 2.1.1.2. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+:# WORKPATH /root/go-tutor/go_tutorial/2_helloworld/hello/
 
 $ go build main.go
 $ ls
@@ -244,7 +244,7 @@ Hello, W0rld!!
 ### :computer: 2.2.1. 以下のコマンドを実行して、Goをコンパイルしてみましょう。  
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+:# WORKPATH /root/go-tutor/go_tutorial/2_helloworld/hello/
 
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
@@ -253,7 +253,7 @@ $ file ./main.exe
 :recycle: 2.2.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/2_helloworld/hello/
+:# WORKPATH /root/go-tutor/go_tutorial/2_helloworld/hello/
 
 $ GOOS=windows GOARCH=amd64 go build main.go
 $ ls
@@ -356,16 +356,16 @@ Go言語では、書き方を間違えているととても丁寧に教えてく
 ### :computer: 3.3.1. 以下のコマンドを実行して、修正箇所を認識てみよう。  
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+:# WORKPATH /root/go-tutor/go_tutorial/3_var/plzfixme/
 
-$ cd /go/src/go_tutorial/3_var/plzfixme/
+$ cd /root/go-tutor/go_tutorial/3_var/plzfixme/
 $ go run main.go
 ```
 
 :recycle: 3.3.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+:# WORKPATH /root/go-tutor/go_tutorial/3_var/plzfixme/
 
 $ go run main.go
 # command-line-arguments
@@ -377,12 +377,12 @@ $ go run main.go
 ### :computer: 3.3.1. ソースコードを修正し、エラーを無くしてみよう。  
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+:# WORKPATH /root/go-tutor/go_tutorial/3_var/plzfixme/
 
 $ <お好きなエディタ> main.go
 $ go run main.go
 ```
-* `/go/src/go_tutorial/3_var/plzfixme/main.go`
+* `/root/go-tutor/go_tutorial/3_var/plzfixme/main.go`
 	```go
 	package main
 
@@ -396,7 +396,7 @@ $ go run main.go
 :recycle: 3.4.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/3_var/plzfixme/
+:# WORKPATH /root/go-tutor/go_tutorial/3_var/plzfixme/
 
 $ <お好きなエディタ> main.go
 $ go run main.go
@@ -523,13 +523,13 @@ func main() {
 ## 4.2.1. :computer: 関数のコーディングを行う
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
+:# WORKPATH /root/go-tutor/go_tutorial/4_funcy/monkey/
 
-$ cd /go/src/go_tutorial/4_funcy/monkey/
+$ cd /root/go-tutor/go_tutorial/4_funcy/monkey/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
-* `/go/src/go_tutorial/4_funcy/monkey/eaters.go`
+* `/root/go-tutor/go_tutorial/4_funcy/monkey/eaters.go`
 	```go
 	package main
 
@@ -558,7 +558,7 @@ $ go run eaters.go
 :recycle: 4.2.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/4_funcy/monkey/
+:# WORKPATH /root/go-tutor/go_tutorial/4_funcy/monkey/
 
 $ go run eaters.go
 GYUDON
@@ -610,15 +610,15 @@ if _, err := Writer(); err != nil {
 #### 4.2.2.1. :computer: Goっぽい関数を実行してみる
 ```shell
 :# TERMINAL 0
-:# COPY /go/src/go_tutorial/4_funcy/monkey/eaters.go /go/src/go_tutorial/4_funcy/likego/eaters.go
-:# WORKPATH /go/src/go_tutorial/4_funcy/likego/
+:# COPY /root/go-tutor/go_tutorial/4_funcy/monkey/eaters.go /root/go-tutor/go_tutorial/4_funcy/likego/eaters.go
+:# WORKPATH /root/go-tutor/go_tutorial/4_funcy/likego/
 
-$ cp /go/src/go_tutorial/4_funcy/monkey/eaters.go /go/src/go_tutorial/4_funcy/likego/eaters.go
-$ cd /go/src/go_tutorial/4_funcy/likego/
+$ cp /root/go-tutor/go_tutorial/4_funcy/monkey/eaters.go /root/go-tutor/go_tutorial/4_funcy/likego/eaters.go
+$ cd /root/go-tutor/go_tutorial/4_funcy/likego/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
-* `/go/src/go_tutorial/4_funcy/likego/eaters.go`
+* `/root/go-tutor/go_tutorial/4_funcy/likego/eaters.go`
 	```go
 	package main
 
@@ -647,7 +647,7 @@ $ go run eaters.go
 :recycle: 4.2.2.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/4_funcy/likego/
+:# WORKPATH /root/go-tutor/go_tutorial/4_funcy/likego/
 
 $ go run eaters.go
 GYUDON
@@ -730,14 +730,14 @@ import (
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+:# WORKPATH /root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/
 
-$ cd /go/src/go_tutorial/5_package/fixFunckyMonkey/
+$ cd /root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 $ go run eaters.go > /dev/null
 ```
-* `/go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go`
+* `/root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/eaters.go`
 	```go
 	package main
 
@@ -769,7 +769,7 @@ $ go run eaters.go > /dev/null
 :recycle: 5.1.1 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+:# WORKPATH /root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/
 
 $ go run eaters.go
 GYUDON
@@ -788,16 +788,16 @@ cannot eat: 'name is empty.'
 ### 5.2.1. :computer: 関数Eatのshopパッケージ化
 ```shell
 :# TERMINAL 0
-:# COPY /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
-:# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+:# COPY /root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/eaters.go /root/go-tutor/go_tutorial/5_package/notKinkyuJi/eaters.go
+:# WORKPATH /root/go-tutor/go_tutorial/5_package/notKinkyuJi/
 
-$ cp /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
-$ cd /go/src/go_tutorial/5_package/notKinkyuJi/ 
+$ cp /root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/eaters.go /root/go-tutor/go_tutorial/5_package/notKinkyuJi/eaters.go
+$ cd /root/go-tutor/go_tutorial/5_package/notKinkyuJi/ 
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
-* `/go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go`
+* `/root/go-tutor/go_tutorial/5_package/notKinkyuJi/shop/shop.go`
 	```go
 	package shop
 
@@ -813,7 +813,7 @@ $ go run eaters.go
 		return true, nil
 	}
 	```
-* `/go/src/go_tutorial/5_package/notKinkyuJi/eaters.go`
+* `/root/go-tutor/go_tutorial/5_package/notKinkyuJi/eaters.go`
 	```go
 	package main
 
@@ -838,7 +838,7 @@ $ go run eaters.go
 :recycle: 5.2.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+:# WORKPATH /root/go-tutor/go_tutorial/5_package/notKinkyuJi/
 
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
@@ -1010,19 +1010,19 @@ type GYUDONYA struct {
 ### 6.3.1. :computer: お店で食べられる牛丼屋型を実行する
 ```shell
 :# TERMINAL 0
-:# COPY /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
-:# COPY /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
-:# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+:# COPY /root/go-tutor/go_tutorial/5_package/notKinkyuJi/eaters.go /root/go-tutor/go_tutorial/6_struct/weakShop/eaters.go
+:# COPY /root/go-tutor/go_tutorial/5_package/notKinkyuJi/shop/shop.go /root/go-tutor/go_tutorial/6_struct/weakShop/shop/shop.go
+:# WORKPATH /root/go-tutor/go_tutorial/6_struct/weakShop/
 
-$ cp /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
-$ cp /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
-$ cd /go/src/go_tutorial/6_struct/weakShop/
+$ cp /root/go-tutor/go_tutorial/5_package/notKinkyuJi/eaters.go /root/go-tutor/go_tutorial/6_struct/weakShop/eaters.go
+$ cp /root/go-tutor/go_tutorial/5_package/notKinkyuJi/shop/shop.go /root/go-tutor/go_tutorial/6_struct/weakShop/shop/shop.go
+$ cd /root/go-tutor/go_tutorial/6_struct/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 :# 10秒程度待機する
 ```
-* `/go/src/go_tutorial/6_struct/weakShop/shop/shop.go`
+* `/root/go-tutor/go_tutorial/6_struct/weakShop/shop/shop.go`
 	```go
 	package shop
 
@@ -1051,7 +1051,7 @@ $ go run eaters.go
 		return true, nil
 	}
 	```
-* `/go/src/go_tutorial/6_struct/weakShop/eaters.go`
+* `/root/go-tutor/go_tutorial/6_struct/weakShop/eaters.go`
 	```go
 	package main
 
@@ -1071,7 +1071,7 @@ $ go run eaters.go
 :recycle: 6.3.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+:# WORKPATH /root/go-tutor/go_tutorial/6_struct/weakShop/
 
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
@@ -1120,13 +1120,13 @@ func main() {
 
 ```shell
 :# TERMINAL 0
-:# COPY /go/src/go_tutorial/6_struct/weakShop/shop/shop.go /go/src/go_tutorial/7_webapp/weakShop/shop/shop.go
-:# COPY /go/src/go_tutorial/6_struct/weakShop/eaters.go /go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
-:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+:# COPY /root/go-tutor/go_tutorial/6_struct/weakShop/shop/shop.go /root/go-tutor/go_tutorial/7_webapp/weakShop/shop/shop.go
+:# COPY /root/go-tutor/go_tutorial/6_struct/weakShop/eaters.go /root/go-tutor/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
+:# WORKPATH /root/go-tutor/go_tutorial/7_webapp/weakShop/
 
-$ cp /go/src/go_tutorial/6_struct/weakShop/shop/shop.go /go/src/go_tutorial/7_webapp/weakShop/shop/shop.go
-$ cp /go/src/go_tutorial/6_struct/weakShop/eaters.go /go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
-$ cd /go/src/go_tutorial/7_webapp/weakShop/
+$ cp /root/go-tutor/go_tutorial/6_struct/weakShop/shop/shop.go /root/go-tutor/go_tutorial/7_webapp/weakShop/shop/shop.go
+$ cp /root/go-tutor/go_tutorial/6_struct/weakShop/eaters.go /root/go-tutor/go_tutorial/7_webapp/weakShop/gyudon-httpd.go
+$ cd /root/go-tutor/go_tutorial/7_webapp/weakShop/
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
 $ go run gyudon-httpd.go
@@ -1136,7 +1136,7 @@ $ go run gyudon-httpd.go
 $ curl http://localhost:8080/
 :# 10秒程度待機する
 ```
-* `/go/src/go_tutorial/7_webapp/weakShop/shop/shop.go`
+* `/root/go-tutor/go_tutorial/7_webapp/weakShop/shop/shop.go`
 	```go
 	package shop
 
@@ -1166,7 +1166,7 @@ $ curl http://localhost:8080/
 		return
 	}
 	```
-* `/go/src/go_tutorial/7_webapp/weakShop/gyudon-httpd.go`
+* `/root/go-tutor/go_tutorial/7_webapp/weakShop/gyudon-httpd.go`
 	```go
 	package main
 
@@ -1187,7 +1187,7 @@ $ curl http://localhost:8080/
 :recycle: 7.2. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+:# WORKPATH /root/go-tutor/go_tutorial/7_webapp/weakShop/
 
 $ <お好きなエディタ> shop/shop.go
 $ <お好きなエディタ> gyudon-httpd.go
@@ -1225,7 +1225,7 @@ HTTPサーバで、他者の処理が終わらないと利用できないなん�
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+:# WORKPATH /root/go-tutor/go_tutorial/7_webapp/weakShop/
 
 $ go run gyudon-httpd.go
 
@@ -1242,7 +1242,7 @@ $ time curl http://localhost:8080/
 :recycle: 7.3.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+:# WORKPATH /root/go-tutor/go_tutorial/7_webapp/weakShop/
 
 $ go run gyudon-httpd.go
 :# 何も出力されない場合、実行中です。続くハンズオンを実施ください
@@ -1292,12 +1292,12 @@ AさんとBさんに、同時に牛丼を食べてもらう方法は、簡単で
 実際に、食べる処理(Eat関数) を、並行プログラミングにして、2つ目のリクエストが、1つ目のリクエストを待たなくても良いように、アップグレードしましょう  
 
 ### 7.3.3. :computer: 並行動作するWebアプリケーションサーバ体験
-`/go/src/go_tutorial/7_webapp/weakShop/http/zakohttp.go` の、`c.serve(self.ctx)` が、Eat関数を呼び出しています。  
+`/root/go-tutor/go_tutorial/7_webapp/weakShop/http/zakohttp.go` の、`c.serve(self.ctx)` が、Eat関数を呼び出しています。  
 ここをGoroutine化し、その先にあるEat関数を新しく誕生させた座席(Goroutine)で動作させるようにしましょう。  
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+:# WORKPATH /root/go-tutor/go_tutorial/7_webapp/weakShop/
 
 $ <お好きなエディタ> http/zakohttp.go
 $ go run gyudon-httpd.go
@@ -1312,7 +1312,7 @@ $ time curl http://localhost:8080/
 $ time curl http://localhost:8080/
 :# 10秒程度待機する
 ```
-* /go/src/go_tutorial/7_webapp/weakShop/http/zakohttp.go
+* /root/go-tutor/go_tutorial/7_webapp/weakShop/http/zakohttp.go
 	```go
 	c.serve(self.ctx)    //Line56 もともとの書かれ方
 	go c.serve(self.ctx) //Line56 変更後。go と、加筆する
@@ -1320,7 +1320,7 @@ $ time curl http://localhost:8080/
 :recycle: 7.3.3. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/7_webapp/weakShop/
+:# WORKPATH /root/go-tutor/go_tutorial/7_webapp/weakShop/
 
 $ <お好きなエディタ> http/zakohttp.go
 $ go run gyudon-httpd.go
@@ -1434,14 +1434,14 @@ func TestIsTopping(t *testing){
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/8_test/test/
+:# WORKPATH /root/go-tutor/go_tutorial/8_test/test/
 
-$ cd /go/src/go_tutorial/8_test/test/
+$ cd /root/go-tutor/go_tutorial/8_test/test/
 $ <お好きなエディタ> shop/shop_test.go
 $ go test ./...
 ```
 
-* `/go/src/go_tutorial/8_test/test/shop/shop_test.go`
+* `/root/go-tutor/go_tutorial/8_test/test/shop/shop_test.go`
     ```go
     func TestGyudon_EatSimple(t *testing.T) {
     w := bytes.Buffer{}
@@ -1461,14 +1461,14 @@ $ go test ./...
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/8_test/test/
+:# WORKPATH /root/go-tutor/go_tutorial/8_test/test/
 
-$ cd /go/src/go_tutorial/8_test/test/
+$ cd /root/go-tutor/go_tutorial/8_test/test/
 $ <お好きなエディタ> shop/shop_test.go
 $ go test ./...
 ```
 
-* `/go/src/go_tutorial/8_test/test/shop/shop_test.go`
+* `/root/go-tutor/go_tutorial/8_test/test/shop/shop_test.go`
     ```go
     if want != got {
         t.Errorf("want = %s, got = %s\n", want, got)
