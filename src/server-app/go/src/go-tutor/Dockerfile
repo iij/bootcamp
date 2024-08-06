@@ -1,4 +1,4 @@
-FROM golang:1.20 AS builder
+FROM golang:1.22 AS builder
 LABEL maintainer="jo7oem@ume-ch.net"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -17,7 +17,5 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ADD ./samples ${GOPATH}/samples/
-ADD ./go_tutorial ${GOPATH}/go_tutorial
 ADD ./container_settings/* /root/
 WORKDIR ${GOPATH}
