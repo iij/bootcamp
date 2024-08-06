@@ -3,11 +3,7 @@ package main
 import "fmt"
 
 func Eat(name string) (bool, error) {
-	if name == "" {
-		return false, fmt.Errorf("name is empty.")
-	}
-	fmt.Println(name)
-	return true, nil
+	// 処理を書く
 }
 
 func main() {

@@ -730,14 +730,14 @@ import (
 
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+:# WORKPATH /go/src/go_tutorial/5_package/fix_func/
 
-$ cd /go/src/go_tutorial/5_package/fixFunckyMonkey/
-$ <お好きなエディタ> eaters.go
-$ go run eaters.go
-$ go run eaters.go > /dev/null
+$ cd /go/src/go_tutorial/5_package/fix_func/
+$ <お好きなエディタ> goods.go
+$ go run goods.go
+$ go run goods.go > /dev/null
 ```
-* `/go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go`
+* `/go/src/go_tutorial/5_package/fix_func/goods.go`
 	```go
 	package main
 
@@ -746,7 +746,7 @@ $ go run eaters.go > /dev/null
 		"os" //追加
 	)
 
-	func Eat(name string) (bool, error) {
+	func Echo(name string) (bool, error) {
 		if name == "" {
 			return false, fmt.Errorf("name is empty.")
 		}
@@ -755,27 +755,26 @@ $ go run eaters.go > /dev/null
 	}
 
 	func main() {
-		var name1 string = "GYUDON"
-		if _, err := Eat(name1); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+		var name1 string = "My Server"
+		if _, err := Echo(name1); err != nil {
+			fmt.Fprintln(os.Stdout,"cannt echo: ", err)
 		}
 
 		var name2 string = ""
-		if _, err := Eat(name2); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+		if _, err := Echo(name2); err != nil {
+			fmt.Fprintln(os.Stdout,"cannt echo: ", err)
 		}
-	}
 	```
 :recycle: 5.1.1 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/5_package/fixFunckyMonkey/
+:# WORKPATH /go/src/go_tutorial/5_package/fix_func/
 
-$ go run eaters.go
+$ go run goods.go
 GYUDON
-cannot eat: 'name is empty.'
+cannot echo: 'name is empty.'
 $ go run eaters.go > /dev/null
-cannot eat: 'name is empty.'
+cannot echo: 'name is empty.'
 ```
 
 ## 5.2. パッケージを作る
@@ -785,27 +784,27 @@ cannot eat: 'name is empty.'
 `package main`は、それを起点として実行できる決められたパッケージ名です。  
 今回は、main以外の任意の名前が指定可能な、起点から呼び出されるパッケージを作成してもらいます。  
 
-### 5.2.1. :computer: 関数Eatのshopパッケージ化
+### 5.2.1. :computer: 関数Echoのgoodsパッケージ化
 ```shell
 :# TERMINAL 0
-:# COPY /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
-:# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+:# COPY /go/src/go_tutorial/5_package/fix_func/goods.go /go/src/go_tutorial/5_package/to_package/goods.go
+:# WORKPATH /go/src/go_tutorial/5_package/to_package/
 
-$ cp /go/src/go_tutorial/5_package/fixFunckyMonkey/eaters.go /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go
-$ cd /go/src/go_tutorial/5_package/notKinkyuJi/ 
-$ <お好きなエディタ> shop/shop.go
-$ <お好きなエディタ> eaters.go
-$ go run eaters.go
+$ cp /go/src/go_tutorial/5_package/fix_func/goods.go /go/src/go_tutorial/5_package/to_package/goods.go
+$ cd /go/src/go_tutorial/5_package/to_package/ 
+$ <お好きなエディタ> goods/goods.go
+$ <お好きなエディタ> goods.go
+$ go run goods.go
 ```
-* `/go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go`
+* `/go/src/go_tutorial/5_package/to_package/goods/goods.go`
 	```go
-	package shop
+	package goods
 
 	import (
 		"fmt"
 	)
 
-	func Eat(name string) (bool, error) {
+	func Echo(name string) (bool, error) {
 		if name == "" {
 			return false, fmt.Errorf("name is empty.")
 		}
@@ -813,36 +812,35 @@ $ go run eaters.go
 		return true, nil
 	}
 	```
-* `/go/src/go_tutorial/5_package/notKinkyuJi/eaters.go`
+* `/go/src/go_tutorial/5_package/to_package/main.go`
 	```go
 	package main
 
 	import (
 		"os"
 		"fmt"
-		"./shop"
+		"./goods"
 	)
 
 	func main() {
-		var name1 string = "GYUDON"
-		if _, err := shop.Eat(name1); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+		var name1 string = "My Server"
+		if _, err := goods.Echo(name1); err != nil {
+			fmt.Fprintln(os.Stdout, "cannt echo: ", err)
 		}
 
 		var name2 string = ""
-		if _, err := shop.Eat(name2); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+		if _, err := goods.Echo(name2); err != nil {
+			fmt.Fprintln(os.Stdout, "cannt echo: ", err)
 		}
-	}
 	```
 :recycle: 5.2.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/5_package/notKinkyuJi/
+:# WORKPATH /go/src/go_tutorial/5_package/to_package/
 
-$ <お好きなエディタ> shop/shop.go
-$ <お好きなエディタ> eaters.go
-$ go run eaters.go
+$ <お好きなエディタ> goods/goods.go
+$ <お好きなエディタ> main.go
+$ go run main.go
 GYUDON
 cannot eat: 'name is empty.'
 ```
@@ -985,44 +983,41 @@ func main() {
 int64では扱えないサイズを例に挙げ、本資料では独自の方を定義していますが、  
 Go言語標準パッケージに、int64よりも大きいサイズを扱える、[math/big](https://golang.org/pkg/math/big/)パッケージが存在します。  
 
-## 6.3. 牛丼屋型と、注文する関数を定義する
+## 6.3. 所持品を表す型と、その内容を表示する関数を定義する
 先ほども紹介した通り、構造体(`struct`) は、`任意の定義ずみの型を0個以上まとめることが可能な型`なため、数字桁を扱うグルーピング以外にも活用できます。  
-牛丼屋で考えてみます。  
+自分の持ち物を管理する状況で考えてみます。  
 ```go
-type GYUDONYA struct {
-	reji_1  TypeOfCashRegister
-	reji_2  TypeOfCashRegister
-
-	seki_1  TypeOfChair
-	seki_2  TypeOfChair
-	seki_3  TypeOfChair
-
-	chubo_1 TypeOfKitchen
-
-	menu    string
-
-	ZipCode int64
+type Goods struct {
+	name string
+	count int
+	position TypeOfPosition
+	detail string
+	
+	maker TypeOfMaker
+	
+	author string
+	publisher string
 	#...省略
 ```
-レジや席がいくつか存在し、厨房やメニューがあることでしょう。あとは、所在の郵便番号(ZipCode)。他にも、電話番号や社員の一覧など、構成要素はまだまだありそうです。  
-牛丼屋を完璧にシミュレーションするコードを作成したければ、もっと沢山の構成要素を意識する必要がありますが、牛丼屋を考える講義でも無く、執筆者が牛丼屋で働いたこともないので、もう少しシンプルな実習コードとします。  
+物の名前や数、位置、詳細、製造元、著者、出版社など、様々な情報を合わせて管理したくなると思います。
+今回は簡単のため、名前だけを管理する構造体を定義し、その内容を表示する関数を作成してもらいます。
 
-### 6.3.1. :computer: お店で食べられる牛丼屋型を実行する
+### 6.3.1. :computer: 所持品型を実行する
 ```shell
 :# TERMINAL 0
-:# COPY /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
-:# COPY /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
-:# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+:# COPY /go/src/go_tutorial/5_package/to_package/main.go /go/src/go_tutorial/6_struct/weak_goods/main.go
+:# COPY /go/src/go_tutorial/5_package/to_package/goods/goods.go /go/src/go_tutorial/6_struct/weak_goods/goods/goods.go
+:# WORKPATH /go/src/go_tutorial/6_struct/weak_goods/
 
-$ cp /go/src/go_tutorial/5_package/notKinkyuJi/eaters.go /go/src/go_tutorial/6_struct/weakShop/eaters.go
-$ cp /go/src/go_tutorial/5_package/notKinkyuJi/shop/shop.go /go/src/go_tutorial/6_struct/weakShop/shop/shop.go
-$ cd /go/src/go_tutorial/6_struct/weakShop/
-$ <お好きなエディタ> shop/shop.go
-$ <お好きなエディタ> eaters.go
+$ cp /go/src/go_tutorial/5_package/to_package/main.go /go/src/go_tutorial/6_struct/weak_goods/main.go
+$ cp /go/src/go_tutorial/5_package/to_package/goods/goods.go /go/src/go_tutorial/6_struct/weak_goods/goods/goods.go
+$ cd /go/src/go_tutorial/6_struct/weak_goods/
+$ <お好きなエディタ> goods/goods.go
+$ <お好きなエディタ> main.go
 $ go run eaters.go
 :# 10秒程度待機する
 ```
-* `/go/src/go_tutorial/6_struct/weakShop/shop/shop.go`
+* `/go/src/go_tutorial/6_struct/weak_goods/goods/goods.go`
 	```go
 	package shop
 
@@ -1031,23 +1026,23 @@ $ go run eaters.go
 		"time"
 	)
 
-	type Gyudon struct {
-		menu string
+	type Goods struct {
+	name string
 	}
-
-	func NewGyudon() Gyudon { //変数定義用の関数
-		return Gyudon{
-			menu: "NegitamaGyudon",
-		}
+	
+	func NewGoods() Goods { //変数定義用の関数
+	return Goods{
+	name: "My Server",
 	}
-
-	func (self *Gyudon) Eat() (bool, error) {
-		if self.menu == "" {
-			return false, fmt.Errorf("name is empty.")
-		}
-
-		time.Sleep(time.Second * 10) //擬似食べてる時間
-		fmt.Println(self.menu)
+	}
+	
+	func (self *Goods) Echo() (bool, error) {
+	if self.name == "" {
+	return false, fmt.Errorf("name is empty.")
+	}
+	
+		time.Sleep(time.Second * 10) //擬似探している時間
+		fmt.Println(self.name)
 		return true, nil
 	}
 	```
@@ -1062,26 +1057,26 @@ $ go run eaters.go
 	)
 
 	func main() {
-		myshop := shop.NewGyudon()
-		if _, err := myshop.Eat(); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err)
+		myGoods := goods.NewGoods()
+		if _, err := myshop.Echo(); err != nil {
+			fmt.Fprintf(os.Stderr, "cannot echo: '%s'\n", err)
 		}
 	}
 	```
 :recycle: 6.3.1. 結果
 ```shell
 :# TERMINAL 0
-:# WORKPATH /go/src/go_tutorial/6_struct/weakShop/
+:# WORKPATH /go/src/go_tutorial/6_struct/weak_goods/
 
-$ <お好きなエディタ> shop/shop.go
-$ <お好きなエディタ> gyudon-httpd.go
-$ go run eaters.go
+$ <お好きなエディタ> goods/goods.go
+$ <お好きなエディタ> main.go
+$ go run main.go
 :# 10秒程度待機する
-NegitamaGyudon
+My Server
 ```
 
 # 7. Webアプリケーション ( 15 min )
-本章では、これまで順番に作り上げてきたGyudon型をWebアプリケーションサーバとして起動する方法を確認してもらいます。  
+本章では、これまで順番に作り上げてきたGoods型をWebアプリケーションサーバとして起動する方法を確認してもらいます。  
 本章までを通して、Go言語の基本的な扱い方を学習した皆さんには、最も簡単な章かもしれません。  
 
 ## 7.0. 準備
