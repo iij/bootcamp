@@ -47,19 +47,48 @@ $ git clone git@github.com:iij/bootcamp.git
 
 ```bash
 # やや重たいので注意してください
-$ docker pull tamago0224/bootcamp-springboot:2023
+$ docker pull tamago0224/bootcamp-springboot:2024
 ```
 
-2. コンテナを起動する
+2. ハンズオン用の作業ディレクトを作成する
+
+適当な場所に作業用ディレクトリを作成し、その中に work ディレクトリを作成してください。
 
 ```bash
-# プロキシ環境下にいる人はプロキシの設定をする
-$ PROXY_HOST=YOUR.PROXY.HOST
-$ PROXY_PORT=YOUR_PROXY_PORT
-$ JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
+$ mkdir bootcamp-java-2024 # このディレクトリ名は何でも良い
+$ cd bootcamp-java-2024
+$ mkdir work
+```
+
+3. ハンズオン用の docker-compose.yml を用意する
+
+```bash
+$ curl -o docker-compose.yml https://raw.githubusercontent.com/iij/bootcamp/master/src/server-app/java/server-app/docker-compose.yml
+```
+
+4. コンテナを起動する
+
+```bash
+# プロキシ環境下にいる人はプロキシの設定をする。以下の内容で.envファイルを用意
+$ cat .env
+PROXY_HOST=YOUR.PROXY.HOST
+PROXY_PORT=YOUR.PROXY.PORT
+JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
 # プロキシ設定ここまで
 # コンテナを起動する
-$ docker run --name bootcamp-springboot -it -p 8080:8080 -e JAVA_OPT="${JAVA_OPT}" tamago0224/bootcamp-springboot:2023
+$ docker compose up -d
+$ docker compose exec java /bin/bash
+>  pwd # ここでコンテナに入る
+/work
+```
+
+5. 必要なプロジェクトファイルの用意。別画面のターミナルで以下のコマンドを実行
+
+```bash
+$ cd bootcamp-java-2024
+$ docker exec cp java:/app/. ./work
+$ ls # 以下のファイル群が確認できる
+build  build.gradle  gradle  gradlew  settings.gradle  src
 ```
 
 3. アプリケーションの起動チェック
