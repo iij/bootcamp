@@ -1,7 +1,0 @@
-services:
-  java:
-   build: ./
-   volumes:
-    - ./:/app
-   working_dir: /app
-   tty: true
