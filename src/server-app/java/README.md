@@ -66,6 +66,16 @@ $ mkdir work
 $ curl -o docker-compose.yml https://raw.githubusercontent.com/iij/bootcamp/master/src/server-app/java/server-app/docker-compose.yml
 ```
 
+```yaml
+services:
+  java:
+    image: tamago0224/bootcamp-springboot:2024
+    volumes:
+      - ./work:/work
+    working_dir: /work
+    tty: true
+```
+
 4. コンテナを起動する
 
 ```bash
@@ -78,7 +88,7 @@ JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.
 # コンテナを起動する
 $ docker compose up -d
 $ docker compose exec java /bin/bash
->  pwd # ここでコンテナに入る
+> pwd
 /work
 ```
 
