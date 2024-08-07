@@ -216,12 +216,6 @@ Python であれば pip、Rust であれば cargo、Node.js であれば npm の
 
 Java では Maven と Gradle という 2 つの種類の自動化システムツールがよく利用されています。本講義では Gradle を利用して話を進めていきます。
 
-:::warning
-
-Maven を使わずに Gradle を利用する理由は、Gradle の方が優れている/イケているからではなく、単に筆者が XML が嫌いであるためである。
-
-:::
-
 ## Spring Boot の基本
 
 Spring Boot は Java の Web フレームワークのひとつです。Spring Boot の規約に従ってアプリケーションロジックを実装することで簡単に Web アプリケーションを構築できます。
