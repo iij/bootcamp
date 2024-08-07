@@ -240,12 +240,10 @@ Spring Boot は複雑な業務要件や非機能要件をクリアするため�
 
 :computer: `User`クラスを作成します。
 
-```bash
-# 下記の通りに修正する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/User.java
-```
+下記の通りに修正してみましょう。
 
 ```java
+// src/main/java/com/github/iij/bootcamp/serverapp/User.java
 package com.github.iij.bootcamp.serverapp;
 
 public class User {
@@ -285,14 +283,8 @@ Spring Boot アプリケーションの main 関数は`com.github.iij.bootcamp.s
 
 :computer: ServerAppApplication.java を修正してください。
 
-```bash
-# 下記の通りに修正する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
-# Spring Bootサーバーを再起動する
-❯ ./gradlew bootRun
-```
-
 ```java{10-13}
+// src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.boot.SpringApplication;
@@ -309,6 +301,12 @@ public class ServerAppApplication {
 		SpringApplication.run(ServerAppApplication.class, args);
 	}
 }
+```
+
+編集が完了したら以下のコマンドをコンテナから実行してサーバを起動しましょう。
+
+```bash
+❯ ./gradlew bootRun
 ```
 
 再起動時にログに"name: アリス,id: alice"と表示されていれば OK です。
@@ -331,14 +329,8 @@ Java には Lombok などのボイラープレートを解消するツールな�
 
 :computer: ServerAppApplication.java を修正し、サーバを再起動してみてください。
 
-```bash
-# 下記の通りに修正する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
-# Spring Bootサーバーを再起動する
-❯ ./gradlew bootRun
-```
-
 ```java{5-8,19-27}
+// src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.boot.SpringApplication;
@@ -370,6 +362,11 @@ public class ServerAppApplication {
 ```
 
 ```bash
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
+```
+
+```
 # 動作確認
 $ curl localhost:8080 -X GET
 hello world
@@ -412,14 +409,8 @@ DI コンテナに格納されたインスタンスは、後述する`@Autowired
 
 :computer: UserController.java を作成し、サーバを再起動してみてください。
 
-```bash
-# 下記の通りに修正する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
-# Spring Bootサーバーを再起動する
-❯ ./gradlew bootRun
-```
-
 ```java
+// src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -440,6 +431,11 @@ public class UserController {
     }
   }
 }
+```
+
+```bash
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
 ```
 
 ```bash
@@ -470,16 +466,9 @@ $ curl 'localhost:8080/user?id=bob'
 
 :computer: UserService.java を作成、UserController.java を修正し、サーバを再起動してください。
 
-```bash
-# 新しいクラスUserServiceを作成する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
-# UserControllerクラスを修正する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
-# Spring Bootサーバーを再起動する
-❯ ./gradlew bootRun
-```
 
 ```java
+// src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
 package com.github.iij.bootcamp.serverapp;
 
 import java.util.ArrayList;
@@ -514,6 +503,7 @@ public class UserService {
 ```
 
 ```java{6-8,13-21}
+// src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -536,6 +526,11 @@ public class UserController {
   }
   // 修正END
 }
+```
+
+```bash
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
 ```
 
 ```bash
@@ -564,15 +559,9 @@ $ curl 'localhost:8080/user?id=bob'
 
 :computer: UserService.java と UserController.java を修正し、サーバを再起動してください。
 
-```bash
-# 下記の通りに修正する
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
-❯ vim src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
-# Spring Bootサーバーを再起動する
-❯ ./gradlew bootRun
-```
 
 ```java{27-35}
+// src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
 package com.github.iij.bootcamp.serverapp;
 
 import java.util.ArrayList;
@@ -612,6 +601,7 @@ public class UserService {
 ```
 
 ```java{7-10,23-52}
+// src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
 package com.github.iij.bootcamp.serverapp;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -666,6 +656,11 @@ public class UserController {
   // 追記END
 
 }
+```
+
+```bash
+# Spring Bootサーバーを再起動する
+❯ ./gradlew bootRun
 ```
 
 ```bash
