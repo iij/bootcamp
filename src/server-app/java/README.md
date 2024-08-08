@@ -90,7 +90,7 @@ $ git clone git@github.com:iij/bootcamp.git
    ```bash
    $ cd bootcamp-java-2024
    $ docker exec cp java:/app/. ./work
-   $ ls # 以下のファイル群が確認できる
+   $ ls ./work # 以下のファイル群が確認できる
    build  build.gradle  gradle  gradlew  settings.gradle  src
    ```
 
