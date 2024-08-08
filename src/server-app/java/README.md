@@ -45,72 +45,65 @@ $ git clone git@github.com:iij/bootcamp.git
 
 1. ハンズオン用の Docker イメージを pull してくる
 
-```bash
-# やや重たいので注意してください
-$ docker pull tamago0224/bootcamp-springboot:2024
-```
+   ```bash
+   # やや重たいので注意してください
+   $ docker pull tamago0224/bootcamp-springboot:2024
+   ```
 
 2. ハンズオン用の作業ディレクトを作成する
 
-適当な場所に作業用ディレクトリを作成し、その中に work ディレクトリを作成してください。
-
-```bash
-$ mkdir bootcamp-java-2024 # このディレクトリ名は何でも良い
-$ cd bootcamp-java-2024
-$ mkdir work
-```
+   ```bash
+   # 適当な場所に作業用ディレクトリを作成し、その中に work ディレクトリを作成してください。
+   $ mkdir bootcamp-java-2024 # このディレクトリ名は何でも良い
+   $ cd bootcamp-java-2024
+   $ mkdir work
+   ```
 
 3. ハンズオン用の docker-compose.yml を用意する
 
-```bash
-$ curl -o docker-compose.yml https://raw.githubusercontent.com/iij/bootcamp/master/src/server-app/java/server-app/docker-compose.yml
-```
+   ```bash
+   $ curl -o docker-compose.yml https://raw.githubusercontent.com/iij/bootcamp/master/src/server-app/java/server-app/docker-compose.yml
+   ```
 
-```yaml
-services:
-  java:
-    image: tamago0224/bootcamp-springboot:2024
-    volumes:
-      - ./work:/work
-    working_dir: /work
-    tty: true
-```
+   ```yaml
+   services:
+     java:
+       image: tamago0224/bootcamp-springboot:2024
+       volumes:
+         - ./work:/work
+       working_dir: /work
+       tty: true
+   ```
 
 4. コンテナを起動する
 
-```bash
-# プロキシ環境下にいる人はプロキシの設定をする。以下の内容で.envファイルを用意
-$ cat .env
-PROXY_HOST=YOUR.PROXY.HOST
-PROXY_PORT=YOUR.PROXY.PORT
-JAVA_OPT="-Dhttp.proxyHost=${PROXY_HOST} -Dhttp.proxyPort=${PROXY_PORT} -Dhttps.proxyHost=${PROXY_HOST} -Dhttps.proxyPort=${PROXY_PORT}"
-# プロキシ設定ここまで
-# コンテナを起動する
-$ docker compose up -d
-$ docker compose exec java /bin/bash
-> pwd
-/work
-```
+   ```bash
+   # コンテナを起動する
+   $ docker compose up -d
+   $ docker compose exec java /bin/bash
+   > pwd
+   /work
+   ```
 
 5. 必要なプロジェクトファイルの用意。別画面のターミナルで以下のコマンドを実行
 
-```bash
-$ cd bootcamp-java-2024
-$ docker exec cp java:/app/. ./work
-$ ls # 以下のファイル群が確認できる
-build  build.gradle  gradle  gradlew  settings.gradle  src
-```
+   ```bash
+   $ cd bootcamp-java-2024
+   $ docker exec cp java:/app/. ./work
+   $ ls # 以下のファイル群が確認できる
+   build  build.gradle  gradle  gradlew  settings.gradle  src
+   ```
 
-3. アプリケーションの起動チェック
+6. アプリケーションの起動チェック
 
-```bash
-# Spring Bootを起動する
-❯ ./gradlew bootrun
-# ...
-# いろんなログが流れる
-```
+   ```bash
+   # Spring Bootを起動する
+   ❯ ./gradlew bootrun
+   # ...
+   # いろんなログが流れる
+   ```
 
-4. 動作チェック
+7. 動作チェック
 
 ホストマシンの適当なブラウザから[localhost:8080](http://localhost:8080)にアクセスし、下記のようなエラーページが表示されることを確認してください。
 
@@ -466,7 +459,6 @@ $ curl 'localhost:8080/user?id=bob'
 
 :computer: UserService.java を作成、UserController.java を修正し、サーバを再起動してください。
 
-
 ```java
 // src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
 package com.github.iij.bootcamp.serverapp;
@@ -558,7 +550,6 @@ $ curl 'localhost:8080/user?id=bob'
 `User`インスタンスには`id`と`name`の値を指定する必要があるので、これらを与えられるエンドポイントを用意します。
 
 :computer: UserService.java と UserController.java を修正し、サーバを再起動してください。
-
 
 ```java{27-35}
 // src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
