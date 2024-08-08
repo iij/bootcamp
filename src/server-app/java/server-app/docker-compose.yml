@@ -1,0 +1,7 @@
+services:
+  java:
+    image: tamago0224/bootcamp-springboot:2024
+    volumes:
+      - ./work:/work
+    working_dir: /work
+    tty: true
