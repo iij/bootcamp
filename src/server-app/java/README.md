@@ -80,6 +80,7 @@ $ git clone git@github.com:iij/bootcamp.git
    ```bash
    # コンテナを起動する
    $ docker compose up -d
+   # コンテナに入る
    $ docker compose exec java /bin/bash
    > pwd
    /work
