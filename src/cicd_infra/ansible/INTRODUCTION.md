@@ -22,13 +22,15 @@ Ansible is a radically simple IT automation system. It handles configuration man
 ## Ansible の特徴
 
 - エージェントレスである
-  - Ansible は対象の管理は基本的に[OpenSSH](https://www.openssh.com/)を利用する為、専用のクライアント/デーモンを必要としません
+  - Ansible は対象の操作は基本的にssh(たいていは[OpenSSH](https://www.openssh.com/)を利用する為、専用のクライアント/デーモンを必要としません
 - 状態を管理しない
-  - Ansible には対象となるマシン情報（Inventory) を持ちますが、そのマシンの状態を保有することはありません。Inventory ファイルは ansible playbooks などで利用するためのものであり、状態を管理・監視することはありません
+  - Ansible には対象となるマシン情報（Inventory) を持ちますが、InventoryはAnsibleの実行対象を列挙したファイルに過ぎず、マシンの状態を監視したりすることはありません。
 - 冪等性を持つ
-  - Ansible は playbooks を基本的に何回実行しても結果は同じになります。例えば httpd のインストールタスク等はインストール済みであれば複数回実行しても 2 回目以降は実行済みとして処理され、二度実行されることがありません。
-
-Ansible の記述には基本的に[YAML](https://yaml.org/)と呼ばれる記述（解読）言語が用いられておりユーザにも読み書きしやすいようになっています。
+  - Ansible は playbooks を基本的に何回実行しても結果は同じになるように作られています
+  - つまり、実行前に状態を確認し、実施済み（実施の必要が無い）処理はスキップされます。
+    - 従って例えば httpd のインストールタスク等はインストール済みであれば複数回実行しても 2 回目以降は実行済みとして処理され、二度実行されることがありません。
+- YAML形式の記述
+  - Ansible の記述には基本的に[YAML](https://yaml.org/)と呼ばれる記述（解読）言語が用いられておりユーザにも読み書きしやすいようになっています。
 
 ## Ansible の構成
 
@@ -38,7 +40,8 @@ Ansibleはエージェントレス、ということからAnsibleのインスト
 
 Ansible のインストールはRPMによる提供もされていますが、現在では`pip`によるインストールが推奨されています。
 
-Ansibleパッケージは長らく単一のパッケージとなっていましたが、2.10 以降、Ansible のパッケージ方針には大幅な変更がなされ、Ansibleの実行部分と、タスクを実行する（モジュール）の分離がなされ、それぞれ別のパッケージで提供されるようになっています。
+Ansibleパッケージは長らく単一のパッケージとなっていましたが、2.10 以降、Ansible のパッケージ方針には大幅な変更がなされ、Ansibleの実行部分と、タスクを実行する（モジュール）に分離されました。
+従って、Ansibleを充分に使うにはコアモジュールと、コレクションと呼ばれるモジュール/プラグインなどをインストールすることになります。
 
 - [モジュール一覧](https://docs.ansible.com/ansible/latest/modules/list_of_all_modules.html)
 - [プラグイン一覧](https://docs.ansible.com/ansible/latest/plugins/plugins.html)
@@ -121,6 +124,6 @@ ansible [core 2.15.3]
   jinja version = 3.
 ```
 
-ansible-core の `2.5.13`やそれぞれのバージョンには実行する時期によって異なることがありますが問題ありません。
+ansible-core の `2.15.13`やそれぞれのバージョンには実行する時期によって異なることがありますが問題ありません。
 
 <credit-footer/>
