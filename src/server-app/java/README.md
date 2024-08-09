@@ -92,7 +92,7 @@ $ git clone git@github.com:iij/bootcamp.git
 
    ```bash
    $ cd bootcamp-java-2024
-   $ docker exec cp java:/app/. ./work
+   $ docker compose cp java:/app/. ./work
    $ ls ./work # 以下のファイル群が確認できる
    build  build.gradle  gradle  gradlew  settings.gradle  src
    ```
@@ -115,7 +115,7 @@ $ git clone git@github.com:iij/bootcamp.git
 ## Java の基本
 
 Java は OpenJDK コミュニティによって開発され、各ベンダからリリースされているプログラミング言語です。
-古くから利用されているプログラミング言語/プラットフォームである一方、2022 年現在でも SI や大規模開発の現場などでよく利用されています。
+古くから利用されているプログラミング言語/プラットフォームである一方、2024 年現在でも SI や大規模開発の現場などでよく利用されています。
 
 ### 言語としての特徴
 
