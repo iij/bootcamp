@@ -234,11 +234,13 @@ OK
 同値クラステストとは「任意の関数```g(x)```の引数```x```に対し、有効である値、無効である値のグループ（有効同値クラス、無効同値クラス）を定義してテストを実施する」ものになります。
 
 例えば、本書の冒頭で出てきた、関数```f(x)```では、```x```の値が *0* から *100* の間であれば有効同値クラス、そうでなければ無効同値クラス、と定義できます。
+
 ```
 関数fは、任意の数字xの値を取ります。
 任意の数字xは、int型であり、 -2,147,483,648 から 2,147,483,647 の範囲の値を格納できます。
 関数fは、与えられた数字が 0 から 100 の間であればTrue、そうでなければFalseを返却します。
 ```
+
 仮に「有効同値クラス内の値が入力された場合は正常終了、無効同値クラス内の値が入力された場合は異常終了する」と見た場合、終了の仕方は「正常終了か異常終了か」の2択と見ることができます。
 
 すなわち、関数```f(x)```に対する同値クラステストとは、有効同値である *10* , *50* , *90* など、いくつかの値のグループと、無効同値である *-500* , *-10* , *110* , *500* などの値のグループのテストを実施すればよいことになります。
@@ -253,18 +255,36 @@ OK
 
 ### テスト実装例
 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。
+
+`exercies/sample1/sample.py` を作成してみましょう。
+
+```bash
+$ cd exercies/
+$ mkdir sample1
+$ cd sample1
+$ code ./sample.py
+```
+
 ```python
 def f(x):
-  if 0 <= x <= 100:
-    return True
-  else:
-    return False
+    if 0 <= x <= 100:
+        return True
+    else:
+        return False
 ```
 
 上記の関数に対し、同値クラスのテストを定義すると、下記のように書くことができます。
 下記のテストでは、関数```f(x)```に有効同値クラスの値を入力すると```True```、そうでない値を入力すると```False```が返却されることを確認しています。
+
+`exercies/sample1/test_sample.py` を作成してみましょう。
+```bash
+$ code ./test_sample.py
+```
+
 ```python
 import unittest
+from .sample import f
+
 
 class ExampleTestCase(unittest.TestCase):
     def test_equivalence_partitioning(self):
@@ -284,9 +304,17 @@ class ExampleTestCase(unittest.TestCase):
 下記のテストでは、関数```f(x)```に下限の境界値 *-1* , *0* 、上限の境界値 *100* , *101* を入力し、適宜```True```か```False```が返却されることを確認しています。
 ```python
 import unittest
+from .sample import f
+
 
 class ExampleTestCase(unittest.TestCase):
     def test_equivalence_partitioning(self):
+        # 有効同値のテスト
+        # ... 略
+
+        # 無効同値のテスト
+        # ... 略
+
         # 下限の境界値
         self.assertEqual(f(-1), False)
         self.assertEqual(f(0), True)
@@ -296,8 +324,19 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(f(101), False)
 ```
 
+docker コンテナ内からテスト実行してみましょう。
+```bash
+root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.sample1.test_sample
+test_equivalence_partitioning (exercises.sample1.test_sample1.ExampleTestCase.test_equivalence_partitioning) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
 ### 問題にチャレンジしよう
-dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に、商品の申し込みを行う関数```apply(quantity)```が定義されています。
+```exercises/exercise1/challenge.py```に、商品の申し込みを行う関数```apply(quantity)```が定義されています。
 
 関数は以下の仕様になっています。
 - この関数は、int型の引数```quantity```を取ります。
@@ -305,7 +344,7 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise1/challenge.py```に
 - 申し込みに失敗した場合は、文字列```"not accepted"```が返却されます。
 - int型以外のデータが入力された場合、例外```TypeError()```が発生し、プログラムが異常終了します。
 
-dockerコンテナ内の```/test-hands-on/exercises/exercise1/test_challenge.py```に、作成途中のテストクラス```ApplyTestCase```が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。
+```exercises/exercise1/test_challenge.py```に、作成途中のテストクラス```ApplyTestCase```が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。
 
 ## 2. APIと関数のモック
 
