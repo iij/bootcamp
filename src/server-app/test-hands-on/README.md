@@ -368,50 +368,86 @@ OK
 こういった場合、関数のモックを使用して、テスト対象の関数内で使用されているクラスや関数をモックし、返り値を固定してシミュレーションを行う必要があります。
 
 ### テスト実装例
+
 関数```rock_paper_scissors(shoot)```が、Pythonで以下のように定義されているとします。
+
+`exercies/sample2/sample.py` を作成してみましょう。
+
+```bash
+$ cd exercies/
+$ mkdir sample2
+$ cd sample2
+$ code ./sample.py
+```
+
 ```python
+import random
+
+
+def _my_shoot():
+    choices = ["rock", "paper", "scissors"]
+    return random.choice(choices)
+
+
 def rock_paper_scissors(shoot):
-  # 1/3で"rock", "paper", "scissors"が格納される
-  my_shoot_result = my_shoot()
+    # 1/3で"rock", "paper", "scissors"が格納される
+    my_shoot_result = _my_shoot()
 
-  # あいこ
-  if shoot == my_shoot_result:
-    return 0
+    # あいこ
+    if shoot == my_shoot_result:
+        return 0
 
-  # 勝利
-  if shoot == "rock" and my_shoot_result == "scissors":
-    return 1
-  if shoot == "paper" and my_shoot_result == "rock":
-    return 1
-  if shoot == "scissors" and my_shoot_result == "paper":
-    return 1
+    # 勝利
+    if shoot == "rock" and my_shoot_result == "scissors":
+        return 1
+    if shoot == "paper" and my_shoot_result == "rock":
+        return 1
+    if shoot == "scissors" and my_shoot_result == "paper":
+        return 1
 
-  # 敗北
-  return -1
+    # 敗北
+    return -1
 ```
 
 上記の関数に対し、モックを使用したテストを定義すると、下記のように書くことができます。
+
+`exercies/sample2/test_sample.py` を作成してみましょう。
+```bash
+$ code ./test_sample.py
+```
+
 ```python
 import unittest
 from unittest import mock
-# 関数rock_paper_scissors(), my_shoot()は、exampleパッケージに含まれているとする
-from . import example
+from . import sample
 
-rock_paper_scissors = example.rock_paper_scissors
+rock_paper_scissors = sample.rock_paper_scissors
+
 
 class ExampleTestCase(unittest.TestCase):
     def test_rock_paper_scissors(self):
         # あいこのテスト
-        with mock.patch.object(example, 'my_shoot', return_value="rock"):
+        with mock.patch.object(sample, '_my_shoot', return_value="rock"):
             self.assertEqual(rock_paper_scissors("rock"), 0)
 
         # 勝利のテスト
-        with mock.patch.object(example, 'my_shoot', return_value="scissors"):
+        with mock.patch.object(sample, '_my_shoot', return_value="scissors"):
             self.assertEqual(rock_paper_scissors("rock"), 1)
 
         # 敗北のテスト
-        with mock.patch.object(example, 'my_shoot', return_value="paper"):
+        with mock.patch.object(sample, '_my_shoot', return_value="paper"):
             self.assertEqual(rock_paper_scissors("rock"), -1)
+```
+
+docker コンテナ内から実行してみましょう。
+```bash
+root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.sample2.test_sample
+test_rock_paper_scissors (exercises.sample2.test_sample2.ExampleTestCase.test_rock_paper_scissors) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
 ```
 
 ### FastAPIについて
@@ -422,10 +458,21 @@ IIJ Bootcamp「FastAPI でwebアプリを作る」にて紹介されているた
 ### テスト実装例
 FastAPIは、下記のようにAPIを実装できます。
 下記は、ブラウザで```http://localhost:8000/hello```にアクセスすると、データ```{"response": "hello"}```を返却します。
+
+`exercies/sample3/sample.py` を作成してみましょう。
+
+```bash
+$ cd exercies/
+$ mkdir sample3
+$ cd sample3
+$ code ./sample.py
+```
+
 ```python
 from fastapi import FastAPI
 
 app = FastAPI()
+
 
 @app.get("/hello")
 async def get_hello():
@@ -433,8 +480,18 @@ async def get_hello():
 ```
 
 上記のAPIに対し、HTTPステータスやレスポンスを検証するテストは、下記のように書くことができます。
+
+`exercies/sample3/test_sample.py` を作成してみましょう。
+```bash
+$ code ./test_sample.py
+```
+
 ```python
 import unittest
+from fastapi.testclient import TestClient
+from . import sample
+
+client = TestClient(sample.app)
 
 
 class ExampleTestCase(unittest.TestCase):
@@ -451,12 +508,23 @@ class ExampleTestCase(unittest.TestCase):
         self.assertEqual(data, {"response": "hello"})
 ```
 
+docker コンテナ内から実行してみましょう。
+```bash
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample3.test_sample
+test_api (exercises.sample3.test_sample.ExampleTestCase.test_api) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+OK
+```
+
 ### 問題にチャレンジしよう
-dockerコンテナ内の```/test-hands-on/exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。
+```exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。
 
 上記のAPIは、コンテナから下記のコマンドで実行することができます。
 ```bash
-$ python3 -m uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
+root@233072c168ae:/test-hands-on# python3 -m uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
 ```
 
 API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
@@ -471,7 +539,7 @@ http://localhost:8000/
 |/echo/{data}|```{"message": "got the message: {data}"}```が返却されます。<br />※```{data}```は、任意の値が代入されます。|
 |/gacha|```{"message": "{result}"```が返却されます。<br />※```{result}```は、 *1/100* で文字列"you win"、それ以外で文字列"you lose"が代入されます。|
 
-dockerコンテナ内の```/test-hands-on/exercises/exercise2/test_challenge.py```に、作成途中のテストクラス```ApiTestCase```が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。
+```exercises/exercise2/test_challenge.py```に、作成途中のテストクラス```ApiTestCase```が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。
 
 ## 3. TDDをやってみる
 
