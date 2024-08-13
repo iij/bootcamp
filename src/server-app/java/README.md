@@ -75,6 +75,8 @@ $ git clone git@github.com:iij/bootcamp.git
          - ./work:/work
        working_dir: /work
        tty: true
+       ports:
+        - "8080:8080"
    ```
 
 4. コンテナを起動する
