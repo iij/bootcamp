@@ -32,11 +32,28 @@ prior_knowledge: Python3
 本講義はdockerを使用します。
 dockerコンテナのpullには時間を要するため、概論の聴講と並行して「準備 ⇒ [dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」を実施することを推奨します。
 
+また、ローカルでのコマンド実行なのか、docker コンテナ内でのコマンド実行なのかが分かるよう、以下の記述方法を用います。
+基本的には、手を動かすのはローカル、成果物の確認 (テスト実行) は docker コンテナになります。
+```bash
+### "$" で始まるものはローカルでのコマンド実行
+$ cd bootcamp/src/server-app/test-hands-on
+
+### "root@..." で始まるものは docker コンテナ内でのコマンド実行
+root@a3f5935947a2:/# cd /test-hands-on
+```
+
+また、ファイルを開くのは以下のように vscode を前提として書いていますが、適宜お手元のエディターに読み替えていただいて問題ありません。
+```bash
+# とりあえず vscode にしているが、コードを編集できれば何でもよい
+$ code ./exercises/exercise0/test_challenge.py
+```
+
+
 
 # 概論
 ## なぜテストを行うのか
 
-昨今ではIT技術が普及し、炊飯器・電子レンジ・洗濯機といった身の回りのものから、航空機や車など、普段の生活に必須になるものにまで。ソフトウェアが使用されています。
+昨今ではIT技術が普及し、炊飯器・電子レンジ・洗濯機といった身の回りのものから、航空機や車など、普段の生活に必須になるものにまで、ソフトウェアが使用されています。
 また、世の中に流通しているソフトウェアはテストが実施されており、その挙動で問題が起こらないことを保証されています。
 
 例えばソフトウェアに対し、テストを行われていないと仮定して、個人的に運営しているブログなどで不具合が発生した場合はどうなるでしょうか。
@@ -76,7 +93,8 @@ dockerコンテナのpullには時間を要するため、概論の聴講と並�
 このように各設計段階でテスト項目を作成することで、要件に沿ったテストを作成することができます。
 （何年も開発を行っているとわかるのですが、ものを作ってからテストを作成すると、「今動くものを通すテスト」を無意識的に書いてしまい、要件も網羅できないテストを作ってしまう傾向が出てきます。）
 
-また、後述するTDD（テスト駆動開発）のように、テストを作成して開発を進める手法もあります。
+また、後述するTDD（テスト駆動開発）のように、テストを作成しながら開発を進める手法もあります。
+
 今回のハンズオンではコーディング・単体テスト段階で実施するテストプログラミングをやってみましょう。
 
 # 準備
@@ -87,35 +105,40 @@ dockerコンテナのpullには時間を要するため、概論の聴講と並�
 
 ```bash
 # リポジトリのクローン
-$ git clone git@github.com:iij/bootcamp.git
+# 既にある場合、clone はスキップで OK.
+$ git clone https://github.com/iij/bootcamp.git
 $ cd bootcamp/src/server-app/test-hands-on
 
 # コンテナの立ち上げ
-$ docker-compose up --build
-```
+$ docker compose up --build
 
-<br />
+# 以下のように出力されたら OK.
+(中略)
+ ✔ Network test-hands-on_default            Created  0.0s
+ ✔ Container test-hands-on-bootcamp-test-1  Created  0.0s
+Attaching to bootcamp-test-1
+bootcamp-test-1  | Python 3.12.4 (main, Aug  1 2024, 21:02:17) [GCC 12.2.0] on linux
+bootcamp-test-1  | Type "help", "copyright", "credits" or "license" for more information.
+```
 
 ## テストの実行方法
 
 この項では、任意の「[テストを実行する](#テストを実行する)」の項のテストを実行します。
 
-<br />
-
 「[dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」で、起動中のコンソールとは別のコンソールを開き、実行中のコンテナにアクセスします。
 コマンドを実行すると、コンテナ内のbashが実行されます。
 ```bash
 $ cd bootcamp/src/server-app/test-hands-on
-$ docker-compose exec bootcamp-test bash
+$ docker compose exec bootcamp-test bash
 ```
 
 下記のコマンドで、テストを実行してみましょう。
 ```bash
 # ソースは全て"/test-hands-on"配下にあります。
-$ cd /test-hands-on
+root@a3f5935947a2:/# cd /test-hands-on
 
 # 任意のテストを実行します。
-$ python -m unittest -v exercises.exercise0.test_challenge
+root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
 ```
 
 ## 関数・テストの修正方法
@@ -123,22 +146,31 @@ $ python -m unittest -v exercises.exercise0.test_challenge
 「テストの実行方法」の項でテストを行うと、初回は下記のようにテストが失敗してしまいます。
 
 ```bash
-$ python -m unittest -v exercises.exercise0.test_challenge
-test_success (exercises.exercise0.test_challenge.HelloTestCase) ... FAIL
+root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
+test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success) ... FAIL
 
 ======================================================================
-FAIL: test_success (exercises.exercise0.test_challenge.HelloTestCase)
+FAIL: test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/test-hands-on/exercises/exercise0/test_challenge.py", line 7, in test_success
     self.assertEqual(hello(), "goodbye world?")
-AssertionError: "hello world" != "goodbye world?"
+AssertionError: 'hello world' != 'goodbye world?'
 - hello world
 + goodbye world?
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
 ```
 
-試しに、このテストを修正してみましょう。
-テストソースである、 ```/test-hands-on/exercises/exercise0/test_challenge.py``` を開いてみます。
+試しに、このテストを開いて修正してみましょう。
+```bash
+$ cd bootcamp/src/server-app/test-hands-on
+$ code ./exercises/exercise0/test_challenge.py
+```
 
 内容は下記のようになっており、ソース内でimportしている ```hello()``` 関数に対し、文字列"goodbye world?"が来ることを期待してテストを行っているようです。
 
@@ -176,8 +208,8 @@ class HelloTestCase(unittest.TestCase):
 このテストを実行してみると、先程まで失敗していたテストが成功しました。
 
 ```bash
-python -m unittest -v exercises.exercise0.test_challenge
-test_success (exercises.exercise0.test_challenge.HelloTestCase) ... ok
+root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
+test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success) ... ok
 
 ----------------------------------------------------------------------
 Ran 1 test in 0.000s
