@@ -21,7 +21,6 @@ class ApiTestCase(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(data, {"message": "got the message: hoge"})
 
-
     def test_get_gacha(self):
         with mock.patch.object(challenge, '_exec_gacha', return_value=True):
             res = client.get("/gacha")
