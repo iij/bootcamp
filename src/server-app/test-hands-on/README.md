@@ -134,7 +134,7 @@ $ docker compose exec bootcamp-test bash
 
 下記のコマンドで、テストを実行してみましょう。
 ```bash
-# ソースは全て"/test-hands-on"配下にあります。
+# コードは全て"/test-hands-on"配下にあります。
 root@a3f5935947a2:/# cd /test-hands-on
 
 # 任意のテストを実行します。
@@ -172,7 +172,7 @@ $ cd bootcamp/src/server-app/test-hands-on
 $ code ./exercises/exercise0/test_challenge.py
 ```
 
-内容は下記のようになっており、ソース内でimportしている ```hello()``` 関数に対し、文字列"goodbye world?"が来ることを期待してテストを行っているようです。
+内容は下記のようになっており、コード内でimportしている ```hello()``` 関数に対し、文字列"goodbye world?"が来ることを期待してテストを行っているようです。
 
 ```python
 import unittest
@@ -192,7 +192,7 @@ def hello():
     return "hello world"
 ```
 
-しかし、これではテストソースで期待されている関数の返り値と、実際の関数の返り値が異なってしまっています。
+しかし、これではテストコードで期待されている関数の返り値と、実際の関数の返り値が異なってしまっています。
 これがテストが失敗してしまう原因となるため、テストの期待する値を"goodbye world?"から"hello world"に変えてみましょう。
 
 ```python
@@ -217,11 +217,11 @@ Ran 1 test in 0.000s
 OK
 ```
 
-このように、テストソースというものは、テストを実施したい関数に対して動作を確認するように作成・実行します。
+このように、テストコードというものは、テストを実施したい関数に対して動作を確認するように作成・実行します。
 
-本講義では、テストを実施したい関数に対し、テストソースで期待する返り値を設定し、関数の動作確認を行っていきます。
+本講義では、テストを実施したい関数に対し、テストコードで期待する返り値を設定し、関数の動作確認を行っていきます。
 
-ちなみに、ローカルのソースファイルの変更は、コンテナ内にも自動で同期されます。
+ちなみに、ローカルでのコードの変更は、コンテナ内にも自動で同期されます。
 以降はローカルでファイルを変更し、コンテナ内でテストを実行してみましょう。
 
 # テストを実行する
@@ -543,162 +543,267 @@ http://localhost:8000/
 
 ## 3. TDDをやってみる
 
-TDDとは、「テスト駆動開発( *Test-Driven* )」のことを指し「テストファースト（テスト優先）」を掲げて開発を行う、 **開発手法** のことになります。　　
-
-テスト手法じゃないよ !!!!
+TDDとは、「テスト駆動開発( *Test Driven Development* )」のことを指し「イテレーティブ (反復的) な手順」と「インクリメンタル (少しずつ着実) な設計」を組み合わせて開発を行う、反復型の **開発手法** のことになります。(※テスト手法のことではない)
 
 ### TDDのやり方
 
-TDDは、任意の開発を行う設計があるうえで、下記のサイクルで開発を行っていきます。
-1. Red
-    - 動作をしないテストを書く。
-2. Green
-    - 迅速に、テストを実行できるコードを書いてテストを通すようにする。
-    ※コードが汚くても良い。
-3. Refactoring
-    - リファクタリングを行い、コード内から重複を削除する。
+TDDは、下記のサイクルで開発を行っていきます。
 
-上記 *1~3* のサイクルを実行し、動きつつコードとリファクタリングによって最適化されたコードを、着実に作っていく手法になります。
+0. 準備
+    - 必要になりそうなテスト (実装したい振る舞い) を TODO リストとして書き出す
+1. Red
+    - TODO リストから 1 つ選び、テストから書き (テストファースト)、そのテストを実行して失敗させる
+2. Green
+    - 迅速に、テストを実行できるコードを書いてテストを通すようにする (※このとき、コードが汚くても良い)
+3. Refactoring
+    - Green を保ったまま、コードをきれいにする
+4. フィードバック
+    - *3.* まで終わったら、気付きを TODO リストに反映し、1. に戻る
+
+上記 *1. ~ 4.* のサイクルを反復的に実行することで、自動テストによってとりあえず動くことが保証され、かつリファクタリングによってきれいになっていくコードを、少しずつ着実に作って (設計して) いきます。
 
 ### テスト実装例
-この項で実際に、TDDのサイクルを見てみましょう。
+例えば、以下の仕様のプログラムを作りたいとして、実際に TDD による開発を体験してみましょう。
 
-例えば、以下の仕様のソースを作りたいとします。
-- クラス内の```do()```関数の、実行回数が3の倍数なら"Fizz"、5の倍数なら"Buzz"を返す、クラス```FizzBuzz```を実装します。
-- このクラスは```do()```の実行回数を、内部でカウントします。
-- 3でも5の倍数でもないカウントに対しては、そのカウントを返します。
+- 実行回数が 3 の倍数なら "Fizz"、5 の倍数なら "Buzz"、両方を満たすなら "FizzBuzz" を返す
+- 実行回数は内部でカウントする
+- 3 でも 5 の倍数でもないカウントに対しては、そのカウント数を返す
 
-上記のコードをTDDで作成していきましょう。
+### サイクル(1) TODOリスト
 
-### サイクル1 Red
+コーディングする際、何もない状態で、何も考えずにいきなりコードを書き始めることはあまり多くありません。
+TDD も例外ではなく、まずはやること (TODO) リストを作るところから始めます。
 
-まずは、クラス```FizzBuzz```の関数を作成します。
-下記のコードは、```example.py```のようなパッケージにあると考えてください。
-```python
-class FizzBuzz:
-    def do(self):
-        pass
+愚直に整理してみると、以下のようになりそうです。
+
+- [ ] 実行回数を内部で保持し、カウントする
+- [ ] 実行すると、カウント数を返す
+- [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
+- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
+- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
+
+TODO リストが整理できたところで、`exercises/sample4/sample.py` と `exercises/sample4/test_sample.py` を作成し、サイクル(1) に進みましょう。
+
+```bash
+$ cd exercies/
+$ mkdir sample4
+$ cd sample4
+$ code ./sample.py
+$ code ./test_sample.py
 ```
 
-次に、動作をしないテストを書きましょう。
-```do()```が最初に実行する時は、下記の仕様が適用されます。
+### サイクル(1) Red
 
-> 3でも5の倍数でもないカウントに対しては、そのカウントを返します。
+TODO リストから 1 つ選びます。
+
+> - [ ] 実行すると、カウント数を返す
+
+最初は、この仕様の実装に向けてサイクルを回してみましょう。
+
+Red でやるべきは「失敗するテストを書く」でした。
+
+> 1. Red
+>     - TODO リストから 1 つ選び、テストから書き (テストファースト)、そのテストを実行して失敗させる
+
+とにかく仕様をテストコードで表現してみるというのが、ここでやるべきことです。
 
 とりあえず1回目の実行では「1」が返ってくるはずなので、テストでは「1」を期待してみます。
+`FizzBuzz` クラスに、`increment_counter()` メソッドがあると仮定して、`test_sample.py` を書いてみましょう。
 
 ```python
 import unittest
-from .fizzbuzz import FizzBuzz
+from .sample import FizzBuzz
 
 
-class ExampleTestCase(unittest.TestCase):
-    def test_success(self):
-        fb = FizzBuzz()
-        self.assertEqual(fb.do(), 1)
+class TestFizzBuzz(unittest.TestCase):
+    def test_increment_counter(self):
+        fizzbuzz = FizzBuzz()
+        expected = fizzbuzz.increment_counter()
+        self.assertEqual(expected, 1)
 ```
 
-<br />
-
-これを実行すると、当然のようにコケますね。
+テスト実行してみると、そもそも実装がないので当然エラーになります。
 
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_sample (unittest.loader._FailedTest.test_sample) ... ERROR
+
+======================================================================
+ERROR: test_sample (unittest.loader._FailedTest.test_sample)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_sample
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/test-hands-on/exercises/sample4/test_sample.py", line 2, in <module>
+    from .sample import FizzBuzz
+ModuleNotFoundError: No module named 'exercises.sample4.sample'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
 ```
 
-<br />
+### サイクル(1) Green
 
-### サイクル1 Green
 
-次は「とりあえず動くコードを書く」ことをします。
-テストでは1が返却されることを期待しているので、1を返しましょう。
-TDDって簡単ですね。
+次は「とりあえず動くコード」を目指します。
+
+> 2. Green
+>     - 迅速に、テストを実行できるコードを書いてテストを通すようにする (※このとき、コードが汚くても良い)
+
+
+とにかくテストを通すようなコードを最短距離で書くというのが、ここでやるべきことです。
+
+テストでは 1 が返却されることを期待していますので、`sample.py` に実装を書いて、1 を返すようにしてみましょう。
 
 ```python
 class FizzBuzz:
-    def do(self):
+    def increment_counter(self):
         return 1
 ```
 
-動いたよ！！！！やったね！！！！！！！！！
-
+テスト実行してみると、成功するようになりました。
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
 ```
 
-### サイクル1 Refactoring
-現在の```FizzBuzz```は、この世界に存在するどんなものよりも洗練されているため、リファクタリングは必要ないですね。
-素晴らしい。
+### サイクル(1) Refactoring
 
-### サイクル2 Red
+> 3. Refactoring
+>     - Green を保ったまま、コードをきれいにする
 
-2サイクル目に来ました。
-Redでは、あえてテストを失敗させなければならないため、泣く泣く完成されたテストコードに手を加えましょう。
-
-サイクル1 Redでも確認した通り、どうやら```do()```を実行するごとに実行回数を返してくれるそうです。
-実行回数毎に、期待する値を増加させてみましょう。
+次は、「動作するきれいなコード」を目指します。
+今回、あまり直すところはないですが、テストコードに一部冗長なところがあるのでインライン化してみましょう。
 
 ```python
 import unittest
-from .fizzbuzz import FizzBuzz
+from .sample import FizzBuzz
 
 
-class ExampleTestCase(unittest.TestCase):
-    def test_success(self):
-        fb = FizzBuzz()
-        self.assertEqual(fb.do(), 1)
-        self.assertEqual(fb.do(), 2)
-        self.assertEqual(fb.do(), 3)
-        self.assertEqual(fb.do(), 4)
-        self.assertEqual(fb.do(), 5)
-        self.assertEqual(fb.do(), 6)
-        self.assertEqual(fb.do(), 7)
-        self.assertEqual(fb.do(), 8)
-        self.assertEqual(fb.do(), 9)
-        self.assertEqual(fb.do(), 10)
-        self.assertEqual(fb.do(), 11)
-        self.assertEqual(fb.do(), 12)
-        self.assertEqual(fb.do(), 13)
-        self.assertEqual(fb.do(), 14)
-        self.assertEqual(fb.do(), 15)
+class TestFizzBuzz(unittest.TestCase):
+    def test_increment_counter(self):
+        fizzbuzz = FizzBuzz()
+        self.assertEqual(fizzbuzz.increment_counter(), 1)  # expected をインライン化
 ```
 
-```FizzBuzz```は既に完成されているため、テストをいくら加えようが失敗するはずがないのですが、試してみましょう。
-まあ、やる意味はないと思うのですが（笑）
-
+テスト実行してみると、成功したままなので OK です。
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
 ```
 
-### サイクル2 Green
+### サイクル(1) フィードバック
 
-なんということでしょうか。
-完成されていたと思われた```do()```は、何回実行しても「1」しか返してくれないではないですか。
+TODO リストを見直してみると、サイクル(1) を回しきったことで仕様を満たせているものはなさそうですが、とりあえずの仮実装はできていそうです。
 
-誰ですか、こんな実装にしたのは（怒）
+- [ ] 実行回数を内部で保持し、カウントする
+- [ ] 実行すると、カウント数を返す
+  - [x] とりあえず 1 を返す (仮実装)
+- [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
+- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
+- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
+
+では、次のサイクルにいきましょう。
+
+### サイクル(2) Red
+
+2サイクル目に来ました。
+
+引き続き、`increment_counter()` の実装を進めていきます。
+> - [ ] 実行すると、カウント数を返す
+
+実行回数毎にカウントアップする仕様ですから、何度か実行してみて、期待する値を増加させてみましょう。
 
 ```python
-count = 0
+import unittest
+from .sample import FizzBuzz
 
-class FizzBuzz:
-    def do(self):
-        global count
-        count += 1
-        return count
+
+class TestFizzBuzz(unittest.TestCase):
+    def test_increment_counter(self):
+        fizzbuzz = FizzBuzz()
+        self.assertEqual(fizzbuzz.increment_counter(), 1)
+        self.assertEqual(fizzbuzz.increment_counter(), 2)
+        self.assertEqual(fizzbuzz.increment_counter(), 3)
+        self.assertEqual(fizzbuzz.increment_counter(), 4)
+        self.assertEqual(fizzbuzz.increment_counter(), 5)
+        self.assertEqual(fizzbuzz.increment_counter(), 6)
+        self.assertEqual(fizzbuzz.increment_counter(), 7)
+        self.assertEqual(fizzbuzz.increment_counter(), 8)
+        self.assertEqual(fizzbuzz.increment_counter(), 9)
+        self.assertEqual(fizzbuzz.increment_counter(), 10)
+        self.assertEqual(fizzbuzz.increment_counter(), 11)
+        self.assertEqual(fizzbuzz.increment_counter(), 12)
+        self.assertEqual(fizzbuzz.increment_counter(), 13)
+        self.assertEqual(fizzbuzz.increment_counter(), 14)
+        self.assertEqual(fizzbuzz.increment_counter(), 15)
 ```
 
-だいぶ雑なコードですが、たぶん動くと思うからテストしましょう。
+
+テスト実行してみると、対応する実装がないので失敗しました。
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
+
+======================================================================
+FAIL: test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/test-hands-on/exercises/sample4/test_sample.py", line 9, in test_increment_counter
+    self.assertEqual(fizzbuzz.increment_counter(), 2)
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
 ```
 
-### サイクル2 Refactoring
-現在の```FizzBuzz```はグローバル変数が使用されているなど、あまり美しくありません。
-クラスで値を持たせて、インスタンス毎に値を共有させないようにしましょう。
+### サイクル(2) Green
+
+「とりあえず動くコード」を目指し、書いてみます。一例として、以下のような実装になりそうです。
+
+```python
+class FizzBuzz:
+    count = 0
+
+    def increment_counter(self):
+        FizzBuzz.count += 1
+        return FizzBuzz.count
+```
+
+テスト実行してみると、成功しました。
+```bash
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+### サイクル(2) Refactoring
+
+現在の `FizzBuzz` はクラス変数というものを利用しています。
+設計にもよりますが、インスタンス間で値を共有させないようにするのが一般的でしょう。
+
+python では `__init__` メソッドを使うことで、インスタンス生成時に保持させる、インスタンス変数を定義することができます。これを使うと、基本的にはインスタンス間での値の共有はできなくなります。
 
 ```python
 class FizzBuzz:
@@ -710,53 +815,95 @@ class FizzBuzz:
         return self.count
 ```
 
-コードを変更しましたが、テストの結果が成功のままであることを確認します。
+テスト実行してみると、成功したままなので OK です。
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
 ```
 
-### サイクル3 Red
-さて、ここまでで以下の仕様を実装することができました。
-- 内部でカウントを保持する。
-- 3でも5でもないカウントは、その値を返す。
+### サイクル(2) フィードバック
 
-次は「3の倍数なら"Fizz"を返す」を実装してみましょう。
+TODO リストを見直してみると、カウント数を返す実装はできていそうです。
+
+また、リファクタリングをしたことで、`increment_counter()` の外側にインスタンス変数としてカウント変数を保持させることができるようになりました。
+
+- [x] 実行回数を内部で保持し、カウントする
+- [x] 実行すると、カウント数を返す
+  - [x] とりあえず 1 を返す (仮実装)
+- [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
+- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
+- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
+
+では、次のサイクルにいきましょう。
+
+### サイクル(3) Red
+
+3 サイクル目です。次は、以下の仕様を実装してみましょう。
+
+> - [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
 
 失敗するテストを書きます。
-テスト全体を書くと文字量が多くなりますので、以降は差分で表記します。
+
+```python
+import unittest
+from .sample import FizzBuzz
+
+
+class TestFizzBuzz(unittest.TestCase):
+    def test_increment_counter(self):
+        fizzbuzz = FizzBuzz()
+        self.assertEqual(fizzbuzz.increment_counter(), 1)
+        self.assertEqual(fizzbuzz.increment_counter(), 2)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 4)
+        self.assertEqual(fizzbuzz.increment_counter(), 5)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 7)
+        self.assertEqual(fizzbuzz.increment_counter(), 8)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 10)
+        self.assertEqual(fizzbuzz.increment_counter(), 11)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 13)
+        self.assertEqual(fizzbuzz.increment_counter(), 14)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+
 ```
--        self.assertEqual(fb.do(), 3)
-+        self.assertEqual(fb.do(), "Fizz")
 
--        self.assertEqual(fb.do(), 6)
-+        self.assertEqual(fb.do(), "Fizz")
-
--        self.assertEqual(fb.do(), 9)
-+        self.assertEqual(fb.do(), "Fizz")
-
--        self.assertEqual(fb.do(), 12)
-+        self.assertEqual(fb.do(), "Fizz")
-
--        self.assertEqual(fb.do(), 15)
-+        self.assertEqual(fb.do(), "Fizz")
-```
-
-テストは失敗しますね。
+予想通り、テストは失敗しますね。
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
+
+======================================================================
+FAIL: test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/test-hands-on/exercises/sample4/test_sample.py", line 10, in test_increment_counter
+    self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+AssertionError: 3 != 'Fizz'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
 ```
 
-### サイクル3 Green
-さて、"Fizz"を返せるように```FizzBuzz```を修正しましょう。
+### サイクル(3) Green
+
+さて、"Fizz" を返せるようにコードを修正しましょう。
 
 ```python
 class FizzBuzz:
     def __init__(self):
         self.count = 0
 
-    def do(self):
+    def increment_counter(self):
         self.count += 1
         if self.count % 3 == 0:
             return "Fizz"
@@ -764,45 +911,89 @@ class FizzBuzz:
         return self.count
 ```
 
-テストはオールグリーンです。
+テストも問題なしです。
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
 ```
 
-### サイクル3 Refactoring
-特にリファクタリング箇所がないので省きます。
+### サイクル(3) Refactoring
 
-### サイクル4 Red
-最後の仕様になります。
-最後は「5の倍数なら"Buzz"を返す」を実装します。
+このサイクルで書いたコードは、特にリファクタリング箇所もなさそうなのでスキップします。
 
-ただし、3かつ5の倍数であれば"FizzBuzz"が返ることに注意してください。
+### サイクル(3) フィードバック
 
+サイクル(3) では、"Fizz" を返す実装ができました。
+
+- [x] 実行回数を内部で保持し、カウントする
+- [x] 実行すると、カウント数を返す
+  - [x] とりあえず 1 を返す (仮実装)
+- [x] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
+- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
+- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
+
+### サイクル(4) Red
+
+4 サイクル目です。次は、以下の仕様を実装してみましょう。
+
+> - [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
+
+`15` の部分については、"FizzBuzz" としていることに注意してください。
+
+```python
+import unittest
+from .sample import FizzBuzz
+
+
+class TestFizzBuzz(unittest.TestCase):
+    def test_increment_counter(self):
+        fizzbuzz = FizzBuzz()
+        self.assertEqual(fizzbuzz.increment_counter(), 1)
+        self.assertEqual(fizzbuzz.increment_counter(), 2)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 4)
+        self.assertEqual(fizzbuzz.increment_counter(), "Buzz")
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 7)
+        self.assertEqual(fizzbuzz.increment_counter(), 8)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), "Buzz")
+        self.assertEqual(fizzbuzz.increment_counter(), 11)
+        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
+        self.assertEqual(fizzbuzz.increment_counter(), 13)
+        self.assertEqual(fizzbuzz.increment_counter(), 14)
+        self.assertEqual(fizzbuzz.increment_counter(), "FizzBuzz")
 ```
--        self.assertEqual(fb.do(), 5)
-+        self.assertEqual(fb.do(), "Buzz")
 
--        self.assertEqual(fb.do(), 10)
-+        self.assertEqual(fb.do(), "Buzz")
+少しずつ、Red, Green, Refactoring のサイクルの感覚は掴めてきたでしょうか。
+このテストは当然失敗し、次の Green ではそれを成功に導くわけですね。
 
--        self.assertEqual(fb.do(), 15)
-+        self.assertEqual(fb.do(), "FizzBuzz")
-```
-
-「手がかかる子ほど可愛い」というのは、このことを言うのでしょうか。
-だんだんコンソールに出力される「FAIL」が愛おしく思えてきました。
-
-きっと「失敗の後は必ず成功する」ということが約束されているからでしょう。
-
-みなさんも、そう思いませんか？
+分割統治法で 1 つずつ確実に課題をクリアしていく面白さを実感してもらえればなと思います。
 
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... FAIL
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
+
+======================================================================
+FAIL: test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/test-hands-on/exercises/sample4/test_sample.py", line 12, in test_increment_counter
+    self.assertEqual(fizzbuzz.increment_counter(), "Buzz")
+AssertionError: 5 != 'Buzz'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (failures=1)
 ```
 
-### サイクル4 Green
+### サイクル(4) Green
 "Buzz"および"FizzBuzz"を返せるようにしましょう。
 
 ```python
@@ -810,7 +1001,41 @@ class FizzBuzz:
     def __init__(self):
         self.count = 0
 
-    def do(self):
+    def increment_counter(self):
+        self.count += 1
+        if self.count % 3 == 0 and self.count % 5 == 0:
+            return "FizzBuzz"
+        if self.count % 3 == 0:
+            return "Fizz"
+        if self.count % 5 == 0:
+            return "Buzz"
+
+        return self.count
+```
+
+テストも成功します。
+```bash
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+```
+
+### サイクル(4) Refactoring
+
+最後のリファクタリングになります。
+
+`if self.count % 3 == 0 and self.count % 5 == 0` も誤りではないですが、もう少しきれいに書けそうです。
+
+```python
+class FizzBuzz:
+    def __init__(self):
+        self.count = 0
+
+    def increment_counter(self):
         self.count += 1
         if self.count % 15 == 0:
             return "FizzBuzz"
@@ -822,52 +1047,35 @@ class FizzBuzz:
         return self.count
 ```
 
-テストも通ります。
-やったか！？（まだ終わりじゃないです。）
 ```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
+root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
+test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
 ```
 
-### サイクル4 Refactoring
-最後のリファクタリングになります。
-これで全てを終わらせて、あなたは次のステージへ進むことになるでしょう。
+### サイクル(4) フィードバック
 
-先程書いた```FizzBuzz```では、まだ手続きを共通化し、最適にできる部分があります。
+当初、"Buzz" を返す実装だけやるつもりでしたが、"FizzBuzz" を返す実装も同時にできましたね。
 
-```python
-#####################################
-# このコードは一例です。
-# みんなが読みやすいコードを書こうね！
-#####################################
-class FizzBuzz:
-    def __init__(self):
-        self.count = 0
+- [x] 実行回数を内部で保持し、カウントする
+- [x] 実行すると、カウント数を返す
+  - [x] とりあえず 1 を返す (仮実装)
+- [x] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
+- [x] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
+- [x] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
 
-    def _divided(self, count, div):
-        return int(not(count % div))
-
-    def do(self):
-        self.count += 1
-        result = [self.count, "Fizz", "Buzz", "FizzBuzz"]
-        index = (self._divided(self.count, 5) << 1) \
-            + self._divided(self.count, 3)
-        return result[index]
-```
-
-多分これが一番美しいと思います。
-
-```bash
-$ python -m unittest -v example.test_fizzbuzz
-test_success (example.test_fizzbuzz.ExampleTestCase) ... ok
-```
+これで全て完了です！
 
 ### 問題にチャレンジしよう
-dockerコンテナ内の```/test-hands-on/exercises/exercise3/challenge.py```には、FastAPIで書かれた作りかけのAPIがあります。
+```exercises/exercise3/challenge.py```には、FastAPIで書かれた作りかけのAPIがあります。
 
 上記のAPIは、コンテナから下記のコマンドで実行することができます。
 ```bash
-$ python3 -m uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
+root@233072c168ae:/test-hands-on# python3 -m uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
 ```
 
 API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
@@ -875,15 +1083,14 @@ API実行後は、ブラウザに下記のURLを入力すると、APIにアク�
 http://localhost:8000/
 ```
 
-みなさんには、TDDを使って上記のAPIを完成させてもらいます。
-作ってもらいたいAPIの仕様は、下記のものになります。
-- このAPIは、```/, /add, /sub, /mul, /div```の5つのエンドポイントがあります。
-- このAPIはサーバ内部でint型の値を保持し、現在設定されている値を```/```にアクセスすることで、確認することができます。
-  また、値は0始まりになります。
-- ```/add, /sub, /mul, /div```にパスパラメータを与えると、保持されている値に対し、四則演算を行います（後述）。
-- 本APIでは、全てint型で計算を行います。
+TDD を使って、上記のAPIを完成させてみましょう。
+API 仕様は、以下になります。
+- `/`, `/add`, `/sub`, `/mul`, `/div` の5つのエンドポイントがある
+- 内部で int 型の値を保持し、現在設定されている値を、`/` にアクセスすることで確認できる (また、値は 0 とする)
+- `/add`, `/sub`, `/mul`, `/div` にパスパラメータを与えると、保持されている値に対し、四則演算を行う（後述）
+- 計算は全て int 型で行う
 
-以下、APIのパスについて
+また、各パスの詳細な仕様な以下の通りです:
 
 |パス|詳細|
 |---|---|
@@ -893,7 +1100,7 @@ http://localhost:8000/
 |/mul/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値に乗算します。|
 |/div/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から除算します。|
 
-サーバでの値の保持・取得関数は、ソース内に定義されています。
+サーバでの値の保持・取得関数は、コード内に定義されています。
 以下に、使い方の例を記載します。
 ```python
 # サーバ内に保持されている値を記録します。
@@ -901,14 +1108,14 @@ set_current_number(1)
 
 # サーバ内に保持されている値を取得します
 got_data = get_current_number()
-# got_data = 1
+print(got_data)  # -> 1
 
 set_current_number(123 + 456)
 got_data = get_current_number()
-# got_data = 579
+print(got_data)  # -> 579
 ```
 
-dockerコンテナ内の```/test-hands-on/exercises/exercise3/test_challenge.py```には、本APIが完成すると通るようになる、テスト```test_success()```が定義されています。
+`exercises/exercise3/test_challenge.py` には、本APIが完成すると通るようになる、テスト```test_success()```が定義されています。
 
 上記のテストがOKになるよう、各種APIをTDDを使って作成してみましょう。　
 
@@ -921,7 +1128,7 @@ dockerコンテナ内の```/test-hands-on/exercises/exercise3/test_challenge.py`
 
 冒頭でも述べましたが、ソフトウェアにも品質というものがあり、この品質次第で会社の売上に影響が出たり、企業のセキュリティや人命に影響を及ぼしてしまう懸念もあります。
 
-そのため。開発を行う際には是非テストにも注力をしていただき、ユーザーの満足できるソフトウェアを作れるよう、目指してみてください。
+そのため、開発を行う際には是非テストにも注力し、ユーザーの満足できるソフトウェアを作れるよう、目指してみてください。
 
 良いエンジニアライフを！👍
 
