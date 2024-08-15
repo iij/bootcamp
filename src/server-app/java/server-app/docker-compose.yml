@@ -5,3 +5,5 @@ services:
       - ./work:/work
     working_dir: /work
     tty: true
+    ports:
+      - "8080:8080"
