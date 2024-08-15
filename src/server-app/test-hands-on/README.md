@@ -154,10 +154,10 @@ FAIL: test_success (exercises.exercise0.test_challenge.HelloTestCase.test_succes
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/test-hands-on/exercises/exercise0/test_challenge.py", line 7, in test_success
-    self.assertEqual(hello(), "goodbye world?")
-AssertionError: 'hello world' != 'goodbye world?'
+    self.assertEqual(hello(), "hello iij-bootcamp")
+AssertionError: 'hello world' != 'hello iij-bootcamp'
 - hello world
-+ goodbye world?
++ hello iij-bootcamp
 
 
 ----------------------------------------------------------------------
@@ -166,13 +166,13 @@ Ran 1 test in 0.001s
 FAILED (failures=1)
 ```
 
-試しに、このテストを開いて修正してみましょう。
+テストコードを開いて確認してみましょう。
 ```bash
 $ cd bootcamp/src/server-app/test-hands-on
 $ code ./exercises/exercise0/test_challenge.py
 ```
 
-内容は下記のようになっており、コード内でimportしている ```hello()``` 関数に対し、文字列"goodbye world?"が来ることを期待してテストを行っているようです。
+内容は下記のようになっており、コード内でimportしている ```hello()``` 関数に対し、文字列 "hello iij-bootcamp" が来ることを期待してテストを行っているようです。
 
 ```python
 import unittest
@@ -181,10 +181,10 @@ from .challenge import hello
 
 class HelloTestCase(unittest.TestCase):
     def test_success(self):
-        self.assertEqual(hello(), "goodbye world?")
+        self.assertEqual(hello(), "hello iij-bootcamp")
 ```
 
-では、テスト対象である ```hello()``` 関数を見てみましょう。
+では次に、テスト対象である ```hello()``` 関数を見てみましょう。
 どうやら、この関数は文字列"hello world"を返すようです。
 
 ```python
@@ -193,19 +193,18 @@ def hello():
 ```
 
 しかし、これではテストコードで期待されている関数の返り値と、実際の関数の返り値が異なってしまっています。
-これがテストが失敗してしまう原因となるため、テストの期待する値を"goodbye world?"から"hello world"に変えてみましょう。
+
+ちなみにテストコードは、対象の関数やインスタンスが動作したときにどういった振る舞いをするのかを具体的に表現したもの、「動く仕様書」であると考えることができます。
+この考えからいくと、今回は仕様を表現している (期待値を書いている) テストコードが正であり、実装に不具合があるといえます。
+
+それでは、テストが失敗する (期待する振る舞いになっていない) 原因である、return 値 "hello world" を "hello iij-bootcamp" に変えてみましょう。
 
 ```python
-import unittest
-from .challenge import hello
-
-
-class HelloTestCase(unittest.TestCase):
-    def test_success(self):
-        self.assertEqual(hello(), "hello world")
+def hello():
+    return "hello iij-bootcamp"
 ```
 
-このテストを実行してみると、先程まで失敗していたテストが成功しました。
+もう一度テストを実行してみると、先程まで失敗していたテストが成功しました。
 
 ```bash
 root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
@@ -218,6 +217,7 @@ OK
 ```
 
 このように、テストコードというものは、テストを実施したい関数に対して動作を確認するように作成・実行します。
+そして動作に問題があれば、適宜実装を (場合によってはテストコードも) 修正していくことになります。
 
 本講義では、テストを実施したい関数に対し、テストコードで期待する返り値を設定し、関数の動作確認を行っていきます。
 
