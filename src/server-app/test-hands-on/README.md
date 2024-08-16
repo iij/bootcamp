@@ -104,9 +104,10 @@ $ code ./exercises/exercise0/test_challenge.py
 下記のコマンドでdockerコンテナを立ち上げます。
 
 ```bash
-# リポジトリのクローン
-# 既にある場合、clone はスキップで OK.
+# リポジトリのクローン (既にある場合はスキップで OK)
 $ git clone https://github.com/iij/bootcamp.git
+# clone をスキップした場合は、リポジトリを最新化
+$ git pull
 $ cd bootcamp/src/server-app/test-hands-on
 
 # コンテナの立ち上げ
