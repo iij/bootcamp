@@ -34,7 +34,7 @@ dockerコンテナのpullには時間を要するため、概論の聴講と並�
 
 また、ローカルでのコマンド実行なのか、docker コンテナ内でのコマンド実行なのかが分かるよう、以下の記述方法を用います。
 基本的には、手を動かすのはローカル、成果物の確認 (テスト実行) は docker コンテナになります。
-```bash
+```terminal
 ### "$" で始まるものはローカルでのコマンド実行
 $ cd bootcamp/src/server-app/test-hands-on
 
@@ -43,8 +43,8 @@ root@a3f5935947a2:/# cd /test-hands-on
 ```
 
 また、ファイルを開くのは以下のように vscode を前提として書いていますが、適宜お手元のエディターに読み替えていただいて問題ありません。
-```bash
-# とりあえず vscode にしているが、コードを編集できれば何でもよい
+```terminal
+### とりあえず vscode にしているが、コードを編集できれば何でもよい
 $ code ./exercises/exercise0/test_challenge.py
 ```
 
@@ -103,17 +103,17 @@ $ code ./exercises/exercise0/test_challenge.py
 
 下記のコマンドでdockerコンテナを立ち上げます。
 
-```bash
-# リポジトリのクローン (既にある場合はスキップで OK)
+```terminal
+### リポジトリのクローン (既にある場合はスキップで OK)
 $ git clone https://github.com/iij/bootcamp.git
-# clone をスキップした場合は、リポジトリを最新化
+### clone をスキップした場合は、リポジトリを最新化
 $ git pull
 $ cd bootcamp/src/server-app/test-hands-on
 
-# コンテナの立ち上げ
+### コンテナの立ち上げ
 $ docker compose up --build
 
-# 以下のように出力されたら OK.
+### 以下のように出力されたら OK.
 (中略)
  ✔ Network test-hands-on_default            Created  0.0s
  ✔ Container test-hands-on-bootcamp-test-1  Created  0.0s
@@ -128,17 +128,17 @@ bootcamp-test-1  | Type "help", "copyright", "credits" or "license" for more inf
 
 「[dockerコンテナの立ち上げ方](#dockerコンテナの立ち上げ方)」で、起動中のコンソールとは別のコンソールを開き、実行中のコンテナにアクセスします。
 コマンドを実行すると、コンテナ内のbashが実行されます。
-```bash
+```terminal
 $ cd bootcamp/src/server-app/test-hands-on
 $ docker compose exec bootcamp-test bash
 ```
 
 下記のコマンドで、テストを実行してみましょう。
-```bash
-# コードは全て"/test-hands-on"配下にあります。
+```terminal
+### コードは全て"/test-hands-on"配下にあります。
 root@a3f5935947a2:/# cd /test-hands-on
 
-# 任意のテストを実行します。
+### 任意のテストを実行します。
 root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
 ```
 
@@ -146,7 +146,7 @@ root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test
 
 「テストの実行方法」の項でテストを行うと、初回は下記のようにテストが失敗してしまいます。
 
-```bash
+```terminal
 root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
 test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success) ... FAIL
 
@@ -168,7 +168,7 @@ FAILED (failures=1)
 ```
 
 テストコードを開いて確認してみましょう。
-```bash
+```terminal
 $ cd bootcamp/src/server-app/test-hands-on
 $ code ./exercises/exercise0/test_challenge.py
 ```
@@ -207,7 +207,7 @@ def hello():
 
 もう一度テストを実行してみると、先程まで失敗していたテストが成功しました。
 
-```bash
+```terminal
 root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
 test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success) ... ok
 
@@ -259,7 +259,7 @@ OK
 
 `exercies/sample1/sample.py` を作成してみましょう。
 
-```bash
+```terminal
 $ cd exercies/
 $ mkdir sample1
 $ cd sample1
@@ -278,7 +278,7 @@ def f(x):
 下記のテストでは、関数```f(x)```に有効同値クラスの値を入力すると```True```、そうでない値を入力すると```False```が返却されることを確認しています。
 
 `exercies/sample1/test_sample.py` を作成してみましょう。
-```bash
+```terminal
 $ code ./test_sample.py
 ```
 
@@ -326,7 +326,7 @@ class ExampleTestCase(unittest.TestCase):
 ```
 
 docker コンテナ内からテスト実行してみましょう。
-```bash
+```terminal
 root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.sample1.test_sample
 test_equivalence_partitioning (exercises.sample1.test_sample1.ExampleTestCase.test_equivalence_partitioning) ... ok
 
@@ -374,7 +374,7 @@ OK
 
 `exercies/sample2/sample.py` を作成してみましょう。
 
-```bash
+```terminal
 $ cd exercies/
 $ mkdir sample2
 $ cd sample2
@@ -413,7 +413,7 @@ def rock_paper_scissors(shoot):
 上記の関数に対し、モックを使用したテストを定義すると、下記のように書くことができます。
 
 `exercies/sample2/test_sample.py` を作成してみましょう。
-```bash
+```terminal
 $ code ./test_sample.py
 ```
 
@@ -441,7 +441,7 @@ class ExampleTestCase(unittest.TestCase):
 ```
 
 docker コンテナ内から実行してみましょう。
-```bash
+```terminal
 root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.sample2.test_sample
 test_rock_paper_scissors (exercises.sample2.test_sample2.ExampleTestCase.test_rock_paper_scissors) ... ok
 
@@ -462,7 +462,7 @@ FastAPIは、下記のようにAPIを実装できます。
 
 `exercies/sample3/sample.py` を作成してみましょう。
 
-```bash
+```terminal
 $ cd exercies/
 $ mkdir sample3
 $ cd sample3
@@ -483,7 +483,7 @@ async def get_hello():
 上記のAPIに対し、HTTPステータスやレスポンスを検証するテストは、下記のように書くことができます。
 
 `exercies/sample3/test_sample.py` を作成してみましょう。
-```bash
+```terminal
 $ code ./test_sample.py
 ```
 
@@ -510,7 +510,7 @@ class ExampleTestCase(unittest.TestCase):
 ```
 
 docker コンテナ内から実行してみましょう。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample3.test_sample
 test_api (exercises.sample3.test_sample.ExampleTestCase.test_api) ... ok
 
@@ -524,7 +524,7 @@ OK
 ```exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。
 
 上記のAPIは、コンテナから下記のコマンドで実行することができます。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python3 -m uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
 ```
 
@@ -585,7 +585,7 @@ TDD も例外ではなく、まずはやること (TODO) リストを作ると�
 
 TODO リストが整理できたところで、`exercises/sample4/sample.py` と `exercises/sample4/test_sample.py` を作成し、サイクル(1) に進みましょう。
 
-```bash
+```terminal
 $ cd exercies/
 $ mkdir sample4
 $ cd sample4
@@ -625,7 +625,7 @@ class TestFizzBuzz(unittest.TestCase):
 
 テスト実行してみると、そもそも実装がないので当然エラーになります。
 
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_sample (unittest.loader._FailedTest.test_sample) ... ERROR
 
@@ -668,7 +668,7 @@ class FizzBuzz:
 ```
 
 テスト実行してみると、成功するようになりました。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -698,7 +698,7 @@ class TestFizzBuzz(unittest.TestCase):
 ```
 
 テスト実行してみると、成功したままなので OK です。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -757,7 +757,7 @@ class TestFizzBuzz(unittest.TestCase):
 
 
 テスト実行してみると、対応する実装がないので失敗しました。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
 
@@ -789,7 +789,7 @@ class FizzBuzz:
 ```
 
 テスト実行してみると、成功しました。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -817,7 +817,7 @@ class FizzBuzz:
 ```
 
 テスト実行してみると、成功したままなので OK です。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -877,7 +877,7 @@ class TestFizzBuzz(unittest.TestCase):
 ```
 
 予想通り、テストは失敗しますね。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
 
@@ -913,7 +913,7 @@ class FizzBuzz:
 ```
 
 テストも問題なしです。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -976,7 +976,7 @@ class TestFizzBuzz(unittest.TestCase):
 
 分割統治法で 1 つずつ確実に課題をクリアしていく面白さを実感してもらえればなと思います。
 
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
 
@@ -1015,7 +1015,7 @@ class FizzBuzz:
 ```
 
 テストも成功します。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -1048,7 +1048,7 @@ class FizzBuzz:
         return self.count
 ```
 
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
 test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
 
@@ -1075,7 +1075,7 @@ OK
 ```exercises/exercise3/challenge.py```には、FastAPIで書かれた作りかけのAPIがあります。
 
 上記のAPIは、コンテナから下記のコマンドで実行することができます。
-```bash
+```terminal
 root@233072c168ae:/test-hands-on# python3 -m uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
 ```
 
