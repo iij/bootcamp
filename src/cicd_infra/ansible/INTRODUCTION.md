@@ -4,8 +4,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 
 ## Ansible とは
 
-Ansible とは、IT 自動化ツールです。
-Ansible を利用するとシステムの構成、ソフトウェアの展開、より高度な IT タスク (継続的なデプロイメントやダウンタイムなしのローリング更新など) のオーケストレーションが可能になります。
+Ansibleは、IT環境の自動化を実現する強力なオープンソースツールです。システム構成管理、アプリケーションデプロイ、タスク実行、オーケストレーションなど、幅広い用途で活用されています。Ansibleの最大の特徴は、シンプルさと柔軟性を兼ね備えていることです。YAMLという人間にも読みやすい形式で設定を記述でき、学習曲線が緩やかなため、初心者でも比較的短期間で習得できます。
 
 Ansible docs: <https://docs.ansible.com/ansible/latest/index.html>
 
@@ -19,6 +18,22 @@ github: <https://github.com/ansible/ansible>
 Ansible is a radically simple IT automation system. It handles configuration management, application deployment, cloud provisioning, ad-hoc task execution, network automation, and multi-node orchestration. Ansible makes complex changes like zero-downtime rolling updates with load balancers easy. More information on the Ansible website.
 ```
 
+### Ansibleの歴史と背景
+
+Ansibleは2012年2月20日にMichael DeHaanによって開発されました。当時、既存の構成管理ツールの複雑さに課題を感じていたDeHaanは、より簡単で効率的なツールを目指してAnsibleを生み出しました。
+Ansibleはその後も順調に改良を重ね、2015年10月にRed Hat社に買収されてからは更にエンタープライズ向けの機能強化が進められています。
+2024年現在、Ansibleの最新バージョンは2.17であり、クラウドネイティブ環境にも対応しています。
+
+### Ansibleの主要コンポーネント
+
+Ansbleには以下の4つの主要なコンポーネントがあります。
+それぞれはそのまま用語としても使うので覚えておきましょう。
+
+- Playbooks: YAML形式で記述される設定ファイル。タスクの順序や条件を定義します。
+- Modules: 実際にタスクを実行するためのスクリプト。Ansibleには多くの標準モジュールが含まれています。
+- Inventory: 管理対象のホスト情報を記述するファイル。ホストグループや変数を定義します。
+- Roles: 再利用可能なPlaybookのセット。特定の機能やサービスの設定をまとめて管理します。
+
 ## Ansible の特徴
 
 - エージェントレスである
@@ -27,8 +42,9 @@ Ansible is a radically simple IT automation system. It handles configuration man
   - Ansible には対象となるマシン情報（Inventory) を持ちますが、そのマシンの状態を保有することはありません。Inventory ファイルは ansible playbooks などで利用するためのものであり、状態を管理・監視することはありません
 - 冪等性を持つ
   - Ansible は playbooks を基本的に何回実行しても結果は同じになります。例えば httpd のインストールタスク等はインストール済みであれば複数回実行しても 2 回目以降は実行済みとして処理され、二度実行されることがありません。
+- YAML形式の採用
+Ansibleでは、YAMLという人間にも読みやすい形式でPlaybookを記述します。YAMLは直感的で学習が容易であり、複雑な設定も簡潔に表現できます。これにより、チーム内でのコード共有や保守が容易になり、生産性の向上につながります。
 
-Ansible の記述には基本的に[YAML](https://yaml.org/)と呼ばれる記述（解読）言語が用いられておりユーザにも読み書きしやすいようになっています。
 
 ## Ansible の構成
 

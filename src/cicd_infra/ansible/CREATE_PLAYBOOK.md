@@ -12,7 +12,19 @@ footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 複雑な構成管理や作業の定型化などには適していません。
 Ansible の真価を発揮するためには、Playbook の使用方法を学習し、一連のターゲットホストに対して複数の複雑なタスクを簡単に反復可能な方法で実行できるようにする必要があります。
 
-### Playbook について
+### Ansible Playbookとは何か？
+
+Ansible Playbookは、ITインフラストラクチャの自動化を実現するための主要なツールです。
+Playbookは、YAML形式で記述される一連のタスクの集合であり、これを使用してサーバーの設定、アプリケーションのデプロイ、タスクの実行などを自動化できます。
+Playbookは、以下の要素で構成されます。
+
+- Play: 実行するタスクの集合。対象ホストやタスクの順序を定義します。
+- Task: 実行する具体的な操作。モジュールを使用してタスクを実行します。
+- Module: 実際にタスクを実行するためのスクリプト。Ansibleには多くの標準モジュールが含まれています。
+- Handler: 特定の条件が満たされた場合に実行されるタスク。通常、サービスの再起動などに使用されます。
+- Variable: タスク内で使用される動的な値。Playbook内で定義したり、外部ファイルから読み込んだりできます。
+
+### Playbook(play) について
 
 Playbook（プレイブック）は、管理対象に対してこうなってほしいという構成や手順を記述したファイルです。
 playbook は先ほど実行していたアドホックコマンドを複数取り込み、複数の task のセットとして利用することができるようになります。
@@ -77,6 +89,17 @@ PlaybookはYAMLと呼ばれる書式によって書く必要があります。
   - ここで`ping`モジュールを用いて操作する事（task)を宣言します
     - モジュールによって様々なオプションを追加することがあります
 
+
+## [演習] dry-run
+
+- Playbookを実行する前に、実際に変更が行われるかどうかを確認するためにdry-runを行います。
+- 既に作成済みの `playbook.yml` を使用します。
+- 以下のコマンドでPlaybookをdry-runモードで実行します。
+  ```bash
+  ansible-playbook -i inventory playbook.yml --check
+  ```
+- dry-runの結果を確認し、実際に変更が行われるかどうかを確認します。
+
 ## [発展] gather の停止
 
 先ほどの実行結果で `TASK[ping]` の前に `TASK[Gathering Facts]`というものがあったことに気づいたでしょうか。
@@ -119,3 +142,54 @@ host01                     : ok=1    changed=0    unreachable=0    failed=0    s
   gathering = explicit
   ```
 
+
+## [発展演習] 変数の追加と表示
+
+Playbook内で変数を定義し、その値を表示します
+
+- 以下の内容でPlaybookを作成します。
+    ```yaml
+    ---
+    - name: 変数の追加と表示
+      hosts: all
+      vars:
+        username: "新人"
+        home_dir: "/home/new_member"
+      tasks:
+        - name: 変数の値を表示
+          debug:
+            msg: "ユーザー名: {{ username }}, ホームディレクトリ: {{ home_dir }}"
+    ```
+
+- 以下のコマンドでPlaybookを実行します。
+    ```sh
+    ansible-playbook -i inventory playbook.yml
+    ```
+
+## [発展演習] 対象ホストの絞り込み
+
+- 特定のホストグループに対してのみタスクを実行します
+
+- 以下の内容でインベントリファイルを作成します。
+    ```ini
+    [exercise]
+    host00
+    host01
+    [web]
+    web00
+    ```
+- 以下の内容でPlaybookを作成します。
+    ```yaml
+    ---
+    - name: Webサーバーに対するタスク
+      hosts: web
+      tasks:
+        - name: HTTPサービスのステータスを確認
+          service:
+            name: httpd
+            state: started
+    ```
+- 以下のコマンドでPlaybookを実行します。
+    ```sh
+    ansible-playbook -i inventory playbook.yml
+    ```
