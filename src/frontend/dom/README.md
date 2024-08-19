@@ -586,10 +586,10 @@ functionReceivingAnotherFunction(f2);
 
 ## DOMツリーをたどる
 
-これから、JavaScriptでHTMLの内容を編集する方法を一つずつ紹介します。HTMLで書かれた文書をJavaScriptで操作するとき、文書の内容は「DOM (Document Object Model)」と呼ばれる形式のデータを操作することになります。「DOM」という言葉自体の定義はちょっと抽象的で分かりづらいので、ひとまずここでは、今後「DOMオブジェクト」とか「DOMツリー」といった言葉を見た時「あっ、JavaScriptでHTMLの内容を操作する話をしてるんだな」と思えるようになれればよいでしょう。
+これから、JavaScriptでHTMLの内容を編集する方法を一つずつ紹介します。HTMLで書かれた文書をJavaScriptで操作するとき、文書の内容は「DOM (Document Object Model)」と呼ばれる形式のデータを操作することになります。「DOM」という言葉の定義はちょっと抽象的で分かりづらいので、ひとまずここでは、今後「DOMオブジェクト」とか「DOMツリー」といった言葉を見た時「あっ、JavaScriptでHTMLの内容を操作する話をしてるんだな」と思えるようになれればよいでしょう。
 
 ::: details
-実際には、JavaScript以外のプログラミング言語で操作する場合もこの「DOM」を使います。が、現代の現実的なユースケースの大半はJavaScriptで操作する場合です。
+実際には、JavaScript以外のプログラミング言語で操作する場合もこの「DOM」を使います。が、現代の話題になるユースケースの大半はJavaScriptで操作する場合です。
 :::
 
 特定のHTMLを表すDOMがどのようになっているか見るために、例として下記のHTMLを用意しました。コピペして、`iij-bootcamp-dom`ディレクトリーに`2.html`という名前で保存してください。
