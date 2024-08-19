@@ -186,6 +186,10 @@ class HelloTestCase(unittest.TestCase):
 ```
 
 では次に、テスト対象である ```hello()``` 関数を見てみましょう。
+
+```terminal
+$ code ./exercises/exercise0/challenge.py
+```
 どうやら、この関数は文字列"hello world"を返すようです。
 
 ```python
