@@ -1050,7 +1050,7 @@ document.body.removeChild(p);
 
 ### ここまでのまとめ
 
-- ユーザーなどがDOMの要素に対して何らかの操作を行った際実行するJavaScriptのコードを設定するには、要素の`addEventListener`というメソッドを使う
+- DOMの要素に対して何らかのイベントが発生した（例えばユーザーがクリックした）際実行するJavaScriptのコードは、要素の`addEventListener`というメソッドを使うことで設定できる
 - `addEventListener`に渡した関数が受け取る`Event`オブジェクトは、対象のイベントが発生したときの詳細な情報を含む
     - 例えば、イベントオブジェクトの`target`というキーを通じて、イベントが発生した要素を取得することができる
 - DOMツリーにおける、決まった要素に簡単にアクセスするには、HTMLの`id`属性や`class`属性と、`document.getElementById`メソッドや`document.getElementsByClassName`メソッドを組み合わせて使う
