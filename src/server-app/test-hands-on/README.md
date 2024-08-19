@@ -106,8 +106,8 @@ $ code ./exercises/exercise0/test_challenge.py
 ```terminal
 ### リポジトリのクローン (既にある場合はスキップで OK)
 $ git clone https://github.com/iij/bootcamp.git
-### clone をスキップした場合は、リポジトリを最新化
 $ cd bootcamp/src/server-app/test-hands-on
+### clone をスキップした場合は、リポジトリを最新化
 $ git pull
 
 ### コンテナの立ち上げ
