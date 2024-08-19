@@ -12,9 +12,10 @@ footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 
 ## 事前準備
 
-- [CodeSandbox](https://codesandbox.io/)というサービスを利用することで、適当なブラウザーさえ動けば学習できるようにします
-    - CodeSandboxならローカルにエクスポートしたプロジェクトをそのまま動作させることができる。「後で自分の環境にNode.jsをちゃんと入れて試したい！」という時も安心
-    - 万が一利用できない状況だった場合は[StackBlitz](https://stackblitz.com/)か[Svelte公式のREPL](https://svelte.jp/repl/)を利用します
+- [Svelte公式のREPL](https://svelte.dev/repl/)を利用することで、適当なブラウザーさえ動けば学習できるようにします
+    - ローカルにエクスポートしたプロジェクトをそのまま動作させることができる。「後で自分の環境にNode.jsをちゃんと入れて試したい！」という時も安心
+
+    - 同じようなことは[CodeSandbox](https://codesandbox.io/)や[StackBlitz](https://stackblitz.com/)でも出来ますが、現状アカウントの作成が必要なようなのでより簡単なSvelte公式のREPLを採用しました。
 
 ## Svelte とは
 
