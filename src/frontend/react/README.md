@@ -34,28 +34,39 @@ prior_knowledge: ブラウザのDOM操作
 ## 実行環境の用意
 
 この講義では実行環境として以下の2つを想定します。
-環境構築に慣れていない人には1のCodeSandboxを、実際の開発環境に近いことをしたい人には2のViteをお勧めします。
+環境構築に慣れていない人には1のPlayCodeを、実際の開発環境に近いことをしたい人には2のViteをお勧めします。
 
-### 1. CodeSandboxを利用する
+### 1. PlayCodeを利用する
 
-[CodeSandbox](https://codesandbox.io/)を利用してReactの環境を用意します。
+[PlayCode](https://playcode.io/react_ts_hooks)を利用してReactの環境を用意します。
+PlayCodeはブラウザの上でコードを編集しながらウェブアプリの開発体験ができる環境です。
+本来の開発環境と比較するとJavaScriptからTypeScriptへの変換処理などが隠蔽されている部分もありますが、Reactの動作を試すは手軽です。
 
-React TypeScriptの環境である<https://codesandbox.io/s/react-typescript-react-ts>を開いてください。
-以下のようなページが表示されると思います。
+::: warning
 
-![](./images/setup-codesandbox.png)
+PlayCodeは社外の環境なので、業務関係の情報を不意にコピペしないよう注意してください。
+
+:::
+
+リンクを開くと以下のようなページが表示されると思います。
+
+![](./images/setup-playcode.png)
 
 以上で環境のセットアップはほぼ完了です。簡単ですね😉
 
-この環境ではエディタとブラウザが左右に表示されており、ファイルをセーブすると自動でブラウザの内容が更新されます。
+この環境ではエディタとブラウザが上下に表示されており、ファイルを編集すると自動でブラウザの内容が更新されます。
+「Console」という窓は今回は使いませんので、消しても問題ありません。
+各窓は縦長の方が編集や動作確認が快適なので、左上のボタンを押して、エディタとブラウザを左右で表示するとよいでしょう。
 
-残るちょっとした作業として、`src/index.tsx`の以下の場所に`import "./styles.css"`の行を追加しておいてください。
+残るちょっとした下準備として、`src/index.tsx`の以下の場所に`import "./style.css"`の行を追加しておいてください。
 
-```tsx{4}
-import React from "react";
-import ReactDOM from "react-dom/client";
+```tsx{6}
+import React, { StrictMode } from "react";
+import * as ReactDOMClient from "react-dom/client";
+
 import App from "./App";
-import "./styles.css";
+
+import "./style.css";
 ```
 
 これから`App.tsx`は頻繁に書き換えるため、代わりに特に触ることのない`index.tsx`からスタイルシートを`import`するようにします。
@@ -65,7 +76,7 @@ import "./styles.css";
 [Vite](https://vitejs.dev)を利用してローカル環境にプロジェクトの雛形を用意します。
 
 Viteを利用した環境のセットアップを例示しておきます。
-難しそうであればCodeSandboxを利用してください。
+難しそうであればPlayCodeを利用してください。
 
 ```sh
 # NodeJSのインストール(インストール済みの場合はスキップ)
@@ -90,6 +101,24 @@ npm run dev
 この環境ではファイルを更新すると自動でブラウザの表示も更新されます。
 開発のためのエディタは好きなものを利用してください。
 
+:::tip プロジェクトをテンプレートから作成したらgit commitしておく
+
+以降の講義の流れには関係ありませんが、Gitを使える人は、この状態で一番初めのコミットを作っておくといいでしょう。
+
+```sh
+git init
+git add .
+# 「npm create vite というコマンドで生成したよ」というコメントでコミット
+git commit -m 'npm create vite'
+```
+
+この時点でコミットしておくことで、この後、手動で編集した箇所がわかりやすくなります。
+気になる人は適当に編集した後で`git diff`してみてください。
+
+テンプレートから大量のファイルを作成するタイプのプロジェクトでは、自動生成されたファイルと手動で書いたコードを分けてコミットしておくと、特に複数人で開発している場合に、どのコードが意図して書かれたものなのかがわかりやすくなります。
+
+:::
+
 ### フォルダ構成
 
 Reactのプロジェクトのフォルダにはいろんなファイルがありますが、この講義では`src`フォルダだけを気にしてもらえれば大丈夫です。`src`フォルダの中にもいろんなファイルがありますが、ひとまず以下に示す3つのファイルのみを気にしてください。
@@ -97,16 +126,16 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 ```
 (プロジェクトのフォルダ)
 ├── src
-│   ├── App.tsx     ← メインのアプリ実装
-│   ├── index.tsx   ← アプリのセットアップ (Viteの場合はmain.tsx)
-│   ├── styles.css  ← スタイルシート      (Viteの場合はindex.css)
+│   ├── App.tsx    ← メインのアプリ実装
+│   ├── index.tsx  ← アプリのセットアップ (Viteの場合はmain.tsx)
+│   ├── style.css  ← スタイルシート      (Viteの場合はindex.css)
 │   └── (その他諸々)
 └── (その他諸々)
 ```
 
 この講義では主に`src/App.tsx`を編集してReactの動作を確認していきます。
 
-:::warning 以降はCodeSandboxのファイル構成で説明します
+:::warning 以降はPlayCodeのファイル構成で説明します
 
 Vite環境の方は適宜読み替えをお願いします。
 
@@ -117,14 +146,14 @@ Vite環境の方は適宜読み替えをお願いします。
 今回のハンズオン用のスタイルシートをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
 それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
 
-- CodeSandbox環境: `src/styles.css`
+- PlayCode環境: `src/style.css`
 - Vite環境: `src/index.css`
 
 ### 🚩チェックポイント
 
 ここまでで以下の準備が終わっていれば完璧です😉
 
-- CodeSandbox、もしくはViteを利用してReactの開発環境の準備ができた
+- PlayCode、もしくはViteを利用してReactの開発環境の準備ができた
   - コードを編集する準備と、ブラウザの表示を確認する準備ができた
 - Reactのプロジェクトの`src`フォルダが確認できた
 - ハンズオン用のスタイルシートの適用が終わった
@@ -182,13 +211,17 @@ TypeScriptはMicrosoft発の、JavaScriptに**型**の概念を加えた言語�
 例えば以下の関数定義は
 
 ```js
-const fn = (n) => n * 2
+function double(n) {
+  return n * 2
+}
 ```
 
 TypeScriptでは次のように書けます。
 
 ```ts
-const fn = (n: number) => n * 2
+function double(n: number) {
+  return n * 2
+}
 ```
 
 引数に`number`という型をつけることができます。
@@ -202,9 +235,12 @@ type Props = {
   value: number
 }
 
-const fn = (props: Props) => props.value * 2
+function double(props: Props) {
+  return props.value * 2
+}
 
-fn({ value: 12 }) // => エラーなし
+double({ value: 12 }) // => エラーなし
+double(12) // => エラー
 ```
 
 ここでは`Props`という型を定義して関数の引数に利用しています。
@@ -323,9 +359,10 @@ const element = React.createElement('div', { className: 'app' })
 
 ## Reactコンポーネントとプロパティ
 
-前置きが長くなりましたがReactを触っていきましょう😉
+前置きが長くなりましたが、実行環境は整いましたか？
+それではReactを触っていきましょう😉
 
-Reactでは画面を構成する部品を「コンポーネント」という単位で定義します。
+まず、Reactでは画面を構成する部品を「コンポーネント」という単位で定義します。
 ここでは最もシンプルなReactコンポーネントとして、プロパティを受け取り描画内容を返すだけのReactコンポーネントを作っていきましょう。
 
 ### とりあえずReactを動作させる
@@ -1431,8 +1468,8 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 この`use***`というのは内部でReact Hookを使っていることをわかりやすくするためのただの命名規則で、実質カスタムHookというのはHookを含んでいるだけのただの関数です。
 
 ひとつ注目して欲しいのは、この切り出しにより`setTodoItems`というメソッドが`App`コンポーネントからはアクセスできなくなった点です。
-`setTodoItems`は`todoItems`に対しては、いわばどのような変更も行える万能メソッドです。
-それを隠蔽し、追加や変更など、ある特定の操作に特化したメソッドのみを利用者側に見せることで、そのStateがどのような変更操作を意図しているのかを明確にし、コードの可読性を上げることができます。
+`setTodoItems`は`todoItems`に対して、いわばどのような変更も行える万能メソッドです。
+それを隠蔽し、追加や変更など、ある特定の操作に特化したメソッドのみを利用側のコードに見せることで、そのStateがどのような変更操作を意図しているのかを明確にし、コードの可読性を上げることができます。
 
 「Stateとそれに対する操作をまとめる」というパターンはよく使うため覚えておくと良いでしょう😉
 
@@ -1868,7 +1905,7 @@ export default function App() {
 
 ### サーバを立ててアクセスしてみる(Vite環境のみ)
 
-残念ながらCodeSandboxでは実行できないためモックで我慢してください🥺
+残念ながらPlayCodeでは実行できないためモックで我慢してください🥺
 
 APIサーバのコンテナイメージを用意してありますので、以下のようにローカルでサーバを立ててサーバへのアクセスを実際に試してみてください。
 
