@@ -91,7 +91,7 @@ Ansible playbookを通じて実際にサーバに設定を加えていきます
 ## 6. 変数やループ処理の実行
 
 Ansible playbookを通じてWebサーバを作ってみましょう
-- [Ansible によるWebサーバセットアップ](./USE_VARIABLE.md)
+- [変数やループ処理の実行](./USE_VARIABLE.md)
 
 ## 7. 正しい Playbook を書くために
 
