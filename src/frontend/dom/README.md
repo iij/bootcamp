@@ -1119,7 +1119,7 @@ font-weight: bold;
 
 くっ、そうやって我々は明治の手のひらで踊らされてしまうのだ...
 
-![](./7-flame-button.gif)
+![](./7-frame-button.gif)
 
 #### さらに興味がある人へ
 
