@@ -18,7 +18,7 @@ prior_knowledge: 仮想化、CUI 操作
 $ docker version
 ```
 
-上記コマンドが実行できない方は事前にDocker（及びコマンド）のインストールが終わっているか否か確認し、未完了の人は、Docker のインストールを行ってください。
+上記コマンドが実行できない方は、Docker（及びコマンド）のインストールが終わっているか確認し、未完了であればDockerのインストールを行ってください。
 
 ## Docker コンテナを起動する
 
@@ -28,20 +28,21 @@ Dockerコンテナを使って仮想環境プラットフォームを構築す�
 - Dockerコンテナの作成
 - Dockerコンテナの起動
 
-従って、Dockerコンテナを起動する為に最初にすべきことは**Dockerコンテナイメージ**を取得する事になります。
+まずは、**作成済みのDockerコンテナイメージ**を利用してコンテナを起動してみましょう。
 
-Dockerコンテナイメージは、自分で作成(ビルド)して取得する方法と、作成済みのDockerコンテナイメージを取得する方法の2種類があります。
-まずは、作成済みのイメージを利用してコンテナを起動することを試してみましょう。
+---
 
 ### 演習1 Dockerコンテナを起動する
 
-- **docker run**コマンドを使用して**getting-started**コンテナを起動する
-  ```bash
-  docker run --rm -p 80:80 docker/getting-started
-  ```
+**docker run** コマンドを使用して **getting-started** コンテナを起動します。
+
+```bash
+docker run --rm -p 80:80 docker/getting-started
+```
+
 <details><summary>実行中のログ</summary>
 
-```
+```bash
 Unable to find image 'docker/getting-started:latest' locally
 latest: Pulling from docker/getting-started
 c158987b0551: Pull complete
@@ -57,54 +58,73 @@ Digest: sha256:d79336f4812b6547a53e735480dde67f8f8f7071b414fbd9297609ffb989abc1
 Status: Downloaded newer image for docker/getting-started:latest
 89e2c9780f5caf3b5250013e002e8aaf9f8ea74c2e940eca49b890dfc019ab5e
 ```
+
 </details>
 
-- 起動の確認
-  - ブラウザを開き、以下のURLを入力します
-    ```
-    http://localhost:80
-    ```
-  - 以下のような画面が表示されれば成功です
-    ![getting-started](./images/getting-started.png)
-- コンテナの終了
- **Ctrl + c** を押す
-- ターミナルが戻ってくる
+#### 起動の確認
 
-### 発展課題1
+- ブラウザで以下のURLを入力します：
 
-先ほどの作業ではフォアグラウンドで実行している為、ターミナルが占有されてしまいます。
-また、このような起動では例えばssh等で接続している場合はセッション切断と共にコンテナが停止してしまう為、発展課題ではこれを永続化する事をやってみましょう。
+  http://localhost:80
 
-デーモン起動をすると、ターミナルは返ってきてしまうため起動確認は `docker ps`を使って確認します。
+- 以下のような画面が表示されれば成功です：
 
-- コンテナのデーモン起動
-  ```bash
-  docker run --rm -p 80:80 docker/getting-started
-  ```
-- コンテナの起動確認
-  ```bash
-  CONTAINER ID   IMAGE                    COMMAND                   CREATED         STATUS         PORTS                               NAMES
-  38ebcf110f45   docker/getting-started   "/docker-entrypoint.…"   3 seconds ago   Up 2 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   fervent_shaw
-  ```
-  - ここで**NAMES**に表示されている値を記憶、若しくは記録しておいてください
-- 起動の確認
-  - ブラウザを開き、以下のURLを入力します
-    ```
-    http://localhost:80
-    ```
-  - 以下のような画面が表示されれば成功です
-    ![getting-started](./images/getting-started.png)
-- コンテナの終了
-  - **docker stop**コマンドを用いてdockerコンテナを停止します
-  ```
-  docker stop <NAME>
-  ```
-- コンテナが停止したことの確認
-  - ブラウザにて **http://localhost**にアクセスし、アクセスできないことを確認する
-  - **docker ps**コマンドを用いて、何も表示されないことを確認する
-    ```
-    docker ps
-    CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
-    ```
+  ![getting-started](./images/getting-started.png)
+
+#### コンテナの終了
+
+**Ctrl + C** を押して終了します。
+
+---
+
+## 発展課題1: デーモンとして起動する
+
+先ほどはフォアグラウンド実行だったため、ターミナルが占有されていました。
+ここではバックグラウンド（デーモン）で起動し、ターミナルを占有しない方法を学びます。
+起動後は `docker ps` を使用して確認します。
+
+### ステップ1: バックグラウンドで起動
+
+```bash
+docker run --rm -d -p 80:80 docker/getting-started
+```
+
+### ステップ2: コンテナの起動確認
+
+```bash
+docker ps
+
+（出力例）
+
+CONTAINER ID   IMAGE                    COMMAND                   CREATED         STATUS         PORTS                               NAMES
+38ebcf110f45   docker/getting-started   "/docker-entrypoint.…"   3 seconds ago   Up 2 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   fervent_shaw
+```
+
+- **NAMES** に表示されている値を控えておいてください。
+
+### ステップ3: ブラウザで確認
+
+http://localhost:80 にアクセスし、画面が表示されれば成功です。
+
+![getting-started](./images/getting-started.png)
+
+### ステップ4: コンテナの停止
+
+```bash
+docker stop <NAME>
+```
+
+### ステップ5: 停止の確認
+
+- http://localhost にアクセスして、表示されないことを確認。
+- 以下のコマンドで、コンテナが停止していることを確認。
+
+```bash
+docker ps
+
+（何も表示されなければ停止しています）
+
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+```
 
 <credit-footer/>
