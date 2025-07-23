@@ -1,8 +1,8 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 ---
 
-## 6. 正しい Playbook を書くために
+## 7. 正しい Playbook を書くために
 
 Ansible とは、IT 自動化ツールです。
 Ansible を使うと言うことはより多くのシステムを簡単に扱えるようにするということになります。

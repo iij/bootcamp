@@ -1,41 +1,40 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 ---
 
-## 4. Ansible playbook の作成
+## 3. Ansible playbook の作成
 
-皆さんはここまでで既にansible を使ってホストの管理を行っていました。
-先ほどの演習で使った`ansible`コマンドがそれであり、ほかにも様々なモジュールを用いることで
-例えばアプリケーションのインストールなども行うことができます。
-
+先ほどの項で発展演習を行った人は既にansible を使ってホストの操作を行いました。
 しかし、Ansible のアドホックコマンドは単純なオペレーションには便利ですが、
 複雑な構成管理や作業の定型化などには適していません。
 Ansible の真価を発揮するためには、Playbook の使用方法を学習し、一連のターゲットホストに対して複数の複雑なタスクを簡単に反復可能な方法で実行できるようにする必要があります。
 
-### Ansible Playbookとは何か？
+この章では、Ansible Playbookの基本概念と作成方法、実行方法について学びます。  
+Playbookを使うことで、複雑な構成管理や定型作業を効率的に自動化できます。
 
-Ansible Playbookは、ITインフラストラクチャの自動化を実現するための主要なツールです。
-Playbookは、YAML形式で記述される一連のタスクの集合であり、これを使用してサーバーの設定、アプリケーションのデプロイ、タスクの実行などを自動化できます。
-Playbookは、以下の要素で構成されます。
+---
 
-- Play: 実行するタスクの集合。対象ホストやタスクの順序を定義します。
-- Task: 実行する具体的な操作。モジュールを使用してタスクを実行します。
-- Module: 実際にタスクを実行するためのスクリプト。Ansibleには多くの標準モジュールが含まれています。
-- Handler: 特定の条件が満たされた場合に実行されるタスク。通常、サービスの再起動などに使用されます。
-- Variable: タスク内で使用される動的な値。Playbook内で定義したり、外部ファイルから読み込んだりできます。
+### Playbookとは？
 
-### Playbook(play) について
+Ansible Playbookは、YAML形式で記述する一連のタスクの集合です。  
+サーバーの設定、アプリケーションのデプロイ、タスクの実行などを自動化できます。
 
-Playbook（プレイブック）は、管理対象に対してこうなってほしいという構成や手順を記述したファイルです。
-playbook は先ほど実行していたアドホックコマンドを複数取り込み、複数の task のセットとして利用することができるようになります。
+主な構成要素：
 
-タスクは、特定の作業単位を実行するモジュールのアプリケーションです。
-つまり、Playbook とは、特定の順序で実行される 1 つ以上の task を含むテキストファイルです。
+- **Play**: 実行するタスクの集合。対象ホストやタスクの順序を定義します。
+- **Task**: 実行する具体的な操作。モジュールを使用してタスクを実行します。
+- **Module**: 実際にタスクを実行するためのスクリプト。Ansibleには多くの標準モジュールが含まれています。
+- **Handler**: 特定の条件が満たされた場合に実行されるタスク。サービスの再起動などに使用します。
+- **Variable**: タスク内で使用される動的な値。Playbook内や外部ファイルから定義できます。
 
-では、これまでアドホックに行っていた ansible ping を行う playbook を作成してみましょう。
-PlaybookはYAMLと呼ばれる書式によって書く必要があります。
+---
 
-## [演習] Playbookの作成
+### Playbookの基本構造
+
+Playbookは、管理対象に対して「こうなってほしい」という構成や手順を記述したファイルです。  
+複数のタスクを順序通りに実行でき、再利用や定型化に適しています。
+
+## [演習.3] Ansible Playbookの作成
 
 - Ansibleのplaybookを作成します。今回は`playbook.yml`として作成してみます
   - docker 上で作成する場合は以下の通りvi 等でテキストファイルを作成します
@@ -51,7 +50,7 @@ PlaybookはYAMLと呼ばれる書式によって書く必要があります。
 - playbookの実行
   - Playbookの実行には`ansible-plyabook`というコマンドを使って実行します
     ```bash
-    ansible-playbook playbooks.yml
+    ansible-playbook -i inventories/hosts playbooks.yml
     ```
   - 実行結果
     ```bash
@@ -74,7 +73,7 @@ PlaybookはYAMLと呼ばれる書式によって書く必要があります。
 
 上記の通り exercise グループに属している host00, host01, の 2 台に対し、ping モジュールが実行され`OK`が表示されれば成功です。
 
-### 解説
+### 参考: playbook解説
 
 - 1 行目: `---`
   - Playbook の始まりを意味します
@@ -90,83 +89,72 @@ PlaybookはYAMLと呼ばれる書式によって書く必要があります。
     - モジュールによって様々なオプションを追加することがあります
 
 
-## [演習] dry-run
+## [発展演習.1] dry-run（変更内容の確認）
 
-- Playbookを実行する前に、実際に変更が行われるかどうかを確認するためにdry-runを行います。
+Playbookを実行する前に、実際に変更が行われるかどうかを確認するためにdry-run（チェックモード）を行います。
+
 - 既に作成済みの `playbook.yml` を使用します。
 - 以下のコマンドでPlaybookをdry-runモードで実行します。
+
   ```bash
   ansible-playbook -i inventory playbook.yml --check
   ```
-- dry-runの結果を確認し、実際に変更が行われるかどうかを確認します。
 
-## [発展] gather の停止
+- dry-runの実行結果例
 
-先ほどの実行結果で `TASK[ping]` の前に `TASK[Gathering Facts]`というものがあったことに気づいたでしょうか。
-Ansible は通常、実行する際に実行対象となるホストから様々な情報の収集を行っています。
-これらはansible_factsと呼ばれる特殊な変数に格納され、続くtaskで活用したり、収集結果をファイルに出力するなどに活用することができます。
+  ```text
+  PLAY [exercise] *******************************************************************
 
-しかし一方でそういった情報を収集する必要が無い場合は、収集の分だけ実行時間が長引くことになってしまいます。
-従って収集する必要がない場合は明示的に情報収集を停止したり、設定ファイルを編集し、デフォルトの動作を切り替えることで収集を停止し、即座に記載したtaskを実行させることができます。
+  TASK [pingモジュールで疎通確認] ****************************************************
+  ok: [host00]
+  ok: [host01]
 
-以下のいずれかを実施することで下記の通り直ぐにpingモジュールの実行に移ることができます。
+  PLAY RECAP ***********************************************************************
+  host00                     : ok=1    changed=0    unreachable=0    failed=0
+  host01                     : ok=1    changed=0    unreachable=0    failed=0
+  ```
 
-```bash
-ansible-playbook playbooks.yml
-SSH password:
+- dry-runの結果を確認し、実際に変更が行われるかどうかを事前に把握できます。
 
-PLAY [exercise] ***********************************************************************************************************
+---
 
-TASK [ping] ***************************************************************************************************************
-ok: [host01]
-ok: [host00]
+## [発展演習.2] gather_factsの停止
 
-PLAY RECAP ****************************************************************************************************************
-host00                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-host01                     : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-```
+Playbook実行時、デフォルトでホスト情報（facts）が収集されますが、不要な場合は収集を停止できます。
 
-### playbook単位での停止
+- `gather_facts: false` を指定したPlaybook例
 
-- playbookに以下を宣言することで停止することができます
-  - 記載する場所どこでも構いませんが`hosts`等のセクションと同じレベル（同じインデントレベル）で宣言する必要があります。
   ```yaml
-  gather_facts: false
+  ---
+  - hosts: exercise
+    gather_facts: false
+    tasks:
+      - name: pingモジュールで疎通確認
+        ping:
   ```
 
-### 設定ファイルでの停止
+- 実行コマンド
 
-- ansible.cfg に以下の通り記載することでこのplaybookに宣言しなくともgatherを停止することができます
-  - 宣言する箇所は`[defaults]`セクションに宣言してください
-  ```
-  gathering = explicit
+  ```bash
+  ansible-playbook -i inventory playbook.yml
   ```
 
+- 実行結果例
 
-## [発展演習] 変数の追加と表示
+  ```text
+  PLAY [exercise] *******************************************************************
 
-Playbook内で変数を定義し、その値を表示します
+  TASK [pingモジュールで疎通確認] ****************************************************
+  ok: [host00]
+  ok: [host01]
 
-- 以下の内容でPlaybookを作成します。
-    ```yaml
-    ---
-    - name: 変数の追加と表示
-      hosts: all
-      vars:
-        username: "新人"
-        home_dir: "/home/new_member"
-      tasks:
-        - name: 変数の値を表示
-          debug:
-            msg: "ユーザー名: {{ username }}, ホームディレクトリ: {{ home_dir }}"
-    ```
+  PLAY RECAP ***********************************************************************
+  host00                     : ok=1    changed=0    unreachable=0    failed=0
+  host01                     : ok=1    changed=0    unreachable=0    failed=0
+  ```
+- 実行結果では `TASK [Gathering Facts]` が表示されず、すぐにタスクが実行されます。
 
-- 以下のコマンドでPlaybookを実行します。
-    ```sh
-    ansible-playbook -i inventory playbook.yml
-    ```
-
-## [発展演習] 対象ホストの絞り込み
+## [発展演習.3] 対象ホストの絞り込み
 
 - 特定のホストグループに対してのみタスクを実行します
 
@@ -184,12 +172,24 @@ Playbook内で変数を定義し、その値を表示します
     - name: Webサーバーに対するタスク
       hosts: web
       tasks:
-        - name: HTTPサービスのステータスを確認
-          service:
-            name: httpd
-            state: started
+        - name: pingモジュールで疎通確認
+          ping:
     ```
 - 以下のコマンドでPlaybookを実行します。
     ```sh
     ansible-playbook -i inventory playbook.yml
     ```
+- 実行結果では インベントリファイルで `web` グループに属するホスト（例: `web00`）のみがPlaybookの実行対象となる為、実行結果は以下のようになります
+  ```text
+  PLAY [Webサーバーに対するタスク] ***************************************************
+
+  TASK [pingモジュールで疎通確認] ****************************************************
+  ok: [web00]
+
+  PLAY RECAP ***********************************************************************
+  web00                     : ok=1    changed=0    unreachable=0    failed=0
+  ```
+- `exercise` グループの `host00` や `host01` にはタスクが実行されません。
+- 指定したグループ（web）のホストだけに対して、pingモジュールが実行され、`ok`が表示されれば成功です。
+
+<credit-footer/>
