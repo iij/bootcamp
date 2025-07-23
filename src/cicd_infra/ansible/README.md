@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 ---
 
 # Ansible による IT自動化
@@ -31,9 +31,11 @@ footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 
 ### 本講義で扱うこと
 
-- Ansible概論
-- Ansibleの導入
-- Ansibleの実行
+- Ansibleの概要と基本操作
+- Ansibleのインストールとセットアップ
+- インベントリ・設定ファイル・Playbookの作成と管理
+- サーバ構築・設定の自動化
+- 変数やループ処理の活用
 
 ### 本講義で扱わないこと
 
@@ -44,18 +46,18 @@ footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 
 ### 演習環境
 
-本講義では`vscode` を使って演習を行います。
-vim等による開発でも問題ありませんが、講義においては講師の環境を`vscode`にて説明を行うため、
-vscode以外で開発を行う場合は適宜自身で読み替えてください。
+本講義では主に`Visual Studio Code (VS Code)`を利用して演習を進めます。  
+他のエディタ（vim等）でも問題ありませんが、講師の説明はVS Codeを前提としています。  
+VS Code以外を利用する場合は、適宜読み替えてください。
 
 ### システム構成
 
-この講義で使用するコンテナのネットワーク図です。
-コンテナを VM（Virtual Machine）に見立て、ハンズオンを実施します。
+このハンズオンでは、複数のDockerコンテナを仮想的なVMとして扱い、演習を進めます。  
+下記は演習環境のネットワーク構成図です。
 
 ![ネットワーク図](./images/network.drawio.png)
 
-この講義では図中の `console` コンテナから各ホストを管理します。
+演習では、図中の `console` コンテナから各ホストを管理します。
 
 ## 0. 事前準備
 
@@ -73,28 +75,29 @@ Ansibleの概要とインストール方法について学びます
 Ansibleインベントリの概念とインベントリファイルの作成方法を学びます
 - [インベントリの作成](./CREATE_INVENTORY.md)
 
-## 3. Ansible 設定ファイルの管理
+## 3. Ansible playbook の作成
 
-Ansibleの基本動作仕様とその変更方法について学びます
-- [Ansible 設定ファイルの管理](./MANAGE_SETTINGS.md)
-
-## 4. Ansible playbook の作成
-
-Ansible playbookの概念と作成方法を学びます
+Ansibleの動作仕様や設定ファイルの管理方法について学びます。
 - [Ansible playbookの作成](./CREATE_PLAYBOOK.md)
 
-## 5. Ansible によるサーバセットアップ
+## 4. Ansible によるサーバセットアップ
 
-Ansible playbookを通じて実際にサーバに設定を加えていきます
+Playbookを使って実際にサーバの構築・設定を自動化します。
 - [Ansible によるサーバセットアップ](./CREATE_SERVER.md)
+
+## 5. Ansible 設定ファイルの管理
+
+Ansibleの動作仕様や設定ファイルの管理方法について学びます。
+- [Ansible 設定ファイルの管理](./MANAGE_SETTINGS.md)
 
 ## 6. 変数やループ処理の実行
 
-Ansible playbookを通じてWebサーバを作ってみましょう
+Playbookで変数やループ処理を活用し、Webサーバの構築を体験します。
 - [変数やループ処理の実行](./USE_VARIABLE.md)
 
 ## 7. 正しい Playbook を書くために
 
+保守性・可読性の高いPlaybookを書くためのポイントを学びます。
 - [正しい Playbook を書くために](./ANSIBLE_CODE_STYLE.md)
 
 <credit-footer/>
