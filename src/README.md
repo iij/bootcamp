@@ -7,7 +7,7 @@ features:
 footer: CC BY-SA Licensed | Copyright (c) 2024, Internet Initiative Japan Inc.
 ---
 
-## 2023年度カリキュラム一覧
+## 2024年度カリキュラム一覧
 
 | カテゴリ | 1枠目 | 2枠目 | 3枠目 | 4枠目 | 5枠目 | 6枠目 |
 | :--: | :--: | :--: | :--: | :--: | :--: | :--: |
