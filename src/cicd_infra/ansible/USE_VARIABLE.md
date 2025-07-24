@@ -21,18 +21,18 @@ Ansibleの変数機能を使うことで、柔軟な構成管理や大量のリ�
 Playbook内で変数を定義し、その値を表示します
 
 - 以下の内容でPlaybookを作成します。
-    ```yaml
-    ---
-    - name: 変数の追加と表示
-      hosts: all
-      vars:
-        username: "新人"
-        home_dir: "/home/new_member"
-      tasks:
-        - name: 変数の値を表示
-          debug:
-            msg: "ユーザー名: {{ username }}, ホームディレクトリ: {{ home_dir }}"
-    ```
+  ```yaml
+  ---
+  - name: 変数の追加と表示
+    hosts: all
+    vars:
+      username: "新人"
+      home_dir: "/home/new_member"
+    tasks:
+      - name: 変数の値を表示
+        debug:
+          msg: "ユーザー名: {{ username }}, ホームディレクトリ: {{ home_dir }}"
+  ```
 
 - 以下のコマンドでPlaybookを実行します。
     ```sh
@@ -143,6 +143,7 @@ Playbook内で変数を定義し、その値を表示します
 
 まずはこれまでの知識を使って自分で作ってみましょう
 分からなければ開いて内容を確認しながら作成してみましょう
+必要に応じてインベントリの更新も行ってください
 
 <details><summary>use_variable.yml　例</summary>
 
@@ -196,7 +197,7 @@ Playbook内で変数を定義し、その値を表示します
 
 - playbookが作成できたならば以下の通り実行します
   ```bash
-  ansible-playbook use_variable.yml
+  ansible-playbook -i inventories/hosts use_variable.yml
   ```
 - 期待される出力例
   ```text
@@ -224,5 +225,7 @@ Playbook内で変数を定義し、その値を表示します
   changed: [web00]
   changed: [app00]
   ```
+- ここまで正常に完了したら**docker-compose.yml**に記載された通り**18080**ポートでwebサーバが起動しているはずなので **http::localhost:18080/**　へアクセスしてみましょう
+  - Hello bootcamp の文字が表示されれば成功です
 
 <credit-footer/>
