@@ -50,7 +50,7 @@ Playbookは、管理対象に対して「こうなってほしい」という構
 - playbookの実行
   - Playbookの実行には`ansible-plyabook`というコマンドを使って実行します
     ```bash
-    ansible-playbook -i inventories/hosts playbooks.yml
+    ansible-playbook -i inventories/hosts playbooks.yml -k
     ```
   - 実行結果
     ```bash
@@ -95,13 +95,10 @@ Playbookを実行する前に、実際に変更が行われるかどうかを確
 
 - 既に作成済みの `playbook.yml` を使用します。
 - 以下のコマンドでPlaybookをdry-runモードで実行します。
-
   ```bash
-  ansible-playbook -i inventory playbook.yml --check
+  ansible-playbook -i inventories/hosts playbooks.yml --check -k
   ```
-
 - dry-runの実行結果例
-
   ```text
   PLAY [exercise] *******************************************************************
 
@@ -113,17 +110,13 @@ Playbookを実行する前に、実際に変更が行われるかどうかを確
   host00                     : ok=1    changed=0    unreachable=0    failed=0
   host01                     : ok=1    changed=0    unreachable=0    failed=0
   ```
-
 - dry-runの結果を確認し、実際に変更が行われるかどうかを事前に把握できます。
-
----
 
 ## [発展演習.2] gather_factsの停止
 
 Playbook実行時、デフォルトでホスト情報（facts）が収集されますが、不要な場合は収集を停止できます。
 
 - `gather_facts: false` を指定したPlaybook例
-
   ```yaml
   ---
   - hosts: exercise
@@ -134,13 +127,11 @@ Playbook実行時、デフォルトでホスト情報（facts）が収集され�
   ```
 
 - 実行コマンド
-
   ```bash
-  ansible-playbook -i inventory playbook.yml
+  ansible-playbook -i inventories/hosts playbooks.yml -k
   ```
 
 - 実行結果例
-
   ```text
   PLAY [exercise] *******************************************************************
 
@@ -159,26 +150,26 @@ Playbook実行時、デフォルトでホスト情報（facts）が収集され�
 - 特定のホストグループに対してのみタスクを実行します
 
 - 以下の内容でインベントリファイルを作成します。
-    ```ini
-    [exercise]
-    host00
-    host01
-    [web]
-    web00
-    ```
+  ```ini
+  [exercise]
+  host00
+  host01
+  [web]
+  web00
+  ```
 - 以下の内容でPlaybookを作成します。
-    ```yaml
-    ---
-    - name: Webサーバーに対するタスク
-      hosts: web
-      tasks:
-        - name: pingモジュールで疎通確認
-          ping:
-    ```
+  ```yaml
+  ---
+  - name: Webサーバーに対するタスク
+    hosts: web
+    tasks:
+      - name: pingモジュールで疎通確認
+        ping:
+  ```
 - 以下のコマンドでPlaybookを実行します。
-    ```sh
-    ansible-playbook -i inventory playbook.yml
-    ```
+  ```sh
+  ansible-playbook -i inventories/hosts playbooks.yml -k
+  ```
 - 実行結果では インベントリファイルで `web` グループに属するホスト（例: `web00`）のみがPlaybookの実行対象となる為、実行結果は以下のようになります
   ```text
   PLAY [Webサーバーに対するタスク] ***************************************************

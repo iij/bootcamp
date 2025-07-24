@@ -90,31 +90,67 @@ Ansibleで頻出する基本用語を整理します。
 
 今回の演習ではpipのインストールはAnsibleの本質とは外れるため、予めインストール済みの環境にて実施します。
 
+- コンソールコンテナへログイン
+  - [README.md](./README.md)に記載した手順に従い、ansible consoleホストへログインします
 - ansible のインストール
-   ```bash
-   pip install ansible
+  ```bash
+  pip install ansible
+  ```
+  <details>
+  <summary>実行結果例</summary>
+   
+  ```bash
+  Collecting ansible
+    Downloading ansible-8.7.0-py3-none-any.whl (48.4 MB)
+      |████████████████████████████████| 48.4 MB 23.5 MB/s            
+  Collecting ansible-core~=2.15.7
+    Downloading ansible_core-2.15.13-py3-none-any.whl (2.3 MB)
+      |████████████████████████████████| 2.3 MB 24.8 MB/s            
+  Collecting PyYAML>=5.1
+    Downloading PyYAML-6.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (737 kB)
+      |████████████████████████████████| 737 kB 38.2 MB/s            
+  Collecting jinja2>=3.0.0
+    Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+      |████████████████████████████████| 134 kB 35.1 MB/s            
+  Collecting cryptography
+    Downloading cryptography-45.0.5-cp37-abi3-manylinux_2_34_x86_64.whl (4.4 MB)
+      |████████████████████████████████| 4.4 MB 14.8 MB/s            
+  Collecting resolvelib<1.1.0,>=0.5.3
+    Downloading resolvelib-1.0.1-py2.py3-none-any.whl (17 kB)
+  Collecting importlib-resources<5.1,>=5.0
+    Downloading importlib_resources-5.0.7-py3-none-any.whl (24 kB)
+  Collecting packaging
+    Downloading packaging-25.0-py3-none-any.whl (66 kB)
+      |████████████████████████████████| 66 kB 8.2 MB/s              
+  Collecting MarkupSafe>=2.0
+    Downloading MarkupSafe-3.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (20 kB)
+  Collecting cffi>=1.14
+    Downloading cffi-1.17.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (445 kB)
+      |████████████████████████████████| 445 kB 19.7 MB/s            
+  Collecting pycparser
+    Downloading pycparser-2.22-py3-none-any.whl (117 kB)
+      |████████████████████████████████| 117 kB 21.2 MB/s            
+  Installing collected packages: pycparser, MarkupSafe, cffi, resolvelib, PyYAML, packaging, jinja2, importlib-resources, cryptography, ansible-core, ansible
+  Successfully installed MarkupSafe-3.0.2 PyYAML-6.0.2 ansible-8.7.0 ansible-core-2.15.13 cffi-1.17.1 cryptography-45.0.5 importlib-resources-5.0.7 jinja2-3.1.6 packaging-25.0 pycparser-2.22 resolvelib-1.0.1
+  WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
    ```
+   </details>
 - ansible のインストール確認
    ```bash
    ansible --version
    ```
-
-インストールが完了すると、以下のような出力が得られます。
-
-```bash
-ansible --version
-ansible [core 2.15.3]
-  config file = /ansible/ansible.cfg
-  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
-  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
-  executable location = /usr/local/bin/ansible
-  python version = 3.9.16 (main, May 29 2023, 00:00:00) [GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] (/usr/bin/python3)
-  jinja version = 3.x
-```
-
-バージョンやパスは環境によって異なりますが、表示されればインストール成功です。
-
----
+- インストールが完了すると、以下のような出力が得られます。
+  ```bash
+  ansible --version
+  ansible [core 2.15.3]
+    config file = /ansible/ansible.cfg
+    configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+    ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
+    ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+    executable location = /usr/local/bin/ansible
+    python version = 3.9.16 (main, May 29 2023, 00:00:00) [GCC 11.3.1 20221121 (Red Hat 11.3.1-4)] (/usr/bin/python3)
+    jinja version = 3.x
+  ```
+- バージョンやパスは環境によって異なりますが、表示されればインストール成功です。
 
 <credit-footer/>

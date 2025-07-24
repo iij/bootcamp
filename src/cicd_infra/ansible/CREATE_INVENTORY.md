@@ -42,9 +42,15 @@ ap00
 
 ## [演習.2] インベントリの作成
 
+
+
 ### インベントリファイルの作成
 
 では、実際にインベントリファイルを作成してみましょう。
+ファイルの作成自体はコンテナへログインしvi(vimでも可)で操作しても良いですし、exerciseのdocker-compose.ymlに従って起動した場合は ansible フォルダがコンソールコンテナにマウントされているため、そのまま編集することもできます
+
+以下は、コンソールコンテナ上での操作例を記載しています
+
 - `hosts` というファイルを作成し、以下の内容を記載してください。
   ```bash
   vi hosts
@@ -61,7 +67,7 @@ ap00
 作成したインベントリファイルが正しい書式かどうかを確認するには、`ansible-inventory`コマンドを利用します。
 
 ```bash
-ansible-inventory -i hosts --list
+ansible-inventory -i inventories/hosts --list
 ```
 
 このコマンドを実行すると、インベントリの内容がJSON形式で表示され、構造やグループ分けが正しく認識されているか確認できます。
@@ -71,7 +77,7 @@ ansible-inventory -i hosts --list
 さらに、`-y` オプションを付けることでYAML形式でインベントリの構造を表示できます。
 
 ```bash
-ansible-inventory -i hosts --list -y
+ansible-inventory -i -i inventories/hosts --list -y
 ```
 
 これにより、グループやホストの階層構造がより分かりやすく表示されます。
@@ -103,7 +109,7 @@ ansible-inventory -i hosts --list -y
 - コメントアウトしたホストが実行対象から外れていることを確認します。
 
   ```bash
-  ansible-inventory --list -i hosts
+  ansible-inventory --list -i inventories/hosts
   ```
 
 - 出力結果に `host01` が含まれていないことを確認してください。
@@ -134,7 +140,7 @@ ansible-inventory -i hosts --list -y
 従って、登録したインベントリが実際に有効であるかどうかを確かめるために、`ansible`コマンドで ping モジュールを実行してみます。 
 - ansibleコマンドの実行
   ```bash
-  ansible -i hosts exercise -m ping -k
+  ansible -i inventories/hosts exercise -m ping -k
   ```
 - パスワードを聞かれるため事前準備で設定したパスワード(ansible)を入力します
 - 正しく実行されれば以下のように、対象のインベントリに対して**SUCCESS**として返ってきます
