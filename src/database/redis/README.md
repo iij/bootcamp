@@ -25,19 +25,20 @@ prior_knowledge: なし
 1. Redis と Python のイメージを使えるようにする
 
     ```Shell
-    docker pull redis:6.2.3-alpine3.13
-    docker pull python:3.9.5-slim-buster
+    # 全員でpullすることを想定してここでは軽量イメージ(alpine, slim)
+    docker pull redis:8.0.3-alpine3.21
+    docker pull python:3.13.5-slim-bookworm
+    
     docker images
-
-    REPOSITORY                                           TAG                 IMAGE ID            CREATED             SIZE
-    python                                               3.9.5-slim-buster   afaa64e7c7fe        15 hours ago        115MB
-    redis                                                6.2.3-alpine3.13    efb4fa30f1cf        9 days ago          32.3MB
+    REPOSITORY                                         TAG                                 IMAGE ID       CREATED         SIZE
+    redis                                              8.0.3-alpine3.21                    a87c94cbea0b   2 weeks ago     60.5MB
+    python                                             3.13.5-slim-bookworm                38e57556b635   5 weeks ago     121MB
     ```
 
 1. サーバを起動する
 
     ```Shell
-    docker run --rm --name test-server redis:6.2.3-alpine3.13
+    docker run --rm --name test-server redis:8.0.3-alpine3.21
     ```
     * ```test-server``` という名前で redis サーバーを 起動します
     * ``` Ready to accept connections ``` と出ればOK このターミナルは開いたままにします
@@ -49,7 +50,7 @@ prior_knowledge: なし
     * 下の二通りの使い方があります。どちらも ```test-server``` として先程起動したredis の中を見れます
     ```Shell
     # ネットワーク越し 別コンテナ
-    docker run -it --link test-server:redis --rm redis:6.2.3-alpine3.13 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+    docker run -it --link test-server:redis --rm redis:8.0.3-alpine3.21 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
     # 直接 乗り込んで起動
     docker exec -it test-server redis-cli
     ```
@@ -66,11 +67,14 @@ prior_knowledge: なし
     - Windows 環境は Git Bash の MINGW64 環境で動作確認しました
         - winpty docker -it 〜 としたらいけました
 
-3. 終了
+
+1. 終了
     * ここまで完了できたら 事前準備完了です。 無事 これらを行うことができました。
       1. docker image の 取得
-      1. redis server の起動
-      1. redis-cli による Redis の操作
+      2. redis server の起動
+      3. redis-cli による Redis の操作
+    * 先読み: 余裕があれば後述の「一番単純なkey-value」の操作もやってみてください。
+      * 説明がよりわかりやすくなるはずです。
 
 ## あらすじ
 
@@ -129,53 +133,57 @@ prior_knowledge: なし
 
 #### 一番単純なkey-value
 
-[set](https://redis.io/commands/set)/[get](https://redis.io/commands/get)
+[SET](https://redis.io/commands/set)/[GET](https://redis.io/commands/get)
 
-`set`で保存して`get`で取り出します。
+`SET`で保存して`GET`で取り出します。
 
 ```terminal
-172.17.0.2:6379> set key1 yamagarashi
+172.17.0.2:6379> SET key1 yamagarashi
 OK
-172.17.0.2:6379> set key2 kaizoku
+172.17.0.2:6379> SET key2 kaizoku
 OK
-172.17.0.2:6379> get key1
+172.17.0.2:6379> SET key1
 "yamagarashi"
-172.17.0.2:6379> get key2
+172.17.0.2:6379> GET key2
 "kaizoku"
-172.17.0.2:6379> get key3
+172.17.0.2:6379> GET key3
 (nil)
 ```
 
-これがredisで最も基本的なkeyとvalueの扱いです。`set`や`get`を「コマンド」と呼び、その後ろは引数です。
-keyを色々操作してみましょう。
+これがredisで最も基本的なkeyとvalueの扱いです。`SET`や`GET`を「コマンド」と呼び、その後ろは引数です。
 
-[keys](https://redis.io/commands/keys) はkeyの検索ができます。`keys *`とすると存在するすべてのキーが出力されます。
-ちなみにredisはシングルスレッドで動作するソフトウェアで、`keys *`で大量のkeyを表示すると一定時間処理が止まってしまい、本番サーバに重大な影響を与えてしまうので注意しましょう。
+redisのコマンドは大文字小文字を区別しないため、`set`や`get`でも問題ありませんが、ここでは区別を容易にするためコマンドを大文字で表記します。
+みなさんは好きな方を使ってください。
+
+さて、keyを色々操作してみましょう。
+
+[KEYS](https://redis.io/commands/keys) はkeyの検索ができます。`KEYS *`とすると存在するすべてのキーが出力されます。
+ちなみにredisはシングルスレッドで動作するソフトウェアで、`KEYS *`で大量のkeyを表示すると一定時間処理が止まってしまい、本番サーバに重大な影響を与えてしまうので注意しましょう。
 
 ```terminal
-172.17.0.2:6379> keys key*
+172.17.0.2:6379> KEYS key*
 1) "key1"
 2) "key2"
 ```
 
 他にも色々
 
-- [exists](https://redis.io/commands/exists): もうセットされてるのか とかがわかる
-- [del](https://redis.io/commands/del): key を指定してそれを削除する
-- [rename](https://redis.io/commands/rename): key の 名前を変えられる
+- [EXISTS](https://redis.io/commands/exists): もうセットされてるのか とかがわかる
+- [DEL](https://redis.io/commands/del): key を指定してそれを削除する
+- [RENAME](https://redis.io/commands/rename): key の 名前を変えられる
 
 ```terminal
-172.17.0.2:6379> exists key2
+172.17.0.2:6379> EXISTS key2
 (integer) 1                           # 存在しているので1(true)
-172.17.0.2:6379> exists key3
+172.17.0.2:6379> EXISTS key3
 (integer) 0                           # 存在しないので0(false)
-172.17.0.2:6379> del key2
+172.17.0.2:6379> DEL key2
 (integer) 1
-172.17.0.2:6379> keys *
+172.17.0.2:6379> KEYS *
 1) "key1"
-172.17.0.2:6379> rename key1 key5
+172.17.0.2:6379> RENAME key1 key5
 OK
-172.17.0.2:6379> get key5
+172.17.0.2:6379> GET key5
 "yamagarashi"
 ```
 
@@ -183,25 +191,25 @@ OK
 キャッシュなどの用途において、アプリケーション側でキャッシュ削除をしなくても勝手に削除されるのが非常に便利です。
 
 ```terminal
-172.17.0.2:6379> set key7 kiemasu
+172.17.0.2:6379> SET key7 kiemasu
 OK
-172.17.0.2:6379> expire key7 20         # 20秒後に消す
+172.17.0.2:6379> EXPIRE key7 20         # 20秒後に消す
 (integer) 1
-172.17.0.2:6379> ttl key7               # ttlは残り秒数を表示する
+172.17.0.2:6379> TTL key7               # ttlは残り秒数を表示する
 (integer) 17
-172.17.0.2:6379> ttl key7
+172.17.0.2:6379> TTL key7
 (integer) 14
-172.17.0.2:6379> get key7               # まだ見えてる
+172.17.0.2:6379> GET key7               # まだ見えてる
 "kiemasu"
-172.17.0.2:6379> ttl key7
+172.17.0.2:6379> TTL key7
 (integer) 8
-172.17.0.2:6379> ttl key7
+172.17.0.2:6379> TTL key7
 (integer) 3
-172.17.0.2:6379> ttl key7
+172.17.0.2:6379> TTL key7
 (integer) 1
-172.17.0.2:6379> ttl key7
+172.17.0.2:6379> TTL key7
 (integer) -2
-172.17.0.2:6379> get key7               # 消えた
+172.17.0.2:6379> GET key7               # 消えた
 (nil)
 ```
 
@@ -209,31 +217,31 @@ OK
 
 redisはよくランキング情報を一時的にキャッシュしたり数値を扱うことが多いため、そのためのコマンドが用意されています。
 
-- [incr](https://redis.io/commands/incr): 1足す
-- [decr](https://redis.io/commands/decr): 1引く
-- [incrby](https://redis.io/commands/incrby): n足す
-- [decrby](https://redis.io/commands/decrby): n引く
+- [INCR](https://redis.io/commands/incr): 1足す
+- [DECR](https://redis.io/commands/decr): 1引く
+- [INCRBY](https://redis.io/commands/incrby): n足す
+- [DECRBY](https://redis.io/commands/decrby): n引く
 
 ```terminal
-172.17.0.2:6379> set boss_damage 0
+172.17.0.2:6379> SET boss_damage 0
 OK
-172.17.0.2:6379> incr boss_damage
+172.17.0.2:6379> INCR boss_damage
 (integer) 1
-172.17.0.2:6379> incr boss_damage
+172.17.0.2:6379> INCR boss_damage
 (integer) 2
-172.17.0.2:6379> get boss_damage
+172.17.0.2:6379> GET boss_damage
 "2"
-172.17.0.2:6379> incr boss_damage
+172.17.0.2:6379> INCR boss_damage
 (integer) 3
-172.17.0.2:6379> get boss_damage
+172.17.0.2:6379> GET boss_damage
 "3"
-172.17.0.2:6379> decrby boss_damage 2
+172.17.0.2:6379> DECRBY boss_damage 2      # ボスが回復
 (integer) 1
-172.17.0.2:6379> get boss_damage
+172.17.0.2:6379> GET boss_damage
 "1"
-172.17.0.2:6379> incrby boss_damage 10
+172.17.0.2:6379> INCRBY boss_damage 10
 (integer) 11
-172.17.0.2:6379> get boss_damage
+172.17.0.2:6379> GET boss_damage
 "11"
 ```
 
@@ -244,23 +252,23 @@ OK
 最初に紹介するのは [Lists](https://redis.io/docs/data-types/lists/) 型です。
 
 ```terminal
-172.17.0.2:6379> rpush enemy_list slime
+172.17.0.2:6379> RPUSH enemy_list slime
 (integer) 1
-172.17.0.2:6379> rpush enemy_list drakee
+172.17.0.2:6379> RPUSH enemy_list drakee
 (integer) 2
-172.17.0.2:6379> lrange enemy_list 0 -1
+172.17.0.2:6379> LRANGE enemy_list 0 -1
 1) "slime"
 2) "drakee"
-172.17.0.2:6379> lpush enemy_list magician
+172.17.0.2:6379> LPUSH enemy_list magician
 (integer) 3
-172.17.0.2:6379> lrange enemy_list 0 -1
+172.17.0.2:6379> LRANGE enemy_list 0 -1
 1) "magician"
 2) "slime"
 3) "drakee"
 ```
 
-`rpush`はリストの末尾に要素を追加するコマンド、`lpush`は逆に先頭に追加するコマンドです。
-`lrange`の引数がどういう意味なのか、色々試してみてください。
+`RPUSH`はリストの末尾に要素を追加するコマンド、`LPUSH`は逆に先頭に追加するコマンドです。
+`LRANGE`の引数がどういう意味なのか、色々試してみてください。
 
 #### 色々なデータ型(Sets)
 
@@ -268,15 +276,15 @@ OK
 Setsは順序を考慮しませんが、勝手にソートしてくれる [Sorted sets](https://redis.io/docs/data-types/sorted-sets/) も存在します。
 
 ```terminal
-172.17.0.2:6379> sadd favorites site1
+172.17.0.2:6379> SADD favorites site1
 (integer) 1
-172.17.0.2:6379> sadd favorites siteABC
+172.17.0.2:6379> SADD favorites siteABC
 (integer) 1
-172.17.0.2:6379> sadd favorites site3
+172.17.0.2:6379> SADD favorites site3
 (integer) 1
-172.17.0.2:6379> sadd favorites siteABC
+172.17.0.2:6379> SADD favorites siteABC
 (integer) 0
-172.17.0.2:6379> smembers favorites
+172.17.0.2:6379> SMEMBERS favorites
 1) "site1"
 2) "siteABC"
 3) "site3"
@@ -287,17 +295,17 @@ Setsは順序を考慮しませんが、勝手にソートしてくれる [Sorte
 [Hashes](https://redis.io/docs/data-types/hashes/) はプログラミング言語で言うところのMap的な、あるいはオブジェクトを表現できるデータです。
 
 ```terminal
-172.17.0.2:6379> hset slime attack 5 deffence 3 hp 3 exp 1
+172.17.0.2:6379> HSET slime attack 5 deffence 3 hp 3 exp 1
 (integer) 4
-172.17.0.2:6379> hget slime hp
+172.17.0.2:6379> HGET slime hp
 "3"
-172.17.0.2:6379> hmget slime deffence hp
+172.17.0.2:6379> HMGET slime deffence hp
 1) "3"
 2) "3"
-172.17.0.2:6379> hmget slime attack deffence
+172.17.0.2:6379> HMGET slime attack deffence
 1) "5"
 2) "3"
-172.17.0.2:6379> hgetall slime
+172.17.0.2:6379> HGETALL slime
 1) "attack"
 2) "5"
 3) "deffence"
@@ -321,9 +329,9 @@ pub/subモデルを利用したアーキテクチャは「イベント駆動型�
 
 ターミナルを２つ開いてください。
 
-ターミナル1で`subscribe`を実行すると、データ待ちの状態になります。
+ターミナル1で`SUBSCRIBE`を実行すると、データ待ちの状態になります。
 ```terminal
-172.17.0.2:6379> subscribe channelA
+172.17.0.2:6379> SUBSCRIBE channelA
 Reading messages... (press Ctrl-C to quit)
 1) "subscribe"
 2) "channelA"
@@ -331,13 +339,13 @@ Reading messages... (press Ctrl-C to quit)
 
 ```
 
-ターミナル2でデータを`publish`してみましょう。
+ターミナル2でデータを`PUBLISH`してみましょう。
 ```terminal
-172.17.0.2:6379> publish channelA hello
+172.17.0.2:6379> PUBLISH channelA hello
 (integer) 1
-172.17.0.2:6379> publish channelA I
+172.17.0.2:6379> PUBLISH channelA I
 (integer) 1
-172.17.0.2:6379> publish channelA am
+172.17.0.2:6379> PUBLISH channelA am
 (integer) 1
 172.17.0.2:6379>
 ```
@@ -390,7 +398,7 @@ redisはオンメモリで動くため、再起動するとデータは消えま
 * コンテナ の中から起動
     * -v で 今いるところの app ディレクトリを コンテナの中では /app に マウントします。
         ```Shell
-            docker run -it --rm -v `pwd`/app:/app python:3.9.5-slim-buster bash
+            docker run -it --rm -v `pwd`/app:/app python:3.13.5-slim-bookworm bash
         ```
     * ls -l で ファイルが有るか確認します。
         ```Shell
@@ -413,7 +421,7 @@ redisはオンメモリで動くため、再起動するとデータは消えま
 #### Redis Server 起動
 * 事前準備の通り Redis Server を起動してください。
 ```Shell
-docker run --rm --name test-server redis:6.2.3-alpine3.13
+docker run --rm --name test-server redis:8.0.3-alpine3.21
 ```
 * ``` Ready to accept connections ``` と出ればOK このターミナルは開いたままにします。
 * もし、ターミナルが閉じたり、Ctrl-C で終了してしまったら、再度 起動してください
@@ -426,7 +434,7 @@ docker run --rm --name test-server redis:6.2.3-alpine3.13
 * 以下の二通りの接続方法のうち好きな方を選んでください
 ```Shell
 # ネットワーク越し 別コンテナ
-docker run -it --link test-server:redis --rm redis:6.2.3-alpine3.13 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
+docker run -it --link test-server:redis --rm redis:8.0.3-alpine3.21 sh -c 'exec redis-cli -h "$REDIS_PORT_6379_TCP_ADDR" -p "$REDIS_PORT_6379_TCP_PORT"'
 
 # 直接 乗り込んで起動
 docker exec -it test-server redis-cli
@@ -434,12 +442,12 @@ docker exec -it test-server redis-cli
 
 * エラーメッセージ以外のすべてを通知するように設定
 ```
-127.0.0.1:6379> config set 'notify-keyspace-events' AKE
+127.0.0.1:6379> CONFIG SET 'notify-keyspace-events' AKE
 ```
 
 * すべてのキーに対して通知を購読
 ```
-127.0.0.1:6379> psubscribe '__key*__:*'
+127.0.0.1:6379> PSUBSCRIBE '__key*__:*'
 ```
 
 * 最初は真っ黒のままです。 何かしら redis に対して操作を行うと どんなことを行ったのか画面に表示されるようになります。
@@ -449,7 +457,7 @@ docker exec -it test-server redis-cli
 * 次に Redis へ接続するコードを書いてみます。
     - 再度、Pythonのコンテナを起動します。 先ほどと同様 iij_bootcamp_redis の中から実行してください。
     ```Shell
-    docker run -it --link test-server:redis --rm --name test-python -v `pwd`/app:/app python:3.9.5-slim-buster bash
+    docker run -it --link test-server:redis --rm --name test-python -v `pwd`/app:/app python:3.13.5-slim-bookworm bash
     ```
 
     - 先程と同様に /app には hello_world.py があるはずです
