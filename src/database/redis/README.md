@@ -133,7 +133,7 @@ prior_knowledge: なし
 
 #### 一番単純なkey-value
 
-[SET](https://redis.io/commands/set)/[get](https://redis.io/commands/get)
+[SET](https://redis.io/commands/set)/[GET](https://redis.io/commands/get)
 
 `SET`で保存して`GET`で取り出します。
 
