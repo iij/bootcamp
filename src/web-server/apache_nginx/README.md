@@ -101,6 +101,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 - nginx
 
 あたりでしょうか。Linuxサーバー上で動かすのであればほぼApacheとnginxの2択になると思います。
+(参考: [June 2025 Web Server Survey](https://www.netcraft.com/blog/june-2025-web-server-survey/))
 
 また最近ではenvoyやtraefikなど、クラウドやKubernetesという文脈ではプロキシ機能に特化したソフトウェアが使われることも多くなりました。
 
@@ -110,12 +111,11 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 
 「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
-「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられ、nginxと並んで2大勢力を誇ります。
-(参考: [June 2024 Web Server Survey](https://www.netcraft.com/blog/june-2024-web-server-survey/))
+「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、Webサイトの定番OSS構成としてLAMP（Linux, Apache, MySQL, PHP）があげられる時期もあり、nginxと並んで2大勢力を誇っていました。
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
-以前は大量のリクエストを受けた際にプロセスをforkできず、リクエストを捌き切れなくなる（いわゆるC10K問題）ことが問題視されました。 その際nginxをはじめとして新しいWebサーバーソフトウェアが登場しましたが、Apache自体もworkerやevent MPMといった新しい仕組みを導入し、動作も安定していることからいまだに高いシェアを占めています。
+以前は大量のリクエストを受けた際にプロセスをforkできず、リクエストを捌き切れなくなる（いわゆるC10K問題）ことが問題視されました。 その際nginxをはじめとして新しいWebサーバーソフトウェアが登場しましたが、Apache自体もworkerやevent MPMといった新しい仕組みを導入し、多機能で動作も安定していることからいまだに高いシェアを占めています。
 
 ### nginx
 
