@@ -142,7 +142,7 @@ prior_knowledge: なし
 OK
 172.17.0.2:6379> SET key2 kaizoku
 OK
-172.17.0.2:6379> SET key1
+172.17.0.2:6379> GET key1
 "yamagarashi"
 172.17.0.2:6379> GET key2
 "kaizoku"
