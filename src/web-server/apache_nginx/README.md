@@ -132,13 +132,33 @@ nginxは2004年頃、当時のWebサーバーが抱えていたパフォーマ�
 
 ### HTMLファイルの配信(check1)
 
-まずはApacheを起動しましょう。
+まずはApacheを起動してデフォルトのページを見てみましょう。
+ページの確認には、CLIでの定番であるcurlコマンドを使ってみるのがよいでしょう
 
 ```shell-session
 root@a0da070e286f:/# service apache2 start
+root@a0da070e286f:/# curl http://localhost
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Apache2 Debian Default Page: It works</title>
+    <style type="text/css" media="screen">
+
+(中略)
+
+      </div>
+    </div>
+    <div class="validator">
+    </div>
+  </body>
+</html>
 ```
 
-ブラウザを開いて[localhost:8080](http://localhost:8080)にアクセスしてみてください。以下のような画面が表示されれば成功です。
+docker を手元で動かしている環境の場合は、ブラウザで開いて[localhost:8080](http://localhost:8080)にアクセスしてみることでも確認可能です。
+コンテナの中からは80番ポート、外からは8080番ポートからアクセスできるように設定されています。
+以下のような画面が表示されれば成功です。
 
 ![apache-start](./image/apache-start.png)
 
@@ -153,23 +173,27 @@ Document RootはApacheが静的ファイルを配信するためのroot director
 ```shell-session
 root@a0da070e286f:/# mv /var/www/html/index.html /var/www/html/_index.html
 root@a0da070e286f:/# echo 'Hello Bootcamp!!' > /var/www/html/index.html
+root@a0da070e286f:/# curl http://localhost
+Hello Bootcamp!!
 ```
 
-再び`http://localhost:8080/`を開くと`Hello Bootcamp!!`が表示されるのを確認してください。
+`Hello Bootcamp!!`が帰ってくるのを確認してください。
 
 ::: tip
-`http://localhost:8080/` のようにファイル名を指定せずディレクトリ（この場合はルートディレクトリ）を指定した場合、Apacheは`index.html`を返すようにデフォルトで設定されています。
+`http://localhost/` のようにファイル名を指定せずディレクトリ（この場合はルートディレクトリ）を指定した場合、Apacheは`index.html`を返すようにデフォルトで設定されています。
 この設定は変更できます。
 :::
 
-Document Root配下にディレクトリを作成するとブラウザからも同様にアクセスできます。
+Document Root配下にディレクトリを作成すると対応するパスを指定することで同様にアクセスできます。
 
 ```shell-session
 root@a0da070e286f:/# mkdir /var/www/html/hoge
-root@a0da070e286f:/# echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
+root@a0da070e286f:/# echo 'Hello FUGA!!' > /var/www/html/hoge/fuga.txt
+root@a0da070e286f:/# curl http://localhost/hoge/fuga.txt
+Hello FUGA!!
 ```
 
-`http://localhost:8080/hoge/huga.txt` にアクセスすると追加したファイルが表示されます。
+ブラウザからの場合は、`http://localhost:8080/hoge/fuga.txt` にアクセスすると追加したファイルが表示されます。
 
 アクセスログも確認してみましょう。
 
@@ -258,7 +282,16 @@ CentOSなど他のディストリビューションでは、これらのコマ�
 root@a0da070e286f:/# service apache2 reload
 ```
 
-`localhost:8080`と`localhost:8082`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
+それでは、アクセスしてみましょう。意図通りの挙動になっているでしょうか。
+
+```sh
+root@a0da070e286f:/# curl http://localhost:80
+This is site 80!
+root@a0da070e286f:/# curl http://localhost:82
+This is site 82!
+```
+
+ブラウザからの場合は、`localhost:8080`と`localhost:8082`にアクセスしてみてください。
 
 | ![site-80](./image/site-80.png) |
 | ------------------------------- |
@@ -302,7 +335,14 @@ root@a0da070e286f:/# service nginx start
 [ ok ] Starting nginx: nginx.
 ```
 
-[localhost:8088](http://localhost:8088) にアクセスしてみてください。さっき作った`Hello Bootcamp!!`のHTMLが見えていれば成功です。
+それではアクセスしてみましょう。さっき作った`Hello Bootcamp!!`のHTMLが見えていれば成功です。
+
+```sh
+root@a0da070e286f:/# curl http://localhost:88
+Hello Bootcamp!!
+```
+
+ブラウザからの場合は、[localhost:8088](http://localhost:8088) にアクセスしてみてください。
 
 ![nginx_html](./image/nginx_html.png)
 
@@ -349,8 +389,17 @@ root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
+それでは、確認です。
 site-80とsite-82がランダムで表示されたでしょうか。
+
+```sh
+root@a0da070e286f:/# curl http://localhost:89
+This is site 80!
+root@a0da070e286f:/# curl http://localhost:89
+This is site 82!
+```
+
+ブラウザからの場合は、[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
 
 ### コンテンツをキャッシュしてみる(check5)
 
@@ -406,14 +455,42 @@ root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
-ブラウザの開発者モードなどでヘッダを覗いてみると、X-Nginx-CacheにMISS、あるいはHITが入っています。
+それでは、確認です。
+キャッシュの状態については、デフォルトではレスポンスヘッダにX-Nginx-Cacheの形で付与されます。
+curl に-vオプションをつけてみて、ヘッダを確認してみましょう
+
+ブラウザの場合は、開発者モードなどでヘッダを覗くことができます(通常、F12で開発者モードを起動できます)。
+
+```sh
+root@a0da070e286f:/# curl -v http://localhost:89
+*   Trying 127.0.0.1:89...
+* Connected to localhost (127.0.0.1) port 89 (#0)
+> GET / HTTP/1.1
+> Host: localhost:89
+> User-Agent: curl/7.88.1
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Server: nginx/1.22.1
+< Date: Tue, 29 Jul 2025 11:29:33 GMT
+< Content-Type: text/html
+< Content-Length: 17
+< Connection: keep-alive
+< Last-Modified: Tue, 29 Jul 2025 11:27:56 GMT
+< ETag: "11-63b0fb32120e5"
+< X-Nginx-Cache: HIT
+< Accept-Ranges: bytes
+<
+This is site 80!
+```
+
+X-Nginx-CacheにMISS、あるいはHITが入っていることが確認できましたでしょうか。
 今回、わざとキャッシュの保持期間を1分と短くしていますが、2分ほど待った後で改めてアクセスしてみると、MISSが入っているものが観測できるかと思います。
 
 キャッシュが利用できた場合、裏のapacheへのアクセスも省略されたことをログから確認できるはずです。
 
 キャッシュの実体はこの設定だと/var/cache/nginx 下に置かれます。
-catしてみてどういうものがキャッシュされているのかも見てみましょう。
+catしてみてどういうものがキャッシュされているのかも見てみるとよいでしょう。
 
 ## 追加課題（時間の余った人用）
 ### サーバ側でキャッシュを制御してみる
