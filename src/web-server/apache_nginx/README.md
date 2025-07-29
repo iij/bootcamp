@@ -46,7 +46,7 @@ Building dependency tree... Done
 Reading state information... Done
 10 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
-root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx neovim
+root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx telnet neovim
 Reading package lists... Done
 Building dependency tree... Done
 Reading state information... Done
@@ -493,6 +493,49 @@ X-Nginx-CacheにMISS、あるいはHITが入っていることが確認できま
 catしてみてどういうものがキャッシュされているのかも見てみるとよいでしょう。
 
 ## 追加課題（時間の余った人用）
+### HTTP を直接喋ってみる
+HTTPは割とシンプルなテキストプロトコルなので、比較的簡単に直接やり取りを行えます。
+直接やり取りをするには、telnetを使うのがよいでしょう。
+
+```shell-session
+root@a0da070e286f:/# telnet 127.0.0.1 80
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+=== ここから入力 ===
+GET / HTTP/1.0
+User-Agent: hogehoge
+(Enterを2回)
+=== ここまで入力 ===
+HTTP/1.1 200 OK
+Date: Tue, 29 Jul 2025 10:45:22 GMT
+Server: Apache/2.4.62 (Debian)
+Last-Modified: Tue, 29 Jul 2025 10:31:40 GMT
+ETag: "11-63b0ee9e7ab92"
+Accept-Ranges: bytes
+Content-Length: 17
+Connection: close
+Content-Type: text/html
+
+Hello Bootcamp!!
+Connection closed by foreign host.
+```
+
+入力したのは、リクエスト行とヘッダ。ヘッダフィールドには複数行入れられますが、その終了は空行をもって宣言するため、2回改行を入れました。
+今回は、HTTP1.0のGETのため、リクエストボディは省略されすぐさまレスポンスが返ってきます。
+
+アクセスログを見てみると、User-Agent が確かに渡されたことも確認できます。
+
+```sh
+root@a0da070e286f:/# tail /var/log/apache2/access.log
+127.0.0.1 - - [29/Jul/2025:10:45:22 +0000] "GET / HTTP/1.0" 200 263 "-" "hogehoge"
+```
+
+User-Agentの値を変えてみるとログの記録も変わります。
+リクエストヘッダは簡単に捏造できるものであることは覚えておきましょう。
+Webサーバ任せで静的なファイルを配信する分には、捏造されたヘッダで悪影響を及ぼすことはWebサーバ側で対策されているのでまずないですが、
+CGIやアプリサーバなどでヘッダ情報を利用する場合は十分に気を付ける必要があります。
+
 ### サーバ側でキャッシュを制御してみる
 
 本編では、nginxに施した設定に従ってキャッシュを行っていました。
