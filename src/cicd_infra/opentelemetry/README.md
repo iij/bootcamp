@@ -95,7 +95,7 @@ OpenTelemetryでのログサポートは、追加のメタデータを追加し�
 
 ## ハンズオン
 
-### 今回利用するアプリケーショについて
+### 今回利用するアプリケーションについて
 
 今回利用するアプリケーションはユーザ認証付きのTODOアプリになります。
 ユーザはログイン後、TODOタスクを追加・更新・削除することが可能です。
@@ -120,7 +120,7 @@ OpenTelemetryが提供するテレメトリについては前述した３つが�
 
 ```bash
 $ curl -H "Content-Type: application/json" http://localhost:8080/signup -XPOST -d '{"username":"user1","password":"pass"}'
-{"message":"User created successfully"}⏎
+{"message":"User created successfully"}
 ```
 
 ユーザの成功を表すメッセージが上記の通り表示されると思います。
@@ -133,7 +133,7 @@ $ curl -H "Content-Type: application/json" http://localhost:8080/signup -XPOST -
 
 ```bash
 $ curl -H "Content-Type: application/json" http://localhost:8080/login -XPOST -d '{"username":"user1","password":"pass"}'
-{"token":"your-token"}⏎
+{"token":"your-token"}
 ```
 
 ログインに成功すると上記のようなJSONが返ってきます。
@@ -159,15 +159,15 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 ### タスクを登録した際のトレースを確認する
 
 OpenTelemetryは仕様としてトレースの可視化まではサポートしていません。
-そこで今回はJeagerを可視化ツールとして利用します。
+そこで今回はJaegerを可視化ツールとして利用します。
 
-アプリケーションの起動とともに、以下のURLからJeagerのWEB UIにアクセスすることができるため、ブラウザを起動してアクセスしてください。
+アプリケーションの起動とともに、以下のURLからJaegerのWEB UIにアクセスすることができるため、ブラウザを起動してアクセスしてください。
 
 `http://<url>:16686/search`
 
 すると、以下のような画面が表示されると思います。
 
-![Jeager 検索画面](./jeager_search.png)
+![Jaeger 検索画面](./jaeger_search.png)
 
 画面左にある`Serivce`から、`unknown_service:backend`という項目を選択できると思うので、選択後、`Find Traces`ボタンを押してください。
 
@@ -176,19 +176,19 @@ OpenTelemetryは仕様としてトレースの可視化まではサポートし�
 
 すると、以下のような画面が表示されるはずです。
 
-![Jeader タスク作成トレース](./jeager_create_task.png)
+![Jaeder タスク作成トレース](./jaeger_create_task.png)
 
-なにやら4本ほどの横線が確認できると思います。
+なにやら4本ほどの横線が確認できると思います。このラインをトレースではスパンと呼びます。
 
-1番上のラインが`POST /api/tasks`とあるように、リクエスト全体を表すものになります。
+1番上のスパンが`POST /api/tasks`とあるように、リクエスト全体を表すものになります。
 
-2番目のラインが`TaskController.CreateTask`とあるように、リクエストを受け付けて後続の処理を呼び出すController層の処理になります。
+2番目のスパンが`TaskController.CreateTask`とあるように、リクエストを受け付けて後続の処理を呼び出すController層の処理になります。
 
-3番目のラインが`TaskService.CreateTask`とあるので、ControllerからSerivce層の処理を呼び出してそこでかかった処理になります。
+3番目のスパンが`TaskService.CreateTask`とあるので、ControllerからSerivce層の処理を呼び出してそこでかかった処理になります。
 
-そして最後のラインが`TaskRepository.CreateTask`とあるため、Serviceからデータベース操作の処理であるRepositoryを呼び出してかかった処理になります。
+そして最後のスパンが`TaskRepository.CreateTask`とあるため、Serviceからデータベース操作の処理であるRepositoryを呼び出してかかった処理になります。
 
-このようにして、トレースによってリクエストが各処理でどの程度処理の時間がかかったのか、どのようなレスポンスを返したのかが可視化されるようになります。
+このようにして、トレースによってリクエストが各処理でどの程度処理の時間がかかったのか、どのようなステータスコードを返したのかが可視化されるようになります。
 
 ### タスクの状態を更新する
 
@@ -235,12 +235,12 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 
 それではタスクの更新のトレースを見てみましょう。
 
-今回も同じようにJeagerの画面にアクセスして、`Serivce`から`unknown_service:backend`を選択して`Find Traces`ボタンを押してください。
+今回も同じようにJaegerの画面にアクセスして、`Serivce`から`unknown_service:backend`を選択して`Find Traces`ボタンを押してください。
 
 今度は`PUT /api/tasks/:id`という項目があると思うのでそちらをクリックしてください。
 以下のような画面が確認できると思います。
 こちらも前回タスク作成の画面で見たものとおおよそ同じ内容が表示されています。
 
-![Jeager タスク更新](./jeager_update_task.png)
+![Jaeger タスク更新](./jaeger_update_task.png)
 
 <credit-footer />
