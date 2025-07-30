@@ -1,13 +1,13 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
-title: OpenTelemetryによるアプリケーションの監視入門
+title: OpenTelemetry ハンズオン
 description: OpenTelemetryを触りつつ、最新の監視技術について体験する
 time: 2h
 prior_knowledge: 監視
 ---
 <header-table />
 
-# OpenTelemetryによるアプリケーションの監視入門
+# OpenTelemetry ハンズオン
 
 ## はじめに
 
@@ -251,14 +251,14 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 
 ## まとめ
 
-OpenTelemetryを導入することで以下のメリットが得られることがわかりました。
+OpenTelemeryのハンズオンを通して以下のことが理解できるようになったと思います。
 
+- OpenTelemetryの概要
 - システムの処理の可視化
   - 今回はトレースを通してリクエストの処理を可視化しましたが、ログにtrace_idを表示させることで、リクエストのとレースとログを一位に紐づけることもできます。
 - 問題の迅速な特定
   - 処理がどこまで進んだのかわかるため、ソースコード見ずともおおよその発生源を特定することができます
 - パフォーマンス調査
   - リクエストで各処理がどの程度かかっているのかを可視化できているので時間がかかっている箇所の特定が用意
-- OpenTelemetryはベンダーニュートラルな仕様のため、1つのベンダに縛られることなくツールなどの組み合わせを選定できる
 
 <credit-footer />
