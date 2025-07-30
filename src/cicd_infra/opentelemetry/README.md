@@ -42,7 +42,7 @@ prior_knowledge: 監視
 
 ```bash
 $ git clone https://github.com/tamago0224/todo-with-gemini
-$ cd tod-with-claude
+$ cd tod-with-gemini
 $ docker compose up --build -d
 ```
 
