@@ -41,7 +41,7 @@ prior_knowledge: 監視
 以下のコマンドを実行してサンプルアプリケーションを立ち上げてください。
 
 ```bash
-$ git clone https://github.com/tamago0224/todo-with-claude
+$ git clone https://github.com/tamago0224/todo-with-gemini
 $ cd tod-with-claude
 $ docker compose up --build -d
 ```
