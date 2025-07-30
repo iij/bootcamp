@@ -188,6 +188,9 @@ OpenTelemetryは仕様としてトレースの可視化まではサポートし�
 
 そして最後のスパンが`TaskRepository.CreateTask`とあるため、Serviceからデータベース操作の処理であるRepositoryを呼び出してかかった処理になります。
 
+そして、このリクエストが成功しているかどうかは、一番上のスパンをクリックすることでスパンの詳細を確認できます。
+スパンには様々なメタ属性が追加されているので、その中のHTTPステータスコードを見ればリクエストが成功しているかどうか確認できます。
+
 このようにして、トレースによってリクエストが各処理でどの程度処理の時間がかかったのか、どのようなステータスコードを返したのかが可視化されるようになります。
 
 ### タスクの状態を更新する
@@ -201,12 +204,14 @@ OpenTelemetryは仕様としてトレースの可視化まではサポートし�
 ```bash
 # タスクのIDが必要なので一度GETして更新したいタスクのIDを確認する
 $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token" http://localhost:8080/api/tasks -XGET
-{
-    "id": 1,
-    "user_id": 1,
-    "title": "task1",
-    "completed": false
-}
+[
+    {
+        "id": 1,
+        "user_id": 1,
+        "title": "task1",
+        "completed": false
+    }
+]
 ```
 
 上記のようなJSONが返ってくるはずです。`id`や`user_id`は人によって異なる値になるかもしれませんが、今回必要なのは`id`の値なので、こちらをメモっておいてください。
