@@ -1,7 +1,7 @@
 # go-tutor
 
 * dockerfileの更新手順です
-	* `bootcamp/src/server-app/go/go/src-tutor` 上で作業することを想定しています
+	* `bootcamp/src/server-app/go/src/go-tutor` 上で作業することを想定しています
 * 本手順は、講義[GoでWebアプリケーションを作る](../../) で使用するdocker imageの更新手順です
 	* 基本的に受講者が行う必要はありません
 
