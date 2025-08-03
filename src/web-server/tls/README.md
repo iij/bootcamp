@@ -363,8 +363,95 @@ root@dea1ac0e1edb:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
-https での通信となるため、URL の先頭がhttp ではなくhttps となっています。
+確認をしてみましょう。
+今回は、https での通信となるため、URLの先頭がhttpではなくhttpsとなっています。
+https のデフォルトは443ポートのため、ポート指定の部分は省略可能です。
+
+```sh
+root@dea1ac0e1edb:/# curl https://localhost:443/
+curl: (60) SSL certificate problem: self-signed certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+```
+
+今回は自己署名証明書であるため、curl は正規の証明書ではないとして検証エラーとなります。
+無視してコンテンツを取得するには、--insecure(-k) オプションを使います。
+
+```sh
+root@dea1ac0e1edb:/# curl -k https://localhost:443/
+Hello Bootcamp!!
+```
+
+渡される証明書を見てみたい場合は、openssl のs\_client サブコマンドを用いるとよいでしょう。
+ここでは、繋がったらCtrl+C で抜けます。
+
+```sh
+root@dea1ac0e1edb:/# openssl s_client -connect localhost:443
+CONNECTED(00000003)
+Can't use SSL_get_servername
+depth=0 C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+verify error:num=18:self-signed certificate
+verify return:1
+depth=0 C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+verify return:1
+---
+Certificate chain
+ 0 s:C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+   i:C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Aug  3 16:41:31 2025 GMT; NotAfter: Aug  3 16:41:31 2026 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDQzCCAisCFCeXemGW/mzBWsHN4rmA9eHstX27MA0GCSqGSIb3DQEBCwUAMF4x
+
+(中略)
+
+G9hAF0OGhQagV6jcIgjGYk0iIITzss6fujD+eSAwDfp685F84jsayUVdkBnCqVMy
+1c1kiqV+wv2XaWHvm2pl/zX94ReoGv4=
+-----END CERTIFICATE-----
+subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+issuer=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1395 bytes and written 377 bytes
+Verification error: self-signed certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 18 (self-signed certificate)
+---
+
+(中略)
+
+    Start Time: 1754239905
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self-signed certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+
+(Ctrl+C を入力して抜ける)
+```
+
+openssl s\_client は、TLSのhandshakeを行って暗号化した経路を用いるtelnetのようなものです。
+ここではCtrl+Cで抜けましたが、続けてHTTPのリクエストを送るとHTTPSの通信となります。
+
+
+ブラウザで確認する場合は、443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
 
 [https://localhost:8443/](https://localhost:8443/)
 
