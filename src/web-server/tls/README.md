@@ -81,7 +81,7 @@ nginxのサイトは88 portでリクエストを受け付けるようにしま�
 
 ```bash
 root@a0da070e286f:/# echo 'Hello Bootcamp!!' > /var/www/html/index.html
-root@a0da070e286f:/# nvim /etc/nginx/sites-enabled/default
+root@a0da070e286f:/# vim /etc/nginx/sites-enabled/default
 ```
 
 ```nginx
@@ -175,15 +175,15 @@ TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしま�
   - この証明書の有効期間
   - 昔は5年ものなどもありましたが、2025年現在では約13か月(398日)が最長とされています。詳しくは後述
 - 主体者代替名、サブジェクトの代替名、サブジェクトの別名、Subject Alternative Names(SANs)
-  - いくつか項目があるが、このうち重要なのはDNS名。この証明書が有効であるサイトを示しています。
+  - いくつか項目がありますが、このうち重要なのはDNS名。この証明書が有効であるサイトを示しています。
   - 複数存在しうる
   - 現在では、証明書が管理するサイトを示す唯一の項目となります。
 - 公開鍵
   - この証明書が提供する公開鍵。これを用いて共通鍵の共有を行います。
 
-ここまで見たところで、証明書に添付された公開鍵を用いて暗号化通信を始めてよいのでしょうか？
-まだ、単に私はこのサイトの管理者だぞ！と自称しているに過ぎません。
-信用して暗号化した経路でクレジットカードの情報を送ったのに、送った相手は偽サイトを運用する悪人だった、
+ここまで確認したところで、証明書に添付された公開鍵を用いて暗号化通信を始めてよいのでしょうか？
+ここまでで確認したことは、単に私はこのサイトの管理者だぞ！と自称しているに過ぎません。
+信用して暗号化した経路でクレジットカードの情報を送ったのに、実は送った相手は偽サイトを運用する悪人だった、
 となったら目も当てられません。
 確かにこのサイトの管理者だと信じるには、信頼できる第三者の担保が欲しいですね。
 
@@ -204,11 +204,16 @@ TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしま�
 
 このような証明書のチェインを通じて公開鍵の正当性を担保するための枠組みを公開鍵基盤(Public Key Infrastrcture:PKI)と呼びます。
 
-余談ですが、政府がRootとして正当性を担保する、政府認証基盤(Government PKI:GPKI)というものもあります。
+::: tip
+政府がRootとして正当性を担保する、政府認証基盤(Government PKI:GPKI)というものもあります。
 例えばマイナンバーカードの証明書は公的個人認証サービス(JPKI)というものが発行していますが、JPKIの正当性はGPKIと相互認証する形で担保していたりします。
+:::
 
 
 ## 実際に手を動かしてみる
+
+まずは、証明書を作ってみて、nginxでhttpsの通信が出来るようにしてみましょう。
+
 ### 証明書と秘密鍵を作ってみる (check1)
 
 通常、証明書は以下の手順で入手します。
@@ -216,6 +221,11 @@ TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしま�
 1. 秘密鍵を生成する
 2. 秘密鍵からCSR (Certificate Signing Request) を生成する
 3. CSR を証明局に提出し、審査を受け、証明局の持つ秘密鍵で署名された証明書を発行してもらう
+
+秘密鍵を用いると、暗号化した通信を復号することが出来ます。
+そのため、絶対に外部に漏らしてはいけません。例え証明局であっても例外ではありません。
+証明書の発行には公開鍵があれば十分なため、秘密鍵から生成した公開鍵と、
+その他発行に必要な情報を盛り込んだCSRを用いて証明書を発行します。
 
 ここでは、３を簡略化して1 で生成した鍵で署名する、自己署名証明書(いわゆるオレオレ証明書)を作ります。
 このdocker image に既にインストールされている、openssl ツールで一通りの操作を行うことができます。
@@ -261,7 +271,7 @@ Country Name (2 letter code) [AU]:JP
 State or Province Name (full name) [Some-State]:Tokyo
 Locality Name (eg, city) []:Chiyoda
 Organization Name (eg, company) [Internet Widgits Pty Ltd]:IIJ
-Organizational Unit Name (eg, section) []:TU
+Organizational Unit Name (eg, section) []: Test
 Common Name (e.g. server FQDN or YOUR name) []:localhost
 Email Address []:
 
@@ -284,7 +294,7 @@ An optional company name []:
 ```sh
 root@a0da070e286f:/# openssl x509 -req -in /etc/nginx/ssl/server.csr -out /etc/nginx/ssl/server.crt -signkey /etc/nginx/ssl/private.key -days 365
 Certificate request self-signature ok
-subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
 ```
 
 出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
@@ -297,11 +307,11 @@ Certificate:
         Serial Number:
             45:ef:45:48:8c:89:e0:e5:38:74:f7:fc:21:32:35:eb:2b:bc:10:6b
         Signature Algorithm: sha256WithRSAEncryption
-        Issuer: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+        Issuer: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
         Validity
             Not Before: Aug  1 16:29:36 2022 GMT
             Not After : Aug  1 16:29:36 2023 GMT
-        Subject: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+        Subject: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
         Subject Public Key Info:
 (...省略...)
 ```
@@ -322,7 +332,7 @@ Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3
 
 事前作業で作ったhttp で受けていたサイトをhttps でも受けられるようにしてみます。
 
-`/etc/nginx/sites-enabled/default` の一番下に以下を追記していきます。
+`/etc/nginx/sites-enabled/default` の一番下に以下を丸ごと追記していきます。
 
 
 ```sh
@@ -398,7 +408,7 @@ TLSの設定としては、主に、プロトコルのバージョン、暗号�
 
 #### protocol を設定してみる(check3)
 
-プロトコルについては、既に1.1 までは2021に禁止扱いになっていたりします。
+プロトコルについては、既にTLSv1.1 までは2021に禁止扱いになっていたりします。
 
 nginx だと、`ssl_protocols`で設定します。
 
@@ -442,7 +452,7 @@ Hello Bootcamp!!
 
 
 ```sh
-root@34cfcf7b6f05:/# nvim /etc/nginx/nginx.conf
+root@34cfcf7b6f05:/# vim /etc/nginx/nginx.conf
 (前後省略)
         ##
         # SSL Settings
@@ -482,7 +492,8 @@ curl: (35) OpenSSL/3.0.9: error:0A00042E:SSL routines::tlsv1 alert protocol vers
 - 暗号化方式
 - ハッシュ関数
 
-の組で構成されます。TLS1.3からは、ここから鍵交換方式、署名方式が外されて暗号化方式、ハッシュ関数で構成されます。(鍵交換や署名の部分がプロトコルに最初から組み込まれるようになったため、指定する必要がなくなりました)
+の組で構成されます。TLS1.3からは、ここから鍵交換方式、署名方式が外されて暗号化方式、ハッシュ関数で構成されます。
+(鍵交換や署名の部分がプロトコルに最初から組み込まれるようになったため、指定する必要がなくなりました)
 
 openssl コマンドで、扱える暗号スイートの一覧を見ることが出来るので、見てみましょう。
 
@@ -511,7 +522,7 @@ DHE-RSA-AES256-GCM-SHA384      TLSv1.2 Kx=DH       Au=RSA   Enc=AESGCM(256)     
 nginxでは、`ssl_ciphers`を用いて設定します。
 
 ```sh
-root@34cfcf7b6f05:/# nvim /etc/nginx/nginx.conf
+root@34cfcf7b6f05:/# vim /etc/nginx/nginx.conf
 (前後省略)
         ##
         # SSL Settings
@@ -530,8 +541,8 @@ root@34cfcf7b6f05:/# service nginx restart
 ```
 
 ::: tip
-ssl\_ciphers の設定部分は、openssl ciphers の引数に食わせることで、この設定で使えるcipher の一覧を表示させることができます。
-今回は列挙した形ですが、!EXP のようにブラックリストな書き方もできるため、よくわからなくなったらこれで実際に設定されるものを確認するとよいでしょう。
+ssl\_ciphers の設定部分は、openssl ciphers の引数に渡すことで、この設定で使えるcipher の一覧を表示させることができます。
+今回は列挙した形ですが、!EXP のようにブラックリスト的な書き方もできるため、よくわからなくなったらこのように実際に設定されるものを確認するとよいでしょう。
 openssl ciphers -v "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305"
 :::
 
@@ -606,7 +617,7 @@ Signature Algorithm: ecdsa-with-SHA256
 後は、nginx の参照を変更し、この証明書を使ってhttpsを提供してみましょう。
 
 ```sh
-root@34cfcf7b6f05:/# nvim /etc/nginx/sites-enabled/default
+root@34cfcf7b6f05:/# vim /etc/nginx/sites-enabled/default
 (中略)
 
 server {
