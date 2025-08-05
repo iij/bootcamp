@@ -157,7 +157,7 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 
 :# vim,emacs,nano派の人はこちら
 $ docker run --name go-tutor -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2025
-$ docker exec -it /bin/bash
+$ docker exec -it go-tutor /bin/bash
 
 :# VSCode派の人はこちら
 $ docker run --name go-tutor -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2025
