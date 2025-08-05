@@ -157,7 +157,7 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 
 :# vim,emacs,nano派の人はこちら
 $ docker run --name go-tutor -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2025
-$ docker exec -it /bin/bash
+$ docker exec -it go-tutor /bin/bash
 
 :# VSCode派の人はこちら
 $ docker run --name go-tutor -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2025
@@ -403,7 +403,7 @@ $ <お好きなエディタ> main.go
 $ go run main.go
 GYUDON
 ```
-### :rocket: :computer: 3.4.2. 変数定義方法が3種類を全て試してみよう。
+### :rocket: :computer: 3.4.2. 変数定義方法の3種類を全て試してみよう。
 
 # 4. 関数 ( 10 min )
 本章では、関数の定義方法と、Goっぽい関数の扱われ方について、確認してもらいます。  
@@ -476,7 +476,7 @@ func myFunc[T any,N Number](hoge []T, fuga N) []T {
 * 空白以外の文字列を全て牛丼名とみなす
 * 食べる行為は、標準出力とする
 	* 本章では、`fmt.Println` を用いて、文字列を出力します
-* 食べた場合は、`true`, 食べたい無い場合は、`false`を返す  
+* 食べた場合は、`true`, 食べていない場合は、`false`を返す
 
 ## 4.2.0. if構文
 本章のハンズオンでは、上述した定義を表すために、条件分岐が必要となります。  
