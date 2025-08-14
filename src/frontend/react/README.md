@@ -1,7 +1,7 @@
 ---
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
-title: Reactでシングルページアプリケーションを書こう
-description: Reactでシングルページアプリケーションを書こう
+title: Reactを触ってみよう
+description: Reactを触ってみよう
 time: 2h
 prior_knowledge: ブラウザのDOM操作
 ---
@@ -39,8 +39,8 @@ prior_knowledge: ブラウザのDOM操作
 ### 1. PlayCodeを利用する
 
 [PlayCode](https://playcode.io/react_ts_hooks)を利用してReactの環境を用意します。
-PlayCodeはブラウザの上でコードを編集しながらウェブアプリの開発体験ができる環境です。
-本来の開発環境と比較するとJavaScriptからTypeScriptへの変換処理などが隠蔽されている部分もありますが、Reactの動作を試すは手軽です。
+PlayCodeはブラウザの上でコードを編集しながらウェブアプリの開発を手軽に体験できる環境です。
+本来の開発環境と比較するとJavaScriptからTypeScriptへの変換処理などが隠蔽されている部分もありますが、Reactの動作を試すだけなら十分です。
 
 ::: warning
 
@@ -79,12 +79,10 @@ Viteを利用した環境のセットアップを例示しておきます。
 難しそうであればPlayCodeを利用してください。
 
 ```sh
-# NodeJSのインストール(インストール済みの場合はスキップ)
+# Node.jsのインストール(インストール済みの場合はスキップ)
 # nodeコマンドとnpmコマンドが使えるようになれば方法は任意です
-# 以下はasdfを利用した一例です
-asdf plugin add nodejs
-asdf install nodejs latest
-asdf global nodejs latest
+# 以下はmiseを利用した一例です (mise: https://mise.jdx.dev/getting-started.html)
+mise use --global node@latest
 
 # Viteを利用したプロジェクトのセットアップ
 npm create vite@latest bootcamp-react
@@ -119,11 +117,23 @@ git commit -m 'npm create vite'
 
 :::
 
+:::tip ツールのバージョン管理
+
+この講義の主題からは外れますが、開発において重要な概念なので少し触れておきます。
+
+本来、プログラミング言語などのツールはひとつのバージョンしかインストールしておけません。
+そのため、異なるバージョンを使用するプロジェクト 2 つに参加していると、プロジェクトごとにツールをアップデート/ダウングレードする必要があり、とても面倒なことになります。
+これを解決するのがバージョン管理ツールで、複数のバージョンをインストールし、それらを瞬時に切り替えることができます。
+
+昨今よく使われているものには[adsf](https://asdf-vm.com/ja-jp/)や[mise](https://mise.jdx.dev/)(みーず) がありますが、セキュリティや操作の簡便性から mise がより注目されてきているようです。
+
+:::
+
 ### フォルダ構成
 
 Reactのプロジェクトのフォルダにはいろんなファイルがありますが、この講義では`src`フォルダだけを気にしてもらえれば大丈夫です。`src`フォルダの中にもいろんなファイルがありますが、ひとまず以下に示す3つのファイルのみを気にしてください。
 
-```
+```txt
 (プロジェクトのフォルダ)
 ├── src
 │   ├── App.tsx    ← メインのアプリ実装
@@ -143,7 +153,7 @@ Vite環境の方は適宜読み替えをお願いします。
 
 ### スタイルシートの適用
 
-今回のハンズオン用のスタイルシートをあらかじめ[github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
+今回のハンズオン用のスタイルシートをあらかじめ[github.com/iij-ykosugi/bootcamp-todo](https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
 それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
 
 - PlayCode環境: `src/style.css`
@@ -199,7 +209,7 @@ Reactを利用することでこのような処理が簡単に描けるように
 
 ReactとはデータとDOMの対応付けをやってくれるフレームワークであり、さらにデータの更新に対してリアクティブ(反応的)に画面を更新してくれるフレームワークです。
 この「リアクティブな画面更新」を行う機能により複雑で画面が繊細に更新されるようなウェブアプリを効率的に開発することができます。
-その辺りはSvelteと同様の位置付けのフレームワークです。
+<!-- その辺りはSvelteと同様の位置付けのフレームワークです。　# svelte は 2025 やらない -->
 
 …と、こんなことを言われてもピンとこないですよね。それを理解するためのハンズオンです😉
 
@@ -228,35 +238,37 @@ function double(n: number) {
 これにより「この関数の引数はどのような値であるべきか」という、JavaScriptではコメントで表現するしかなかった部分を補完することができます。
 逆に型以外の点ではJavaScriptとほぼ同じ表記になります。
 
-もう少し複雑なオブジェクトを定義して用いることもできます。
+もう少し複雑な型を定義して用いることもできます。
 
 ```ts
 type Props = {
-  value: number
+  operand: number
+  operator: number
 }
 
-function double(props: Props) {
-  return props.value * 2
+function multiply(props: Props) {
+  return props.operand * props.operator
 }
 
-double({ value: 12 }) // => エラーなし
-double(12) // => エラー
+double({ operand: 12, operator: 2 }) // => エラーなし
+double(12, 2) // => エラー
 ```
 
 ここでは`Props`という型を定義して関数の引数に利用しています。
-Reactでは主にプロパティやStateの型、それからそのアプリが扱うデータの型を定義するのに便利になります。
+Props の定義には「オブジェクト」を利用しており、キーと値のペアの集合体を格納することができます。
+Reactでは主にプロパティやStateの型、それからそのアプリが扱うデータの型を定義するのに利用します。
 
 :::tip TypeScriptを試してみる
 
 TypeScriptでどのような表現が可能かは[TS Playground](https://www.typescriptlang.org/play)で実際に試すと理解しやすいでしょう。
 
-また[Deno](https://deno.com)というNodeJSとは別のJavaScript実行環境ではデフォルトでTypeScriptを実行できます。
+また[Deno](https://deno.com)というNode.jsとは別のJavaScript実行環境ではデフォルトでTypeScriptを実行できます。
 
 :::
 
 :::tip TypeScriptの実行環境
 
-TypeScriptは通常、そのままではブラウザやNodeJSなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
+TypeScriptは通常、そのままではブラウザやNode.jsなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
 
 1. TypeScriptでソースコードを記述
 2. コンパイラ(トランスパイラ)が型チェックをしながらソースコードをJavaScriptに変換
@@ -1068,7 +1080,7 @@ export default function App() {
 
 `@@ -44,9 +50,13 @@`のような記述は`diff`コマンドによる位置表示の出力であり、数字は気にせず「行のまとまりの区切り」程度に捉えてください。
 
-コードの全体像を確認したい場合は [github.com/asa-taka/bootcamp-todo](https://github.com/asa-taka/bootcamp-todo/tree/main/src/todo) に各ステップのコードがまとめられているため、参考にしたり、どうしても動かなくなった場合はここからコピペをしてリカバリーしてください。
+コードの全体像を確認したい場合は [github.com/iij-ykosugi/bootcamp-todo](https://github.com/iij-ykosugi/bootcamp-todo/tree/main/src/todo) に各ステップのコードがまとめられているため、参考にしたり、どうしても動かなくなった場合はここからコピペをしてリカバリーしてください。
 
 :::
 
@@ -1080,7 +1092,7 @@ export default function App() {
  }
  
 +type ValueViewerProps = {
-+  value: any;
++  value: unknown;
 +};
 +
 +/** `value`の内容を`JSON.stringify`して表示する、動作確認用コンポーネント。 */
@@ -1103,7 +1115,7 @@ export default function App() {
  }
 ```
 
-コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step2.tsx>
+コード全体: <https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/todo/step2.tsx>
 
 ToDoリストの下にJSONが表示されれば成功です😉
 
@@ -1191,7 +1203,7 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
        )}
 ```
 
-コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step3.tsx>
+コード全体: <https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/todo/step3.tsx>
 
 動作としては前述の通り、チェックボックスにより`TodoItem`の`done`の値が変わり、それが表示に随時反映されていれば成功です😉
 
@@ -1285,7 +1297,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
  }
 ```
 
-コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step4.tsx>
+コード全体: <https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/todo/step4.tsx>
 
 これにより「完了したものも表示する」というチェックボックスが追加され、そのチェック状態によりその通りリストの表示状態が更新されれば期待通りです😉
 
@@ -1325,7 +1337,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 +}
 +
  type ValueViewerProps = {
-   value: any;
+   value: unknown;
  };
 @@ -48,12 +68,22 @@
    { id: 2, text: "todo-item-2", done: true },
@@ -1360,7 +1372,7 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
        />
 ```
 
-コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step5.tsx>
+コード全体: <https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/todo/step5.tsx>
 
 以下のように「新しいToDo」という入力欄が表示され、テキストを入力し追加ボタンを押すと新しいToDoが追加されれば成功です😉
 
@@ -1405,7 +1417,7 @@ Reactでは先述の通り、変更検知の都合上、状態を更新すると
 
 さて、`App`コンポーネントの実装が増えてきたため、ある程度の塊で処理を分割したいと思います。
 
-これまでに何度も利用してきましたが`useState`は[React Hook](https://ja.react.dev/reference/react)と呼ばれるものの一つです。
+これまでに何度も利用してきましたが`useState`は[React Hook](https://ja.react.dev/reference/react/hooks)と呼ばれるものの一つです。
 Hookの詳細は省きますが、ここでは「Reactコンポーネントの中だけで使える特殊な関数」という理解で十分です。
 詳細はリンク先を確認してください。
 
@@ -1460,7 +1472,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
      return item.text.includes(keyword);
 ```
 
-コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step6.tsx>
+コード全体: <https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/todo/step6.tsx>
 
 この変更では表示内容は変わりません。
 
@@ -1534,7 +1546,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
          </div>
 ```
 
-コード全体: <https://github.com/asa-taka/bootcamp-todo/blob/main/src/todo/step-final.tsx>
+コード全体: <https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/todo/step-final.tsx>
 
 以下のように各ToDoに削除ボタンがついて、ボタンを押してその項目が削除されれば想定通りです😉
 
@@ -1580,8 +1592,8 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 
 :::tip まだまだ序の口 その1 - CRUD操作の奥深さ
 
-今回の講義ではシングルページで組むこととしたため、CRUD操作の実装パターンや悩みどころについては触れられていない部分が多いです。
-実際[React Router](https://reactrouter.com/en/main)などを使いマルチページにすることで、イベントハンドラでの連携や各操作のAPIレスポンスとして返されると嬉しい値など、ノウハウの貯めどころは格段に増えてきます。
+今回の講義では単一画面で組むこととしたため、CRUD操作の実装パターンや悩みどころについては触れられていない部分が多いです。
+実際[React Router](https://reactrouter.com/en/main)などを使い画面遷移を実装することで、イベントハンドラでの連携や各操作のAPIレスポンスとして返されると嬉しい値など、ノウハウの貯めどころは格段に増えてきます。
 
 ただし大きなアプリの機能の一部として「リストをページ遷移なしで編集する」というケースは存在するため、その点ではToDoアプリも十分に応用しがいのある実装例と言えます。
 
@@ -1603,7 +1615,7 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
   - 擬似的に複数ページのアプリケーションを表現する技術です
   - アプリ開発の世界ではURLと画面の対応付けのことを「ルーティング」と呼び、IPルーティングとは異なる概念です
 
-[最近のReact公式のチュートリアル](https://react.dev/learn/start-a-new-react-project)では[NextJS](https://nextjs.org)という統合的なフレームワークがプロジェクトを始める際の第一の選択肢として挙げられており、これは上に挙げた要素を含むものになっているため、触ってみると良いかもしれません(まだきちんと触ったことはないので自信はないです)。
+[最近のReact公式のチュートリアル](https://react.dev/learn/start-a-new-react-project)では[Next.js](https://nextjs.org)という統合的なフレームワークがプロジェクトを始める際の第一の選択肢として挙げられており、これは上に挙げた要素を含むものになっているため、触ってみると良いかもしれません(まだきちんと触ったことはないので自信はないです)。
 
 また、ToDoMVCのさらに発展版のような、[RealWorld](https://codebase.show/projects/realworld)という、より実践的な要素を網羅した実装例をまとめたサイトもあるため、参考にするといいかもしれません(こちらも私はあまり見たことはないです)。
 
@@ -1645,7 +1657,11 @@ export type TodoItem = {
  * ネットワーク越しのリクエストを再現するため、各メソッドには遅延時間を設けている。
  */
 export class TodoApiMock {
-  constructor(private todoItems: TodoItem[]) {}
+  private todoItems: TodoItem[];
+
+  constructor(todoItems: TodoItem[]) {
+    this.todoItems = todoItems;
+  }
 
   /** 条件に該当するToDoを配列で返す。 */
   async queryItems(keyword: string, includeDone: boolean) {
@@ -1697,11 +1713,15 @@ export class TodoApiMock {
  * というライブラリを使うとこれよりも楽に書け、特にJSONの扱いが便利になる。
  */
 export class TodoApiClient {
+  private baseUrl: string;
+
   /**
    * @example
    * new TodoApiClient('http://localhost:8080')
    */
-  constructor(private baseUrl: string) {}
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
 
   /** 条件に該当するToDoを配列で返す。 */
   async queryItems(keyword: string, includeDone: boolean) {
@@ -1753,7 +1773,7 @@ export class TodoApiClient {
 ```tsx
 import { useEffect, useState } from "react";
 
-import { TodoItem, TodoApiMock, TodoApiClient } from "./api";
+import { type TodoItem, TodoApiMock, TodoApiClient } from "./api";
 
 const INITIAL_TODO: TodoItem[] = [
   { id: 1, text: "todo-item-1", done: false },
@@ -1808,7 +1828,7 @@ function CreateTodoForm({ onSubmit }: CreateTodoFormProps) {
 }
 
 type ValueViewerProps = {
-  value: any;
+  value: unknown;
 };
 
 function ValueViewer({ value }: ValueViewerProps) {
@@ -1828,6 +1848,7 @@ export default function App() {
 
   useEffect(() => {
     reloadTodoItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -1950,7 +1971,7 @@ COPY ./dist /usr/share/nginx/html
 
 フォルダ内の構成はこのようになります。
 
-```
+```txt
 (ルートディレクトリ)
 ├── Dockerfile
 ├── src
@@ -1984,21 +2005,22 @@ docker run --rm -p 9000:80 todo-web
 
 ### React
 
-- React公式: https://react.dev
+- React公式: <https://react.dev>
   - とても親切にまとめられていますし[日本語訳](https://ja.react.dev)もあります
   - Stateやプロパティ、Hookについて理解を深めるのにとても役にたちます
 
 ### JavaScript
 
-- MDN: https://developer.mozilla.org/ja/docs/Web
+- MDN: <https://developer.mozilla.org/ja/docs/Web>
   - Mozilla(Firefoxを開発しているところ)によるJavaScriptリファレンスです
   - 日本語訳も充実しており、JavaScriptの個々のAPIについて調べる場合は一番わかりやすいと思います
 
 ### TypeScript
 
-- TypeScript公式: https://www.typescriptlang.org
+- TypeScript公式: <https://www.typescriptlang.org>
   - 英語しかないので難しいかもしれません
-- [TypeScript Deep Dive 日本語版](https://typescript-jp.gitbook.io/deep-dive/type-system)
+- TypeScript Deep Dive 日本語版: <https://typescript-jp.gitbook.io/deep-dive/type-system>
+- サバイバルTypeScript: <https://typescriptbook.jp/>
 
 以上で講義は終わりです。よいReactライフを😉
 
