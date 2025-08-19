@@ -38,19 +38,20 @@ prior_knowledge: deployment
 > kindはkubernetes in dockerの略です。その名の通り、dockerを使ってkubernetes環境を構築します。
 > ([公式ドキュメント参照](https://kind.sigs.k8s.io/docs/user/quick-start/))
 > ```bash
-> # curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
+> # [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
 > # chmod +x ./kind
+> # sudo mv ./kind /usr/local/bin/kind
 > ```
 > dockerホストからkindに対してコマンドを実行したいのでkubectlをdockerホストに入れます
 > ```bash
 > # curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-> # install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+> # sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 > ```
 > 試験的にクラスターを構築して正しくインストールされたか確認する
 > ```bash
 > # kind create cluster
 > Creating cluster "kind" ...
->  ✓ Ensuring node image (kindest/node:v1.24.0) 🖼 
+>  ✓ Ensuring node image (kindest/node:v1.32.0) 🖼 
 >  ✓ Preparing nodes 📦  
 >  ✓ Writing configuration 📜 
 >  ✓ Starting control-plane 🕹️ 
@@ -65,7 +66,7 @@ prior_knowledge: deployment
 > 
 > # docker ps
 > CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                       NAMES
-> d76ca5889d8d   kindest/node:v1.24.0   "/usr/local/bin/entr…"   59 seconds ago   Up 49 seconds   127.0.0.1:35447->6443/tcp   kind-control-plane
+> d76ca5889d8d   kindest/node:v1.32.0   "/usr/local/bin/entr…"   59 seconds ago   Up 49 seconds   127.0.0.1:35447->6443/tcp   kind-control-plane
 > 
 > # kubectl cluster-info --context kind-kind
 > Kubernetes control plane is running at https://127.0.0.1:35447
@@ -75,7 +76,7 @@ prior_knowledge: deployment
 > 
 > # kubectl get node
 > NAME                 STATUS   ROLES           AGE     VERSION
-> kind-control-plane   Ready    control-plane   2m43s   v1.24.0
+> kind-control-plane   Ready    control-plane   2m43s   v1.32.0
 > ```
 > 確認出来たら削除
 > ```bash
@@ -91,19 +92,15 @@ prior_knowledge: deployment
 > apiVersion: kind.x-k8s.io/v1alpha4
 > nodes:
 >   - role: control-plane
->     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e
 >   - role: worker
->     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e
 >   - role: worker
->     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e 
 >   - role: worker
->     image: kindest/node:v1.24.0@sha256:0866296e693efe1fed79d5e6c7af8df71fc73ae45e3679af05342239cdc5bc8e
 > ```
 > クラスター構築
 > ```bash
 > # kind create cluster --config cluster.yml 
 > Creating cluster "kind" ...
->  ✓ Ensuring node image (kindest/node:v1.24.0) 🖼 
+>  ✓ Ensuring node image (kindest/node:v1.32.0) 🖼 
 >  ✓ Preparing nodes 📦 📦 📦 📦  
 >  ✓ Writing configuration 📜 
 >  ✓ Starting control-plane 🕹️ 
@@ -125,10 +122,10 @@ prior_knowledge: deployment
 > 
 > # kubectl get node
 > NAME                 STATUS   ROLES           AGE   VERSION
-> kind-control-plane   Ready    control-plane   72s   v1.24.0
-> kind-worker          Ready    <none>          33s   v1.24.0
-> kind-worker2         Ready    <none>          33s   v1.24.0
-> kind-worker3         Ready    <none>          32s   v1.24.0
+> kind-control-plane   Ready    control-plane   72s   v1.32.0
+> kind-worker          Ready    <none>          33s   v1.32.0
+> kind-worker2         Ready    <none>          33s   v1.32.0
+> kind-worker3         Ready    <none>          32s   v1.32.0
 > ```
 
 ## 1. Kubernetesとは
