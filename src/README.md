@@ -7,10 +7,10 @@ features:
 footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 ---
 
-## 2024年度カリキュラム一覧
+## 2025年度カリキュラム一覧
 
-| カテゴリ | 1枠目 | 2枠目 | 3枠目 | 4枠目 | 5枠目 | 6枠目 |
-| :--: | :--: | :--: | :--: | :--: | :--: | :--: |
+| カテゴリ | 1枠目 | 2枠目 | 3枠目 | 4枠目 | 5枠目 |
+| :--: | :--: | :--: | :--: | :--: | :--: |
 | **イントロ** | イントロダクション<br>(社内限定資料) | 事前準備<br>(社内限定資料)| 事前準備<br>(社内限定資料) |
 | **開発** | [Gitの使い方](development/git/)+[GitHubを使った開発手法<br>(最新版は社内限定資料)](development/github/) | [開発環境をDockerで構築](development/docker/docker/)+[docker-compose](development/docker/docker-compose/)
 | **CI/CD + 構成管理** | [GitHub Actions ハンズオン](cicd_infra/github_actions/) | [ansibleによるIT自動化](cicd_infra/ansible/) | [Kubernetes ハンズオン](development/kubernetes/) |
