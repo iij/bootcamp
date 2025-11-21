@@ -16,7 +16,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 | **CI/CD + 構成管理** | [GitHub Actions ハンズオン](cicd_infra/github_actions/) | [ansibleによるIT自動化](cicd_infra/ansible/) | [Kubernetes ハンズオン](development/kubernetes/) |
 | **監視・モニタリング** | [監視Overview](cicd_infra/prometheus/) | [Prometheusハンズオン](cicd_infra/prometheus/) | Splunkハンズオン<br>(社内限定資料) | [OpenTelemetryハンズオン](cicd_infra/opentelemetry/) | 
 | **データベース** | [データベースOverview](database/overview/) | [リレーショナルDBを触ってみる](database/postgresql/) | [MongoDBを触ってみる](database/mongodb/) | [redisを触ってみる](database/redis/) |
-| **Webサーバー** | HTTP Overview<br>(社内限定資料) | [Apache + NginxでWebサーバーを立てよう](web-server/apache_nginx/) | | [SSL/TLSハンズオン](web-server/tls/) | DNSハンズオン<br>(社内限定資料) |
+| **Webサーバー** | HTTP Overview<br>(社内限定資料) | [Apache + NginxでWebサーバーを立てよう](web-server/apache_nginx/) | [SSL/TLSハンズオン](web-server/tls/) | DNSハンズオン<br>(社内限定資料) |
 | **バックエンドアプリ** | [バックエンドアプリOverview](/server-app/overview/) | [Java: Springハンズオン](server-app/java/) | [GoでWebアプリを作る](server-app/go/) | [並行処理ハンズオン](server-app/concurrent) | [テストプログラミングハンズオン](server-app/test-hands-on) |
 | **フロントエンド** | [素のJavaScript + DOM入門](frontend/dom/) | [Reactを触ってみよう](frontend/react/) | [LLMでWebアプリケーションを作ろう](frontend/vibecoding/) |
 | **セキュリティ** | [WebアプリとセキュリティOverview](security/overview/) | アプリに認証を導入するハンズオン<br>(社内限定資料) | セキュリティハンズオン<br>(社内限定資料) |
