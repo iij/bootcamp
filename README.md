@@ -56,5 +56,5 @@ IIJ Bootcampでは、各技術が誕生した経緯・歴史、他の技術と�
 
 ## Contribution
 
-このリポジトリでは内容についての質問や指摘、資料の改善などにご協力いただけるcontributerを募集しています。
+このリポジトリでは内容についての質問や指摘、資料の改善などにご協力いただけるcontributorを募集しています。
 詳しくは [Contribution Guide](CONTRIBUTING.md) をご覧ください。
