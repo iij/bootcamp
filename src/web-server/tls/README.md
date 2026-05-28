@@ -501,9 +501,16 @@ CA/Bフォーラムで長らく話題になっていたのが、証明書の最�
   - 1か月 + 1か月の半分 + 1日
 
 ここまで短くなると、手動で更新し続けることは困難となります。
-各証明局側も自動化の対応が進んでいくと思われるので、
-それに合わせて自動化していく必要が出てくるでしょう。
 
+そこで、証明書更新について[ACMEプロトコル](https://tools.ietf.org/html/rfc8555)を利用して自動化することができます。
+動作の概要は[Let's Encryptのページ](https://letsencrypt.org/ja/how-it-works/)がわかりやすいです。
+
+- **[ACMEクライアント](https://letsencrypt.org/ja/docs/client-options/)**
+   - 証明書を自動取得する際にクライアントサーバー側で動作するソフトウェアです。  
+     Certbot や Lego 、cert-manager など多数のクライアントがあります。
+- **[チャレンジ](https://letsencrypt.org/ja/docs/challenge-types/)**
+   - 証明書が証明しようとしているドメイン名が自身のものであることを自動的に確認するために「チャレンジ」を行います。
+     HTTP プロトコルを利用する HTTP-01 や、 DNS プロトコルを利用する DNS-01, DNS-PERSIST-01 がありあます。
 
 ### 詳細な暗号設定 
 
