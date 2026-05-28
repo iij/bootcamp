@@ -10,70 +10,87 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
+
 ```shell-session
-$ docker pull python:3.8.17-bookworm
-3.8.17-bookworm: Pulling from library/python
-d52e4f012db1: Pull complete
-7dd206bea61f: Pull complete
-2320f9be4a9c: Pull complete
-6e5565e0ba8d: Pull complete
-d3797e13cc41: Pull complete
-9d8ab9ac5a7d: Pull complete
-43ed38f1d568: Pull complete
-164b4060be55: Pull complete
-Digest: sha256:2ee706fa11ec6907a27f1c5116e9749ad1267336b3b0d53fc35cfba936fae32e
-Status: Downloaded newer image for python:3.8.17-bookworm
-docker.io/library/python:3.8.17-bookworm
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.17-bookworm /bin/bash
+$ docker pull python:latest
+latest: Pulling from library/python
+f32f49ce655a: Pull complete 
+8a7504cd2818: Pull complete 
+b53089dca505: Pull complete 
+8d6d44b254da: Pull complete 
+0a4465cc9f09: Pull complete 
+c965dce520b3: Pull complete 
+61719a06ef52: Pull complete 
+Digest: sha256:250e5c97be05e1eb2272fbdbd810dfd638f9012e1e6f65c99390ad3239943a08
+Status: Downloaded newer image for python:latest
+docker.io/library/python:latest
+
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:latest /bin/bash
 a0da070e286fd52ebb323e5faff9c960014bfcd8eb1e509cb5a12daa9fb9a85e
 $ docker exec -it test-debian /bin/bash
 root@a0da070e286f:/#
 ```
 
+<details>
+
+<summary>動作確認済みバージョン</summary>
+
+```shell-session
+root@eacb8fc335e0:/# uname -a
+Linux eacb8fc335e0 6.8.0-90-generic #91~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 15:20:45 UTC 2 x86_64 GNU/Linux
+root@eacb8fc335e0:/# cat /etc/os-release 
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.5
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+root@eacb8fc335e0:/# python --version
+Python 3.14.5
+root@eacb8fc335e0:/# 
+```
+
+</details>
+
 Apacheとnginxをインストールします。
 
 ```shell-session
-root@a0da070e286f:/# apt update
-Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
-Get:2 http://deb.debian.org/debian bookworm-updates InRelease [52.1 kB]
-Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
-Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8906 kB]
-Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [4732 B]
-Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [48.0 kB]
-Fetched 9210 kB in 3s (3184 kB/s)
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-10 packages can be upgraded. Run 'apt list --upgradable' to see them.
-
-root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx telnet neovim
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-The following additional packages will be installed:
-  apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
-  libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
-  libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
+root@0e82a6ed6aae:/# apt update
+Hit:1 http://deb.debian.org/debian trixie InRelease
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9671 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [5412 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [176 kB]
+Fetched 9944 kB in 1s (7832 kB/s)
+25 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@0e82a6ed6aae:/# apt install -y apache2 apache2-dev nginx telnet neovim
+Installing:
+  apache2  apache2-dev  neovim  nginx  telnet
 
 ~~~略~~~
 
-Setting up libapr1-dev (1.7.2-3) ...
-Setting up libaprutil1-dev (1.6.3-1) ...
-Setting up debhelper (13.11.4) ...
-Setting up apache2-dev (2.4.57-2) ...
-Processing triggers for libc-bin (2.36-9) ...
-Processing triggers for hicolor-icon-theme (0.17-2) ...
-root@a0da070e286f:/#
+Setting up libapr1-dev (1.7.5-1) ...
+Setting up libaprutil1-dev (1.6.3-3+b1) ...
+Setting up debhelper (13.24.2) ...
+Setting up apache2-dev (2.4.67-1~deb13u2) ...
+Processing triggers for libc-bin (2.41-12+deb13u3) ...
+Processing triggers for hicolor-icon-theme (0.18-2) ...
+root@0e82a6ed6aae:/# 
 ```
 
 以下のコマンドでバージョンが表示されれば成功です。
 
 ```shell-session
-root@a0da070e286f:/# apache2 -v
-Server version: Apache/2.4.61 (Debian)
-Server built:   2024-07-07T12:08:26
-root@a0da070e286f:/# nginx -v
-nginx version: nginx/1.22.1
+root@0e82a6ed6aae:/# apache2 -v
+Server version: Apache/2.4.67 (Debian)
+Server built:   2026-05-06T09:07:41
+root@0e82a6ed6aae:/# nginx -v
+nginx version: nginx/1.26.3
 ```
 
 ## Webサーバー
