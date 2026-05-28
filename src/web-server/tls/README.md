@@ -520,14 +520,9 @@ TLSの設定としては、主に、プロトコルのバージョン、暗号�
 
 プロトコルについては、既にTLSv1.1 までは主要なブラウザやOSで禁止扱いになっていたりします。
 
-nginx だと、`ssl_protocols`で設定します。
+サーバー側で受け入れる TLS バージョンは、nginx だと`ssl_protocols`で設定します。
 
 まずは、デフォルトの状態で接続を確認してみましょう。TLSv1.2で接続できています。
-
-::: tip
-nginx上ではデフォルトで後述設定の通りTLSv1, 1.1 が有効に見えますが、接続できないようです。
-そのため、ここでは差異が見えるようわざとTLSv1.2 で試してみています。
-:::
 
 ```sh
 root@34cfcf7b6f05:/# curl -vvv -k --tls-max 1.2 https://localhost:443
@@ -557,7 +552,7 @@ Hello Bootcamp!!
 ```
 
 
-では、/etc/nginx/nginx.conf に設定があるので、書き換えてみましょう。
+では、/etc/nginx/nginx.conf に設定があるので、TLSv1.2 は受け入れないように書き換えてみましょう。
 書き換えたら再起動して反映させます。
 
 
@@ -568,7 +563,7 @@ root@34cfcf7b6f05:/# vim /etc/nginx/nginx.conf
         # SSL Settings
         ##
 
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE  <= ここからTLSv1 TLSv1.1 TLSv1.2 を消してみる
+        ssl_protocols TLSv1.3; # Dropping SSLv3 (POODLE), TLS 1.0, 1.1  <= ここから TLSv1.2 を消してみる
         ssl_prefer_server_ciphers on;
 
         ##
