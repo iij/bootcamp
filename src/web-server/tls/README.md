@@ -353,10 +353,9 @@ Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3
 
 ```sh
 server {
-        listen 443 default_server;
-        listen [::]:443 default_server;
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
 
-        ssl on;
         ssl_certificate /etc/nginx/ssl/server.crt;
         ssl_certificate_key /etc/nginx/ssl/private.key;
 
@@ -726,10 +725,9 @@ root@34cfcf7b6f05:/# vim /etc/nginx/sites-enabled/default
 (中略)
 
 server {
-        listen 443 default_server;
-        listen [::]:443 default_server;
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
 
-        ssl on;
         ssl_certificate /etc/nginx/ssl/ecdsa.crt;           # <= ここを書き換え
         ssl_certificate_key /etc/nginx/ssl/ecdsa.key;       # <= ここを書き換え
 
