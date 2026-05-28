@@ -647,7 +647,10 @@ root@34cfcf7b6f05:/# service nginx restart
 ::: tip
 ssl\_ciphers の設定部分は、openssl ciphers の引数に渡すことで、この設定で使えるcipher の一覧を表示させることができます。
 今回は列挙した形ですが、!EXP のようにブラックリスト的な書き方もできるため、よくわからなくなったらこのように実際に設定されるものを確認するとよいでしょう。
+
+```
 openssl ciphers -v "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305"
+```
 :::
 
 `openssl ciphers`の一覧から適当なものを選んで接続してみて、nginx.confで設定したものは接続でき、設定しなかったものは接続できないことを確認してください。
