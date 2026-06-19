@@ -440,7 +440,7 @@ services:
     restart: always
 
   grafana:
-    image: grafana/grafana:main-distroless-slim
+    image: grafana/grafana:13.0-distroless-slim
     container_name: grafana
     ports:
       - 3000:3000
@@ -639,7 +639,7 @@ services:
     restart: always
 
   grafana:
-    image: grafana/grafana:main-distroless-slim
+    image: grafana/grafana:13.0-distroless-slim
     container_name: grafana
     ports:
       - 3000:3000
