@@ -349,7 +349,7 @@ Prometheusについて説明する前に、他の監視ツールについて簡�
   - 例
     - Prometheus、Zabbix、Nagios
 
-どちらもメリット・デメリットがあり優越がつけがたいため、要件にあわせて選ぶ必要があります。
+どちらもメリット・デメリットがあり優劣がつけがたいため、要件にあわせて選ぶ必要があります。
 
 ここからはPrometheusの説明になります。[Prometheus](https://prometheus.io/)は[SoundCloud](https://soundcloud.com/company/home)社が作ったPull型の監視ツールです。[CNCF(Cloud Native Computing Foundation)](https://www.cncf.io/)管理下でのツールになっていて、ランクはGraduatedで成熟したCNCFプロジェクトとなります。
 先ほどPull型の監視ツールのデメリットで「サーバを追加する度に監視サーバの設定を変更する必要がある」という項目がありましたが、Prometheusではサービスディスカバリという機能でこの欠点を補っています。
