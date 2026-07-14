@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
 ---
 
 # Ansible による IT自動化
@@ -46,39 +46,37 @@ footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 
 ### 演習環境
 
-本講義では主に`Visual Studio Code (VS Code)`を利用して演習を進めます。  
-他のエディタ（vim等）でも問題ありませんが、講師の説明はVS Codeを前提としています。  
+本講義では主に`Visual Studio Code (VS Code)`を利用して演習を進めます。
+他のエディタ（vim等）でも問題ありませんが、講師の説明はVS Codeを前提としています。
 VS Code以外を利用する場合は、適宜読み替えてください。
 
-この項では、Ansibleコンソールコンテナへのログイン・ログアウト方法についても解説します。  
+この項では、Ansibleコンソールコンテナへのログイン・ログアウト方法についても解説します。
 演習中は何度もコンテナへログインする場面がありますので、手順を覚えておきましょう。
+
+### システム構成
+
+このハンズオンでは、複数の LXD コンテナを仮想的なVMとして扱い、演習を進めます。
+LXD とは、システムコンテナ(Linux 環境を丸ごと起動できるコンテナ)を構築する仮想化技術です。
+
+下記は演習環境のネットワーク構成図です。
+
+![alt text](images/env-image.png)
+上図では、受講者マシン上に LXD コンテナとしてターゲットノードを構築し、手元環境から Ansible を適用する想定を示しています。
+
+受講者のマシンは Linux の VM を想定していますが、同等の環境なら何でも構いません。
 
 #### コンテナへのログイン方法
 
-- Ansibleコンソールコンテナへログインするには、以下のコマンドを実行します。
+- ターゲットノードとなるコンテナへログインしたい場合は、対象コンテナ名を指定して同様に `lxc exec` コマンドを利用します。
 
   ```bash
-  docker exec -it iijbootcamp_ansible_console bash
-  ```
-
-- ログイン後のプロンプト例
-
-  ```bash
-  [root@ansibleconsole ansible]#
-  ```
-
-#### 他のコンテナへのログイン方法
-
-- 他のコンテナへログインしたい場合は、対象コンテナ名を指定して同様に `docker exec` コマンドを利用します。
-
-  ```bash
-  docker exec -it <コンテナ名> bash
+  sudo lxc exec <コンテナ名> -- bash
   ```
 
 - 対象となるコンテナ名は、以下のコマンドで確認できます。
 
   ```bash
-  docker ps
+  sudo lxc list
   ```
 
   このコマンドで現在起動中のコンテナ一覧が表示されます。`NAMES`列がコンテナ名です。
@@ -92,16 +90,6 @@ VS Code以外を利用する場合は、適宜読み替えてください。
   ```
 
 - ログアウトすると、元のホスト環境（PCのシェル）に戻ります。
-
-
-### システム構成
-
-このハンズオンでは、複数のDockerコンテナを仮想的なVMとして扱い、演習を進めます。  
-下記は演習環境のネットワーク構成図です。
-
-![ネットワーク図](./images/network.drawio.png)
-
-演習では、図中の `console` コンテナから各ホストを管理します。
 
 ## 0. 事前準備
 
