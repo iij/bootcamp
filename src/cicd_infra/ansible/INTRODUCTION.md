@@ -142,11 +142,11 @@ Ansibleで頻出する基本用語を整理します。
   ansible --version
   ansible [core 2.17.14]
   config file = None
-  configured module search path = ['/home/bootcamp-nk-yuta/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/bootcamp-nk-yuta/.local/pipx/venvs/ansible/lib/python3.10/site-packages/ansible
-  ansible collection location = /home/bootcamp-nk-yuta/.ansible/collections:/usr/share/ansible/collections
-  executable location = /home/bootcamp-nk-yuta/.local/bin/ansible
-  python version = 3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0] (/home/bootcamp-nk-yuta/.local/pipx/venvs/ansible/bin/python)
+  configured module search path = ['/home/***/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/***/.local/pipx/venvs/ansible/lib/python3.10/site-packages/ansible
+  ansible collection location = /home/***/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/***/.local/bin/ansible
+  python version = 3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0] (/home/***/.local/pipx/venvs/ansible/bin/python)
   jinja version = 3.1.6
   libyaml = True
   ```
