@@ -1,35 +1,34 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
-title: Dockerを触ってみよう
-description: Dockerコンテナで仮想環境プラットフォームを構築する
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
+title: Docker を触ってみよう
+description: Docker コンテナで仮想環境プラットフォームを構築する
 time: 1h
 prior_knowledge: 仮想化、CUI 操作
-updated: 2025-07
+updated: 2026-07
 ---
 
 <header-table/>
 
+# Docker コンテナで仮想環境プラットフォームを構築する
+
 ## 概要
 
-この項では、Dockerコンテナを使って仮想環境プラットフォームを実際に構築・体験をしてみましょう。
+本項では、Docker コンテナを使って仮想環境プラットフォームを実際に構築・体験をしてみましょう。  
+Docker コンテナを使用して仮想環境プラットフォームを構築するには、大きく分けて以下のステップを踏む必要があります。
 
-Dockerコンテナを使用して仮想環境プラットフォームを構築するには、大きく分けて以下のステップを踏む必要があります。
+- Docker イメージのビルド
+- Docker コンテナの作成
+- Docker コンテナの起動
 
-- Dockerイメージのビルド
-- Dockerコンテナの作成
-- Dockerコンテナの起動
-
-従って、最初はイメージのビルドが必要となるのですがイメージの作成にはDockerfileの知識が必要です。  
+従って、最初はイメージのビルドが必要となるのですがイメージの作成にはDockerfile の知識が必要です。  
 いったんイメージの作成は次項の課題とし、ここでは**既存のDockerコンテナイメージ**を利用して、コンテナの起動と利用を体験しましょう。
 
----
+## 演習1. hello-worldコンテナを起動する
 
-## 演習.1: hello-worldコンテナを起動する
-
-Dockerの動作確認として、公式の`hello-world`イメージを使ってコンテナを起動します。
+Docker の動作確認として、公式のhello-world イメージを使ってコンテナを起動します。
 
 ```bash
-docker run --rm hello-world
+$ docker run --rm hello-world
 ```
 
 <details><summary>実行中の出力例</summary>
@@ -57,58 +56,76 @@ Status: Downloaded newer image for docker/hello-world:latest
 
 イメージの取得後、次のようなメッセージが表示され、コンテナが終了してターミナルが戻ってくれば成功です。
 
-
 ```text
 Hello from Docker!
 This message shows that your installation appears to be working correctly.
 ...
 ```
 
+## 発展演習1. alpine コンテナでシェルを操作する
 
----
-
-## 発展演習1: Ubuntuコンテナでシェルを操作する
-
-演習1では、コンテナ実行後にメッセージが表示されてすぐ終了します。  
-発展課題では、別のイメージを使い、コンテナが終了せず操作できる状態を体験します。  
+演習1.では、コンテナ実行後にメッセージが表示されてすぐ終了します。  
+本発展演習では別のイメージを使い、コンテナが終了せず操作できる状態を体験します。  
 実際にコンテナ内部でコマンド操作ができることを確認しましょう。
 
-`ubuntu`イメージを使い、対話型シェルでコンテナを起動します。
-
-
-`ubuntu`イメージを使い、対話型シェルでコンテナを起動します。
+alpine イメージを使い、対話型シェルでコンテナを起動します。
 
 ```bash
-docker run --rm -it ubuntu bash
+$ docker run --rm -it alpine sh
 ```
+
+<details><summary>実行中の出力例</summary>
+
+```bash
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+55afa1ecc21d: Pull complete
+56dceff11b33: Download complete
+f5124fb579e2: Download complete
+Digest: sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
+Status: Downloaded newer image for alpine:latest
+```
+
+</details>
 
 ### 成功例
 
-以下のようなプロンプトが表示されれば成功です。
+イメージの取得後、以下のようなプロンプトが表示されれば成功です。
 
 ```text
-root@<コンテナID>:/#
+/ #
 ```
 
-この状態でLinuxコマンドを試すことができます。
+この状態でLinux コマンドを試すことができます。  
+試しに`date` コマンドを実行してみましょう。
+
+### 実行例
+
+```bash
+$ date
+Sun Dec 27 00:30:24 UTC 2026
+```
+
+コマンドを実行した時刻がUTC で標準出力されているはずです。
+
 
 ### 終了方法
 
-`exit`と入力してシェルを終了すると、コンテナも停止・削除されます。
+`exit` と入力してシェルを終了すると、コンテナも停止・削除されます。
 
 ```bash
-exit
+$ exit
 ```
 
-### 発展演習.2 Dockerコンテナを起動し、Webサーバを立ち上げる
+## 発展演習2. Dockerコンテナを起動し、Webサーバを立ち上げる
 
 では、コンテナを使ってサービスを提供することも体験してみましょう。
-この演習では、Dockerコンテナを使ってWebサーバをサービスとして起動し、実際にブラウザからアクセスできることを確認します。
+この演習では、Docker コンテナを使ってWeb サーバをサービスとして起動し、実際にブラウザからアクセスできることを確認します。
 
-まず、**docker run** コマンドで **getting-started** コンテナをバックグラウンドで起動します。
+まず、`docker run` コマンドで getting-started コンテナをフォアグラウンドで起動します。
 
 ```bash
-docker run --rm -p 80:80 docker/getting-started
+$ docker run --rm -p 8080:80 docker/getting-started
 ```
 
 <details><summary>実行中のログ</summary>
@@ -132,17 +149,17 @@ Status: Downloaded newer image for docker/getting-started:latest
 
 </details>
 
-#### 起動の確認
+### 起動の確認
 
-- ブラウザで以下のURLを入力します：
+> 💡 シークレットウィンドウ(Google Chrome) やInPrivate ブラウズ(Microsoft Edge) などキャッシュの影響を受けない状態で開くことを推奨します。
 
-  http://localhost:80
+- ブラウザで以下のURLを入力します：  
+  http://localhost:8080
 
-- 以下のような画面が表示されれば成功です：
-
+- 以下のような画面が表示されれば成功です：  
   ![getting-started](./images/getting-started.png)
 
-#### コンテナの終了
+### コンテナの終了
 
 **Ctrl + C** を押して終了します。
 
