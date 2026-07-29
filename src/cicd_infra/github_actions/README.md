@@ -396,14 +396,14 @@ jobs:
       - name: get reviewdog
         run: |
           curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s
-          ./bin/reviewdog -version
+          /home/runner/.local/bin/reviewdog -version
       # by https://github.com/reviewdog/action-suggester/tree/master
       - name: get diff
         run: |
           TMPFILE=$(mktemp)
           git diff > "${TMPFILE}"
           export REVIEWDOG_GITHUB_API_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          ./bin/reviewdog \
+          /home/runner/.local/bin/reviewdog \
           -f diff \
           -f.diff.strip=1 \
           -reporter="github-pr-review" \
