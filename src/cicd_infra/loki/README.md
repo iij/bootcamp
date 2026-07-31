@@ -59,10 +59,80 @@ Prometheus同様のサービスディスカバリ方式を採用しており、G
 Grafana Loki自体にデータストレージを持たない構成を取ることで、自由なストレージ設計が可能になり、データ設計時の柔軟性や拡張性を担保することができます。他のOSSを自由に組み合わせるマイクロサービスアーキテクチャに近い考えになります。
 
 3. ログ全体ではなくメタデータのみをインデックス化して保存する
-Grafana Lokiの最も大きな特徴となります。Grafana Lokiはログ保存時にログ全体を保存するのではなく、**メタデータのみをインデックス化**して保存を行います。これにより同じログセットを保存する場合に他のログ管理ツールに比べて大幅に少ない容量にて保存が可能になります。それに伴い、保存時の書き込み速度やデータ読み込み、様々なログ形式に対応が可能となります。
+Grafana Lokiの最も大きな特徴となります。Grafana Lokiはログ全文ではなく、**メタデータのみをインデックス化**して保存を行います。これにより同じログセットを保存する場合に他のログ管理ツールに比べて大幅に少ない容量にて保存が可能になります。それに伴い、保存時の書き込み速度やデータ読み込み、様々なログ形式に対応が可能となります。
+
 ![log_index](./images/loki-tabs-with-console.svg)
 
 Grafana Lokiという名前の通り、Grafanaとのシナジーが非常に強く、またそれに伴いメトリクス監視ツールであるPrometheusとも管理を統一化できるのが大きな強みとなります。Grafana Loki自体にはほかにも**LogQL**などの特徴も持ち合わせていますが、ツール選定の際は主に上記３点が大きな比較対象となるため、この場では名前だけ出させていただきます。
+
+::: tip
+なぜ**メタデータのみをインデックス化する**ことが容量削減に繋がるかというと、Grafana Lokiは基本的に概念的には**Index**と**Chunk**という２つのファイルタイプでデータを保存しています。例えば`{component="printer",location="f2c16",level="error"} "Printing is not supported by this printer"`というログがある場合、`{component="printer",location="f2c16",level="error"}`をGrafana Lokiはラベルとして保存し、残りの`"Printing is not supported by this printer"`というログ本文は**Chunk**という場所に格納されます。ここでGrafana Lokiはラベルに対して(仮に)`3b2cea09797978fc`というStreamIDを発行し、同じStreamIDを持つログ本文は同じChunkへ保存されます。Chunkは一定数貯まるか時間が経過すると圧縮されます(ログは同じ単語が頻出するので圧縮率が非常に高いです)。仮に圧縮されたchunkを`chunk001`とすると、**Index**は`3b2cea09797978fc → chunk001`程度の情報しか持ちません。これによりElasticsearchのようにログ全文をインデックス化するよりも少ない容量かつ、ラベル検索においては高い速度で検索が行えるようになります。
+:::
+
+<details>
+<summary>びっくりするぐらい詳しいElasticsearchとの比較</summary>
+仮に以下のようなログが100万件あるとします。
+
+```
+2025-01-01 ERROR Out of paper
+2025-01-01 ERROR Too much paper
+2025-01-01 ERROR Printer offline
+...
+```
+
+Elasticsearchはログ本文を細かく分解してインデックスを生成します。
+
+```
+ERROR
+Out
+of
+paper
+Too
+much
+paper
+Printer
+offline
+```
+
+Grafana Lokiの場合、収集エージェント側(Grafana Alloyなど)でラベル付与・整形を行うので、まずは以下の形になります。
+
+```
+{app="printer",level="error"}
+Out of paper
+
+{app="printer",level="error"}
+Too much paper
+
+{app="printer",level="error"}
+Printer offline
+```
+
+この場合、Grafana Lokiのインデックスは以下になります。
+
+```
+{app="printer",level="error"}
+→ Chunk001
+```
+
+先ほどのChunkの説明の通り、これによりGrafana LokiはElasticsearchに比べてストレージ効率が良くなります。
+
+**が**、
+
+仮にユーザが`paper`というワードで検索を行った場合、Elasticsearchはインデックスを見るだけで一発で対象ログをヒットさせることができますが、Grafana Lokiは
+
+```
+ラベルでChunkを特定
+↓
+Chunkを読み出す
+↓
+ログ本文を実際に読む
+↓
+paperを探す
+```
+
+となるため、Elasticsearchに比べて検索コストが高くなります。特に広い検索範囲に対する全文検索では差が大きくなります。
+
+</details>
 
 ### 1-3. Grafana Lokiのアーキテクチャ
 
