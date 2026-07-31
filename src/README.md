@@ -14,7 +14,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
 | **イントロ** | イントロダクション<br>(社内限定資料) | 事前準備<br>(社内限定資料)| 事前準備<br>(社内限定資料) |
 | **開発** | [Gitの使い方](development/git/)+[GitHubを使った開発手法<br>(最新版は社内限定資料)](development/github/) | [開発環境をDockerで構築](development/docker/docker/)+[docker-compose](development/docker/docker-compose/) |
 | **CI/CD + 構成管理** | [GitHub Actions ハンズオン](cicd_infra/github_actions/) | [ansibleによるIT自動化](cicd_infra/ansible/) | [Kubernetes ハンズオン](development/kubernetes/) |
-| **監視・モニタリング** | [監視Overview](cicd_infra/prometheus/) | [Prometheusハンズオン](cicd_infra/prometheus/) | Splunkハンズオン<br>(社内限定資料) | [OpenTelemetryハンズオン](cicd_infra/opentelemetry/) | Lokiハンズオン |
+| **監視・モニタリング** | [監視Overview](cicd_infra/prometheus/) | [Prometheusハンズオン](cicd_infra/prometheus/) | Splunkハンズオン<br>(社内限定資料) | [OpenTelemetryハンズオン](cicd_infra/opentelemetry/) | [Lokiハンズオン](cicd_infra/loki/) |
 | **データベース** | [データベースOverview](database/overview/) | [リレーショナルDBを触ってみる](database/postgresql/) | [MongoDBを触ってみる](database/mongodb/) |
 | **Webサーバー** | HTTP Overview<br>(社内限定資料) | [Apache + NginxでWebサーバーを立てよう](web-server/apache_nginx/) | [SSL/TLSハンズオン](web-server/tls/) | DNSハンズオン<br>(社内限定資料) |
 | **バックエンドアプリ** | [バックエンドアプリOverview](/server-app/overview/) | [FastAPIを使ったAPIサーバ作り](server-app/fastapi/) | [GoでWebアプリを作る](server-app/go/) | [並行処理ハンズオン](server-app/concurrent) | [テストプログラミングハンズオン](server-app/test-hands-on) |
