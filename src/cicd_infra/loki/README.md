@@ -318,7 +318,7 @@ Grafana Labsの考えるObservabilityの**ログ監視**とは、**Grafana Alloy
 
 #### STEP1 Grafana LokiとGrafanaを起動
 
-`docker-compose.yml`を作成し、以下の内容を書き込みます。
+`compose.yaml`を作成し、以下の内容を書き込みます。
 
 ```
 services:
