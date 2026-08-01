@@ -57,8 +57,8 @@ Grafana Lokiの特徴は大きく３つあります。
 Prometheus同様のラベル管理方式を採用しており、Grafana Lokiへの取り込み時にPrometheusラベルを付与/変換/フィルタリングを行うことができます。これによりGrafanaという可視化ツールの中でPrometheusと一気通貫の管理方式を採用することができます。
 
 2. Grafana Loki自体が内部にストレージを持たず、外部のオブジェクトストレージ等を利用する
-Grafana Loki自体にデータストレージを持たない構成を取ることで、自由なストレージ設計が可能になり、データ設計時の柔軟性や拡張性を担保することができます。他のOSSを自由に組み合わせるマイクロサービスアーキテクチャに近い考えになります。
 
+Grafana Loki自体にデータストレージを持たない構成を取ることで、自由なストレージ設計が可能になり、データ設計時の柔軟性や拡張性を担保することができます。他のOSS(Open Source Software)を自由に組み合わせるマイクロサービスアーキテクチャに近い考えになります。
 
 3. ログ全体ではなくメタデータのみをインデックス化して保存する
 
@@ -228,7 +228,7 @@ Grafana → Query Frontend → Querier → Ingester & Storage
    - 大量のクエリが来た場合、特定のtenantに処理が集中してしまわないようにtenantごとのキューを待って処理を行う
    - Querierは非常に重たい処理をするため、tenantごとに公平に検索が行えるようにQuery Schedulerが存在している
 4. Querierが取得
-   - ログ書き込み11.の手順でStorageにflushされていない可能性を考慮し、まずはIngesterを検索
+   - ログ保存までの流れにおける手順「11. Storageへflush」の手順でStorageにflushされていない可能性を考慮し、まずはIngesterを検索
 5. Ingester検索
    - 直近のログはChunk内に格納されているため、Chunk内のメモリを検索
 6. Index Gateway検索(TSDB利用時)
@@ -253,13 +253,13 @@ Ruler → Query Frontend → Querier → LogQL評価 → Alertmanager
 1. Rulerが定期実行
    - Rulerが事前に定義した時間ごとにアラートルールを評価
 2. LogQL発行
-   - アラートの評価方法としてcount_over_timeやrate、sum、avgなどを利用している場合はここでLogQLのMetric Queryを発行
+   - アラートの評価方法として`count_over_time`や`rate`、`sum`、`avg`などのログから算出したメトリクスを利用している場合はここでLogQLのMetric Queryを発行
 3. Query Frontendへ依頼
    - 以降はクエリ検索を行うためログ検索の流れと同様
 4. Querierが評価
    - 同上
 5. 結果判定
-   - 2.で発行したLogQLがアラートルールの条件を超過した場合、条件成立となる
+   - 2.で発行したLogQLがアラートルールの条件を満たした場合、条件成立となる
 6. Alert状態へ遷移
    - 該当アラートのステータスがFiringへ推移する
 7. Alertmanagerへ送信
