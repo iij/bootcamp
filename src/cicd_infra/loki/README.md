@@ -225,12 +225,12 @@ Grafana → Query Frontend → Querier → Ingester & Storage
    - ログ書き込み11.の手順でStorageにflushされていない可能性を考慮し、まずはIngesterを検索
 5. Ingester検索
    - 直近のログはChunk内に格納されているため、Chunk内のメモリを検索
-6. Index Gateway検索
+6. Index Gateway検索(TSDB利用時)
    - どのログがどのChunkに格納されているかを確認するためにIndex Gatewayで知りたいログのChunkを検索
 7. Storage検索
    - Querierが検索したChunkがあるStorageへChunkを取得しに行く
 8. Deduplication
-   - 同一ログは複数のIngesterから返ってくるため、**timestamp**、**labels**、**message**が同じものを除外する
+   - 同一ログは複数のIngesterやStorageから返ってくるため、**timestamp**、**labels**、**message**が同じものを除外する
 9. 集約してGrafanaへ返却
    - QuerierがQuery Frontendを経由してGrafanaへ結果を返却する
 
@@ -286,6 +286,7 @@ Grafana Lokiには[デプロイ方式](https://grafana.com/docs/loki/latest/get-
    - 本番利用可能(運用要件に応じて選択)
   
     ![Simple Scalable](./images/scalable-monolithic-mode.png)
+
 3. Microservices mode
    - 各コンポーネントがすべて独立して動作
    - 最も拡張性と柔軟性が高い
