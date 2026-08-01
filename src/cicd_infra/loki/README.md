@@ -55,7 +55,7 @@ Grafana Lokiの特徴は大きく３つあります。
 1. Prometheusに似たラベルデータを持つ
 Prometheus同様のラベル管理方式を採用しており、Grafana Lokiへの取り込み時にPrometheusラベルを付与/変換/フィルタリングを行うことができます。これによりGrafanaという可視化ツールの中でPrometheusと一気通貫の管理方式を採用することができます。
 
-2. Grafana Loki自体が内蔵ストレージを持たず、オブジェクトストレージ等を利用する
+2. Grafana Loki自体が内部にストレージを持たず、外部のオブジェクトストレージ等を利用する
 Grafana Loki自体にデータストレージを持たない構成を取ることで、自由なストレージ設計が可能になり、データ設計時の柔軟性や拡張性を担保することができます。他のOSSを自由に組み合わせるマイクロサービスアーキテクチャに近い考えになります。
 
 3. ログ全体ではなくメタデータのみをインデックス化して保存する
@@ -66,7 +66,7 @@ Grafana Lokiの最も大きな特徴となります。Grafana Lokiはログ全�
 Grafana Lokiという名前の通り、Grafanaとのシナジーが非常に強く、またそれに伴いメトリクス監視ツールであるPrometheusとも管理を統一化できるのが大きな強みとなります。Grafana Loki自体にはほかにも**LogQL**などの特徴も持ち合わせていますが、ツール選定の際は主に上記３点が大きな比較対象となるため、この場では名前だけ出させていただきます。
 
 ::: tip
-なぜ**メタデータのみをインデックス化する**ことが容量削減に繋がるかというと、Grafana Lokiは基本的に概念的には**Index**と**Chunk**という２つのファイルタイプでデータを保存しています。例えば`{component="printer",location="f2c16",level="error"} "Printing is not supported by this printer"`というログがある場合、`{component="printer",location="f2c16",level="error"}`をGrafana Lokiはラベルとして保存し、残りの`"Printing is not supported by this printer"`というログ本文は**Chunk**という場所に格納されます。ここでGrafana Lokiはラベルに対して(仮に)`3b2cea09797978fc`というStreamIDを発行し、同じStreamIDを持つログ本文は同じChunkへ保存されます。Chunkは一定数貯まるか時間が経過すると圧縮されます(ログは同じ単語が頻出するので圧縮率が非常に高いです)。仮に圧縮されたchunkを`chunk001`とすると、**Index**は`3b2cea09797978fc → chunk001`程度の情報しか持ちません。これによりElasticsearchのようにログ全文をインデックス化するよりも少ない容量かつ、ラベル検索においては高い速度で検索が行えるようになります。
+なぜ**メタデータのみをインデックス化する**ことが容量削減に繋がるかというと、Grafana Lokiは基本的に概念的には**Index**と**Chunk**という２つのファイルタイプでデータを保存しています。例えば`{component="printer",location="f2c16",level="error"} "Printing is not supported by this printer"`というログがある場合、`{component="printer",location="f2c16",level="error"}`をGrafana Lokiはラベルとして保存し、残りの`"Printing is not supported by this printer"`というログ本文は**Chunk**という場所に格納されます。ここでGrafana Lokiはラベルに対して`3b2cea09797978fc`といったハッシュ値を発行し、同じハッシュ値を持つログ本文は同じChunkへ保存されます。Chunkは一定数貯まるか時間が経過すると圧縮されます(ログは同じ単語が頻出するので圧縮率が非常に高いです)。仮に圧縮されたchunkを`chunk001`とすると、**Index**は`3b2cea09797978fc → chunk001`程度の情報しか持ちません。これによりElasticsearchのようにログ全文をインデックス化するよりも少ない容量かつ、ラベル検索においては高い速度で検索が行えるようになります。
 :::
 
 <details>
@@ -176,13 +176,14 @@ Agent → Distributor → Ingester → Storage
     - 不正なラベルはここで拒否される
 3. Label Normalization
     - 受信したデータのラベルをすべて同じ順に整理する
-    - これを行うことで同じストリームは同じハッシュ値として扱われる
+    - これを行うことで同じラベルセットは同じハッシュ値として扱われる
 4. Rate Limit確認
     - 事前に設定している通信量を超えていないかを確認
     - 超えている場合は`429 Too Many Requests`を返す
 5. Hash計算
     - hash(TenantID + LabelSet)により計算
     - Lokiはマルチテナントを想定したつくりになっている
+    - これがラベル集合から算出される識別子となる
 6. RingからIngester選択
     - Ringとは「どのログをどのIngesterへ保存するか」を決めた仕組み(説明が難しいので詳しくは[公式ドキュメント参照](https://grafana.com/docs/loki/latest/get-started/hash-rings/))
     - replication_factorで事前に定義された数のIngesterを選択
