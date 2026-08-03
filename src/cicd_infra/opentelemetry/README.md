@@ -41,8 +41,8 @@ prior_knowledge: 監視
 以下のコマンドを実行してサンプルアプリケーションを立ち上げてください。
 
 ```bash
-$ git clone https://github.com/tamago0224/todo-with-gemini
-$ cd todo-with-gemini
+$ git clone https://github.com/iij-k-ohki/todo-otel
+$ cd todo-otel
 $ docker compose up --build -d
 ```
 
@@ -169,10 +169,10 @@ OpenTelemetryは仕様としてトレースの可視化まではサポートし�
 
 ![Jaeger 検索画面](./jaeger_search.png)
 
-画面左にある`Serivce`から、`unknown_service:backend`という項目を選択できると思うので、選択後、`Find Traces`ボタンを押してください。
+画面左にある`Serivce`から、`todo-backend`という項目を選択できると思うので、選択後、`Find Traces`ボタンを押してください。
 
 すると、いくつか検索結果が表示されると思います。
-その中から`unknown_service:backend:POST /api/tasks`を選択してください。もし複数同じタイトルが表示されているようでしたら右側に表示されている時刻が最も新しいものを選択してください。
+その中から`todo-backend:POST /api/tasks`を選択してください。もし複数同じタイトルが表示されているようでしたら右側に表示されている時刻が最も新しいものを選択してください。
 
 すると、以下のような画面が表示されるはずです。
 
@@ -240,7 +240,7 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 
 それではタスクの更新のトレースを見てみましょう。
 
-今回も同じようにJaegerの画面にアクセスして、`Serivce`から`unknown_service:backend`を選択して`Find Traces`ボタンを押してください。
+今回も同じようにJaegerの画面にアクセスして、`Serivce`から`todo-backend`を選択して`Find Traces`ボタンを押してください。
 
 今度は`PUT /api/tasks/:id`という項目があると思うのでそちらをクリックしてください。
 以下のような画面が確認できると思います。
