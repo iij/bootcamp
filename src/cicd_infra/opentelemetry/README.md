@@ -18,9 +18,9 @@ prior_knowledge: 監視
 
 ### 前提知識
 
-本講義では事前知識なしでも講義を進められるように心がけていますが、以下の点を抑えておくことで手を動かしつつ理解を深めることができます。
+本講義では事前知識なしでも講義を進められるように心がけていますが、以下の点を押さえておくことで手を動かしつつ理解を深めることができます。
 
-- Dockerの基本知
+- Dockerの基本知識
 - Linuxの基礎知識（コマンド実行程度）
 
 ### 講義の目的
@@ -50,6 +50,8 @@ $ docker compose up --build -d
 
 オブザーバビリティのためのフレームワークであり、トレース、メトリクス、ログといったテレメトリデータ生成、エクスポート、収集を行うための統一された処理を提供します。
 
+あくまでも生成・収集・エクスポートを行う標準仕様・ツール群であり、保存や可視化は範囲外です。今回は保存と可視化に関してはJaegerが担当します。
+
 ### 現在のアプリケーションの設計について
 
 昔のアプリケーションはおおよそ単一のWEBサーバとデータベースのようなシンプルな形で提供されてきた。
@@ -64,9 +66,9 @@ $ docker compose up --build -d
 システムの出力を調べることで、システムの外側から内部状態を理解する能力のこと。
 この能力があることで、未知の問題に対するトラブルシューティングが可能になります。
 
-これは監視の文脈では最初に出たトレース、メトリクス、ログといった３つのテレメトリデータを調べることで可能としています。
+これは監視の文脈では前述したトレース、メトリクス、ログといった３つのテレメトリデータを調べることで可能としています。
 
-ただし、システムがオブザーバビリティがある状態というためにはアプリケーションが適切に計装されていることが前提です。
+ただし、システムがオブザーバビリティを備えていると言うためにはアプリケーションが適切に計装されていることが前提です。
 計装されている、とは前述した３つのシグナルをアプリケーションが出力している状態のことです。
 これらの出力されたテレメトリデータがオブザーバビリティバックエンドに送信されて可視化されることで真価を発揮します。
 
@@ -85,7 +87,7 @@ OpenTelemetryはこれらの３つのシグナルをアプリケーションに�
 #### ログとは
 
 構造化、または非構造化されたタイムスタンプ付きのテキストレコードのこと。
-OpenTelemetryでのログサポートは、追加のメタデータを追加したり、様々なソースから共通のフォーマットに解析・変換するための方法を提供します。
+OpenTelemetryでのログサポートは、メタデータを付与し、様々なソースから共通のフォーマットに解析・変換するための方法を提供します。
 
 ## OpenTelemetryのアーキテクチャ
 
@@ -107,7 +109,7 @@ OpenTelemetryでのログサポートは、追加のメタデータを追加し�
 そして内部的な設計の話になりますが、本アプリケーションではMVCアーキテクチャを用いており、処理の流れとしてController層、Service層、Repository層を流れるようになっています。
 
 大まかな流れとしては
-リクエストをControllerで受け取り、Serviceで必要な処理を実装し、Repostiroyでデータベースへのアクセスなどを請け負う形となっています。
+リクエストをControllerで受け取り、Serviceで必要な処理を実装し、Repositoryでデータベースへのアクセスなどを請け負う形となっています。
 
 もし何かしらの名前にXXXControllerやXXXServiceがついている場合はその処理におけるレイヤーを表していると見てください。
 
@@ -148,7 +150,7 @@ $ curl -H "Content-Type: application/json" http://localhost:8080/login -XPOST -d
 
 ```bash
 $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token" http://localhost:8080/api/tasks -XPOST -d '{"title":"task1","completed":false}'
-{"id":1,"user_id":1,"title":"task1","completed":false}⏎
+{"id":1,"user_id":1,"title":"task1","completed":false}
 ```
 
 成功するとタスクの内容が返ってくると思います。
@@ -158,33 +160,37 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 
 ### タスクを登録した際のトレースを確認する
 
-OpenTelemetryは仕様としてトレースの可視化まではサポートしていません。
+OpenTelemetryは仕様としてトレースの保存、検索、可視化まではサポートしていません。
 そこで今回はJaegerを可視化ツールとして利用します。
 
 アプリケーションの起動とともに、以下のURLからJaegerのWEB UIにアクセスすることができるため、ブラウザを起動してアクセスしてください。
 
 `http://<url>:16686/search`
 
+もし手元環境で作業しているなら下記のように指定が可能です。
+
+`http://localhost:16686/search`
+
 すると、以下のような画面が表示されると思います。
 
 ![Jaeger 検索画面](./jaeger_search.png)
 
-画面左にある`Serivce`から、`todo-backend`という項目を選択できると思うので、選択後、`Find Traces`ボタンを押してください。
+画面左にある`Service`から、`todo-backend`という項目を選択できると思うので、選択後、`Find Traces`ボタンを押してください。
 
 すると、いくつか検索結果が表示されると思います。
 その中から`todo-backend:POST /api/tasks`を選択してください。もし複数同じタイトルが表示されているようでしたら右側に表示されている時刻が最も新しいものを選択してください。
 
 すると、以下のような画面が表示されるはずです。
 
-![Jaeder タスク作成トレース](./jaeger_create_task.png)
+![Jaeger タスク作成トレース](./jaeger_create_task.png)
 
-なにやら4本ほどの横線が確認できると思います。このラインをトレースではスパンと呼びます。
+なにやら4本ほどの横線が確認できると思います。トレースでは、このラインをスパンと呼びます。
 
 1番上のスパンが`POST /api/tasks`とあるように、リクエスト全体を表すものになります。
 
 2番目のスパンが`TaskController.CreateTask`とあるように、リクエストを受け付けて後続の処理を呼び出すController層の処理になります。
 
-3番目のスパンが`TaskService.CreateTask`とあるので、ControllerからSerivce層の処理を呼び出してそこでかかった処理になります。
+3番目のスパンが`TaskService.CreateTask`とあるので、ControllerからService層の処理を呼び出してそこでかかった処理になります。
 
 そして最後のスパンが`TaskRepository.CreateTask`とあるため、Serviceからデータベース操作の処理であるRepositoryを呼び出してかかった処理になります。
 
@@ -218,6 +224,8 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 もし、複数出てきた場合は一番上の`id`をメモしておきましょう。
 
 それでは実際に更新リクエストを送ってみます。
+下のコマンドの `/api/tasks/1` に該当する箇所は上の手順で確認した `id` に変更してみてください。
+今回は `1` を指定して実行してみます。
 
 ```bash
 $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token" http://localhost:8080/api/tasks/1 -XPUT -d '{"title":"task1","completed":true}'
@@ -240,7 +248,7 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 
 それではタスクの更新のトレースを見てみましょう。
 
-今回も同じようにJaegerの画面にアクセスして、`Serivce`から`todo-backend`を選択して`Find Traces`ボタンを押してください。
+今回も同じようにJaegerの画面にアクセスして、`Service`から`todo-backend`を選択して`Find Traces`ボタンを押してください。
 
 今度は`PUT /api/tasks/:id`という項目があると思うのでそちらをクリックしてください。
 以下のような画面が確認できると思います。
@@ -248,16 +256,15 @@ $ curl -H "Content-Type: application/json" -H "Authorization: Bearer your-token"
 
 ![Jaeger タスク更新](./jaeger_update_task.png)
 
-
 ## まとめ
 
-OpenTelemeryのハンズオンを通して以下のことが理解できるようになったと思います。
+OpenTelemetryのハンズオンを通して以下のことが理解できるようになったと思います。
 
 - OpenTelemetryの概要
 - システムの処理の可視化
-  - 今回はトレースを通してリクエストの処理を可視化しましたが、ログにtrace_idを表示させることで、リクエストのとレースとログを一意に紐づけることもできます。
+  - 今回はトレースを通してリクエストの処理を可視化しましたが、ログにtrace_idを表示させることで、リクエストのトレースとログを一意に紐づけることもできます。
 - 問題の迅速な特定
-  - 処理がどこまで進んだのかわかるため、ソースコード見ずともおおよその発生源を特定することができます
+  - 処理がどこまで進んだのかわかるため、ソースコードを見ずともおおよその発生源を特定することができます
 - パフォーマンス調査
   - リクエストで各処理がどの程度かかっているのかを可視化できているので時間がかかっている箇所の特定が容易
 
