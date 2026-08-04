@@ -145,7 +145,8 @@ psql -h localhost -p 5432 -d postgres -U postgres
 ### ★1-2 データベース確認  
 　以下コマンド（エンマーク 英小文字のエル プラス）を実行します。  
 ```
-\l+ # list
+-- list
+\l+ 
 ``` 
 ◎出力イメージ  
 ![](./images/docker06.jpg)  
@@ -169,7 +170,8 @@ psql -h localhost -p 5432 -d postgres -U postgres
 
 　ユーザの確認をします。まだユーザを作成していないので、最初から存在しているユーザ 「postgres」が表示されます。
 ```
-\du+ # display user
+-- display user
+\du+ 
 ```
 
 「user01」の作成  
@@ -247,7 +249,8 @@ create schema sch_usa authorization suser01;
 
 　作成したスキーマは以下のコマンドで確認できます。
 ```
-\dn+ # display namespace
+-- display namespace
+\dn+
 ```
 
 ### ★4-2 権限付与
