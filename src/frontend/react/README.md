@@ -2,7 +2,7 @@
 footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
 title: Reactを触ってみよう
 description: Reactを触ってみよう
-time: 2h
+time: 3h
 prior_knowledge: ブラウザのDOM操作
 ---
 
@@ -38,7 +38,7 @@ prior_knowledge: ブラウザのDOM操作
 
 ### 1. PlayCodeを利用する
 
-[PlayCode](https://playcode.io/react_ts_hooks)を利用してReactの環境を用意します。
+[PlayCode](https://playcode.io/react-template)を利用してReactの環境を用意します。
 PlayCodeはブラウザの上でコードを編集しながらウェブアプリの開発を手軽に体験できる環境です。
 本来の開発環境と比較するとJavaScriptからTypeScriptへの変換処理などが隠蔽されている部分もありますが、Reactの動作を試すだけなら十分です。
 
@@ -48,28 +48,27 @@ PlayCodeは社外の環境なので、業務関係の情報を不意にコピペ
 
 :::
 
-リンクを開くと以下のようなページが表示されると思います。
+[リンク](https://playcode.io/react-template)を開くと PlayCode の React 環境が表示されると思います。
+しかし、この画面だとファイルが見えず、余計な情報も含まれているので、先に画面構成を変更します。
+
+1) 画面上の「React Playground」ボタンをクリック
+2) 出現したメニューから「Files」「Preview」を有効化し、「AI Chat」「Console」を無効化
 
 ![](./images/setup-playcode.png)
 
-以上で環境のセットアップはほぼ完了です。簡単ですね😉
+これにより、左側にファイルブラウザが表示され、右側にプレビュー/エディターが表示される画面になるはずです。
+加えて、この状態では JavaScript 用の構成になっているので、TypeScript で書けるようにファイルを整えます。
 
-この環境ではエディタとブラウザが上下に表示されており、ファイルを編集すると自動でブラウザの内容が更新されます。
-「Console」という窓は今回は使いませんので、消しても問題ありません。
-各窓は縦長の方が編集や動作確認が快適なので、左上のボタンを押して、エディタとブラウザを左右で表示するとよいでしょう。
+1) `App.jsx` の右にある三点リーダーから `App.tsx` にリネーム
+2) `index.jsx` 内の import も `App.tsx` を参照するようにする
 
-残るちょっとした下準備として、`src/index.tsx`の以下の場所に`import "./style.css"`の行を追加しておいてください。
+![](./images/setup-playcode2.png)
 
-```tsx{6}
-import React, { StrictMode } from "react";
-import * as ReactDOMClient from "react-dom/client";
+エディタのタブをドラックランドドロップすると画面分割も可能なので、適宜設定してください。
+「Preview」タブを右側にドラックランドドロップし、エディター/プレビューと左右分割して表示すると快適かと思います。
 
-import App from "./App";
-
-import "./style.css";
-```
-
-これから`App.tsx`は頻繁に書き換えるため、代わりに特に触ることのない`index.tsx`からスタイルシートを`import`するようにします。
+なお、PlayCode ではファイルを編集すると自動でプレビューの内容が更新されます。
+そのため、ファイル変更の適用にブラウザの更新などは不要です。
 
 ### 2. Viteを利用してローカル環境にプロジェクトの雛形を用意する
 
@@ -86,18 +85,17 @@ mise use --global node@latest
 
 # Viteを利用したプロジェクトのセットアップ
 npm create vite@latest bootcamp-react
-# => React => TypeScript を選択する
-cd bootcamp-react
-npm install
-npm run dev
+# => React => TypeScript => Oxlint => yes を選択する
 ```
 
 開発サーバが起動し、ブラウザで<http://localhost:5173>にアクセスして以下のような画面が見れれば成功です😉
 
 ![](./images/setup-vite.png)
 
-この環境ではファイルを更新すると自動でブラウザの表示も更新されます。
+Viteではファイルを更新すると自動でブラウザの表示も更新されます。
 開発のためのエディタは好きなものを利用してください。
+
+なお、開発サーバは `Ctrl+C` で終了します。起動しなおす場合は、セットアップで作成された `bootcamp-react` ディレクトリに入り、`npm run dev` コマンドを発行してください。
 
 :::tip プロジェクトをテンプレートから作成したらgit commitしておく
 
@@ -125,7 +123,7 @@ git commit -m 'npm create vite'
 そのため、異なるバージョンを使用するプロジェクト 2 つに参加していると、プロジェクトを行き来するたびにツールをアップデート/ダウングレードする必要があり、とても面倒なことになります。
 これを解決するのがバージョン管理ツールで、複数のバージョンをインストールし、それらを瞬時に切り替えることができます。
 
-昨今よく使われているものには[adsf](https://asdf-vm.com/ja-jp/)や[mise](https://mise.jdx.dev/)(みーず) がありますが、セキュリティや操作の簡便性から mise がより注目されてきているようです。
+昨今よく使われているものには[asdf](https://asdf-vm.com/ja-jp/)や[mise](https://mise.jdx.dev/)(みーず) がありますが、セキュリティや操作の簡便性から mise がより注目されてきているようです。
 
 :::
 
@@ -137,8 +135,8 @@ Reactのプロジェクトのフォルダにはいろんなファイルがあり
 (プロジェクトのフォルダ)
 ├── src
 │   ├── App.tsx    ← メインのアプリ実装
-│   ├── index.tsx  ← アプリのセットアップ (Viteの場合はmain.tsx)
-│   ├── style.css  ← スタイルシート      (Viteの場合はindex.css)
+│   ├── index.jsx  ← アプリのセットアップ (Viteの場合はmain.tsx)
+│   ├── styles.css  ← スタイルシート      (Viteの場合はindex.css)
 │   └── (その他諸々)
 └── (その他諸々)
 ```
@@ -154,9 +152,9 @@ Vite環境の方は適宜読み替えをお願いします。
 ### スタイルシートの適用
 
 今回のハンズオン用のスタイルシートをあらかじめ[github.com/iij-ykosugi/bootcamp-todo](https://github.com/iij-ykosugi/bootcamp-todo/blob/main/src/index.css)に用意しておきました。
-それぞれの環境ごとに以下のファイルにコピペで上書きしてください。
+それぞれの環境ごとに以下のファイルにコピペで上書きしてください(ファイルが存在しない場合は新しく作成してください)。
 
-- PlayCode環境: `src/style.css`
+- PlayCode環境: `src/styles.css`
 - Vite環境: `src/index.css`
 
 ### 🚩チェックポイント
@@ -168,10 +166,270 @@ Vite環境の方は適宜読み替えをお願いします。
 - Reactのプロジェクトの`src`フォルダが確認できた
 - ハンズオン用のスタイルシートの適用が終わった
 
-## 要素技術の軽い紹介
+## TypeScriptに触れてみる
 
-手を動かす前に軽くReactと、Reactと共に使われる要素技術の紹介をしておきます。
-まだセットアップが間に合っていない人はTAを呼ぶなりして、この時間に頑張って間に合わせてください😉
+Reactに入る前に、まずTypeScriptに触れておきましょう。
+上記でセットアップした環境はまだ使いませんので、まだ終わっていない人はTAを呼ぶなりして、この時間に頑張って間に合わせてください😉
+
+Reactの開発ではJavaScriptの代わりに、その拡張言語である[TypeScript](https://www.typescriptlang.org)をよく使います。
+TypeScriptはMicrosoft発の、JavaScriptに**型**の概念を加えた言語です。
+
+例えば以下の関数定義は
+
+```js
+function double(n) {
+  return n * 2
+}
+```
+
+TypeScriptでは次のように書けます。
+
+```ts
+function double(n: number) {
+  return n * 2
+}
+```
+
+引数に`number`という型をつけることができます。
+これにより「この関数の引数はどのような値であるべきか」という、JavaScriptではコメントで表現するしかなかった部分を補完することができます。
+逆に型以外の点ではJavaScriptとほぼ同じ表記になります。
+
+この章では、基本的な TypeScript の書き方に絞って、手を動かしながら確認していきます。
+(TypeScriptを既に知っている人は読み飛ばして構いません)
+
+:::tip TypeScriptの実行環境
+
+TypeScriptは通常、そのままではブラウザやNode.jsなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
+
+1. TypeScriptでソースコードを記述
+2. コンパイラ(トランスパイラ)が型チェックをしながらソースコードをJavaScriptに変換
+3. ブラウザ等JavaScriptの動作環境で実行
+
+実際にはこの流れはツール類がほぼ自動で実行してくれます。
+包括的なツールとして最近では[Vite](https://vitejs.dev)がよく使われます。
+
+面倒に見えるかもしれませんが、最近ではツール類が洗練され、設定の手間がほとんどかからなくなっています。
+一般にReactで開発を行う際もTypeScriptがよく使われるため、この講義でもTypeScriptの利用を前提として進めます。
+
+:::
+
+### TS Playgroundを開く
+
+この章では、簡単のために[TS Playground](https://www.typescriptlang.org/play)というブラウザ上でTypeScriptを試せる環境を使います。
+Reactの環境(PlayCodeやVite)はそのままにしておいて、**別のタブ**で開いてください。
+
+::: warning
+
+TS Playgroundも社外の環境なので、業務関係の情報を不意にコピペしないよう注意してください。
+
+:::
+
+#### 動作テスト
+
+最初から入っているコードを全部消して、以下を貼り付けてください。
+
+```ts
+const message: string = "Hello, TypeScript!";
+console.log(message);
+```
+
+画面左上の「Run」を押すと、右側のパネルに`Hello, TypeScript!`と表示されるはずです。
+
+### 型注釈と型推論
+
+先ほど書いた`: string`の部分が **型注釈** と呼ばれるもので「この変数には文字列が入る」ということを表しています。
+
+型注釈をつけると、それと違う型の値を入れようとしたときに教えてもらえます。
+以下を貼り付けて、2行目に赤い波線が出ることを確認してください。
+
+```ts
+let message: string = "Hello, TypeScript!";
+message = 123;
+```
+
+波線にマウスカーソルを乗せると`Type 'number' is not assignable to type 'string'.`(number型はstring型に代入できません)というメッセージが表示されます。
+このように **プログラムを実行する前に間違いを教えてくれる** のがTypeScriptの一番のメリットです。
+
+ところで、実は型注釈は省略できる場合が多くあります。
+以下を貼り付けて、`message`にマウスカーソルを乗せてみてください。
+
+```ts
+let message = "Hello, TypeScript!";
+message = 123;
+```
+
+`let message: string`と表示され、`: string`と書いていないのに文字列型として扱われていることがわかります。
+そして2行目には変わらず赤い波線が出ます。
+
+これは **型推論** と呼ばれる機能で、代入された値からTypeScriptが型を推測してくれています。
+そのため実際のコードでは、型注釈を書く場所と書かない場所があります。
+
+:::tip どこに型注釈を書くのか
+
+「常に書く」でも間違いではないのですが、冗長になるので一般的には以下のような使い分けをします。
+
+- **関数の引数には書く**
+  - 関数の中身だけを見ても何が渡ってくるか推測できないためです
+- **変数には基本的に書かない**
+  - 代入する値から推論できるためです
+
+:::
+
+### タイプミスを検出してもらう
+
+型の恩恵をもう少し体感してみましょう。以下を貼り付けてください。
+
+```ts
+const message = "Hello, TypeScript!";
+console.log(message.length);
+console.log(message.lenght);
+```
+
+3行目に赤い波線が出て`Property 'lenght' does not exist on type 'string'.`(string型に`lenght`というプロパティはありません)と表示されます。
+`length`のタイプミスを、実行する前に見つけてもらえました。
+
+さらに、`message.`まで入力すると、その型が持つ変数や関数の一覧が候補として表示されます。
+これも「`message`が文字列である」とTypeScriptが知っているからこそできることです。
+
+このように、TypeScriptは **型チェックのための言語** であると同時に **エディタに賢く補完してもらうための言語** でもあります。
+
+### オブジェクトの型を定義する
+
+「オブジェクト」は、キーと値のペアの集合体を表現するために用いられる JavaScript の概念です。
+TypeScript では、このオブジェクトを表す型（**オブジェクト型**）を定義することができます。
+
+以下を貼り付けてください。
+
+```ts
+// オブジェクトの型定義
+type Member = {
+  name: string;
+  age: number;
+};
+
+const alice: Member = { name: "alice", age: 25 };  // オブジェクト
+console.log(alice.name);
+```
+
+型は `type` というキーワードにより宣言します。
+このコードでは `Member`という型を定義し、変数`alice`に対して「これは`Member`型である」と注釈されています。
+これにより、`alice`は「文字列の`name`、数値の`age`、を保持するオブジェクトである」という情報が付与されます。
+
+ここで、定義に反することをするとどうなるか試してみましょう。
+以下のそれぞれを試して、どんなメッセージが出るか確認してみてください。
+
+```ts
+type Member = {
+  name: string;
+  age: number;
+};
+
+// 1. ageを書き忘れる
+const a: Member = { name: "alice" };
+
+// 2. ageに文字列を入れる
+const b: Member = { name: "bob", age: "25" };
+
+// 3. 定義にないキーを追加する
+const c: Member = { name: "carol", age: 30, email: "carol@example.com" };
+
+// 4. 存在しないキーを参照する
+const d: Member = { name: "dave", age: 40 };
+console.log(d.email);
+```
+
+### 配列の型
+
+型のうしろに`[]`をつけると「その型の配列」を表します。
+
+```ts
+const names: string[] = ["asa-taka", "igarashi", "ueda"];
+
+// これはエラーになる
+const numbers: number[] = [1, 2, "three"];
+```
+
+もちろん、自分で定義した型に対しても使えます。
+
+```ts
+type Member = {
+  name: string;
+  age: number;
+};
+
+const members: Member[] = [
+  { name: "alice", age: 25 },
+  { name: "bob", age: 30 },
+];
+
+// mapで各要素を変換してみる
+const names = members.map((member) => member.name);
+console.log(names);
+```
+
+ここで`member`には型注釈を書いていないことに注目してください。
+`members`が`Member[]`だとわかっているため、`map`に渡した関数の引数`member`は`Member`型だと推論されます。
+試しに`member.`と入力すると`name`と`age`が候補に出てくるはずです。
+
+### 関数の型
+
+ここが初めての人には少しとっつきにくい部分ですが、Reactでは非常に重要なので押さえておきましょう。
+
+TypeScriptでは **関数そのものを型として表現** できます。
+書き方は`(引数名: 引数の型) => 返り値の型`です。
+
+```ts
+type Member = {
+  name: string;
+  age: number;
+};
+
+// 「Memberを受け取ってstringを返す関数」の型
+type Formatter = (member: Member) => string;
+
+const format: Formatter = (member) => `${member.name} (${member.age})`;
+console.log(format({ name: "bob", age: 30 }));
+```
+
+`Formatter`という「関数の型」を定義し、実際の関数がその形に合っていることをチェックしてもらっています。
+
+返り値がない関数の場合は`void`という型を使います。
+
+```ts
+// 「booleanを受け取って何も返さない関数」の型
+type CheckHandler = (checked: boolean) => void;
+
+const onCheck: CheckHandler = (checked) => {
+  console.log(checked ? "チェックされた" : "チェックが外れた");
+};
+
+onCheck(true);
+```
+
+引数がない場合は `()` と記述します。
+
+```ts
+type Greeting = () => void;
+
+const hello: Greeting = () => {
+  console.log("hello");
+};
+
+hello();
+```
+
+### 🚩チェックポイント
+
+ここまでで、以下のことがなんとなく掴めていれば十分です😉
+
+- 型注釈(`: string`)をつけると、間違った値を入れたときに **実行する前に** 教えてもらえる
+- 型が決まっていると、エディタが候補を出してくれたりタイプミスを見つけてくれたりする
+- `type`で **オブジェクトの型** に名前をつけられる
+- `string[]`は **配列** 、`(x: number) => void`は **関数** を表す
+
+## Reactの軽い紹介
+
+続いて、Reactと、Reactと共に使われるJSXという言語の紹介をしておきます。
 
 ### Reactが解決してくれる課題
 
@@ -201,7 +459,7 @@ Vite環境の方は適宜読み替えをお願いします。
 
 この膨大なDOMに対して、変更内容に応じた更新をかける処理をブラウザの素朴なAPIを利用して開発するのは現実的ではありません。
 
-Reactを利用することでこのような処理が簡単に描けるようになります。
+Reactを利用することでこのような処理が簡単に書けるようになります。
 
 ### React
 
@@ -212,75 +470,6 @@ ReactとはデータとDOMの対応付けをやってくれるフレームワー
 <!-- その辺りはSvelteと同様の位置付けのフレームワークです。　# svelte は 2025 やらない -->
 
 …と、こんなことを言われてもピンとこないですよね。それを理解するためのハンズオンです😉
-
-### TypeScript
-
-Reactの開発ではJavaScriptの代わりに、その拡張言語である[TypeScript](https://www.typescriptlang.org)をよく使います。
-TypeScriptはMicrosoft発の、JavaScriptに**型**の概念を加えた言語です。
-
-例えば以下の関数定義は
-
-```js
-function double(n) {
-  return n * 2
-}
-```
-
-TypeScriptでは次のように書けます。
-
-```ts
-function double(n: number) {
-  return n * 2
-}
-```
-
-引数に`number`という型をつけることができます。
-これにより「この関数の引数はどのような値であるべきか」という、JavaScriptではコメントで表現するしかなかった部分を補完することができます。
-逆に型以外の点ではJavaScriptとほぼ同じ表記になります。
-
-もう少し複雑な型を定義して用いることもできます。
-
-```ts
-type Props = {
-  operand: number
-  operator: number
-}
-
-function multiply(props: Props) {
-  return props.operand * props.operator
-}
-
-double({ operand: 12, operator: 2 }) // => エラーなし
-double(12, 2) // => エラー
-```
-
-ここでは`Props`という型を定義して関数の引数に利用しています。
-Props の定義には「オブジェクト」を利用しており、キーと値のペアの集合体を格納することができます。
-Reactでは主にプロパティやStateの型、それからそのアプリが扱うデータの型を定義するのに利用します。
-
-:::tip TypeScriptを試してみる
-
-TypeScriptでどのような表現が可能かは[TS Playground](https://www.typescriptlang.org/play)で実際に試すと理解しやすいでしょう。
-
-また[Deno](https://deno.com)というNode.jsとは別のJavaScript実行環境ではデフォルトでTypeScriptを実行できます。
-
-:::
-
-:::tip TypeScriptの実行環境
-
-TypeScriptは通常、そのままではブラウザやNode.jsなどのJavaScriptの実行環境では実行できず、以下の流れで処理する必要があります。
-
-1. TypeScriptでソースコードを記述
-2. コンパイラ(トランスパイラ)が型チェックをしながらソースコードをJavaScriptに変換
-3. ブラウザ等JavaScriptの動作環境で実行
-
-実際にはこの流れはツール類がほぼ自動で実行してくれます。
-包括的なツールとして最近では[Vite](https://vitejs.dev)がよく使われます。
-
-面倒に見えるかもしれませんが、最近ではツール類が洗練され、設定の手間がほとんどかからなくなっています。
-一般にReactで開発を行う際もTypeScriptがよく使われるため、この講義でもTypeScriptの利用を前提として進めます。
-
-:::
 
 ### JSX(TSX)
 
@@ -307,6 +496,7 @@ JavaScriptとHTMLが入り混じっています。
 
 - **JSX要素は`return`や変数への代入など、JavaScriptの「値(より正確には式)」として、任意の場所で使える**
   - ただしルートの要素は1つでなければならない
+    - 複数の要素を並べたい場合は[フラグメント(`<>...</>`)](https://ja.react.dev/reference/react/Fragment)で囲みます
 - **JSXの中(要素の属性値or子要素)では`{}`で囲むことでJavaScriptの表現が使える**
   - ただし値を返すもの(簡単に言えばそのまま変数に代入できるもの)に限ります
   - 例として`{1}`や`{fn(1, 'foo') + 1}`は正しいJSX中の表現ですが`{if ...}`は使えません
@@ -319,7 +509,7 @@ JavaScriptとHTMLが入り混じっています。
 ウェブアプリを開発する上では慣れるとJSXの方が便利なのと、他のReactの解説でもほぼJSXが使われているため、この講義でもJSXの利用を前提として進めます。
 
 TypeScriptとJSXを合わせたものは特にTSXと呼ばれることもありますが、その場合でもJSXと呼ばれることが多いです。
-ただし拡張子は`.jsx`ではなく`.tsx`がよく使われます。
+ただし、Typescriptを使う場合の拡張子は`.tsx`でなければなりません。
 
 :::warning HTMLとは属性名が異なる場合がある
 
@@ -337,7 +527,7 @@ TypeScriptと同様、JSXも純粋なJavaScriptではないため、ブラウザ
 
 :::
 
-:::tip JSXは実際には何を表しているのか
+:::details JSXは実際には何を表しているのか
 
 JSXが最終的なJavaScriptでどのような値になるかはコンパイラの設定によります。
 Reactの場合は`ReactElement`という特定の型のオブジェクトを返し、詳細は省きますがこれはReactによるVirtual DOMのノードの表現です。
@@ -366,13 +556,11 @@ const element = React.createElement('div', { className: 'app' })
 この章では以下のことを説明しましたが、まだそこまで理解できていなくても大丈夫です😉
 
 - **React**はデータの変更に対しリアクティブに画面を更新することで細やかな画面更新が必要なアプリを開発できるフレームワークである
-- Reactの開発では**TypeScript**という、JavaScriptに型を追加した拡張言語を使うと便利である
 - Reactの開発では**JSX**という、JavaScriptの中にHTMLを書けるような拡張言語を使うのが主流である
 
 ## Reactコンポーネントとプロパティ
 
-前置きが長くなりましたが、実行環境は整いましたか？
-それではReactを触っていきましょう😉
+前置きが長くなりましたが、いよいよReactを触っていきます。
 
 まず、Reactでは画面を構成する部品を「コンポーネント」という単位で定義します。
 ここでは最もシンプルなReactコンポーネントとして、プロパティを受け取り描画内容を返すだけのReactコンポーネントを作っていきましょう。
@@ -403,7 +591,7 @@ Reactではコンポーネントを「DOMのようなもの」を返す関数と
 この場合`App`は`div`要素に囲まれた「Hello, React!」と表示される「DOMのようなもの」を表しています。
 「DOMのようなもの」だと言いにくいので以降は「JSX要素」と呼ぶことにします。
 
-そして`App`というコンポーネントは`src/index.tsx`で読み込まれDOMとしてレンダリング(DOMを操作して描画)されます。
+そして`App`というコンポーネントは`src/index.jsx`で読み込まれDOMとしてレンダリング(DOMを操作して描画)されます。
 
 ### コンポーネントを切り分けてみる
 
@@ -456,7 +644,7 @@ type HelloProps = {
 function Hello({ yourName }: HelloProps) {
   return (
     <p>
-      Hello, <b>{yourName}!</b>
+      Hello, <b>{yourName}</b>
     </p>
   );
 }
@@ -474,9 +662,34 @@ export default function App() {
 
 ![](./images/ex-props3.png)
 
-`type HelloProps`というのはTypeScriptの表現であり、ここでは`Hello`コンポーネントがプロパティとして何を受け付けるかを表すための型を定義しています。
-そして受け取った`yourName`プロパティを`{yourName}`としてJSXの中で参照しています。
+`HelloProps`はプロパティの型定義であり、`Hello`コンポーネントがどのようなオブジェクトを受け取るかを表現しています。
+そして、このオブジェクトに含まれる`yourName`プロパティを受け取り、`{yourName}`としてJSXの中で参照しています。
 Reactではこのように汎用性を持たせながら、機能や描画内容の切り出しを行います。
+
+:::tip 分割代入
+
+`function Hello({ yourName }: HelloProps)`という引数の書き方は
+[分割代入(destructuring assignment)](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)と呼ばれるものです。
+オブジェクトから特定のキーの値を取り出して、同じ名前の変数に代入することができます。
+
+```ts
+const props = { yourName: 'asa-taka' }
+
+// 以下の2つは同じ意味になる
+const yourName = props.yourName
+const { yourName } = props
+```
+
+つまり`Hello`コンポーネントは「プロパティのオブジェクトを受け取り、その中の`yourName`を取り出して使っている」ということです。
+分割代入を使わない場合は以下のようにも書けますが、Reactでは分割代入を使う書き方が主流です。
+
+```tsx
+function Hello(props: HelloProps) {
+  return <p>Hello, <b>{props.yourName}!</b></p>
+}
+```
+
+:::
 
 さて、これができたら続けて`Hello`コンポーネントの`yourName`プロパティを変更して複数回使用してみましょう。
 
@@ -535,7 +748,7 @@ console.log(doubled)
 Reactではこれを、配列からJSXの要素を生成するためによく使います。
 つまり、配列の個々の要素を受け取りJSXを返す関数を書くことでJSXの要素の配列を生成することができます。
 
-:::tip アロー関数
+:::details アロー関数
 
 アロー関数は`(引数1, 引数2, ...) => { ... }`の形で定義される関数です。
 `{}`内の式(expression)が一つの場合は`{}`を省略でき、その場合はその式の値がそのまま返り値になります。
@@ -583,13 +796,13 @@ export default function App() {
 
 配列の要素には`key`という特殊なプロパティが新たに必要になる点に注意してください。
 ここでは配列の中で一意な値を設定する必要があるとだけ覚えておけば十分です。
-今回は`member`の値ががそもそも全て異なっているので、それをそのまま`key`に利用しました。
+今回は`member`の値がそもそも全て異なっているので、それをそのまま`key`に利用しました。
 
-:::tip keyという特殊なプロパティ
+:::details keyという特殊なプロパティ
 
 `key`はReactのJSXの中で配列を扱うときに必要となるプロパティで、要素のトラッキングのために利用されます。
-配列の要素が更新された場合にDOMに正しくその更新を反映させるために使用されます。
-コンポーネント側にはプロパティとして特に定義されている必要はありません。
+具体的には、配列の要素が更新された場合にDOMに正しくその更新を反映させるために使用されています。
+コンポーネント側にはプロパティとして特に定義されている必要はなく、上記の例でも`HelloProps`に`key`は含まれていません。
 
 参考: [ja.react.dev - リストのレンダー](https://ja.react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key)
 
@@ -739,15 +952,10 @@ Reactコンポーネントでは、自身で値を保持する場合、値が更
 const [count, setCount] = useState(0)
 ```
 
+なお`const [count, setCount] = ...`という書き方は、プロパティの節で紹介した分割代入の配列版で、返り値の配列の1番目の要素と2番目の要素をそれぞれ変数に代入しています。
+
 この方法で定義した`setCount`は、呼ばれるたびにコンポーネントの再評価のトリガーとなります。
 これにより`count`が更新された状態でコンポーネントが再評価され、コンポーネントの返す値の変化をReactが検知することで描画内容の更新が行われます。
-
-:::tip 分割代入
-
-ちなみにこの変数の宣言方法は、配列の1番目の要素と2番目の要素をそれぞれ代入するという便利な書き方で、
-[分割代入(destructuring assignment)](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)と呼ばれます。
-
-:::
 
 状態を更新する手段を手にしたので、次にそれをユーザの操作により実行するためのReactにおける **イベントハンドラ** の説明をしましょう。
 といってもDOMのイベントハンドラとほぼ同じように扱えます。
@@ -766,7 +974,7 @@ const [count, setCount] = useState(0)
 4. コンポーネントが返す内容が変わったことをReactが検知する
 5. それに合わせてブラウザの描画内容が更新される
 
-初めは難しいと思うので **「コンポーネントで値を保持したい場合は`useState`を使い、値の更新には第2引数の関数を使えば描画内容も更新される」** とだけ覚えておけば十分です。
+初めは難しいと思うので **「コンポーネントで値を保持したい場合は`useState`を使い、値の更新には2番目の返り値の関数(ここでは`setCount`)を使えば描画内容も更新される」** とだけ覚えておけば十分です。
 
 この`useState`とイベントハンドラによる描画内容のリアクティブな更新パターンは、Reactによるアプリを作る上でいろんな形で現れるため、しっかり慣れ親しめるといいですね😉
 
@@ -781,7 +989,7 @@ const [count, setCount] = useState(0)
 
 :::
 
-:::tip useStateのようなものが必要となる理由をもう少し詳しく説明するなら
+:::details useStateのようなものが必要となる理由をもう少し詳しく説明するなら
 
 Reactのコンポーネントは一般的に、アプリが実行されている間に何度も関数として評価されます。
 具体的には親コンポーネントが再評価された場合や、自身に渡されるプロパティが変更された場合に再評価されます。
@@ -805,7 +1013,7 @@ function TextInput() {
   const [text, setText] = useState("");
   return (
     <div>
-      <input value={text} onChange={(event) => setText(event.target.value)} />
+      <input value={text} onChange={(event) => setText(event.currentTarget.value)} />
       <p>input: {text}</p>
     </div>
   );
@@ -826,12 +1034,12 @@ export default function App() {
 
 カウンタプログラムではクリックが起きたことのみを検知すれば十分だったため`() =>`という書き方をしていましたが、
 今回は`(event) =>`という書き方をしており、これによりイベントの送信元(この場合は`input`要素)の情報を参照することができます。
-`event.target`はイベントの送信元である`input`要素を表し、さらにその`value`属性で入力された値が取得できるため、`event.target.value`で入力値を取得しています。
+`event.currentTarget`はイベントハンドラを登録している要素(この場合は`input`要素)を表し、さらにその`value`で入力された値が取得できるため、`event.currentTarget.value`で入力値を取得しています。
 
 イベントハンドラにもいろんな種類があり、`onChange`は入力欄の値が変わった場合に毎回実行され、この場合はキーによる入力が行われるごとに実行されます。
-`useState`は今回は文字列を保持するものとして定義しており、`setText(event.target.value)`を渡すことで、入力欄の値をStateとして保持しています。
+`useState`は今回は文字列を保持するものとして定義しており、`setText(event.currentTarget.value)`を渡すことで、入力欄の値をStateとして保持しています。
 
-:::tip Reactには双方向バインディングがない
+:::details Reactには双方向バインディングがない
 
 ReactにはVueJSやSvelteのような双方向バインディングがないため「`input`要素の値」のような、素朴な感覚ではその`input`要素自身が持っていそうなStateを親コンポーネントが参照する場合には、(プロパティ経由で)そのStateの管理を親コンポーネントが担う必要があります。
 
@@ -864,7 +1072,7 @@ function ListFilter() {
   const filteredMembers = members.filter((member) => member.includes(text));
   return (
     <div>
-      <input value={text} onChange={(event) => setText(event.target.value)} />
+      <input value={text} onChange={(event) => setText(event.currentTarget.value)} />
       {filteredMembers.map((member) => (
         <p key={member}>{member}</p>
       ))}
@@ -907,7 +1115,7 @@ function ListFilter({ members }: ListFilterProps) {
   const filteredMembers = members.filter((member) => member.includes(text));
   return (
     <div>
-      <input value={text} onChange={(event) => setText(event.target.value)} />
+      <input value={text} onChange={(event) => setText(event.currentTarget.value)} />
       {filteredMembers.map((member) => (
         <p key={member}>{member}</p>
       ))}
@@ -957,7 +1165,7 @@ export default function App() {
 
 これを実装するために、ここまでに学んできたコンポーネントの切り分け、Stateやイベントハンドラ、フィルタ処理を全部使っていきましょう😉
 
-:::tip ToDoアプリを作る意義
+:::details ToDoアプリを作る意義
 
 新しくフレームワークを使おうとする場合、よく「ToDoアプリを作ると良い」と言われます(それをまとめた[ToDoMVC](https://todomvc.com)というサイトもある)。
 
@@ -1033,7 +1241,7 @@ export default function App() {
         <input
           placeholder="キーワードフィルタ"
           value={keyword}
-          onChange={(ev) => setKeyword(ev.target.value)}
+          onChange={(ev) => setKeyword(ev.currentTarget.value)}
         />
       </div>
       {filteredTodoItems.length === 0 ? (
@@ -1056,7 +1264,7 @@ export default function App() {
 
 現時点での機能としては単純にフィルタ付きのリストです。
 
-ちょっとした新しいこととして`style`プロパティを利用して`item.done`が`true`の場合、つまりToDoが完了している場合に`text-decoration: line-throug`で取り消し線を表示するようにしています。
+ちょっとした新しいこととして`style`プロパティを利用して`item.done`が`true`の場合、つまりToDoが完了している場合に`text-decoration: line-through`で取り消し線を表示するようにしています。
 
 ```tsx
 <p style={{ textDecoration: item.done ? "line-through" : "none" }}>{item.text}</p>
@@ -1092,6 +1300,8 @@ export default function App() {
  }
  
 +type ValueViewerProps = {
++  // `unknown`は「どんな型の値でもありうる」ことを表す型。
++  // なんでも受け付けるが、中身を使う前には型の絞り込みが必要になる。
 +  value: unknown;
 +};
 +
@@ -1143,7 +1353,7 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 
 つまりここを理解するには頭を使う必要があるかもしれませんが、理解に取り組んだ分「ちょっとできる人」になれるということです😉
 
-変更操作の手始めとして、CRUD操作ののUpdateに該当する「更新処理」を実装してみましょう。
+変更操作の手始めとして、CRUD操作のUpdateに該当する「更新処理」を実装してみましょう。
 具体的には`TodoListItem`のチェックボックスによりデータの`done`を操作することを可能にします。
 
 `App.tsx`を以下のように変更してください。
@@ -1216,7 +1426,7 @@ Reactがデータの変更に対して描画内容をリアクティブに更新
 いくつか説明が必要な箇所があると思いますので、ここでは一気に説明してしまいます。
 
 - `todoItems`の定義に`useState`を使用した
-  - ToDoのリストがが更新された際に表示を更新する必要があるためです
+  - ToDoのリストが更新された際に表示を更新する必要があるためです
   - つまり`App`コンポーネントが`todoItems`というStateを持ったということです
 - `TodoListItem`に`onCheck`プロパティを追加した
 - `App`に`updateItem`を定義して`TodoListItem`の`onCheck`に渡した
@@ -1272,13 +1482,13 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
  
 @@ -72,6 +74,13 @@
            value={keyword}
-           onChange={(ev) => setKeyword(ev.target.value)}
+           onChange={(ev) => setKeyword(ev.currentTarget.value)}
          />
 +        <input
 +          id="showing-done"
 +          type="checkbox"
 +          checked={showingDone}
-+          onChange={(ev) => setShowingDone(ev.target.checked)}
++          onChange={(ev) => setShowingDone(ev.currentTarget.checked)}
 +        />
 +        <label htmlFor="showing-done">完了したものも表示する</label>
        </div>
@@ -1382,7 +1592,8 @@ Reactではこのパターンを基本としてアプリのパーツを作り、
 
 これで最低限、ToDoアプリとして動作するようになりましたね。
 
-`generateId`は`map`関数で利用する`key`として使うための値を生成するものです。
+`generateId`は更新/削除する際に操作対象のToDoを特定するための一意な値 (id) を生成します。
+また、id は `map`関数で利用する`key`としても利用します。
 他の点は更新処理の実装時と比べて新しいことはしていないため説明を省略します。
 
 :::tip スプレッド演算子(`...`)
@@ -1444,10 +1655,11 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 +      todoItems.map((item) => (item.id === newItem.id ? newItem : item)),
 +    );
 +  };
++  // `as const`をつけると返り値が「順番と型が固定された配列(タプル)」として扱われる。
++  // つけない場合は各要素の型が混ざったものになり、分割代入した変数が正しく型付けされない。
 +  return [todoItems, createItem, updateItem] as const;
 +};
 +
- 
 @@ -84,20 +98,10 @@
  
  /** アプリケーション本体となるReactコンポーネント。 */
@@ -1492,7 +1704,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 ここでも「削除ボタン」として実装しましょう。
 
 方針としては`TodoListItem`に`onCheck`を追加した時と同じように`onDelete`プロパティを追加します。
-以下のように`App.tsx`を修正ししてください。
+以下のように`App.tsx`を修正してください。
 
 ```diff
 @@ -13,10 +13,11 @@
@@ -1568,7 +1780,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 
 :::tip ⛳️通常のゴール
 
-もし2時間でここまでついて来れていたら大したものです。お疲れ様でした😉
+もしここまでついて来れていたら大したものです。お疲れ様でした😉
 
 :::
 
@@ -1580,9 +1792,9 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 - [`localStorage`](https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage)を利用してリロードしても変更した内容が保たれるようにしよう
   - 現在の実装ではリロードすると値が消えてしまいますが、ブラウザには`localStorage`という値の保存場所があります
   - `localStorage`には文字列しか格納できないため、任意のデータを保存する場合は、保存する前には`JSON.stringify`で文字列にし、取り出した後には`JSON.parse`でJavaScriptの値(オブジェクト・数値・文字列・etc)として変換します
-    - こういう文字列変換する処理をシリアライズ、その逆変換をデシリアライズという言います
+    - こういう文字列変換する処理をシリアライズ、その逆変換をデシリアライズと言います
   - これができると、自分の手元で動作すればいいだけのアプリであればグッと実用性が増します
-- `CreateItemForm`の入力後に入力欄の値がクリアされるようにしてみよう
+- `CreateTodoForm`の入力後に入力欄の値がクリアされるようにしてみよう
   - この方が使用感は上がると思います
 - 削除処理の前に確認メッセージを入れてみよう
   - [`window.confirm`](https://developer.mozilla.org/ja/docs/Web/API/Window/confirm)というブラウザ標準のAPIを使うと割と簡単に実装できます
@@ -1593,7 +1805,7 @@ Reactではこれを利用し「状態とそれに対する操作」をまとめ
 :::tip まだまだ序の口 その1 - CRUD操作の奥深さ
 
 今回の講義では単一画面で組むこととしたため、CRUD操作の実装パターンや悩みどころについては触れられていない部分が多いです。
-実際[React Router](https://reactrouter.com/en/main)などを使い画面遷移を実装することで、イベントハンドラでの連携や各操作のAPIレスポンスとして返されると嬉しい値など、ノウハウの貯めどころは格段に増えてきます。
+実際[React Router](https://reactrouter.com/)などを使い画面遷移を実装することで、イベントハンドラでの連携や各操作のAPIレスポンスとして返されると嬉しい値など、ノウハウの貯めどころは格段に増えてきます。
 
 ただし大きなアプリの機能の一部として「リストをページ遷移なしで編集する」というケースは存在するため、その点ではToDoアプリも十分に応用しがいのある実装例と言えます。
 
@@ -1614,6 +1826,9 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 - ルーティングライブラリを利用したマルチページ化(react-routerなど)
   - 擬似的に複数ページのアプリケーションを表現する技術です
   - アプリ開発の世界ではURLと画面の対応付けのことを「ルーティング」と呼び、IPルーティングとは異なる概念です
+- フォームのバリデーション
+  - TODO アプリであれば TODO のタイトルが空でないか？入力した締切日が過去でないか？など、フォームの入力値が正しいかどうかを検証する技術です (TypeScript では [zod](https://zod.dev/) や [valibot](https://valibot.dev/) など)
+  - これらのライブラリは必ずしも React 用に作られたものではないので、[react-hook-form](https://react-hook-form.com/) を利用して React に最適化することが一般的です
 
 [最近のReact公式のチュートリアル](https://react.dev/learn/start-a-new-react-project)では[Next.js](https://nextjs.org)という統合的なフレームワークがプロジェクトを始める際の第一の選択肢として挙げられており、これは上に挙げた要素を含むものになっているため、触ってみると良いかもしれません(まだきちんと触ったことはないので自信はないです)。
 
@@ -1625,7 +1840,7 @@ ToDoアプリは基礎の一要素にはなりますが、より実践的なア�
 
 :::tip エクストラステージへようこそ
 
-ここからはほとんどの人は2時間では到達できないと思いますが、駆け足で進められた人への暇つぶしとして書いておきます😉
+ここからはほとんどの人は到達できないと思いますが、駆け足で進められた人への暇つぶしとして書いておきます😉
 
 :::
 
@@ -1773,7 +1988,7 @@ export class TodoApiClient {
 ```tsx
 import { useEffect, useState } from "react";
 
-import { type TodoItem, TodoApiMock, TodoApiClient } from "./api";
+import { type TodoItem, TodoApiMock } from "./api";
 
 const INITIAL_TODO: TodoItem[] = [
   { id: 1, text: "todo-item-1", done: false },
@@ -1782,7 +1997,7 @@ const INITIAL_TODO: TodoItem[] = [
 
 /** モックと実際のAPIクライアントを切り替えるためのコメントアウト */
 const todoApi = new TodoApiMock(INITIAL_TODO);
-// const todoApi = new TodoApiClient('http://localhost:8080')
+// const todoApi = new TodoApiClient("http://localhost:8080");
 
 type TodoListItemProps = {
   item: TodoItem;
@@ -1858,13 +2073,13 @@ export default function App() {
         <input
           placeholder="キーワードフィルタ"
           value={keyword}
-          onChange={(ev) => setKeyword(ev.target.value)}
+          onChange={(ev) => setKeyword(ev.currentTarget.value)}
         />
         <input
           id="showing-done"
           type="checkbox"
           checked={showingDone}
-          onChange={(ev) => setShowingDone(ev.target.checked)}
+          onChange={(ev) => setShowingDone(ev.currentTarget.checked)}
         />
         <label htmlFor="showing-done">完了したものも表示する</label>
         <button onClick={() => reloadTodoItems()}>更新</button>
@@ -1938,10 +2153,15 @@ docker run --rm -p 8080:8080 ghcr.io/asa-taka/bootcamp-todo-api --port=8080 --ho
 試しにブラウザで<http://localhost:8080/todo>を表示するとToDoのデータのJSONが表示されれば成功です😉
 
 この状態でコード中の、モックと切り替えるためのコメントアウトを入れ替えると、ウェブアプリからもアクセスされるようになるはずです。
+`import`の方も合わせて書き換えるのを忘れないでください。
 
 ```tsx
+import { type TodoItem, TodoApiClient } from "./api";
+
+// ...
+
 // const todoApi = new TodoApiMock(INITIAL_TODO);
-const todoApi = new TodoApiClient('http://localhost:8080')
+const todoApi = new TodoApiClient("http://localhost:8080");
 ```
 
 ### 発展課題
@@ -1954,7 +2174,7 @@ const todoApi = new TodoApiClient('http://localhost:8080')
   - reloadする処理をどうするか
 - エラーレスポンスに対してはどうするか
 
-ただし、実際にはこのあたりの実装は[react-query](https://tanstack.com/query/v3/)などのパッケージを利用することが多いです。
+ただし、実際にはこのあたりの実装は[tanstack-query](https://tanstack.com/query/latest)などのパッケージを利用することが多いです。
 
 ### アプリをビルドしてコンテナ化する(Vite環境のみ)
 
@@ -1962,7 +2182,7 @@ const todoApi = new TodoApiClient('http://localhost:8080')
 
 ウェブアプリケーションの「ビルド」とは **ブラウザが解釈できる純粋なHTMLとCSSとJavaScript** をソースコードから生成することを指します。
 
-プロジェクトのルートディクトリ(フォルダの一番上の階層)に移動して、以下の内容で`Dockerfile` という名前のファイルを作ってください。
+プロジェクトのルートディレクトリ(フォルダの一番上の階層)に移動して、以下の内容で`Dockerfile` という名前のファイルを作ってください。
 
 ```dockerfile
 FROM nginx:1.25.2
@@ -1982,6 +2202,7 @@ COPY ./dist /usr/share/nginx/html
 
 ```sh
 # distフォルダにビルドされたウェブアプリが生成される。
+# (`XXX is declared but its value is never read.` のようなエラーで落ちる場合は、XXX を削除してください)
 npm run build
 
 # distフォルダを取り込んだnginx(ウェブサーバ)のコンテナイメージを作成する。
