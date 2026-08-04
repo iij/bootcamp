@@ -13,7 +13,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
   - [0. 事前準備](#0-事前準備)
   - [1. Ansible 概要と導入](#1-ansible-概要と導入)
   - [2. インベントリの作成](#2-インベントリの作成)
-  - [3. Ansible 設定ファイルの管理](#3-ansible-設定ファイルの管理)
+  - [3. Ansible 設定ファイルの管理](#3-Ansible-設定ファイルの管理)
   - [4. Ansible playbook の作成](#4-ansible-playbook-の作成)
   - [5. Ansible によるサーバセットアップ](#5-ansible-によるサーバセットアップ)
   - [6. 変数やループ処理の実行](#6-変数やループ処理の実行)
@@ -94,42 +94,48 @@ LXD とは、システムコンテナ(Linux 環境を丸ごと起動できるコ
 ## 0. 事前準備
 
 [ハンズオン用の教材](https://github.com/iij/ansible-exercise)を参照し
-READMEに従ってansible演習環境のセットアップを行ってください。
+READMEに従って Ansible 演習環境のセットアップを行ってください。
 
 ## 1. Ansible 概要と導入
 
-Ansibleの概要とインストール方法について学びます
+Ansibleの概要とインストール方法について学びます。
 
 - [Ansible 概要](./INTRODUCTION.md)
 
 ## 2. インベントリの作成
 
-Ansibleインベントリの概念とインベントリファイルの作成方法を学びます
+Ansibleインベントリの概念とインベントリファイルの作成方法を学びます。
+
 - [インベントリの作成](./CREATE_INVENTORY.md)
 
 ## 3. Ansible playbook の作成
 
 Ansibleの動作仕様や設定ファイルの管理方法について学びます。
+
 - [Ansible playbookの作成](./CREATE_PLAYBOOK.md)
 
 ## 4. Ansible によるサーバセットアップ
 
 Playbookを使って実際にサーバの構築・設定を自動化します。
+
 - [Ansible によるサーバセットアップ](./CREATE_SERVER.md)
 
 ## 5. Ansible 設定ファイルの管理
 
 Ansibleの動作仕様や設定ファイルの管理方法について学びます。
+
 - [Ansible 設定ファイルの管理](./MANAGE_SETTINGS.md)
 
 ## 6. 変数やループ処理の実行
 
 Playbookで変数やループ処理を活用し、Webサーバの構築を体験します。
+
 - [変数やループ処理の実行](./USE_VARIABLE.md)
 
 ## 7. 正しい Playbook を書くために
 
 保守性・可読性の高いPlaybookを書くためのポイントを学びます。
+
 - [正しい Playbook を書くために](./ANSIBLE_CODE_STYLE.md)
 
 <credit-footer/>
