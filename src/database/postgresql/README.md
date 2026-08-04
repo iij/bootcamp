@@ -294,8 +294,11 @@ create table sch_jpn.tbl_proper(id_user serial,username varchar(40),id_pref int,
 
 　作成したテーブルは以下のコマンドで確認できます
 ```
-\dt+ sch_jpn.* # display tables
-\d+ sch_jpn.tbl_food # describe
+-- display tables
+\dt+ sch_jpn.*
+
+-- describe
+\d+ sch_jpn.tbl_food
 ```
 <br>
 
