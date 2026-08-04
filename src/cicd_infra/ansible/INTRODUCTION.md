@@ -14,6 +14,7 @@ Ansibleは、ITインフラの自動化を実現する強力なオープンソ�
 > Ansible is an IT automation tool. It can configure systems, deploy software, and orchestrate more advanced IT tasks such as continuous deployments or zero downtime rolling updates.
 
 ---
+
 ### Ansibleの歴史と背景
 
 Ansible は2012年に Michael DeHaan によって開発されました。
@@ -21,6 +22,7 @@ Ansible は2012年に Michael DeHaan によって開発されました。
 2015年に RedHat 社に買収されて以降、エンタープライズ向け機能が強化され、2026年7月現在の最新バージョンは 2.10.8 です。クラウドネイティブ環境にも対応しています。
 
 ---
+
 ### Ansibleの主要コンポーネント
 
 Ansibleは以下の4つの主要コンポーネントで構成されています。
@@ -46,7 +48,6 @@ Ansibleは以下の4つの主要コンポーネントで構成されています
   - 例えば、インストール済みのパッケージは再度インストールしないようにしたり、すでに設置したファイルを上書きしないようにできます。
 - **YAML形式の採用**
   人間にも読みやすい YAML で Playbook を記述。直感的で学習しやすく、チームでの共有や保守も容易です。
-
 
 ---
 
@@ -97,15 +98,18 @@ Ansibleで頻出する基本用語を整理します。
 また以降の手順では Ubuntu 22.04 を前提としてコマンド等を記述します。
 その他のディストリビューションの方は適宜読み替えてください。
 
-
 - pipx のインストール
+
   ```bash
   sudo apt install -y pipx
   ```
+
 - ansible のインストール
+
   ```bash
   pipx install --include-deps ansible
   ```
+
   <details>
   <summary>実行結果例</summary>
 
@@ -130,14 +134,18 @@ Ansibleで頻出する基本用語を整理します。
       modify your PATH in your shell's config file (i.e. ~/.bashrc).
   done! ✨ 🌟 ✨
    ```
+
    </details>
 - ansible のインストール確認
   - pipx でインストールした後、一度シェルを立ち上げ直す必要があります
+
    ```bash
    exit
    ## 再ログインする
   ```
+
 - インストールが完了すると、以下のような出力が得られます。
+
   ```bash
   ansible --version
   ansible [core 2.17.14]
@@ -150,6 +158,7 @@ Ansibleで頻出する基本用語を整理します。
   jinja version = 3.1.6
   libyaml = True
   ```
+
 - バージョンやパスは環境によって異なりますが、表示されればインストール成功です。
 
 <credit-footer/>
