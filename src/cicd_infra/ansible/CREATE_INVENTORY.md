@@ -10,8 +10,8 @@ footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 
 ### インベントリとは？
 
-Ansibleインベントリは、管理対象ノード（ホスト）のリストやグループを定義するファイルです。  
-インベントリを使うことで、複数のホストに対して一括でタスクを実行できます。  
+Ansibleインベントリは、管理対象ノード（ホスト）のリストやグループを定義するファイルです。
+インベントリを使うことで、複数のホストに対して一括でタスクを実行できます。
 インベントリは静的ファイル（INI形式またはYAML形式）として定義するほか、動的に生成することも可能です。
 
 - ホストはグループ化でき、グループは子グループを持つこともできます。
@@ -22,44 +22,54 @@ Ansibleインベントリは、管理対象ノード（ホスト）のリスト�
 
 ### インベントリファイルの作成方法
 
-Ansibleのインベントリファイルは、INI形式またはYAML形式で記述します。  
+Ansibleのインベントリファイルは、INI形式またはYAML形式で記述します。
 Ansible において、Inventory ファイルは対象を示していて実行に欠かせない要素です。
 
 [教材](https://github.com/iij/ansible-exercise)のフォルダには ansible フォルダの配下にインベントリファイルを置くためのフォルダ（inventories）があります。
 試しに開いてみましょう。
-以下のような記載がなされているはずです
+以下のような記載がなされているはずです。
 
 ```text
 [web]
-web00
-ap00
+web00 ansible_host=10.200.10.10
+ap00 ansible_host=10.200.10.11
 ```
 
 このようにAnsible の Inventory ファイルは INI 形式に近い記述によって作成されます。
 インベントリファイルの括弧内の見出し(`[app]`など)はグループ名を表し、任意のホストをグルーピングすることができます。
 
+ホスト名の横についている `ansible_host=<IP アドレス>` という記述は、当該ホストの実際のIPアドレスを示します。
+Ansible を実行するホスト上でホスト名（たとえば、今回は `web00` など）を名前解決できる場合は不要です。
+
 なお、グルーピングでは暗黙のallグループが存在しており、[]に属さないホストはデフォルトである`all`グループに属することになります。
 
 ## [演習.2] インベントリの作成
 
-
-
 ### インベントリファイルの作成
 
 では、実際にインベントリファイルを作成してみましょう。
-ファイルの作成自体はコンテナへログインしvi(vimでも可)で操作しても良いですし、exerciseのdocker-compose.ymlに従って起動した場合は ansible フォルダがコンソールコンテナにマウントされているため、そのまま編集することもできます
+ここでは `host00`, `host01` を追加します。
+また、ホストにログインする時に使用する秘密鍵のパスとユーザ名を定義しておきます。
 
-以下は、コンソールコンテナ上での操作例を記載しています
+- `ansible/inventories/hosts` を編集します。
 
-- `hosts` というファイルを作成し、以下の内容を記載してください。
   ```bash
-  vi hosts
+  vim ansible/inventories/hosts
   ```
-- 記載内容
+
+- 追記する内容
+
   ```ini
+  ...
   [exercise]
-  host00
-  host01
+  host00 ansible_host=10.200.10.100
+  host01 ansible_host=10.200.10.101
+
+  ## 以下の設定値は本来は /vars/group_vars などに書くほうが望ましいですが
+  ## 今回は簡略化のためインベントリファイルに記載します
+  [all:vars]
+  ansible_user: ansible-deploy
+  ansible_ssh_private_key_file: ~/.ssh/bootcamp_ansible_key
   ```
 
 ### インベントリファイルの書式チェック
@@ -67,7 +77,7 @@ ap00
 作成したインベントリファイルが正しい書式かどうかを確認するには、`ansible-inventory`コマンドを利用します。
 
 ```bash
-ansible-inventory -i inventories/hosts --list
+ansible-inventory -i ansible/inventories/hosts --list
 ```
 
 このコマンドを実行すると、インベントリの内容がJSON形式で表示され、構造やグループ分けが正しく認識されているか確認できます。
@@ -77,14 +87,12 @@ ansible-inventory -i inventories/hosts --list
 さらに、`-y` オプションを付けることでYAML形式でインベントリの構造を表示できます。
 
 ```bash
-ansible-inventory -i -i inventories/hosts --list -y
+ansible-inventory -i ansible/inventories/hosts --list -y
 ```
 
 これにより、グループやホストの階層構造がより分かりやすく表示されます。
 
-
 ## [発展演習.1] 不要エントリのコメントアウトと動作確認
-
 
 先ほど作ったインベントリファイルですが、こんなケースは考えられないでしょうか。
 あるプロジェクトで、インベントリファイルに不要なホストエントリが含まれていることが判明しました。
@@ -96,12 +104,16 @@ ansible-inventory -i -i inventories/hosts --list -y
 
 ### コメントアウト作業
 
-- `hosts` ファイルを編集し、不要なホストエントリをコメントアウトしてください。
+- `ansible/inventories/hosts` ファイルを編集し、不要なホストエントリをコメントアウトしてください。
 
   ```ini
+  [web]
+  web00 ansible_host=10.200.10.10
+  ap00 ansible_host=10.200.10.11
+
   [exercise]
-  host00
-  # host01
+  host00 ansible_host=10.200.10.100
+  #host01 ansible_host=10.200.10.101
   ```
 
 ### 動作確認
@@ -113,54 +125,36 @@ ansible-inventory -i -i inventories/hosts --list -y
   ```
 
 - 出力結果に `host01` が含まれていないことを確認してください。
+- 確認したら戻しておきましょう。
 
-
-## [発展演習.2] インベントリのグルーピング
-
-他にもAnsibleでは、複数のホストを任意のグループに分けて管理できます。  
-ここでは、`group1` と `group2` という2つのグループを作成し、それぞれにホストを割り当てる演習を行います。
-
-### グルーピング作業
-
-- `hosts` ファイルを以下のように編集してください。
-
-  ```ini
-  [group1]
-  host00
-  host01
-
-  [group2]
-  host02
-  host03
-  ```
-
-## [発展演習.3] Ansibleインベントリを活用したアドホック操作
+## [発展演習.2] Ansibleインベントリを活用したアドホック操作
 
 先ほど作成したインベントリの動作確認はあくまで作成したファイルの書式チェックのみとなっており、実際に登録したホストに対して疎通がある、操作可能、といった事は担保されていません。
-従って、登録したインベントリが実際に有効であるかどうかを確かめるために、`ansible`コマンドで ping モジュールを実行してみます。 
-- ansibleコマンドの実行
-  ```bash
-  ansible -i inventories/hosts exercise -m ping -k
-  ```
-- パスワードを聞かれるため事前準備で設定したパスワード(ansible)を入力します
-- 正しく実行されれば以下のように、対象のインベントリに対して**SUCCESS**として返ってきます
-  ```bash
-  host01 | SUCCESS => {
-      "ansible_facts": {
-          "discovered_interpreter_python": "/usr/bin/python"
-      },
-      "changed": false,
-      "ping": "pong"
-  }
-  host00 | SUCCESS => {
-      "ansible_facts": {
-          "discovered_interpreter_python": "/usr/bin/python"
-      },
-      "changed": false,
-      "ping": "pong"
-  }
-  ```
+従って、登録したインベントリが実際に有効であるかどうかを確かめるために、`ansible`コマンドで ping モジュールを実行してみます。
 
+- ansibleコマンドの実行
+
+  ```bash
+   ansible -i ansible/inventories/hosts web -m ping
+  ```
+- 正しく実行されれば以下のように、対象のインベントリに対して**SUCCESS**として返ってきます
+
+  ```bash
+  ap00 | SUCCESS => {
+      "ansible_facts": {
+          "discovered_interpreter_python": "/usr/bin/python3.12"
+      },
+      "changed": false,
+      "ping": "pong"
+  }
+  web00 | SUCCESS => {
+      "ansible_facts": {
+          "discovered_interpreter_python": "/usr/bin/python3.12"
+      },
+      "changed": false,
+      "ping": "pong"
+  }
+  ```
 
 ---
 <credit-footer/>
