@@ -88,26 +88,16 @@ Ansibleで頻出する基本用語を整理します。
 ## [演習.1] Ansible の導入
 
 これまで ansible のインストールは `dnf(yum)` によるインストールでした。
-しかしながら昨今のansible は pipx にてインストールすることが推奨されています。
-従って、今回は`pipx`を用いてインストールしてみましょう。
-`pipx`はpythonのモジュールとして提供されており、環境に応じてインストール方法が異なります。
+しかしながら昨今のansible は pip にてインストールすることが推奨されています。
+従って、今回は`pip`を用いてインストールしてみましょう。
+`pip`はpythonのモジュールとして提供されており、環境に応じてインストール方法が異なります。
 
-本演習では、手元の環境に Ansible コマンドをインストールし、ターゲットノードに対して Ansible のタスクを適用するコントロールノードとします。
-手元環境を汚すのがイヤな方は、適当な作業用VM等を使われるとよいでしょう。
-
-また以降の手順では Ubuntu 22.04 を前提としてコマンド等を記述します。
-その他のディストリビューションの方は適宜読み替えてください。
-
-- pipx のインストール
-
-  ```bash
-  sudo apt install -y pipx
-  ```
+今回の演習ではpipのインストールはAnsibleの本質とは外れるため、予めインストール済みの環境にて実施します。
 
 - ansible のインストール
 
   ```bash
-  pipx install --include-deps ansible
+  pip install -y ansible
   ```
 
   <details>
@@ -137,7 +127,7 @@ Ansibleで頻出する基本用語を整理します。
 
    </details>
 - ansible のインストール確認
-  - pipx でインストールした後、一度シェルを立ち上げ直す必要があります
+  - pip でインストールした後、一度シェルを立ち上げ直す必要があります
 
    ```bash
    exit
@@ -147,16 +137,16 @@ Ansibleで頻出する基本用語を整理します。
 - インストールが完了すると、以下のような出力が得られます。
 
   ```bash
-  ansible --version
-  ansible [core 2.17.14]
-  config file = None
-  configured module search path = ['/home/***/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-  ansible python module location = /home/***/.local/pipx/venvs/ansible/lib/python3.10/site-packages/ansible
-  ansible collection location = /home/***/.ansible/collections:/usr/share/ansible/collections
-  executable location = /home/***/.local/bin/ansible
-  python version = 3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0] (/home/***/.local/pipx/venvs/ansible/bin/python)
-  jinja version = 3.1.6
-  libyaml = True
+  # ansible --version
+  ansible [core 2.15.13]
+    config file = /etc/ansible/ansible.cfg
+    configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+    ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
+    ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+    executable location = /usr/local/bin/ansible
+    python version = 3.9.25 (main, Jul 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/usr/bin/python3)
+    jinja version = 3.1.6
+    libyaml = True
   ```
 
 - バージョンやパスは環境によって異なりますが、表示されればインストール成功です。

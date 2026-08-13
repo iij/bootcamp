@@ -53,7 +53,7 @@ Playbook は、管理対象に対して「こうなってほしい」という�
   - Playbook の実行には`ansible-plyabook`というコマンドを使って実行します
 
     ```bash
-    ansible-playbook -i ansible/inventories/hosts ansible/playbooks.yml
+    ansible-playbook -i ansible/inventories/hosts ansible/playbooks.yml -k
     ```
 
   - 実行結果

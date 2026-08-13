@@ -32,7 +32,7 @@ Ansible において、Inventory ファイルは対象を示していて実行�
 ```text
 [web]
 web00 ansible_host=10.200.10.10
-ap00 ansible_host=10.200.10.11
+app00 ansible_host=10.200.10.11
 ```
 
 このようにAnsible の Inventory ファイルは INI 形式に近い記述によって作成されます。
@@ -49,7 +49,7 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
 
 では、実際にインベントリファイルを作成してみましょう。
 ここでは `host00`, `host01` を追加します。
-また、ホストにログインする時に使用する秘密鍵のパスとユーザ名を定義しておきます。
+また、ホストにログインする時に使用するユーザ名を定義しておきます。
 
 - `ansible/inventories/hosts` を編集します。
 
@@ -68,8 +68,7 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
   ## 以下の設定値は本来は /vars/group_vars などに書くほうが望ましいですが
   ## 今回は簡略化のためインベントリファイルに記載します
   [all:vars]
-  ansible_user: ansible-deploy
-  ansible_ssh_private_key_file: ~/.ssh/bootcamp_ansible_key
+  ansible_user=root
   ```
 
 ### インベントリファイルの書式チェック
