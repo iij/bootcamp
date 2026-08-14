@@ -26,11 +26,11 @@ Playbook内で変数を定義し、その値を表示します
   - name: 変数の追加と表示
     hosts: all
     vars:
-      username: "newbee"
-      home_dir: "/home/newbee"
+      username: "newbie"
+      home_dir: "/home/newbie"
     tasks:
       - name: 変数の値を表示
-        ansible.buildin.debug:
+        ansible.builtin.debug:
           msg: "ユーザー名: {{ username }}, ホームディレクトリ: {{ home_dir }}"
   ```
 
@@ -43,10 +43,10 @@ Playbook内で変数を定義し、その値を表示します
     ```text
     TASK [変数の値を表示] ************************************************************
     ok: [host00] => {
-        "msg": "ユーザー名: newbie, ホームディレクトリ: /home/newbee"
+        "msg": "ユーザー名: newbie, ホームディレクトリ: /home/newbie"
     }
     ok: [host01] => {
-        "msg": "ユーザー名: newbie, ホームディレクトリ: /home/newbee"
+        "msg": "ユーザー名: newbie, ホームディレクトリ: /home/newbie"
     }
     ```
 
@@ -58,10 +58,10 @@ Playbook内で変数を定義し、その値を表示します
 - インベントリファイル（例: `inventories/hosts`）に変数を記載します。
   ```ini
   [all]
-  host00 username=newbee home_dir=/home/newbee
-  host01 username=newbee home_dir=/home/newbee
-  web00 username=newbee home_dir=/home/newbee
-  app00 username=newbee home_dir=/home/newbee
+  host00 username=newbie home_dir=/home/newbie
+  host01 username=newbie home_dir=/home/newbie
+  web00 username=newbie home_dir=/home/newbie
+  app00 username=newbie home_dir=/home/newbie
   ```
 - Playbookは変数定義なしでOKです。
   ```yaml
@@ -98,7 +98,7 @@ Playbook内で変数を定義し、その値を表示します
   ```
 - 実行コマンド（`-e` オプションで変数を渡します）
   ```sh
-   [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml -e "username=newbee home_dir=/home/newbee"
+   [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml -e "username=newbie home_dir=/home/newbie"
   ```
 - 動作確認
   - 先ほどの演習と同じ結果が表示されれば成功です
