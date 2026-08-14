@@ -107,7 +107,7 @@ Playbookを実行する前に、実際に変更が行われるかどうかを確
 - 既に作成済みの `playbook.yml` を使用します。
 - 以下のコマンドでPlaybookをdry-runモードで実行します。
   ```bash
-  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbooks.yml -k --check
+  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml -k --check
   ```
 - dry-runの実行結果例
   ```text
@@ -145,7 +145,7 @@ Playbook実行時、デフォルトでホスト情報（facts）が収集され�
 
 - 実行コマンド
   ```bash
-  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbooks.yml -k
+  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml -k
   ```
 
 - 実行結果例
@@ -186,7 +186,7 @@ Playbook実行時、デフォルトでホスト情報（facts）が収集され�
   ```
 - 以下のコマンドでPlaybookを実行します。
   ```sh
-  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbooks.yml -k
+  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml -k
   ```
 - 実行結果では インベントリファイルで `web` グループに属するホスト（例: `web00`）のみがPlaybookの実行対象となる為、実行結果は以下のようになります
   ```text
