@@ -108,7 +108,7 @@ ansible-inventory -i ansible/inventories/hosts --list -y
   ```ini
   [web]
   web00 ansible_host=10.200.10.10
-  ap00 ansible_host=10.200.10.11
+  app00 ansible_host=10.200.10.11
 
   [exercise]
   host00 ansible_host=10.200.10.100
@@ -139,7 +139,7 @@ ansible-inventory -i ansible/inventories/hosts --list -y
 - 正しく実行されれば以下のように、対象のインベントリに対して**SUCCESS**として返ってきます
 
   ```bash
-  ap00 | SUCCESS => {
+  app00 | SUCCESS => {
       "ansible_facts": {
           "discovered_interpreter_python": "/usr/bin/python3.12"
       },
