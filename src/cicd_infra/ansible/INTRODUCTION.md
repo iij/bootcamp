@@ -92,12 +92,12 @@ Ansibleで頻出する基本用語を整理します。
 従って、今回は`pip`を用いてインストールしてみましょう。
 `pip`はpythonのモジュールとして提供されており、環境に応じてインストール方法が異なります。
 
-今回の演習ではpipのインストールはAnsibleの本質とは外れるため、予めインストール済みの環境にて実施します。
+今回の演習では pip のインストールは Ansible の本質とは外れるため、 pip については予めインストール済みの環境にて実施します。
 
 - ansible のインストール
 
   ```bash
-  pip install -y ansible
+  pip install ansible
   ```
 
   <details>
