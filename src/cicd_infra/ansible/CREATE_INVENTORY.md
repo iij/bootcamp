@@ -38,9 +38,6 @@ app00
 このようにAnsible の Inventory ファイルは INI 形式に近い記述によって作成されます。
 インベントリファイルの括弧内の見出し(`[app]`など)はグループ名を表し、任意のホストをグルーピングすることができます。
 
-ホスト名の横についている `ansible_host=<IP アドレス>` という記述は、当該ホストの実際のIPアドレスを示します。
-Ansible を実行するホスト上でホスト名（たとえば、今回は `web00` など）を名前解決できる場合は不要です。
-
 なお、グルーピングでは暗黙のallグループが存在しており、[]に属さないホストはデフォルトである`all`グループに属することになります。
 
 ## [演習.2] インベントリの作成
@@ -53,8 +50,8 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
 
 - `ansible/inventories/hosts` を編集します。
   ```bash
-  [root@ansible_console ansible]# cd ansible
-  [root@ansible_console ansible]# vim inventories/hosts
+  [root@ansibleconsole ansible]# cd ansible
+  [root@ansibleconsole ansible]# vim inventories/hosts
   ```
 
 - 追記する内容
@@ -129,7 +126,8 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
 - ansibleコマンドの実行
 
   ```bash
-  [root@ansibleconsole ansible]# ansible -i inventories/hosts web -m ping
+  [root@ansibleconsole ansible]# ansible -i inventories/hosts web -m ping -k
+  ## -k は、ターゲットノードへの SSH 接続にパスワードを使うオプション
   ## 以下のように ssh パスワードを効かれるので、 `ansible` と入力して Enter
   SSH password:
   ```

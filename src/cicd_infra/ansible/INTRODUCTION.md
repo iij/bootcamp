@@ -94,7 +94,7 @@ Ansibleで頻出する基本用語を整理します。
 
 今回の演習では pip のインストールは Ansible の本質とは外れるため、 pip については予めインストール済みの環境にて実施します。
 
-※以降、プロンプトが `[root@ansible_console ansible]#` となっているコマンドは、
+※以降、プロンプトが `[root@ansibleconsole ansible]#` となっているコマンドは、
 `docker compose exec console bash` を実行して console コンテナにログインして実行してください。
 
 ```bash
@@ -107,7 +107,7 @@ Ansibleで頻出する基本用語を整理します。
 - ansible のインストール
 
   ```bash
-  [root@ansible_console ansible]# pip install ansible
+  [root@ansibleconsole ansible]# pip install ansible
   ```
 
   <details>

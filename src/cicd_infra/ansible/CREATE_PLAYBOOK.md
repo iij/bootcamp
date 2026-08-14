@@ -93,7 +93,7 @@ Playbook は、管理対象に対して「こうなってほしい」という�
 - 5 行目 `- name: Ping exercise hosts`
   - この task につける名前です
   - 最近の Ansible ではすべての task に大文字から始まる名前をつけることを推奨されています
-- 5 行目 `ansible.builtin.ping`
+- 6 行目 `ansible.builtin.ping`
   - ここで`ping`モジュールを用いて操作する事(task)を宣言します
     - モジュールによって様々なオプションを追加することがあります
   - 古い playbook では、単に `ping` とだけ書かれていることもあります
@@ -145,7 +145,7 @@ Playbook実行時、デフォルトでホスト情報（facts）が収集され�
 
 - 実行コマンド
   ```bash
-  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbooks.yml
+  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbooks.yml -k
   ```
 
 - 実行結果例
@@ -173,6 +173,7 @@ Playbook実行時、デフォルトでホスト情報（facts）が収集され�
   host01
   [web]
   web00
+  app00
   ```
 - 以下の内容でPlaybookを作成します。
   ```yaml
