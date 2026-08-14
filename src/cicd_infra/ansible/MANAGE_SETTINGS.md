@@ -39,9 +39,9 @@ Ansibleの設定ファイルでは、以下のような設定が可能です。
 では、実際に設定ファイルを編集してみましょう。
 設定ファイルは `ansible.cfg` となります。
 
-- ansible.cfg の作成
+- ansible.cfg の編集
   ```bash
-  vi ansible.cfg
+  [root@ansibleconsole ansible]# vim ansible.cfg
   ```
 - `ask_pass = True`を `[defaults]`セクションに追記する
   ```bash
@@ -54,7 +54,7 @@ Ansibleの設定ファイルでは、以下のような設定が可能です。
 
 - 先ほど作成した設定が正しいことを確かめるために、`ansible`コマンドで Ping モジュールを実行してみます。 `-k`オプションを指定しなくてもパスワードを求められるはずです
   ```bash
-  ansible -i inventories/hosts exercise -m ping
+  [root@ansibleconsole ansible]# ansible -i inventories/hosts exercise -m ping
   ```
 - パスワードを聞かれるため事前準備で設定したパスワード(ansible)を入力します
 - 出力結果
@@ -108,5 +108,5 @@ Ansibleには様々な設定を施すことが可能な他、デフォルト値�
 こういったときのために`ansible-config` というコマンドを用いることができます。
 
 ```bash
- ansible-config
+[root@ansibleconsole ansible]# ansible-config
 ```

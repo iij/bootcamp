@@ -19,7 +19,7 @@ Ansibleは、ITインフラの自動化を実現する強力なオープンソ�
 
 Ansible は2012年に Michael DeHaan によって開発されました。
 既存の構成管理ツールの複雑さを解消するため、より簡単で効率的なツールとして誕生しました。
-2015年に RedHat 社に買収されて以降、エンタープライズ向け機能が強化され、2026年7月現在の最新バージョンは 2.10.8 です。クラウドネイティブ環境にも対応しています。
+2015年に RedHat 社に買収されて以降、エンタープライズ向け機能が強化され、2026年8月現在の最新バージョンは 2.21.3 です。クラウドネイティブ環境にも対応しています。
 
 ---
 
@@ -94,35 +94,62 @@ Ansibleで頻出する基本用語を整理します。
 
 今回の演習では pip のインストールは Ansible の本質とは外れるため、 pip については予めインストール済みの環境にて実施します。
 
+※以降、プロンプトが `[root@ansible_console ansible]#` となっているコマンドは、
+`docker compose exec console bash` を実行して console コンテナにログインして実行してください。
+
+```bash
+  ## ホストから console コンテナにログインする
+  $ docker compose exec console bash
+  ## 以下のようにプロンプトが変化すればOK
+  [root@ansibleconsole /]#
+```
+
 - ansible のインストール
 
   ```bash
-  pip install ansible
+  [root@ansible_console ansible]# pip install ansible
   ```
 
   <details>
   <summary>実行結果例</summary>
 
   ```bash
-      installed package ansible 10.7.0, installed using Python 3.10.12
-    These apps are now globally available
-      - ansible
-      - ansible-community
-      - ansible-config
-      - ansible-connection
-      - ansible-console
-      - ansible-doc
-      - ansible-galaxy
-      - ansible-inventory
-      - ansible-playbook
-      - ansible-pull
-      - ansible-test
-      - ansible-vault
-      - cffi-gen-src
-  ⚠  Note: '/home/***/.local/bin' is not on your PATH environment variable. These apps will not be
-      globally accessible until your PATH is updated. Run `pipx ensurepath` to automatically add it, or manually
-      modify your PATH in your shell's config file (i.e. ~/.bashrc).
-  done! ✨ 🌟 ✨
+      Collecting ansible
+    Downloading ansible-8.7.0-py3-none-any.whl (48.4 MB)
+        |████████████████████████████████| 48.4 MB 34.7 MB/s
+    Collecting ansible-core~=2.15.7
+      Downloading ansible_core-2.15.13-py3-none-any.whl (2.3 MB)
+        |████████████████████████████████| 2.3 MB 22.2 MB/s
+    Collecting cryptography
+      Downloading cryptography-50.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (4.8 MB)
+        |████████████████████████████████| 4.8 MB 31.1 MB/s
+    Collecting resolvelib<1.1.0,>=0.5.3
+      Downloading resolvelib-1.0.1-py2.py3-none-any.whl (17 kB)
+    Collecting PyYAML>=5.1
+      Downloading pyyaml-6.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (750 kB)
+        |████████████████████████████████| 750 kB 33.9 MB/s
+    Collecting importlib-resources<5.1,>=5.0
+      Downloading importlib_resources-5.0.7-py3-none-any.whl (24 kB)
+    Collecting packaging
+      Downloading packaging-26.3-py3-none-any.whl (129 kB)
+        |████████████████████████████████| 129 kB 34.9 MB/s
+    Collecting jinja2>=3.0.0
+      Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+        |████████████████████████████████| 134 kB 34.2 MB/s
+    Collecting MarkupSafe>=2.0
+      Downloading markupsafe-3.0.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
+    Collecting cffi>=2.0.0
+      Downloading cffi-2.0.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (216 kB)
+        |████████████████████████████████| 216 kB 34.3 MB/s
+    Collecting typing-extensions>=4.13.2
+      Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+        |████████████████████████████████| 45 kB 8.1 MB/s
+    Collecting pycparser
+      Downloading pycparser-2.23-py3-none-any.whl (118 kB)
+        |████████████████████████████████| 118 kB 40.0 MB/s
+    Installing collected packages: pycparser, typing-extensions, MarkupSafe, cffi, resolvelib, PyYAML, packaging, jinja2, importlib-resources, cryptography, ansible-core, ansible
+    Successfully installed MarkupSafe-3.0.3 PyYAML-6.0.3 ansible-8.7.0 ansible-core-2.15.13 cffi-2.0.0 cryptography-50.0.0 importlib-resources-5.0.7 jinja2-3.1.6 packaging-26.3 pycparser-2.23 resolvelib-1.0.1 typing-extensions-4.16.0
+    WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
    ```
 
    </details>
@@ -131,7 +158,7 @@ Ansibleで頻出する基本用語を整理します。
 
    ```bash
    exit
-   ## 再ログインする
+   ## 再度コンテナにログインする
   ```
 
 - インストールが完了すると、以下のような出力が得られます。
@@ -139,12 +166,12 @@ Ansibleで頻出する基本用語を整理します。
   ```bash
   # ansible --version
   ansible [core 2.15.13]
-    config file = /etc/ansible/ansible.cfg
+    config file = None
     configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
     ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
     ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
     executable location = /usr/local/bin/ansible
-    python version = 3.9.25 (main, Jul 13 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/usr/bin/python3)
+    python version = 3.9.25 (main, Aug  6 2026, 00:00:00) [GCC 11.5.0 20240719 (Red Hat 11.5.0-14)] (/usr/bin/python3)
     jinja version = 3.1.6
     libyaml = True
   ```

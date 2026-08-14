@@ -25,14 +25,14 @@ Ansibleインベントリは、管理対象ノード（ホスト）のリスト�
 Ansibleのインベントリファイルは、INI形式またはYAML形式で記述します。
 Ansible において、Inventory ファイルは対象を示していて実行に欠かせない要素です。
 
-[教材](https://github.com/iij/ansible-exercise)のフォルダには ansible フォルダの配下にインベントリファイルを置くためのフォルダ（inventories）があります。
-試しに開いてみましょう。
+[教材](https://github.com/iij/ansible-exercise)には ansible ディレクトリの配下にインベントリファイルを置くためのディレクトリ（inventories）があります。
+inventories/hosts を試しに開いてみましょう。
 以下のような記載がなされているはずです。
 
 ```text
 [web]
-web00 ansible_host=10.200.10.10
-app00 ansible_host=10.200.10.11
+web00
+app00
 ```
 
 このようにAnsible の Inventory ファイルは INI 形式に近い記述によって作成されます。
@@ -52,9 +52,9 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
 また、ホストにログインする時に使用するユーザ名を定義しておきます。
 
 - `ansible/inventories/hosts` を編集します。
-
   ```bash
-  vim ansible/inventories/hosts
+  [root@ansible_console ansible]# cd ansible
+  [root@ansible_console ansible]# vim inventories/hosts
   ```
 
 - 追記する内容
@@ -62,13 +62,8 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
   ```ini
   ...
   [exercise]
-  host00 ansible_host=10.200.10.100
-  host01 ansible_host=10.200.10.101
-
-  ## 以下の設定値は本来は /vars/group_vars などに書くほうが望ましいですが
-  ## 今回は簡略化のためインベントリファイルに記載します
-  [all:vars]
-  ansible_user=root
+  host00
+  host01
   ```
 
 ### インベントリファイルの書式チェック
@@ -76,7 +71,7 @@ Ansible を実行するホスト上でホスト名（たとえば、今回は `w
 作成したインベントリファイルが正しい書式かどうかを確認するには、`ansible-inventory`コマンドを利用します。
 
 ```bash
-ansible-inventory -i ansible/inventories/hosts --list
+[root@ansibleconsole ansible]# ansible-inventory -i inventories/hosts --list
 ```
 
 このコマンドを実行すると、インベントリの内容がJSON形式で表示され、構造やグループ分けが正しく認識されているか確認できます。
@@ -86,7 +81,7 @@ ansible-inventory -i ansible/inventories/hosts --list
 さらに、`-y` オプションを付けることでYAML形式でインベントリの構造を表示できます。
 
 ```bash
-ansible-inventory -i ansible/inventories/hosts --list -y
+[root@ansibleconsole ansible]# ansible-inventory -i inventories/hosts --list -y
 ```
 
 これにより、グループやホストの階層構造がより分かりやすく表示されます。
@@ -107,12 +102,12 @@ ansible-inventory -i ansible/inventories/hosts --list -y
 
   ```ini
   [web]
-  web00 ansible_host=10.200.10.10
-  app00 ansible_host=10.200.10.11
+  web00
+  app00
 
   [exercise]
-  host00 ansible_host=10.200.10.100
-  #host01 ansible_host=10.200.10.101
+  host00
+  #host01
   ```
 
 ### 動作確認
@@ -120,7 +115,7 @@ ansible-inventory -i ansible/inventories/hosts --list -y
 - コメントアウトしたホストが実行対象から外れていることを確認します。
 
   ```bash
-  ansible-inventory --list -i inventories/hosts
+  [root@ansibleconsole ansible]# ansible-inventory --list -i inventories/hosts
   ```
 
 - 出力結果に `host01` が含まれていないことを確認してください。
@@ -134,7 +129,9 @@ ansible-inventory -i ansible/inventories/hosts --list -y
 - ansibleコマンドの実行
 
   ```bash
-   ansible -i ansible/inventories/hosts web -m ping
+  [root@ansibleconsole ansible]# ansible -i inventories/hosts web -m ping
+  ## 以下のように ssh パスワードを効かれるので、 `ansible` と入力して Enter
+  SSH password:
   ```
 - 正しく実行されれば以下のように、対象のインベントリに対して**SUCCESS**として返ってきます
 
