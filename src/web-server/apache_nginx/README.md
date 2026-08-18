@@ -118,7 +118,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 - nginx
 
 あたりでしょうか。Linuxサーバー上で動かすのであればほぼApacheとnginxの2択になると思います。
-(参考: [June 2025 Web Server Survey](https://www.netcraft.com/blog/june-2025-web-server-survey/))
+(参考: [June 2026 Web Server Survey](https://www.netcraft.com/blog/july-2026-web-server-survey/))
 
 また最近ではenvoyやtraefikなど、クラウドやKubernetesという文脈ではプロキシ機能に特化したソフトウェアが使われることも多くなりました。
 
