@@ -128,7 +128,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 
 「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
-「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、Webサイトの定番OSS構成としてLAMP（Linux, Apache, MySQL, PHP）があげられる時期もあり、nginxと並んで2大勢力を誇っていました。
+「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、30年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、Webサイトの定番OSS構成としてLAMP（Linux, Apache, MySQL, PHP）があげられる時期もあり、nginxと並んで2大勢力を誇っていました。
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
