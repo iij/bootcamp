@@ -12,7 +12,7 @@ Ansibleは通常、sshのログインにパスワードなしの鍵認証を想�
 しかし、今回の演習ではパスワードログインによって実行しています。
 従って、毎回`-k`オプションを付与して実行する必要がありますが、手間になってします。
 
-この章では、Ansibleの動作仕様や設定ファイルの管理方法について学びます。  
+この章では、Ansibleの動作仕様や設定ファイルの管理方法について学びます。
 Ansibleの設定ファイルを活用することで、動作のカスタマイズや運用の効率化が可能です。
 
 ### Ansible設定ファイルの種類
@@ -39,13 +39,14 @@ Ansibleの設定ファイルでは、以下のような設定が可能です。
 では、実際に設定ファイルを編集してみましょう。
 設定ファイルは `ansible.cfg` となります。
 
-- ansible.cfg の作成
+- ansible.cfg の編集
   ```bash
-  vi ansible.cfg
+  [root@ansibleconsole ansible]# vim ansible.cfg
   ```
-- `askpass = True`を `[defaults]`セクションに記載する
+- `ask_pass = True`を `[defaults]`セクションに追記する
   ```bash
   [defaults]
+  ...
   ask_pass = True
   ```
 
@@ -53,7 +54,7 @@ Ansibleの設定ファイルでは、以下のような設定が可能です。
 
 - 先ほど作成した設定が正しいことを確かめるために、`ansible`コマンドで Ping モジュールを実行してみます。 `-k`オプションを指定しなくてもパスワードを求められるはずです
   ```bash
-  ansible -i inventories/hosts exercise -m ping
+  [root@ansibleconsole ansible]# ansible -i inventories/hosts exercise -m ping
   ```
 - パスワードを聞かれるため事前準備で設定したパスワード(ansible)を入力します
 - 出力結果
@@ -107,5 +108,5 @@ Ansibleには様々な設定を施すことが可能な他、デフォルト値�
 こういったときのために`ansible-config` というコマンドを用いることができます。
 
 ```bash
- ansible-config
+[root@ansibleconsole ansible]# ansible-config
 ```

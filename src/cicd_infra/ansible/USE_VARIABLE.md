@@ -10,9 +10,9 @@ footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
 Ansible では、様々な変数をサポートしています。
 これにより、プロジェクトの作成および保守がシンプルになり、エラーの数も低減されます。
 
-- https://docs.ansible.com/ansible/2.9_ja/user_guide/playbooks_variables.html
+- https://docs.ansible.com/projects/ansible/latest/playbook_guide/playbooks_variables.html
 
-この章では、Playbookで変数やループ処理を活用し、Webサーバの構築を体験します。  
+この章では、Playbookで変数やループ処理を活用し、Webサーバの構築を体験します。
 Ansibleの変数機能を使うことで、柔軟な構成管理や大量のリソース操作を効率化できます。
 
 
@@ -26,40 +26,42 @@ Playbook内で変数を定義し、その値を表示します
   - name: 変数の追加と表示
     hosts: all
     vars:
-      username: "新人"
-      home_dir: "/home/new_member"
+      username: "newbie"
+      home_dir: "/home/newbie"
     tasks:
       - name: 変数の値を表示
-        debug:
+        ansible.builtin.debug:
           msg: "ユーザー名: {{ username }}, ホームディレクトリ: {{ home_dir }}"
   ```
 
 - 以下のコマンドでPlaybookを実行します。
     ```sh
-    ansible-playbook -i inventory playbook.yml
+    [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml
     ```
 - 期待される出力例
 
     ```text
     TASK [変数の値を表示] ************************************************************
     ok: [host00] => {
-        "msg": "ユーザー名: 新人, ホームディレクトリ: /home/new_member"
+        "msg": "ユーザー名: newbie, ホームディレクトリ: /home/newbie"
     }
     ok: [host01] => {
-        "msg": "ユーザー名: 新人, ホームディレクトリ: /home/new_member"
+        "msg": "ユーザー名: newbie, ホームディレクトリ: /home/newbie"
     }
     ```
 
 ## [発展演習.1] インベントリファイルで変数を定義する方法
 
-先ほどの演習では変数をplaybookに記載しましたが、インベントリに関連付けた値になることもあります
-インベントリは使い回す状況にもかかわらず毎回playbookに記載するのは非効率であり、そのような場合はインベントリファイルに変数を定義することができます
+先ほどの演習では変数を playbook に記載しましたが、インベントリに関連付けた値になることもあります
+インベントリは使い回す状況にもかかわらず毎回 playbook に記載するのは非効率であり、そのような場合はインベントリファイルに変数を定義することができます
 
-- インベントリファイル（例: `inventory`）に変数を記載します。
+- インベントリファイル（例: `inventories/hosts`）に変数を記載します。
   ```ini
   [all]
-  host00 username=新人 home_dir=/home/new_member
-  host01 username=新人 home_dir=/home/new_member
+  host00 username=newbie home_dir=/home/newbie
+  host01 username=newbie home_dir=/home/newbie
+  web00 username=newbie home_dir=/home/newbie
+  app00 username=newbie home_dir=/home/newbie
   ```
 - Playbookは変数定義なしでOKです。
   ```yaml
@@ -73,10 +75,10 @@ Playbook内で変数を定義し、その値を表示します
   ```
 - 実行コマンド
   ```sh
-  ansible-playbook -i inventory playbook.yml
+  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml
   ```
 - 動作確認
-  -　先ほどの演習と同じ結果が表示されれば成功です
+  - 先ほどの演習と同じ結果が表示されれば成功です
 
 
 ### [発展演習.2] コマンドラインオプションで変数を渡す方法
@@ -96,16 +98,16 @@ Playbook内で変数を定義し、その値を表示します
   ```
 - 実行コマンド（`-e` オプションで変数を渡します）
   ```sh
-  ansible-playbook -i inventory playbook.yml -e "username=新人 home_dir=/home/new_member"
+   [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts playbook.yml -e "username=newbie home_dir=/home/newbie"
   ```
 - 動作確認
-  -　先ほどの演習と同じ結果が表示されれば成功です
+  - 先ほどの演習と同じ結果が表示されれば成功です
 
 
 ## [発展演習.3] 変数を使ってユーザ・グループを作成するplaybookを作る
 
 ここまでの知見を活用してサーバのセットアップを行ってみましょう。
-- 事前演習で作成した **web00** **app** ホストに以下の要件でセットアップを行います
+- 事前演習で作成した **web00** **app00** ホストに以下の要件でセットアップを行います
 
 以下の要件を満たす playbook を作成してください
 
@@ -145,7 +147,7 @@ Playbook内で変数を定義し、その値を表示します
 分からなければ開いて内容を確認しながら作成してみましょう
 必要に応じてインベントリの更新も行ってください
 
-<details><summary>use_variable.yml　例</summary>
+<details><summary>use_variable.yml 例</summary>
 
 ```yaml
 ---
@@ -197,7 +199,7 @@ Playbook内で変数を定義し、その値を表示します
 
 - playbookが作成できたならば以下の通り実行します
   ```bash
-  ansible-playbook -i inventories/hosts use_variable.yml
+  [root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts use_variable.yml
   ```
 - 期待される出力例
   ```text
@@ -225,7 +227,15 @@ Playbook内で変数を定義し、その値を表示します
   changed: [web00]
   changed: [app00]
   ```
-- ここまで正常に完了したら**docker-compose.yml**に記載された通り**18080**ポートでwebサーバが起動しているはずなので **http::localhost:18080/**　へアクセスしてみましょう
+- ここまで正常に完了したら**compose.yml**に記載された通り**18080**ポートでwebサーバが起動しているはずなので http://localhost:18080 へアクセスしてみましょう
+```
+## 動作確認例
+## いったん console コンテナから抜ける
+[root@ansibleconsole ansible]# exit
+## ホスト側で以下のコマンドを実行
+$ curl localhost:18080
+Hello bootcamp
+```
   - Hello bootcamp の文字が表示されれば成功です
 
 <credit-footer/>

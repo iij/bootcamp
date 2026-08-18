@@ -6,7 +6,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 
 ここまでで一通り、Ansible playbook の作り方を学びました。
 では、ここからは実際にサーバのセットアップを行っていきます。
-この章では、Playbookを使って実際にサーバの構築・設定を自動化します。  
+この章では、Playbook を使って実際にサーバの構築・設定を自動化します。
 複数のタスクをまとめて記述し、ターゲットホストに対して一括で操作を行う方法を学びます。
 
 ---
@@ -41,7 +41,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 ### ユーザ・グループを作成するplaybookの作成
 
 まずはこれまでの知識を使って自分で作ってみましょう
-分からなければ開いて内容を確認しながら作成してみましょう
+分からなければ以下を開いて内容を確認しながら作成してみましょう
 
 <details><summary>create_group.yml　例</summary>
 
@@ -71,7 +71,7 @@ footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 
 playbookが作成できたならば以下の通り実行します。
 ```bash
-ansible-playbook -i inventories/hosts create_group.yml -k
+[root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts create_group.yml -k
 ```
 
 実行ログ
@@ -134,7 +134,7 @@ host
 実行コマンド:
 
 ```bash
-ansible-playbook -i inventories/hosts assert_group.yml
+[root@ansibleconsole ansible]# ansible-playbook -i inventories/hosts assert_group.yml -k
 ```
 
 正常終了すれば、グループとユーザが正しく作成されています。
