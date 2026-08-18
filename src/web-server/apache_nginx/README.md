@@ -375,7 +375,7 @@ nginxのプロキシ・ロードバランス機能を使ってみましょう。
 
 ![nginx_proxy](./image/nginx-proxy.drawio.png)
 
-`localhost:8089`にアクセスすると、先ほどApacheで作ったsite-80とsite-89のどちらかにランダムでリクエストをプロキシするようにします。
+`localhost:8089`にアクセスすると、先ほどApacheで作ったsite-80とsite-82のどちらかにランダムでリクエストをプロキシするようにします。
 
 そのための設定を`/etc/nginx/sites-enabled/proxy`に書いていきます。
 
