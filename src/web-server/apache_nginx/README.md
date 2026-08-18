@@ -580,7 +580,7 @@ Pythonで書かれたWebアプリをApache経由で動かす設定を作って�
 
 ```sh
 python --version
-#Python 3.8.17
+#Python 3.14.7
 ```
 
 Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
