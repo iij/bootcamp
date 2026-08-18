@@ -96,9 +96,9 @@ nginx version: nginx/1.26.3
 ## Webサーバー
 
 いわゆる「Webサーバー」とは、HTTP(Hypertext Transfer Protocol)でリクエストを受け、HTTPでレスポンスを返すソフトウェアの通称です。
-僕らがブラウザなどにURLを入力したりリンクをクリックした時、Webページが表示されるのはWebサーバーが要求したURLに対するレスポンスを返しているからです。またスマホアプリの裏で行われるサーバーとのやりとりには多くの場合HTTPが使われており、ここでもWebサーバーがゲームのデータなどをレスポンスとして返しています。
+僕らがブラウザなどにURLを入力したりリンクをクリックした時、Webページが表示されるのはWebサーバーが要求したURLに対するレスポンスを返しているからです。またスマホアプリの裏で行われるサーバーーとのやりとりには多くの場合HTTPが使われており、ここでもWebサーバーーがゲームのデータなどをレスポンスとして返しています。
 
-Webサーバのシンプルな機能は前述の通りですが、実際にはユースケースに合わせてさまざまな役割を持ちます。
+Webサーバーのシンプルな機能は前述の通りですが、実際にはユースケースに合わせてさまざまな役割を持ちます。
 
 - HTMLやテキストファイルの配信
 - 動的アプリケーションのホスティング
@@ -118,7 +118,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 - nginx
 
 あたりでしょうか。Linuxサーバー上で動かすのであればほぼApacheとnginxの2択になると思います。
-(参考: [June 2025 Web Server Survey](https://www.netcraft.com/blog/june-2025-web-server-survey/))
+(参考: [June 2026 Web Server Survey](https://www.netcraft.com/blog/july-2026-web-server-survey/))
 
 また最近ではenvoyやtraefikなど、クラウドやKubernetesという文脈ではプロキシ機能に特化したソフトウェアが使われることも多くなりました。
 
@@ -126,9 +126,9 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 
 ### Apache HTTP Server
 
-「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
+「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバーソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
-「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、Webサイトの定番OSS構成としてLAMP（Linux, Apache, MySQL, PHP）があげられる時期もあり、nginxと並んで2大勢力を誇っていました。
+「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、30年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバーで、Webサイトの定番OSS構成としてLAMP（Linux, Apache, MySQL, PHP）があげられる時期もあり、nginxと並んで2大勢力を誇っていました。
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
@@ -375,7 +375,7 @@ nginxのプロキシ・ロードバランス機能を使ってみましょう。
 
 ![nginx_proxy](./image/nginx-proxy.drawio.png)
 
-`localhost:8089`にアクセスすると、先ほどApacheで作ったsite-80とsite-89のどちらかにランダムでリクエストをプロキシするようにします。
+`localhost:8089`にアクセスすると、先ほどApacheで作ったsite-80とsite-82のどちらかにランダムでリクエストをプロキシするようにします。
 
 そのための設定を`/etc/nginx/sites-enabled/proxy`に書いていきます。
 
@@ -420,8 +420,8 @@ This is site 82!
 
 ### コンテンツをキャッシュしてみる(check5)
 
-Webサーバを多段で使う目的の一つとして、キャッシュを行う、というのもあります。
-前段のWebサーバでキャッシュすることにより、後段への問い合わせ回数が減り、
+Webサーバーを多段で使う目的の一つとして、キャッシュを行う、というのもあります。
+前段のWebサーバーでキャッシュすることにより、後段への問い合わせ回数が減り、
 レスポンスの高速化を図れます。
 
 参考: [エンジニアブログのキャッシュについての連載記事](https://eng-blog.iij.ad.jp/archives/18584)
@@ -550,14 +550,14 @@ root@a0da070e286f:/# tail /var/log/apache2/access.log
 
 User-Agentの値を変えてみるとログの記録も変わります。
 リクエストヘッダは簡単に捏造できるものであることは覚えておきましょう。
-Webサーバ任せで静的なファイルを配信する分には、捏造されたヘッダで悪影響を及ぼすことはWebサーバ側で対策されているのでまずないですが、
-CGIやアプリサーバなどでヘッダ情報を利用する場合は十分に気を付ける必要があります。
+Webサーバー任せで静的なファイルを配信する分には、捏造されたヘッダで悪影響を及ぼすことはWebサーバー側で対策されているのでまずないですが、
+CGIやアプリサーバーなどでヘッダ情報を利用する場合は十分に気を付ける必要があります。
 
-### サーバ側でキャッシュを制御してみる
+### サーバー側でキャッシュを制御してみる
 
 本編では、nginxに施した設定に従ってキャッシュを行っていました。
-保持期間などの設定は、コンテンツサーバであるapacheからこのnginxに返したレスポンスにつけたヘッダによっても制御できます。
-URLや条件に従って細かく制御したい場合は、コンテンツサーバ側での制御を行うのがよいでしょう。
+保持期間などの設定は、コンテンツサーバーであるapacheからこのnginxに返したレスポンスにつけたヘッダによっても制御できます。
+URLや条件に従って細かく制御したい場合は、コンテンツサーバー側での制御を行うのがよいでしょう。
 
 この用途として、主にCache-Controlヘッダが用いられます。
 no-cacheでこのレスポンスをキャッシュとして使わせない、max-ageで保持期間を指定、などが行えます。
@@ -580,7 +580,7 @@ Pythonで書かれたWebアプリをApache経由で動かす設定を作って�
 
 ```sh
 python --version
-#Python 3.8.17
+#Python 3.14.7
 ```
 
 Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
@@ -624,13 +624,13 @@ Successfully installed mod-wsgi-4.9.4
 インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
 
 ```sh
-ls /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+ls /usr/local/lib/python3.14/site-packages/mod_wsgi/server/mod_wsgi-py314.cpython-314-x86_64-linux-gnu.so
 ```
 
 このファイルを読み込むように、`nvim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
 
 ```xml
-LoadModule wsgi_module /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+LoadModule wsgi_module /usr/local/lib/python3.14/site-packages/mod_wsgi/server/mod_wsgi-py314.cpython-314-x86_64-linux-gnu.so
 ```
 
 moduleを有効化しておきます。
