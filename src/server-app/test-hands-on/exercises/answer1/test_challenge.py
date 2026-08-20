@@ -1,33 +1,34 @@
-import unittest
+import pytest
 from ..exercise1.challenge import apply
 
 
-class ApplyTestCase(unittest.TestCase):
-    # 境界値のテスト
-    def test_boundary_value(self):
-        self.assertEqual(apply(9), 'not accepted')
-        self.assertEqual(apply(10), 'accepted')
+# 境界値のテスト
+def test_boundary_value():
+    assert apply(9) == "not accepted"
+    assert apply(10) == "accepted"
 
-        self.assertEqual(apply(100), 'accepted')
-        self.assertEqual(apply(101), 'not accepted')
+    assert apply(100) == "accepted"
+    assert apply(101) == "not accepted"
 
-    # 同値クラスのテスト
-    def test_equivalence_partitioning(self):
-        self.assertEqual(apply(-10), 'not accepted')
-        self.assertEqual(apply(0), 'not accepted')
-        self.assertEqual(apply(5), 'not accepted')
 
-        self.assertEqual(apply(20), 'accepted')
-        self.assertEqual(apply(50), 'accepted')
-        self.assertEqual(apply(90), 'accepted')
+# 同値クラスのテスト
+def test_equivalence_partitioning():
+    assert apply(-10) == "not accepted"
+    assert apply(0) == "not accepted"
+    assert apply(5) == "not accepted"
 
-        self.assertEqual(apply(105), 'not accepted')
-        self.assertEqual(apply(110), 'not accepted')
-        self.assertEqual(apply(200), 'not accepted')
+    assert apply(20) == "accepted"
+    assert apply(50) == "accepted"
+    assert apply(90) == "accepted"
 
-    # 例外処理のテスト
-    def test_catch_typeerror(self):
-        with self.assertRaises(TypeError):
-            apply('hoge')
-        with self.assertRaises(TypeError):
-            apply(123.456)
+    assert apply(105) == "not accepted"
+    assert apply(110) == "not accepted"
+    assert apply(200) == "not accepted"
+
+
+# 例外処理のテスト
+def test_catch_typeerror():
+    with pytest.raises(TypeError):
+        apply("hoge")
+    with pytest.raises(TypeError):
+        apply(123.456)

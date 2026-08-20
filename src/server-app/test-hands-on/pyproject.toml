@@ -1,0 +1,19 @@
+[project]
+name = "test-hands-on"
+version = "0.1.0"
+description = "IIJ Bootcamp テストプログラミング ハンズオン"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi",
+    "httpx2",
+    "uvicorn[standard]",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["exercises"]
+python_files = ["test_*.py"]
