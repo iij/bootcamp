@@ -1,7 +1,5 @@
-import unittest
 from .challenge import hello
 
 
-class HelloTestCase(unittest.TestCase):
-    def test_success(self):
-        self.assertEqual(hello(), "hello iij-bootcamp")
+def test_success():
+    assert hello() == "hello iij-bootcamp"

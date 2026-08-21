@@ -2,7 +2,7 @@
 footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
 title: テストプログラミング ハンズオン
 description: 開発を行う際に覚えておくと非常に便利なテストを伝授します。
-time: 2h
+time: 1.5h
 prior_knowledge: Python3
 ---
 
@@ -24,7 +24,6 @@ prior_knowledge: Python3
   - [同値クラス・境界値テスト](#同値クラス・境界値テスト)
   - [APIと関数のモック](#APIと関数のモック)
 - [おわりに](#おわりに)
-- [付録](#付録：TDDをやってみる)
 
 
 # はじめに
@@ -120,8 +119,6 @@ $ docker compose up --build
  ✔ Network test-hands-on_default            Created  0.0s
  ✔ Container test-hands-on-bootcamp-test-1  Created  0.0s
 Attaching to bootcamp-test-1
-bootcamp-test-1  | Python 3.12.4 (main, Aug  1 2024, 21:02:17) [GCC 12.2.0] on linux
-bootcamp-test-1  | Type "help", "copyright", "credits" or "license" for more information.
 ```
 
 ## テストの実行方法
@@ -141,7 +138,7 @@ $ docker compose exec bootcamp-test bash
 root@a3f5935947a2:/# cd /test-hands-on
 
 ### 任意のテストを実行します。
-root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
+root@a3f5935947a2:/test-hands-on# uv run pytest -v exercises/exercise0/
 ```
 
 ## 関数・テストの修正方法
@@ -149,24 +146,31 @@ root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test
 「テストの実行方法」の項でテストを行うと、初回は下記のようにテストが失敗してしまいます。
 
 ```terminal
-root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
-test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success) ... FAIL
+root@a3f5935947a2:/test-hands-on# uv run pytest -v exercises/exercise0/
+============================= test session starts ==============================
+platform linux -- Python 3.14.2, pytest-9.1.1, pluggy-1.6.0 -- /test-hands-on/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /test-hands-on
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 1 item
 
-======================================================================
-FAIL: test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/test-hands-on/exercises/exercise0/test_challenge.py", line 7, in test_success
-    self.assertEqual(hello(), "hello iij-bootcamp")
-AssertionError: 'hello world' != 'hello iij-bootcamp'
-- hello world
-+ hello iij-bootcamp
+exercises/exercise0/test_challenge.py::test_success FAILED               [100%]
 
+=================================== FAILURES ===================================
+_________________________________ test_success _________________________________
 
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
+    def test_success():
+>       assert hello() == "hello iij-bootcamp"
+E       AssertionError: assert 'hello world' == 'hello iij-bootcamp'
+E         
+E         - hello iij-bootcamp
+E         + hello world
 
-FAILED (failures=1)
+exercises/exercise0/test_challenge.py:5: AssertionError
+=========================== short test summary info ============================
+FAILED exercises/exercise0/test_challenge.py::test_success - AssertionError: ...
+============================== 1 failed in 0.02s ===============================
 ```
 
 テストコードを開いて確認してみましょう。
@@ -178,13 +182,11 @@ $ code ./exercises/exercise0/test_challenge.py
 内容は下記のようになっており、コード内でimportしている ```hello()``` 関数に対し、文字列 "hello iij-bootcamp" が来ることを期待してテストを行っているようです。
 
 ```python
-import unittest
 from .challenge import hello
 
 
-class HelloTestCase(unittest.TestCase):
-    def test_success(self):
-        self.assertEqual(hello(), "hello iij-bootcamp")
+def test_success():
+    assert hello() == "hello iij-bootcamp"
 ```
 
 では次に、テスト対象である ```hello()``` 関数を見てみましょう。
@@ -214,13 +216,18 @@ def hello():
 もう一度テストを実行してみると、先程まで失敗していたテストが成功しました。
 
 ```terminal
-root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.exercise0.test_challenge
-test_success (exercises.exercise0.test_challenge.HelloTestCase.test_success) ... ok
+root@a3f5935947a2:/test-hands-on# uv run pytest -v exercises/exercise0/
+============================= test session starts ==============================
+platform linux -- Python 3.14.2, pytest-9.1.1, pluggy-1.6.0 -- /test-hands-on/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /test-hands-on
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 1 item
 
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
+exercises/exercise0/test_challenge.py::test_success PASSED               [100%]
 
-OK
+============================== 1 passed in 0.01s ===============================
 ```
 
 このように、テストコードというものは、テストを実施したい関数に対して動作を確認するように作成・実行します。
@@ -263,14 +270,7 @@ OK
 ### テスト実装例
 本書冒頭で定義した、関数```f(x)```がPythonで以下のように定義されているとします。
 
-`exercies/sample1/sample.py` を作成してみましょう。
-
-```terminal
-$ cd exercies/
-$ mkdir sample1
-$ cd sample1
-$ code ./sample.py
-```
+`exercises/sample1/sample.py` を見てみましょう。
 
 ```python
 def f(x):
@@ -283,66 +283,57 @@ def f(x):
 上記の関数に対し、同値クラスのテストを定義すると、下記のように書くことができます。
 下記のテストでは、関数```f(x)```に有効同値クラスの値を入力すると```True```、そうでない値を入力すると```False```が返却されることを確認しています。
 
-`exercies/sample1/test_sample.py` を作成してみましょう。
-```terminal
-$ code ./test_sample.py
-```
+`exercises/sample1/test_sample.py` を見てみましょう。
 
 ```python
-import unittest
 from .sample import f
 
 
-class ExampleTestCase(unittest.TestCase):
-    def test_equivalence_partitioning(self):
-        # 有効同値のテスト
-        self.assertEqual(f(10), True)
-        self.assertEqual(f(50), True)
-        self.assertEqual(f(90), True)
+def test_equivalence_partitioning():
+    # 有効同値のテスト
+    assert f(10) is True
+    assert f(50) is True
+    assert f(90) is True
 
-        # 無効同値のテスト
-        self.assertEqual(f(-500), False)
-        self.assertEqual(f(-10), False)
-        self.assertEqual(f(110), False)
-        self.assertEqual(f(500), False)
+    # 無効同値のテスト
+    assert f(-500) is False
+    assert f(-10) is False
+    assert f(110) is False
+    assert f(500) is False
 ```
 
 境界値テストを定義すると、下記のように書くことができます。
 下記のテストでは、関数```f(x)```に下限の境界値 *-1* , *0* 、上限の境界値 *100* , *101* を入力し、適宜```True```か```False```が返却されることを確認しています。
+
 ```python
-import unittest
-from .sample import f
+def test_boundary_value():
+    # 下限の境界値
+    assert f(-1) is False
+    assert f(0) is True
 
-
-class ExampleTestCase(unittest.TestCase):
-    def test_equivalence_partitioning(self):
-        # 有効同値のテスト
-        # ... 略
-
-        # 無効同値のテスト
-        # ... 略
-
-        # 下限の境界値
-        self.assertEqual(f(-1), False)
-        self.assertEqual(f(0), True)
-
-        # 上限の境界値
-        self.assertEqual(f(100), True)
-        self.assertEqual(f(101), False)
+    # 上限の境界値
+    assert f(100) is True
+    assert f(101) is False
 ```
 
 docker コンテナ内からテスト実行してみましょう。
 ```terminal
-root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.sample1.test_sample
-test_equivalence_partitioning (exercises.sample1.test_sample1.ExampleTestCase.test_equivalence_partitioning) ... ok
+root@a3f5935947a2:/test-hands-on# uv run pytest -v exercises/sample1/
+============================= test session starts ==============================
+platform linux -- Python 3.14.2, pytest-9.1.1, pluggy-1.6.0 -- /test-hands-on/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /test-hands-on
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 2 items
 
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
+exercises/sample1/test_sample.py::test_equivalence_partitioning PASSED   [ 50%]
+exercises/sample1/test_sample.py::test_boundary_value PASSED             [100%]
 
-OK
+============================== 2 passed in 0.01s ===============================
 ```
 
-### 問題にチャレンジしよう
+### 問題にチャレンジしよう: 同値クラス・境界値テスト (10分)
 ```exercises/exercise1/challenge.py```に、商品の申し込みを行う関数```apply(quantity)```が定義されています。
 
 関数は以下の仕様になっています。
@@ -351,15 +342,100 @@ OK
 - 申し込みに失敗した場合は、文字列```"not accepted"```が返却されます。
 - int型以外のデータが入力された場合、例外```TypeError()```が発生し、プログラムが異常終了します。
 
-```exercises/exercise1/test_challenge.py```に、作成途中のテストクラス```ApplyTestCase```が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。
+```exercises/exercise1/test_challenge.py```に、作成途中のテスト関数が定義されているため、関数```apply(quantity)```に対するテストを作成してみましょう。
+
+`test_catch_typeerror` メソッドは余裕がある方向けの stretch goal です。例外を検証するテストの書き方については pytest ドキュメントの `pytest.raises` を参照してください。
 
 ## APIと関数のモック
 
 この項では、Pythonで実行できるAPI（FastAPI）のフレームワークを使用し、APIに対するテストや、関数のモックに触れてみましょう。
 
+### FastAPIについて
+IIJ Bootcamp「FastAPI でwebアプリを作る」にて紹介されているため、詳細の説明は省きます。
+
+下記「テスト実装例」にサンプルを記載するように、簡単にAPIを実装できるフレームワークになっています。
+
+### テスト実装例 (FastAPI)
+FastAPIは、下記のようにAPIを実装できます。
+下記は、ブラウザで```http://localhost:8000/hello```にアクセスすると、データ```{"response": "hello"}```を返却します。
+
+`exercises/sample2/sample.py` を見てみましょう。
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/hello")
+async def get_hello():
+    return {"response": "hello"}
+```
+
+上記のAPIに対し、HTTPステータスやレスポンスを検証するテストは、下記のように書くことができます。
+
+`exercises/sample2/test_sample.py` を見てみましょう。
+
+```python
+from fastapi.testclient import TestClient
+from . import sample
+
+client = TestClient(sample.app)
+
+
+def test_api():
+    # パス"/hello"に接続する
+    res = client.get("/hello")
+
+    # HTTPステータスと、レスポンスの取得
+    status = res.status_code
+    data = res.json()
+
+    # HTTPステータスと、レスポンスの検証
+    assert status == 200
+    assert data == {"response": "hello"}
+```
+
+docker コンテナ内から実行してみましょう。
+```terminal
+root@a3f5935947a2:/test-hands-on# uv run pytest -v exercises/sample2/
+============================= test session starts ==============================
+platform linux -- Python 3.14.2, pytest-9.1.1, pluggy-1.6.0 -- /test-hands-on/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /test-hands-on
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 1 item
+
+exercises/sample2/test_sample.py::test_api PASSED                        [100%]
+
+============================== 1 passed in 0.50s ===============================
+```
+
+### 問題にチャレンジしよう: API テスト (10分)
+```exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。
+
+上記のAPIは、コンテナから下記のコマンドで実行することができます。
+```terminal
+root@a3f5935947a2:/test-hands-on# uv run uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
+```
+
+API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
+```
+http://localhost:8000/
+```
+
+また、APIは下記のエンドポイントがあります。
+|パス|詳細|
+|---|---|
+|/|```{"message": "hello world"}```が返却されます。|
+|/echo/{data}|```{"message": "got the message: {data}"}```が返却されます。<br />※```{data}```は、任意の値が代入されます。|
+
+```exercises/exercise2/test_challenge.py```に、作成途中のテスト関数が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。
+
 ### モックとは
 「モックアップ」の略称であり、工業製品などの試作や、店頭展示などのためにつくられる実物大模型のことを指します。
-「[goo辞書 モックアップ（mock-up）](https://dictionary.goo.ne.jp/word/%e3%83%a2%e3%83%83%e3%82%af%e3%82%a2%e3%83%83%e3%83%97/)」より
+「[Weblio辞書 モックアップ](https://www.weblio.jp/content/モックアップ)」より
 
 テストにおけるモックとは、主にクラスや関数の動作をシミュレートするためのオブジェクトになります。
 
@@ -374,18 +450,11 @@ OK
 
 こういった場合、関数のモックを使用して、テスト対象の関数内で使用されているクラスや関数をモックし、返り値を固定してシミュレーションを行う必要があります。
 
-### テスト実装例
+### テスト実装例 (モック)
 
 関数```rock_paper_scissors(shoot)```が、Pythonで以下のように定義されているとします。
 
-`exercies/sample2/sample.py` を作成してみましょう。
-
-```terminal
-$ cd exercies/
-$ mkdir sample2
-$ cd sample2
-$ code ./sample.py
-```
+`exercises/sample3/sample.py` を見てみましょう。
 
 ```python
 import random
@@ -418,135 +487,62 @@ def rock_paper_scissors(shoot):
 
 上記の関数に対し、モックを使用したテストを定義すると、下記のように書くことができます。
 
-`exercies/sample2/test_sample.py` を作成してみましょう。
-```terminal
-$ code ./test_sample.py
-```
+`exercises/sample3/test_sample.py` を見てみましょう。
 
 ```python
-import unittest
 from unittest import mock
 from . import sample
 
-rock_paper_scissors = sample.rock_paper_scissors
 
+def test_rock_paper_scissors():
+    # あいこのテスト
+    with mock.patch.object(sample, "_my_shoot", return_value="rock"):
+        assert sample.rock_paper_scissors("rock") == 0
 
-class ExampleTestCase(unittest.TestCase):
-    def test_rock_paper_scissors(self):
-        # あいこのテスト
-        with mock.patch.object(sample, '_my_shoot', return_value="rock"):
-            self.assertEqual(rock_paper_scissors("rock"), 0)
+    # 勝利のテスト
+    with mock.patch.object(sample, "_my_shoot", return_value="scissors"):
+        assert sample.rock_paper_scissors("rock") == 1
 
-        # 勝利のテスト
-        with mock.patch.object(sample, '_my_shoot', return_value="scissors"):
-            self.assertEqual(rock_paper_scissors("rock"), 1)
-
-        # 敗北のテスト
-        with mock.patch.object(sample, '_my_shoot', return_value="paper"):
-            self.assertEqual(rock_paper_scissors("rock"), -1)
+    # 敗北のテスト
+    with mock.patch.object(sample, "_my_shoot", return_value="paper"):
+        assert sample.rock_paper_scissors("rock") == -1
 ```
 
 docker コンテナ内から実行してみましょう。
 ```terminal
-root@a3f5935947a2:/test-hands-on# python -m unittest -v exercises.sample2.test_sample
-test_rock_paper_scissors (exercises.sample2.test_sample2.ExampleTestCase.test_rock_paper_scissors) ... ok
+root@a3f5935947a2:/test-hands-on# uv run pytest -v exercises/sample3/
+============================= test session starts ==============================
+platform linux -- Python 3.14.2, pytest-9.1.1, pluggy-1.6.0 -- /test-hands-on/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /test-hands-on
+configfile: pyproject.toml
+plugins: anyio-4.14.2
+collecting ... collected 1 item
 
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
+exercises/sample3/test_sample.py::test_rock_paper_scissors PASSED        [100%]
 
-OK
+============================== 1 passed in 0.01s ===============================
 ```
 
-### FastAPIについて
-IIJ Bootcamp「FastAPI でwebアプリを作る」にて紹介されているため、詳細の説明は省きます。
-
-下記「テスト実装例」にサンプルを記載するように、簡単にAPIを実装できるフレームワークになっています。
-
-### テスト実装例
-FastAPIは、下記のようにAPIを実装できます。
-下記は、ブラウザで```http://localhost:8000/hello```にアクセスすると、データ```{"response": "hello"}```を返却します。
-
-`exercies/sample3/sample.py` を作成してみましょう。
-
-```terminal
-$ cd exercies/
-$ mkdir sample3
-$ cd sample3
-$ code ./sample.py
-```
-
-```python
-from fastapi import FastAPI
-
-app = FastAPI()
-
-
-@app.get("/hello")
-async def get_hello():
-    return {"response": "hello"}
-```
-
-上記のAPIに対し、HTTPステータスやレスポンスを検証するテストは、下記のように書くことができます。
-
-`exercies/sample3/test_sample.py` を作成してみましょう。
-```terminal
-$ code ./test_sample.py
-```
-
-```python
-import unittest
-from fastapi.testclient import TestClient
-from . import sample
-
-client = TestClient(sample.app)
-
-
-class ExampleTestCase(unittest.TestCase):
-    def test_api(self):
-        # パス"/hello"に接続する
-        res = client.get("/hello")
-
-        # HTTPステータスと、レスポンスの取得
-        status = res.status_code
-        data = res.json()
-
-        # HTTPステータスと、レスポンスの検証
-        self.assertEqual(status, 200)
-        self.assertEqual(data, {"response": "hello"})
-```
-
-docker コンテナ内から実行してみましょう。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample3.test_sample
-test_api (exercises.sample3.test_sample.ExampleTestCase.test_api) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.003s
-
-OK
-```
-
-### 問題にチャレンジしよう
-```exercises/exercise2/challenge.py```に、FastAPIと、いくつかのエンドポイントが定義されています。
+### 問題にチャレンジしよう: モックテスト (15分)
+```exercises/exercise3/challenge.py```に、FastAPIとガチャのAPIが定義されています。
 
 上記のAPIは、コンテナから下記のコマンドで実行することができます。
 ```terminal
-root@233072c168ae:/test-hands-on# python3 -m uvicorn exercises.exercise2.challenge:app --reload --host "0.0.0.0"
+root@a3f5935947a2:/test-hands-on# uv run uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
 ```
 
 API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
 ```
-http://localhost:8000/
+http://localhost:8000/gacha
 ```
 
-また、APIは下記のエンドポイントがあります。
 |パス|詳細|
 |---|---|
-|/|```{"message": "hello world"}```が返却されます。|
-|/echo/{data}|```{"message": "got the message: {data}"}```が返却されます。<br />※```{data}```は、任意の値が代入されます。|
-|/gacha|```{"message": "{result}"```が返却されます。<br />※```{result}```は、 *1/100* で文字列"you win"、それ以外で文字列"you lose"が代入されます。|
+|/gacha|```{"message": "{result}"}```が返却されます。<br />※```{result}```は、 *1/100* で文字列"you win"、それ以外で文字列"you lose"が代入されます。|
 
-```exercises/exercise2/test_challenge.py```に、作成途中のテストクラス```ApiTestCase```が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。
+```exercises/exercise3/test_challenge.py```に、作成途中のテスト関数が定義されているため、上記の仕様のAPIに対するテストを作成してみましょう。
+返り値が乱数で決定されるため、モックを使って```_exec_gacha```の返り値を固定するのがポイントです。
 
 
 # おわりに
@@ -560,584 +556,9 @@ http://localhost:8000/
 
 そのため、開発を行う際には是非テストにも注力し、ユーザーの満足できるソフトウェアを作れるよう、目指してみてください。
 
+昨今はAIエージェントがテストコードを自動生成することも増えています。しかし、そのコードを読み解き、良し悪しを判断できるのは、テストの基礎を理解した人間です。今日の内容が皆さんの土台になれば幸いです。
+
 良いエンジニアライフを！👍
 
-
-# 付録：TDDをやってみる
-
-TDDとは、「テスト駆動開発( *Test Driven Development* )」のことを指し「イテレーティブ (反復的) な手順」と「インクリメンタル (少しずつ着実) な設計」を組み合わせて開発を行う、反復型の **開発手法** のことになります。(※テスト手法のことではない)
-
-## TDDのやり方
-
-TDDは、下記のサイクルで開発を行っていきます。
-
-0. 準備
-    - 必要になりそうなテスト (実装したい振る舞い) を TODO リストとして書き出す
-1. Red
-    - TODO リストから 1 つ選び、テストから書き (テストファースト)、そのテストを実行して失敗させる
-2. Green
-    - 迅速に、テストを実行できるコードを書いてテストを通すようにする (※このとき、コードが汚くても良い)
-3. Refactoring
-    - Green を保ったまま、コードをきれいにする
-4. フィードバック
-    - *3.* まで終わったら、気付きを TODO リストに反映し、1. に戻る
-
-上記 *1. ~ 4.* のサイクルを反復的に実行することで、自動テストによってとりあえず動くことが保証され、かつリファクタリングによってきれいになっていくコードを、少しずつ着実に作って (設計して) いきます。
-
-## テスト実装例
-例えば、以下の仕様のプログラムを作りたいとして、実際に TDD による開発を体験してみましょう。
-
-- 実行回数が 3 の倍数なら "Fizz"、5 の倍数なら "Buzz"、両方を満たすなら "FizzBuzz" を返す
-- 実行回数は内部でカウントする
-- 3 でも 5 の倍数でもないカウントに対しては、そのカウント数を返す
-
-## サイクル(1) TODOリスト
-
-コーディングする際、何もない状態で、何も考えずにいきなりコードを書き始めることはあまり多くありません。
-TDD も例外ではなく、まずはやること (TODO) リストを作るところから始めます。
-
-愚直に整理してみると、以下のようになりそうです。
-
-- [ ] 実行回数を内部で保持し、カウントする
-- [ ] 実行すると、カウント数を返す
-- [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
-- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
-- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
-
-TODO リストが整理できたところで、`exercises/sample4/sample.py` と `exercises/sample4/test_sample.py` を作成し、サイクル(1) に進みましょう。
-
-```terminal
-$ cd exercies/
-$ mkdir sample4
-$ cd sample4
-$ code ./sample.py
-$ code ./test_sample.py
-```
-
-## サイクル(1) Red
-
-TODO リストから 1 つ選びます。
-
-> - [ ] 実行すると、カウント数を返す
-
-最初は、この仕様の実装に向けてサイクルを回してみましょう。
-
-Red でやるべきは「失敗するテストを書く」でした。
-
-> 1. Red
->     - TODO リストから 1 つ選び、テストから書き (テストファースト)、そのテストを実行して失敗させる
-
-とにかく仕様をテストコードで表現してみるというのが、ここでやるべきことです。
-
-とりあえず1回目の実行では「1」が返ってくるはずなので、テストでは「1」を期待してみます。
-`FizzBuzz` クラスに、`increment_counter()` メソッドがあると仮定して、`test_sample.py` を書いてみましょう。
-
-```python
-import unittest
-from .sample import FizzBuzz
-
-
-class TestFizzBuzz(unittest.TestCase):
-    def test_increment_counter(self):
-        fizzbuzz = FizzBuzz()
-        expected = fizzbuzz.increment_counter()
-        self.assertEqual(expected, 1)
-```
-
-テスト実行してみると、そもそも実装がないので当然エラーになります。
-
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_sample (unittest.loader._FailedTest.test_sample) ... ERROR
-
-======================================================================
-ERROR: test_sample (unittest.loader._FailedTest.test_sample)
-----------------------------------------------------------------------
-ImportError: Failed to import test module: test_sample
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
-    module = __import__(module_name)
-             ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/test-hands-on/exercises/sample4/test_sample.py", line 2, in <module>
-    from .sample import FizzBuzz
-ModuleNotFoundError: No module named 'exercises.sample4.sample'
-
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-FAILED (errors=1)
-```
-
-## サイクル(1) Green
-
-次は「とりあえず動くコード」を目指します。
-
-> 2. Green
->     - 迅速に、テストを実行できるコードを書いてテストを通すようにする (※このとき、コードが汚くても良い)
-
-
-とにかくテストを通すようなコードを最短距離で書くというのが、ここでやるべきことです。
-
-テストでは 1 が返却されることを期待していますので、`sample.py` に実装を書いて、1 を返すようにしてみましょう。
-
-```python
-class FizzBuzz:
-    def increment_counter(self):
-        return 1
-```
-
-テスト実行してみると、成功するようになりました。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(1) Refactoring
-
-> 3. Refactoring
->     - Green を保ったまま、コードをきれいにする
-
-次は、「動作するきれいなコード」を目指します。
-今回、あまり直すところはないですが、テストコードに一部冗長なところがあるのでインライン化してみましょう。
-
-```python
-import unittest
-from .sample import FizzBuzz
-
-
-class TestFizzBuzz(unittest.TestCase):
-    def test_increment_counter(self):
-        fizzbuzz = FizzBuzz()
-        self.assertEqual(fizzbuzz.increment_counter(), 1)  # expected をインライン化
-```
-
-テスト実行してみると、成功したままなので OK です。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(1) フィードバック
-
-TODO リストを見直してみると、サイクル(1) を回しきったことで仕様を満たせているものはなさそうですが、とりあえずの仮実装はできていそうです。
-
-- [ ] 実行回数を内部で保持し、カウントする
-- [ ] 実行すると、カウント数を返す
-  - [x] とりあえず 1 を返す (仮実装)
-- [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
-- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
-- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
-
-では、次のサイクルにいきましょう。
-
-## サイクル(2) Red
-
-2サイクル目に来ました。
-
-引き続き、`increment_counter()` の実装を進めていきます。
-> - [ ] 実行すると、カウント数を返す
-
-実行回数毎にカウントアップする仕様ですから、何度か実行してみて、期待する値を増加させてみましょう。
-
-```python
-import unittest
-from .sample import FizzBuzz
-
-
-class TestFizzBuzz(unittest.TestCase):
-    def test_increment_counter(self):
-        fizzbuzz = FizzBuzz()
-        self.assertEqual(fizzbuzz.increment_counter(), 1)
-        self.assertEqual(fizzbuzz.increment_counter(), 2)
-        self.assertEqual(fizzbuzz.increment_counter(), 3)
-        self.assertEqual(fizzbuzz.increment_counter(), 4)
-        self.assertEqual(fizzbuzz.increment_counter(), 5)
-        self.assertEqual(fizzbuzz.increment_counter(), 6)
-        self.assertEqual(fizzbuzz.increment_counter(), 7)
-        self.assertEqual(fizzbuzz.increment_counter(), 8)
-        self.assertEqual(fizzbuzz.increment_counter(), 9)
-        self.assertEqual(fizzbuzz.increment_counter(), 10)
-        self.assertEqual(fizzbuzz.increment_counter(), 11)
-        self.assertEqual(fizzbuzz.increment_counter(), 12)
-        self.assertEqual(fizzbuzz.increment_counter(), 13)
-        self.assertEqual(fizzbuzz.increment_counter(), 14)
-        self.assertEqual(fizzbuzz.increment_counter(), 15)
-```
-
-
-テスト実行してみると、対応する実装がないので失敗しました。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
-
-======================================================================
-FAIL: test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/test-hands-on/exercises/sample4/test_sample.py", line 9, in test_increment_counter
-    self.assertEqual(fizzbuzz.increment_counter(), 2)
-AssertionError: 1 != 2
-
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
-
-FAILED (failures=1)
-```
-
-## サイクル(2) Green
-
-「とりあえず動くコード」を目指し、書いてみます。一例として、以下のような実装になりそうです。
-
-```python
-class FizzBuzz:
-    count = 0
-
-    def increment_counter(self):
-        FizzBuzz.count += 1
-        return FizzBuzz.count
-```
-
-テスト実行してみると、成功しました。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(2) Refactoring
-
-現在の `FizzBuzz` はクラス変数というものを利用しています。
-設計にもよりますが、インスタンス間で値を共有させないようにするのが一般的でしょう。
-
-python では `__init__` メソッドを使うことで、インスタンス生成時に保持させる、インスタンス変数を定義することができます。これを使うと、基本的にはインスタンス間での値の共有はできなくなります。
-
-```python
-class FizzBuzz:
-    def __init__(self):
-        self.count = 0
-
-    def do(self):
-        self.count += 1
-        return self.count
-```
-
-テスト実行してみると、成功したままなので OK です。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(2) フィードバック
-
-TODO リストを見直してみると、カウント数を返す実装はできていそうです。
-
-また、リファクタリングをしたことで、`increment_counter()` の外側にインスタンス変数としてカウント変数を保持させることができるようになりました。
-
-- [x] 実行回数を内部で保持し、カウントする
-- [x] 実行すると、カウント数を返す
-  - [x] とりあえず 1 を返す (仮実装)
-- [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
-- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
-- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
-
-では、次のサイクルにいきましょう。
-
-## サイクル(3) Red
-
-3 サイクル目です。次は、以下の仕様を実装してみましょう。
-
-> - [ ] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
-
-失敗するテストを書きます。
-
-```python
-import unittest
-from .sample import FizzBuzz
-
-
-class TestFizzBuzz(unittest.TestCase):
-    def test_increment_counter(self):
-        fizzbuzz = FizzBuzz()
-        self.assertEqual(fizzbuzz.increment_counter(), 1)
-        self.assertEqual(fizzbuzz.increment_counter(), 2)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 4)
-        self.assertEqual(fizzbuzz.increment_counter(), 5)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 7)
-        self.assertEqual(fizzbuzz.increment_counter(), 8)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 10)
-        self.assertEqual(fizzbuzz.increment_counter(), 11)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 13)
-        self.assertEqual(fizzbuzz.increment_counter(), 14)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-
-```
-
-予想通り、テストは失敗しますね。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
-
-======================================================================
-FAIL: test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/test-hands-on/exercises/sample4/test_sample.py", line 10, in test_increment_counter
-    self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-AssertionError: 3 != 'Fizz'
-
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
-
-FAILED (failures=1)
-```
-
-## サイクル(3) Green
-
-さて、"Fizz" を返せるようにコードを修正しましょう。
-
-```python
-class FizzBuzz:
-    def __init__(self):
-        self.count = 0
-
-    def increment_counter(self):
-        self.count += 1
-        if self.count % 3 == 0:
-            return "Fizz"
-
-        return self.count
-```
-
-テストも問題なしです。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(3) Refactoring
-
-このサイクルで書いたコードは、特にリファクタリング箇所もなさそうなのでスキップします。
-
-## サイクル(3) フィードバック
-
-サイクル(3) では、"Fizz" を返す実装ができました。
-
-- [x] 実行回数を内部で保持し、カウントする
-- [x] 実行すると、カウント数を返す
-  - [x] とりあえず 1 を返す (仮実装)
-- [x] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
-- [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
-- [ ] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
-
-## サイクル(4) Red
-
-4 サイクル目です。次は、以下の仕様を実装してみましょう。
-
-> - [ ] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
-
-`15` の部分については、"FizzBuzz" としていることに注意してください。
-
-```python
-import unittest
-from .sample import FizzBuzz
-
-
-class TestFizzBuzz(unittest.TestCase):
-    def test_increment_counter(self):
-        fizzbuzz = FizzBuzz()
-        self.assertEqual(fizzbuzz.increment_counter(), 1)
-        self.assertEqual(fizzbuzz.increment_counter(), 2)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 4)
-        self.assertEqual(fizzbuzz.increment_counter(), "Buzz")
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 7)
-        self.assertEqual(fizzbuzz.increment_counter(), 8)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), "Buzz")
-        self.assertEqual(fizzbuzz.increment_counter(), 11)
-        self.assertEqual(fizzbuzz.increment_counter(), "Fizz")
-        self.assertEqual(fizzbuzz.increment_counter(), 13)
-        self.assertEqual(fizzbuzz.increment_counter(), 14)
-        self.assertEqual(fizzbuzz.increment_counter(), "FizzBuzz")
-```
-
-少しずつ、Red, Green, Refactoring のサイクルの感覚は掴めてきたでしょうか。
-このテストは当然失敗し、次の Green ではそれを成功に導くわけですね。
-
-分割統治法で 1 つずつ確実に課題をクリアしていく面白さを実感してもらえればなと思います。
-
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... FAIL
-
-======================================================================
-FAIL: test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/test-hands-on/exercises/sample4/test_sample.py", line 12, in test_increment_counter
-    self.assertEqual(fizzbuzz.increment_counter(), "Buzz")
-AssertionError: 5 != 'Buzz'
-
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
-
-FAILED (failures=1)
-```
-
-## サイクル(4) Green
-"Buzz"および"FizzBuzz"を返せるようにしましょう。
-
-```python
-class FizzBuzz:
-    def __init__(self):
-        self.count = 0
-
-    def increment_counter(self):
-        self.count += 1
-        if self.count % 3 == 0 and self.count % 5 == 0:
-            return "FizzBuzz"
-        if self.count % 3 == 0:
-            return "Fizz"
-        if self.count % 5 == 0:
-            return "Buzz"
-
-        return self.count
-```
-
-テストも成功します。
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(4) Refactoring
-
-最後のリファクタリングになります。
-
-`if self.count % 3 == 0 and self.count % 5 == 0` も誤りではないですが、もう少しきれいに書けそうです。
-
-```python
-class FizzBuzz:
-    def __init__(self):
-        self.count = 0
-
-    def increment_counter(self):
-        self.count += 1
-        if self.count % 15 == 0:
-            return "FizzBuzz"
-        if self.count % 3 == 0:
-            return "Fizz"
-        if self.count % 5 == 0:
-            return "Buzz"
-
-        return self.count
-```
-
-```terminal
-root@233072c168ae:/test-hands-on# python -m unittest -v exercises.sample4.test_sample
-test_increment_counter (exercises.sample4.test_sample.TestFizzBuzz.test_increment_counter) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-```
-
-## サイクル(4) フィードバック
-
-当初、"Buzz" を返す実装だけやるつもりでしたが、"FizzBuzz" を返す実装も同時にできましたね。
-
-- [x] 実行回数を内部で保持し、カウントする
-- [x] 実行すると、カウント数を返す
-  - [x] とりあえず 1 を返す (仮実装)
-- [x] 実行回数が 3 の倍数なら、カウント数の代わりに "Fizz" を返す
-- [x] 実行回数が 5 の倍数なら、カウント数の代わりに "Buzz" を返す
-- [x] 実行回数が 3 と 5 両方の倍数なら、カウント数の代わりに "FizzBuzz" を返す
-
-これで全て完了です！
-
-## 問題にチャレンジしよう
-```exercises/exercise3/challenge.py```には、FastAPIで書かれた作りかけのAPIがあります。
-
-上記のAPIは、コンテナから下記のコマンドで実行することができます。
-```terminal
-root@233072c168ae:/test-hands-on# python3 -m uvicorn exercises.exercise3.challenge:app --reload --host "0.0.0.0"
-```
-
-API実行後は、ブラウザに下記のURLを入力すると、APIにアクセスできます。
-```
-http://localhost:8000/
-```
-
-TDD を使って、上記のAPIを完成させてみましょう。
-API 仕様は、以下になります。
-- `/`, `/add`, `/sub`, `/mul`, `/div` の5つのエンドポイントがある
-- 内部で int 型の値を保持し、現在設定されている値を、`/` にアクセスすることで確認できる (また、値は 0 とする)
-- `/add`, `/sub`, `/mul`, `/div` にパスパラメータを与えると、保持されている値に対し、四則演算を行う（後述）
-- 計算は全て int 型で行う
-
-また、各パスの詳細な仕様な以下の通りです:
-
-|パス|詳細|
-|---|---|
-|/|```{"current_number": {数値}}```が返却されます。<br />{数値}には、サーバで保持されている値が入ります。
-|/add/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値に加算します。|
-|/sub/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から減算します。|
-|/mul/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値に乗算します。|
-|/div/{data}|```{"current_number": {数値}}```が返却されます。<br />{data}に渡された値をサーバで保持している値から除算します。|
-
-サーバでの値の保持・取得関数は、コード内に定義されています。
-以下に、使い方の例を記載します。
-```python
-# サーバ内に保持されている値を記録します。
-set_current_number(1)
-
-# サーバ内に保持されている値を取得します
-got_data = get_current_number()
-print(got_data)  # -> 1
-
-set_current_number(123 + 456)
-got_data = get_current_number()
-print(got_data)  # -> 579
-```
-
-`exercises/exercise3/test_challenge.py` には、本APIが完成すると通るようになる、テスト```test_success()```が定義されています。
-
-上記のテストがOKになるよう、各種APIをTDDを使って作成してみましょう。　
 
 <credit-footer/>
