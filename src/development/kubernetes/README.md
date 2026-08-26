@@ -439,13 +439,15 @@ bootcamp-6bcddb7cf8-jpzg5   0/1     Terminating         0          23m
 ## 4. 応用(Kubernetesの監視)
 ここからは本格的なアプリケーションのデプロイを体験してもらいます。katacodeでやっている方はうまくいかないことがあるため本項目は飛ばしてください。
 
+IKEクラスタで本項目を進める場合は下記に記載している [IKEクラスタで実行する場合] を参照してください。
+
 今回Kubernetes上に構築するアプリケーションは監視ツールのPrometheusで、以下の順序でデプロイします。(マニフェストファイルは[Prometheus実践ガイド](https://www.hanmoto.com/bd/isbn/9784910313009)の内容を一部改変したものを利用しています)
 1. node exporterのデプロイ
 2. RBAC認可を使ってリソースにアクセスするためのアカウントをデプロイ
 3. Prometheusのデプロイ
 
 ### 4-1. node exporterのデプロイ
-node exporterは各ノードのメトリクス情報を収集するツール(exporter)です。これを各nodeに配置する必要がありますが、`Deployment`オブジェクトを利用すると配置nodeの指定を都度行う必要があり煩雑です。そのため、ここでは`DeamonSet`オブジェクトを利用します。`DeamonSet`オブジェクトは各ノードに等しくPodを配置するオブジェクトです。`node-exporter.yml`という名前で以下の内容のマニフェストファイルを作成します。
+node exporterは各ノードのメトリクス情報を収集するツール(exporter)です。これを各nodeに配置する必要がありますが、`Deployment`オブジェクトを利用すると配置nodeの指定を都度行う必要があり煩雑です。そのため、ここでは`DaemonSet`オブジェクトを利用します。`DaemonSet`オブジェクトは各ノードに等しくPodを配置するオブジェクトです。ここからの手順は、クラスタ全体の権限を持つkind環境を前提としています。`node-exporter.yml`という名前で以下の内容のマニフェストファイルを作成します。
 ```yml
 apiVersion: apps/v1
 kind: DaemonSet
@@ -493,7 +495,7 @@ spec:
   selector:
     app: node-exporter
 ```
-各ノードに対して`prom/node-exporter:v1.3.1`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`CluserIP`を指定しています。
+各ノードに対して`prom/node-exporter:v1.3.1`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`ClusterIP`を指定しています。
 
 準備が出来たら`kubectl apply -f node-exporter.yml`でデプロイします。
 ```bash
@@ -509,7 +511,7 @@ node-exporter-tcbsp           1/1     Running   0          47m
 ```
 
 ### 4-2. RBAC認可を使ってリソースにアクセスするためのアカウントをデプロイ
-KubernetesはRole Based Access Control(RBAC)といわれる、各種リソースへのアクセス制御をユーザロールベースで行っています。そのため、監視に必要なリソースへのアクセスに必要な権限をユーザに付与する必要があります。ここでは権限の定義を行う`ClusterRole`、権限とユーザとの紐づけを行う`ClusterRoleBind`という二つのオブジェクトを利用します。`role-based-access-control.yml`という名前でマニフェストファイルを作り、以下の内容を記載します。
+KubernetesはRole Based Access Control(RBAC)といわれる、各種リソースへのアクセス制御をユーザロールベースで行っています。そのため、監視に必要なリソースへのアクセスに必要な権限をユーザに付与する必要があります。ここでは権限の定義を行う`ClusterRole`、権限とユーザとの紐づけを行う`ClusterRoleBinding`という二つのオブジェクトを利用します。`role-based-access-control.yml`という名前でマニフェストファイルを作り、以下の内容を記載します。
 ```yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -666,7 +668,7 @@ data:
         replacement: ${1}:9100
         target_label: __address__
 ```
-Prometheusの設定の詳細については割愛しますが、4-2ににて発行した認証情報は`tls_config`ならびに`authorization`で指定しています。
+Prometheusの設定の詳細については割愛しますが、4-2にて発行した認証情報は`tls_config`ならびに`authorization`で指定しています。
 > 【Prometheus講義受講者向け】
 > 
 > Prometheusの講義内で「Prometheusの特徴の1つにサービスディスカバリがあり、監視対象を動的に取得することができる」と話しました。
@@ -719,6 +721,82 @@ replicaset.apps/prometheus-76b579c56c   1         1         1       115m
 >
 > 式ブラウザから各種APIオブジェクトのメトリクス情報を取得してみてください。
 > また、Kubernetes上で動くアプリケーションの監視にはkube-state-metricsやcAdvidsorといったエクスポートを利用します。余裕のある人はPodの監視も行ってみてください。
+
+### 4-5. IKEクラスタで実行する場合
+
+ここまでの手順はkindでクラスター全体を管理できることを前提にしています。namespaceでテナント分離されたIKEクラスタでは、`ClusterRole`、`ClusterRoleBinding`、ホストの名前空間を共有するPodを作成できない場合があります。IKEクラスタで実行する場合は、以下の手順に差し替えてください。
+
+まず、`node-exporter.yml`および`prometheus.yml`からすべての`namespace: default`を削除します。これにより、kubectlの現在のコンテキストで選択されているnamespaceにリソースが作成されます。さらに`node-exporter.yml`から次の2行を削除します。
+
+```yaml
+      hostNetwork: true
+      hostPID: true
+```
+
+この構成のnode-exporterはホストOS全体ではなく、Podから参照できる範囲のメトリクスを公開します。
+
+次に、`role-based-access-control.yml`は以下の内容に置き換えます。`RoleBinding`とServiceAccountは同じnamespaceに作られるため、namespaceの指定は不要です。
+
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - endpoints
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+```
+
+最後に、`prometheus.yml`のConfigMapにある`prometheus.yml`の`scrape_configs`以下を次の内容に置き換えます。Prometheus自身は直接スクレイプし、node-exporterは同じnamespaceのEndpointだけをサービスディスカバリで取得します。`own_namespace: true`によりnamespace名を固定せずに`Role`の範囲内へ限定できます。
+
+```yaml
+    scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+      - targets: ['localhost:9090']
+    - job_name: 'node-exporter'
+      scheme: http
+      kubernetes_sd_configs:
+      - role: endpoints
+        namespaces:
+          own_namespace: true
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name]
+        action: keep
+        regex: node-exporter
+```
+
+ConfigMapは`subPath`でマウントしているため、変更を反映するには適用後にPrometheusを再起動します。
+
+```bash
+kubectl apply -f node-exporter.yml
+kubectl apply -f role-based-access-control.yml
+kubectl apply -f prometheus.yml
+kubectl rollout restart deployment/prometheus
+kubectl rollout status deployment/prometheus
+```
+
+`Status`の`Targets`で、少なくとも`prometheus`ジョブが表示されることを確認してください。node-exporterのPodが起動していれば、`node-exporter`ジョブも表示されます。
 
 
 
