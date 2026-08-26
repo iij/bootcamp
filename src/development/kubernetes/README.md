@@ -728,9 +728,9 @@ replicaset.apps/prometheus-76b579c56c   1         1         1       115m
 
 まず、`node-exporter.yml`および`prometheus.yml`からすべての`namespace: default`を削除します。これにより、kubectlの現在のコンテキストで選択されているnamespaceにリソースが作成されます。さらに`node-exporter.yml`から次の2行を削除します。
 
-```yaml
-      hostNetwork: true
-      hostPID: true
+```diff
+-      hostNetwork: true
+-      hostPID: true
 ```
 
 この構成のnode-exporterはホストOS全体ではなく、Podから参照できる範囲のメトリクスを公開します。
