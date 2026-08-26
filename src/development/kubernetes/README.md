@@ -746,7 +746,14 @@ metadata:
 rules:
 - apiGroups: [""]
   resources:
-  - endpoints
+  - services
+  - pods
+  - endpoints # v1 Endpoints is deprecated in v1.33+
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+    - discovery.k8s.io
+  resources:
+    - endpointslices
   verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
