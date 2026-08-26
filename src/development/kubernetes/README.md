@@ -467,7 +467,7 @@ spec:
     spec:
       containers:
         - name: node-exporter
-          image: 'prom/node-exporter:v1.3.1'
+          image: 'prom/node-exporter:v1.12.1-distroless'
           ports:
             - name: http
               containerPort: 9100
@@ -495,7 +495,7 @@ spec:
   selector:
     app: node-exporter
 ```
-各ノードに対して`prom/node-exporter:v1.3.1`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`ClusterIP`を指定しています。
+各ノードに対して`prom/node-exporter:v1.12.1-distroless`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`ClusterIP`を指定しています。
 
 準備が出来たら`kubectl apply -f node-exporter.yml`でデプロイします。
 ```bash
