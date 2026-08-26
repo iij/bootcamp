@@ -240,14 +240,14 @@ spec:
 > 【Deploymentにおける必須フィールド】
 > 
 > Kubernetesオブジェクトをマニフェストファイルに記載する際、必ず以下のフィールドに値をセットする必要があります
-> - apiVersion：オブジェクトのAPIVersionを指定
-> - kind：どのオブジェクトを作るかを指定
-> - metadata：オブジェクトを特定するための情報を指定
-> - spec：オブジェクトの状態を指定
+> - `apiVersion`：オブジェクトのAPIVersionを指定
+> - `kind`：どのオブジェクトを作るかを指定
+> - `metadata`：オブジェクトを特定するための情報を指定
+> - `spec`：オブジェクトの状態を指定
 
 
-`apiVersion`にはオブジェクトのAPIVersionを書きます。
-オブジェクトAPIがどのAPIGROUPに属しているかでapiVersionの書き方が変わってきます。
+`apiVersion`にはオブジェクトのAPIVERSIONを書きます。
+オブジェクトAPIがどのAPIGROUPに属しているかで`apiVersion`の書き方が変わってきます。
 今回はDeploymentのオブジェクトなのでそのAPIグループを調べます。
 
 ```
@@ -297,13 +297,13 @@ bootcamp-6bcddb7cf8-tq2fs   1/1     Running             0          84s
 
 ### 演習1 Deploymentを作成してみましょう。
 
-app.ymlを作成し、 `kubectl apply -f app.yml` を実行してください。
+`app.yml`を作成し、 `kubectl apply -f app.yml` を実行してください。
 
 `kubectl get pods` でpodが2つ起動していることを確認してください。
 
 ### 演習2 replicasを変更してみましょう。
 
-app.ymlのreplicasの値を3に変更し、再度 `kubectl apply -f app.yml` を実行してください。
+`app.yml`のreplicasの値を3に変更し、再度 `kubectl apply -f app.yml` を実行してください。
 
 `kubectl get pods` でpodが3つ起動していることを確認してください。
 
@@ -372,7 +372,7 @@ Starting to serve on 127.0.0.1:8001
 このプロキシ機能はServiceへのアクセスをRESTとして`/api/v1/namespaces/<namespace>/services/<scheme>:<service>:<port>/proxy/`と表現しているため、今回は`http://127.0.0.1:8001/api/v1/namespaces/<your namespace>/services/bootcamp-svc/proxy/`へアクセスすることでコンテンツを取得することができます。
 
 > `<your namespace>`にはデプロイ先のnamespaceを入力します。
-> namespaceがわからない場合は`kubectl config get-contexts`から探してください。`CURRENT`に米印が付いているものがいま作業しているコンテキストになります。もし`NAMESPACE`の欄に何もなければ`namespace: default`ということになります。  
+> namespaceがわからない場合は`kubectl config get-contexts`から探してください。`CURRENT`に`*` (アスタリスク) が付いているものがいま作業しているコンテキストになります。もし`NAMESPACE`の欄に何もなければ`namespace: default`ということになります。  
 > ```
 > $ kubectl config get-contexts
 > CURRENT   NAME                CLUSTER    AUTHINFO   NAMESPACE
@@ -673,11 +673,11 @@ Prometheusの設定の詳細については割愛しますが、4-2にて発行�
 > 
 > Prometheusの講義内で「Prometheusの特徴の1つにサービスディスカバリがあり、監視対象を動的に取得することができる」と話しました。
 > そのサービスディスカバリは`kubernetes_sd_configs`の部分で設定しています。`role`という概念を利用してKubernetes内の各種リソースを動的に取得します。`role`で取得できるリソースは以下の5つです。
-> - Node
-> - Service
-> - Endpoints
-> - Pod
-> - Ingress
+> - `Node`
+> - `Service`
+> - `Endpoints`
+> - `Pod`
+> - `Ingress`
 
 `kubectl apply -f prometheus.yml`でPrometheusをデプロイし、確認を行います。
 ```bash
@@ -735,7 +735,7 @@ replicaset.apps/prometheus-76b579c56c   1         1         1       115m
 
 この構成のnode-exporterはホストOS全体ではなく、Podから参照できる範囲のメトリクスを公開します。
 
-次に、`role-based-access-control.yml`は以下の内容に置き換えます。`RoleBinding`とServiceAccountは同じnamespaceに作られるため、namespaceの指定は不要です。
+次に、`role-based-access-control.yml`は以下の内容に置き換えます。`RoleBinding`と`ServiceAccount`は同じnamespaceに作られるため、namespaceの指定は不要です。
 
 ```yaml
 ---
