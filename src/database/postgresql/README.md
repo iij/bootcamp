@@ -1,16 +1,15 @@
 #  リレーショナルDBを触ってみる  
 ---
 ## <事前準備>
-* Dockerがインストールされていること
-* PowerShellが利用できる状態であること  
-* インターネットに接続できていること
-
+* 実行環境がインターネットに繋がっていること
+* 実行環境にDockerがインストールされていること
 
 
 # PostgreSQLについて				
 ### 呼び方			
-「ポストグレス キューエル」らしいのですが、この呼び方している人は少ないように感じます。  
-よく聞くのは「ポスグレ」、「ポストグレス」です。		
+* 「Post-Gres-Q-L(ポスト・グレス・キュー・エル) 」または「Postgres（ポストグレス）」と発音します。
+* [PostgreSQL とは何ですか？その呼び方は？ Postgresとは？](https://wiki.postgresql.org/wiki/FAQ/ja#PostgreSQL_.E3.81.A8.E3.81.AF.E4.BD.95.E3.81.A7.E3.81.99.E3.81.8B.EF.BC.9F.E3.81.9D.E3.81.AE.E5.91.BC.E3.81.B3.E6.96.B9.E3.81.AF.EF.BC.9F_Postgres.E3.81.A8.E3.81.AF.EF.BC.9F)
+* 省略して「ポスグレ」と呼ばれることもあります。		
 
 ### 日本PostgreSQLユーザ会
 * [日本PostgreSQLユーザ会](https://www.postgresql.jp/)  
@@ -28,13 +27,16 @@
 |9.1.x～9.6.x|      省略|      省略|          省略|            省略|
 |10 |               2017/10/5|10.23|         2022/11/10|      2022/11/10|
 |11 |               2018/10/18|11.22|        2023/11/9|       2023/11/9|
-|12 |               2019/10/3|12.19|         2024/5/9|        2024/11/14|
-|13 |               2020/9/24|13.15|         2024/5/9|        2025/11/13|
-|14 |               2021/9/30|14.12|         2024/5/9|        2026/11/12|
-|15 |               2022/10/13|15.7|         2024/5/9|        2027/11/11|
-|16 |               2023/9/14|16.3|          2024/5/9|        2028/11/9|
+|12 |               2019/10/3|12.22|         2024/11/21|      2024/11/21|
+|13 |               2020/9/24|13.21|         2025/5/8|        2025/11/13|
+|14 |               2021/9/30|14.18|         2025/5/8|        2026/11/12|
+|15 |               2022/10/13|15.13|        2025/5/8|        2027/11/11|
+|16 |               2023/9/14|16.9|          2025/5/8|        2028/11/9|
+|17 |               2024/9/26|17.10|          2025/5/8|        2029/11/8|
+|18 |               2025/9/25|18.4|          2026/5/14|        2030/11/14|
 
 　※バージョン体系がPostgreSQL10より変更されました。  
+　参照: https://www.postgresql.org/docs/release/, https://www.postgresql.org/support/versioning/
 
 Postgresql 10以前　⇒　  <span style="font-size: 200%; color: red;"> **9.0</span>  .<span style="font-size: 200%; color: blue;">23**</span>  
 <span style="font-size: 100%; color: red;">9.0の部分がメジャーバージョン</span>で<span style="font-size: 100%; color: blue;">23がマイナーバージョン</span>となります。  
@@ -138,11 +140,13 @@ psql -h localhost -p 5432 -d postgres -U postgres
 ※プロンプトが「postgres=#」に変更されることを確認します。
 
 <br>
+  PostgreSQL を「psql」で操作する場合は、SQL に加えてメタコマンド(`\` から始まるコマンド)を使用します。
 
 ### ★1-2 データベース確認  
 　以下コマンド（エンマーク 英小文字のエル プラス）を実行します。  
 ```
-\l+
+-- list
+\l+ 
 ``` 
 ◎出力イメージ  
 ![](./images/docker06.jpg)  
@@ -164,11 +168,17 @@ psql -h localhost -p 5432 -d postgres -U postgres
 
 ![](./images/DB01.jpg)
 
+　ユーザの確認をします。まだユーザを作成していないので、最初から存在しているユーザ 「postgres」が表示されます。
+```
+-- display user
+\du+ 
+```
 
 「user01」の作成  
 ``` 
 create role user01 with login password 'user01'; 
 ``` 
+* 文字列は`'`(シングルクォーテーション)で囲ってください。
 「user02」の作成  
 ``` 
  create user user02 with password 'user02';	
@@ -177,9 +187,14 @@ create role user01 with login password 'user01';
 ``` 
  create role suser01 with superuser login password 'suser01';
 ``` 
+※実行時に「CREATE ROLE」と出力されることを確認します。
 
-※全て「CREATE ROLE」と表示されることを確認します。  
-※作成後、スーパーユーザ（suser01）でログインしなおしましょう。  
+　ユーザが追加されていることを確認します。
+```
+\du+
+```
+
+作成後、スーパーユーザ（suser01）でログインしなおしましょう。  
 ``` 
  \connect - suser01 
 ``` 
@@ -232,6 +247,12 @@ create schema sch_usa authorization suser01;
 
 　※「CREATE SCHEMA」と表示されることを確認してください。  
 
+　作成したスキーマは以下のコマンドで確認できます。
+```
+-- display namespace
+\dn+
+```
+
 ### ★4-2 権限付与
 　所有者以外がスキーマにオブジェクトを配置するためには権限が必要です。  
 
@@ -257,6 +278,7 @@ grant all privileges on schema sch_jpn to user02;
 　「user01」で接続し、テーブルを作成します。  
 　以下ではテーブル作成時に主キー（PRIMARY KEY）を作成しています。  
 　主キーを作成した列には同じ値とnullを挿入できなくなります。  
+　`<スキーマ>.<テーブル>` で指定したスキーマにテーブルを作成します。
 　※スキーマ（sch_jpn）は必ず指定してください。省略してしまうと「public」スキーマに作成されます。  
 ``` 
 \connect db_world user01
@@ -270,6 +292,14 @@ create table sch_jpn.tbl_proper(id_user serial,username varchar(40),id_pref int,
 
 　※テーブルを削除するコマンドは「drop table <テーブル名>」となります。	
 
+　作成したテーブルは以下のコマンドで確認できます
+```
+-- display tables
+\dt+ sch_jpn.*
+
+-- describe
+\d+ sch_jpn.tbl_food
+```
 <br>
 
 ## 6. テーブルにデータを登録してみよう（insert into ～ values～）

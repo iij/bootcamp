@@ -1,6 +1,11 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
+title: FastAPIを使ったAPIサーバ作り
+description: PythonのFastAPIパッケージを用いて簡単なAPIサーバを作るハンズオンです
+time: 2h
+prior_knowledge: Python, REST API
 ---
+<header-table/>
 
 # FastAPIを使ったAPIサーバ作り
 
@@ -68,48 +73,62 @@ Pythonは動的型言語であるため、長らく型を意識すること無�
 
 ### 演習環境について
 
-本講義では`vscode + python` を使って演習を行います。
-vim等による開発や`PyCharm`などでも問題ありませんが、講義においては講師の環境を`vscode`にて説明を行うため、vscode以外で開発を行う場合は適宜自身で読み替えてください。
+本講義では`vim + python` を使って演習を行います。
+`vscode`等による開発や`PyCharm`などでも問題ありませんが、講義においては講師の環境を`vim`にて説明を行うため、`vim`以外で開発を行う場合は適宜自身で読み替えてください。
+
+💻️ はホスト側で実行する項目です。 📦️ はコンテナ内部側で実行する項目です。
+
 
 ## 演習0. 事前準備
+dockerイメージとして <https://hub.docker.com/_/python/> を用いています。
 
-以下のような`compose.yml`を作成し、FastAPI開発用、値の保存用(redis)2つのコンテナを起動してください。
+- 作業用の app ディレクトリを作成します  
+ 💻️ ホスト側で実行
+  ```sh
+  mkdir app
+  ```
 
-- compose.yml
+以下のような`compose.yaml`を作成し、FastAPI開発用のコンテナを起動してください。
+
+- `./compose.yaml`
   ```yaml
-  version: '3'
   services:
     fastapi:
       container_name: iijbootcamp-fastapi
-      image: python:slim-bookworm
+      image: python:latest
       ports:
-        - "8088:8000"
+        - "8000:8000"
       working_dir: /app
       tty: true
       volumes:
-        - ./app:/app
-    redis:
-      container_name: iijbootcamp-backend
-      image: "redis:alpine"
+        - type: bind
+          source: ./app
+          target: /app
+          bind:
+            create_host_path: false # docker側でディレクトリを作らないように
+      # entrypoint: sh -c "pip install fastapi 'uvicorn[standard]' && python3"
   ```
-- app ディレクトリ作成
-  ```bash
-   mkdir app
+
+
+- コンテナの起動をします。`compose.yaml`と同じ階層で実行してください。
+  💻️ ホスト側で実行
+  ```sh
+  docker compose up -d
   ```
-- compose.ymlと同じ階層で実行
-  ```bash
-   docker compose up -d
+- コンテナが起動したことを確認します  
+  💻️ ホスト側で実行
+  ```sh
+  docker ps
   ```
-- 動作確認
-  ```bash
+  実行例
+  ```sh
   $ docker ps
-  CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS         PORTS                                       NAMES
-  41539a83d3e1   redis:alpine             "docker-entrypoint.s…"   5 seconds ago   Up 3 seconds   6379/tcp                                    iijbootcamp-backend
-  a26d57ce6c8e   python:slim-bookworm   "python3"                5 seconds ago   Up 3 seconds   0.0.0.0:8088->5000/tcp, :::8088->5000/tcp   iijbootcamp-fastapi
+  CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS         PORTS                                         NAMES
+  191745ad645d   python:latest   "sh -c 'pip install …"   21 seconds ago   Up 4 seconds   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp   iijbootcamp-fastapi
   ```
-  - 二つのコンテナの`STATUS`が**Up**であること
-- docker コンテナの終了
-  ```bash
+- (docker コンテナを終了させる場合、`docker compose down`を実行してください)  
+  💻️ ホスト側で実行
+  ```sh
   docker compose down
   ```
 
@@ -124,89 +143,83 @@ FastAPIはPythonのWebフレームワークであるため、Pythonのインス�
 先ほどのFastAPIのインストールにはPythonのインストールが必須と記載しましたが、本項ではPythonのインスト－ルは講義の範囲外となるため、予めPythonがインストール済みの環境にて演習を行っていただきます。
 
 Pythonがインストール済みの環境がどこにあるのか、と言うと皆さんは既に事前準備で FastAPI用のコンテナが作成済みかと思います。
-compose.ymlを見て気づいた方もおられるかと思いますが、iijbootcamp-fastapiコンテナはpythonがインストール済みのコンテナイメージを元にしているため、これがPythonインストール済み環境、ということになります。
+`compose.yaml`を見て気づいた方もおられるかと思いますが、iijbootcamp-fastapiコンテナはpythonがインストール済みのコンテナイメージを元にしているため、これがPythonインストール済み環境、ということになります。
 
 従ってFastAPIのインストールには、iijbootcamp-fastapiコンテナにログインして、以下の手順を実行することになります。
 
-- FastAPIコンテナへのログイン
-  ```bash
-   docker exec -it iijbootcamp-fastapi bash
+- FastAPIコンテナへのログイン  
+  💻️ ホスト側で実行
+  ```sh
+  docker exec -it -- iijbootcamp-fastapi bash
   ```
-- FastAPI のインストール
-  ```bash
-  pip install fastapi
+- FastAPI のインストール  
+  📦️ コンテナ内部側で実行
+  ```sh
+  pip install "fastapi"
   ```
 - uvicorn のインストール
-  ```bash
+  📦️ コンテナ内部側で実行
+  ```sh
   pip install "uvicorn[standard]"
   ```
 - インストール確認
-  ```bash
+  📦️ コンテナ内部側で実行
+  ```sh
   pip list
   ```
-  - fastapi, uvicorn が出力結果に含まれること
+  - fastapi, uvicorn が出力結果に含まれることを確認してください
+    📦️ コンテナ内部側で実行
+    ```sh
+    pip list | grep -E "fastapi|uvicorn"
+    ```
   - 出力例
-    ```bash
-    root@02d373178837:/app# pip list
-    Package           Version
-    ----------------- -------
-    annotated-types   0.5.0
-    anyio             3.7.1
-    click             8.1.4
-    fastapi           0.100.0
-    h11               0.14.0
-    httptools         0.6.0
-    idna              3.4
-    pip               23.1.2
-    pydantic          2.0.2
-    pydantic_core     2.1.2
-    python-dotenv     1.0.0
-    PyYAML            6.0
-    setuptools        65.5.1
-    sniffio           1.3.0
-    starlette         0.27.0
-    typing_extensions 4.7.1
-    uvicorn           0.22.0
-    uvloop            0.17.0
-    watchfiles        0.19.0
-    websockets        11.0.3
-    wheel             0.40.0
+    ```sh
+    root@fcaa471af53e:/app# pip list | grep -E "fastapi|uvicorn"
+    fastapi           0.136.3
+    uvicorn           0.48.0
     ```
 
 #### トラブルシューティング
-
-- 事象
-  - pip でパッケージが取得できない
+##### pip でパッケージが取得できない
 - 主な原因
   - proxy配下にある環境下で実施している為、pipが繋がらない
 - 対処方法
   - pip --proxy <proxy server>を追加して実施する
-    - 実行例）
-      ```bash
+    - 実行例）  
+      📦️ コンテナ内部側で実行
+      ```sh
       pip install fastapi --proxy http://proxy-server:port
       ```
+
+##### 初期化したい
+`docker compose down` でdockerコンテナを終了し、`app/` ディレクトリを削除してください
+
+💻️ ホスト側で実行
+```sh
+docker compose down
+sudo rm -rf app/
+```
 
 ## FastAPIを使ったAPIサーバの開発
 
 FastAPIのインストールができたならばいよいよAPIの開発です。
-iijbootcampではFastAPIの開発に`vscode`を使います。
+iijbootcampではFastAPIの開発に`vim`を使います。
 従って、演習.1 でログインしたdockerコンテナからはログアウトします。
 
-その状況でどのようにしてvscodeで開発を行うか、となりますがcompose.ymlを見ていただくとおわかりかと思いますが事前準備の項で示した FastAPIコンテナは `app`フォルダを母艦と共有しています。
+その状況でどのようにして`vim`で開発を行うか、となりますが`compose.yaml`を見ていただくとおわかりかと思いますが事前準備の項で示した FastAPIコンテナは `app`ディレクトリをホストと共有しています。
 
-従って、`app`フォルダ配下のファイルを母艦で操作すると、同時にコンテナにも反映されることになるため、コンテナにログインすることなくアプリケーション開発を行う事が可能です。
+従って、`app`ディレクトリ配下のファイルをホストで操作すると、同時にコンテナにも反映されることになるため、コンテナにログインすることなくアプリケーション開発を行う事が可能です。
 
 ## 演習2. トップページの作成
 
-では、始めに公式ドキュメントの通り`main.py`というファイルを作成し、以下のようにコードを書いてみましょう。
+では、始めに公式ドキュメントの通り`main.py`というファイルを`app`ディレクトリ下に作成し、以下のようにコードを書いてみましょう。
 
 - `main.py` の作成
-  - main.pyの中身は以下の通りに作成します
+  - `./app/main.py`
     ```python
     from fastapi import FastAPI
 
     app = FastAPI()
-
 
     @app.get("/")
     def read_root():
@@ -221,13 +234,15 @@ iijbootcampではFastAPIの開発に`vscode`を使います。
 `main.py`ファイルが作成できたら起動してみましょう。
 起動には先ほどインストールした`uvicorn`(コマンド)に`main:app`を引数として渡して実行します。
 
-- コンテナにログイン
-  ```bash
-   docker exec -it iijbootcamp-fastapi bash
+- コンテナにログイン  
+  💻️ ホスト側で実行
+  ```sh
+  docker exec -it -- iijbootcamp-fastapi bash
   ```
+  📦️ コンテナ内部側で実行
 - FastAPIの起動
-  ```bash
-  $ uvicorn main:app
+  ```sh
+  uvicorn main:app
   ```
 
 - 正常に起動した場合、そのまま以下のように出力され `http://127.0.0.1:8000`と表示されます。
@@ -239,20 +254,24 @@ iijbootcampではFastAPIの開発に`vscode`を使います。
   ```
 
 - なお、上記のコマンドではターミナルがそのままフォアグラウンドで動き続けてしまうため、動作確認は別のターミナルを起動する必要があります。
-  - 別ターミナルを起動したら、コンテナにログインし、curlコマンドでアクセスしてみましょう。
-  ```bash
-  $ curl --noproxy 127.0.0.1 http://127.0.0.1:8000
+  - 別ターミナルを起動したらcurlコマンドでアクセスしてみましょう。  
+  📦️ コンテナ内部側で実行
+  ```sh
+  curl --noproxy 127.0.0.1 http://127.0.0.1:8000
+  ```
 
+  - 実行例
+  ```json
   {"Hello":"World"}
   ```
 
 - `main.py`に記載した Hello Worldの出力と同時にFastAPIのコンソールにもアクセスログが出力されます。
-  ```bash
+  ```sh
   INFO:     127.0.0.1:60100 - "GET / HTTP/1.1" 200 OK
   ```
 
 - ひとまずここまでできればFastAPIの実行環境としては十分になりました。
-  - 終了には`Ctrl+c`で止めてください。
+  - 終了には`Ctrl+C`で止めてください。
 
 ### 発展演習1. コンテナの外からアクセスを可能にする
 
@@ -267,17 +286,19 @@ iijbootcampではFastAPIの開発に`vscode`を使います。
 
 先ほどは `docker exec`の後に `bash`を引数としていましたが、ログイン後に実行していた`uvicorn main:app`を docker exec... の後に渡すことでそのまま実行する事が可能です。
 
-```bash
- docker exec -it iijbootcamp-fastapi uvicorn main:app
+💻️ ホスト側で実行
+```sh
+docker exec -it -- iijbootcamp-fastapi uvicorn main:app
 ```
 
 #### コンテナの外からもアクセスできるようにする
 
 FastAPIは何も指定しなければ`127.0.0.1(locahost)`のみListenするようになっています。しかし、これではコンテナの内部からしかアクセスができません。
-せっかく `docker-compose.yml`でportをエクスポートしたのですから、直接アクセスできるよう起動オプションを変更しましょう。
+せっかく `compose.yaml`でportをエクスポートしたのですから、直接アクセスできるよう起動オプションを変更しましょう。
 
-```bash
- docker exec -it iijbootcamp-fastapi uvicorn main:app --host 0.0.0.0
+💻️ ホスト側で実行
+```sh
+docker exec -it -- iijbootcamp-fastapi uvicorn main:app --host 0.0.0.0
 ```
 
 ## 演習4. swagger によるAPIドキュメントの自動生成
@@ -291,23 +312,24 @@ APIサーバの開発にはAPI利用者に向けて、そういった動作仕�
 、どのようなことが起こるのでしょうか。
 ドキュメントと実際の動作が異なる、というのは残念ながらよくあることですが、開発者としてはできる限りそういったことを避けねばなりません。
 
-FastAPIで開発を行う際にもドキュメント作成の業務からは逃れられませんがドキュメント作成を簡単にしてくれる優れた機能があります。
+FastAPIで開発を行う際にもドキュメント作成の業務からは逃れられませんがAPIドキュメント作成を簡単にしてくれる優れた機能があります。
 それが、APIドキュメントおよびswagger clientの自動生成機能です。
 
-これを利用することでFastAPIではプログラムを書く事＝ドキュメント作成になります。
+これを利用することでFastAPIではプログラムを書く事=APIドキュメント作成になります。
 このおかげでアプリケーション開発につきまとうドキュメント作成のコストが大幅に削減できます。
 
-この自動作成されたドキュメントはOpenAPIという規格に沿って生成されており、そのドキュメントパスは `/docs`になっています。
+この自動作成されたドキュメントはOpenAPIという規格に沿って生成されており、デフォルトのドキュメントパスは `/docs`になっています。
 
 それでは先ほどの`main.py`を再び起動しアクセスしてみましょう。
 なお、今回は敢えてFastAPIを起動する際のコマンドをそのまま記載してみましたので、コンテナ上で実行するにはどうすればよいか考えてみてください。
 
-- コマンド
-  ```bash
-   uvicorn main:app --host 0.0.0.0
+- コマンド  
+  💻️ ホスト側で実行
+  ```sh
+  docker exec -it -- iijbootcamp-fastapi uvicorn main:app --host 0.0.0.0
   ```
 - コンソール出力例
-  ```bash
+  ```sh
   INFO:     Started server process [1990921]
   INFO:     Waiting for application startup.
   INFO:     Application startup complete.
@@ -341,11 +363,12 @@ APIサーバを作る際には、アクセスする際に何らかのパラメ�
 ### 5.1 パスパラメータ
 
 Webアプリケーションを作る際にパス情報をパラメータとして何らかの処理をしたい場合を考えます。
-FastAPIでは、Pythonのformat文字列と同様のシンタックスで`パスパラメータ`や`パス変数`を宣言できます。
+FastAPIでは、Pythonの[format文字列](https://docs.python.org/ja/3/library/string.html#format-string-syntax)と同様のシンタックスで`パスパラメータ`や`パス変数`を宣言できます。
 
 先ほどの`main.py`にパスパラメータを扱うメソッドを定義してみましょう。
 
-- 追記する内容
+- 追記する内容  
+  `./app/main.py`
   ```python
   @app.get("/items/{item_id}")
   def read_item(item_id):
@@ -364,8 +387,8 @@ FastAPIでは、Pythonのformat文字列と同様のシンタックスで`パス
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
-  ```bash
-  uvicorn main:app
+  ```sh
+  docker exec -it -- iijbootcamp-fastapi uvicorn main:app --host 0.0.0.0
 
   INFO:     Started server process [1993570]
   INFO:     Waiting for application startup.
@@ -375,7 +398,7 @@ FastAPIでは、Pythonのformat文字列と同様のシンタックスで`パス
   ```
 
 - curl実行、及び結果
-  ```bash
+  ```sh
   curl --noproxy localhost http://localhost:8000/items/hoge
 
   {"item_id":"hoge"}
@@ -392,9 +415,10 @@ FastAPIでは関数の引数を宣言した時にパスパラメータではな�
 
 それでは先ほどに続きmain.pyにクエリパラメータを扱うメソッドを定義してみましょう。
 
-- 追記する内容
+- 追記する内容  
+  `./app/main.py`
   ```python
-  fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
+  fake_items_db: list[dict[str, str]] = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
 
 
   @app.get("/items/")
@@ -409,15 +433,15 @@ FastAPIでは関数の引数を宣言した時にパスパラメータではな�
 
 - `fake_items_db`: クエリパラメータに応じて返答する数を変えるためのデータリスト
 - `def read_query_item(skip: int = 0, limit: int = 10):`: クエリパラメータ向けのメソッド追加
-  - クエリ名`skip`, `limit`を宣言。それぞれ int型で定義しているため、 `skip=hoge` みたいな形はエラーになる
+  - クエリ名`skip`, `limit`を宣言。それぞれ `int` 型で定義しているため、 `skip=hoge` みたいな形は`str`を入力したためエラーになる
 
 
 <details>
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
-  ```bash
-  uvicorn main:app
+  ```sh
+  docker exec -it -- iijbootcamp-fastapi uvicorn main:app --host 0.0.0.0 
 
   INFO:     Started server process [1993570]
   INFO:     Waiting for application startup.
@@ -428,7 +452,7 @@ FastAPIでは関数の引数を宣言した時にパスパラメータではな�
   ```
 
 - curl実行、及び結果
-  ```bash
+  ```sh
   curl --noproxy localhost "http://localhost:8000/items/?skip=0&limit=1"
 
   [{"item_name":"Foo"}]
@@ -458,22 +482,20 @@ FastAPIでは型を宣言することで入出力のvaidation checkを行って�
 
 従ってまずは期待するリクエストボディの型を定義することから始めます。
 
+`./app/main.py` に追加
 ```python
 from pydantic import BaseModel
-from typing import Optional
-
 
 class Item(BaseModel):
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     price: float
-    tax: Optional[float] = None
+    tax: float | None = None
 ```
 
 ##### 解説
 
 - `from pydantic import BaseModel`: pydantic のモジュールロード。基本的にはBaseModelを使う
-- `from typing import Optional`: Python typehintのロード
 - `class Item(BaseModel):`: リクエストボディの型を定義するクラス pydanticのBaseModelを継承
 
 #### リクエストボディを処理するメソッドの定義
@@ -482,7 +504,7 @@ class Item(BaseModel):
 本来であればPOSTされたデータをどこかに格納し、GETメソッドなどで中身を取り出すのですが
 今回はそういったデータストアを用いていないため、リクエストボディで受け付けた内容をそのまま返すものとします。
 
-
+`./app/main.py` に追加
 ```python
 @app.post("/items/")
 def create_item(item: Item):
@@ -496,8 +518,8 @@ def create_item(item: Item):
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
-  ```bash
-  uvicorn main:app
+  ```sh
+  docker exec -it -- iijbootcamp-fastapi uvicorn main:app --host 0.0.0.0
 
   INFO:     Started server process [1993570]
   INFO:     Waiting for application startup.
@@ -507,19 +529,18 @@ def create_item(item: Item):
   ```
 
 - curl実行、及び結果
-  ```bash
+  ```sh
   curl --noproxy localhost -X 'POST' \
     'http://localhost:8000/items/' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -d '{
     "name": "string",
-    "description": "string",
-    "price": 0,
-    "tax": 0
+    "price": 100,
+    "tax": 10
   }'
 
-  {"name":"string","description":"string","price":0.0,"tax":0.0}
+  {"name":"string","description":null,"price":100.0,"tax":10.0}
   ```
 
 </details>
@@ -547,20 +568,21 @@ Gunicorn is a mature, fully featured server and process manager.
 ではGunicornをインストールし、起動方法を変更してみましょう。
 NOTE: 必要に応じて `--upgrade`オプションを追加してください
 
-```bash
-$ pip3 install fastapi Gunicorn uvicorn[standard]
+📦️ コンテナ内部側で実行
+```sh
+pip install fastapi Gunicorn uvicorn[standard]
 ```
 
 GunicornがインストールできたらGunicornを使って先ほどのアプリケーションを起動してみましょう。
 こちらも以下の通り実行するとuvicornで起動した時と同様にフォアグラウンドで動作する為、確認の際は別ターミナルを起動します。
-また、終了も同じように`Ctrl+c`で終了してください。
+また、終了も同じように`Ctrl+C`で終了してください。
 
 <details>
 <summary> 実行例</summary>
 
 - FastAPI起動・コンソール出力
 
-```bash
+```sh
 gunicorn -k uvicorn.workers.UvicornWorker main:app
 
 [2021-07-07 16:22:57 +0900] [1998398] [INFO] Starting gunicorn 20.1.0
@@ -574,7 +596,7 @@ gunicorn -k uvicorn.workers.UvicornWorker main:app
 
 - curl実行、及び結果
 
-```bash
+```sh
 curl --noproxy localhost "http://localhost:8000"
 
 {"Hello":"World"}
@@ -588,9 +610,10 @@ curl --noproxy localhost "http://localhost:8000"
 ## 演習6. プレーンテキストを返す
 
 FastAPIはWebアプリケーション開発用フレームワークという事もありデフォルトでは全てJSONで返す挙動となっています。
-しかし、"/"のような場所はアプリケーションが起動しているか否かといった単純な監視用に定義するようなことがあり、そういうときには単純な平文を返したいと思うことでしょう。
+しかし、"/"のような場所はアプリケーションが起動しているか否かといった単純な監視用に定義するようなことがあり、そういうときにはText/Plainを返したいと思うことでしょう。
 そのような時にはResponse_classを変更する事でPlain Textを返すことができます。
 
+`./app/main.py` に追加
 ```python
 from fastapi.responses import PlainTextResponse
 
@@ -606,6 +629,7 @@ FastAPIは存在しない（未定義）のURLパスにアクセスすると404�
 
 FastAPIにはHTTPExceptionが含まれている為、それを呼び出すことで任意のレスポンスコードを返すことができます。
 
+`./app/main.py` に追加
 ```python
 from fastapi import FastAPI, HTTPException
 
@@ -628,6 +652,7 @@ FastAPIは起動時に様々な情報を追加することができます。
 下記に一例を示しますので実際に設定を行ってみましょう。
 どのような違いが出るか試してみてください。
 
+`./app/main.py` に追加
 ```python
 app = FastAPI(
     title="IIJ Bootcamp HandsOn",

@@ -1,4 +1,4 @@
-FROM golang:1.22 AS builder
+FROM golang:1.24 AS builder
 LABEL maintainer="jo7oem@ume-ch.net"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -30,4 +30,4 @@ ADD ./go_tutorial /root/go-tutor/go_tutorial
 
 ENV GO111MODULE=off
 EXPOSE 8888
-ENTRYPOINT ["code-server"]
+CMD ["code-server"]

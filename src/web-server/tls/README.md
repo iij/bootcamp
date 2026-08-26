@@ -13,66 +13,82 @@ apache/nginx のハンズオンの際のものが残っているのであれば�
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
 ```shell-session
-$ docker pull python:3.8.17-bookworm
-3.8.17-bookworm: Pulling from library/python
-d52e4f012db1: Pull complete
-7dd206bea61f: Pull complete
-2320f9be4a9c: Pull complete
-6e5565e0ba8d: Pull complete
-d3797e13cc41: Pull complete
-9d8ab9ac5a7d: Pull complete
-43ed38f1d568: Pull complete
-164b4060be55: Pull complete
-Digest: sha256:2ee706fa11ec6907a27f1c5116e9749ad1267336b3b0d53fc35cfba936fae32e
-Status: Downloaded newer image for python:3.8.17-bookworm
-docker.io/library/python:3.8.17-bookworm
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.17-bookworm /bin/bash
+$ docker pull python:latest
+latest: Pulling from library/python
+f32f49ce655a: Pull complete 
+8a7504cd2818: Pull complete 
+b53089dca505: Pull complete 
+8d6d44b254da: Pull complete 
+0a4465cc9f09: Pull complete 
+c965dce520b3: Pull complete 
+61719a06ef52: Pull complete 
+Digest: sha256:250e5c97be05e1eb2272fbdbd810dfd638f9012e1e6f65c99390ad3239943a08
+Status: Downloaded newer image for python:latest
+docker.io/library/python:latest
+
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:latest /bin/bash
 a0da070e286fd52ebb323e5faff9c960014bfcd8eb1e509cb5a12daa9fb9a85e
 $ docker exec -it test-debian /bin/bash
 root@a0da070e286f:/#
 ```
 
+<details>
+
+<summary>動作確認済みバージョン</summary>
+
+```shell-session
+root@eacb8fc335e0:/# uname -a
+Linux eacb8fc335e0 6.8.0-90-generic #91~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 15:20:45 UTC 2 x86_64 GNU/Linux
+root@eacb8fc335e0:/# cat /etc/os-release 
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.5
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+root@eacb8fc335e0:/# python --version
+Python 3.14.5
+root@eacb8fc335e0:/# 
+```
+
+</details>
+
 nginxをインストールします。
 
 ```shell-session
-root@a0da070e286f:/# apt update
-Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
-Get:2 http://deb.debian.org/debian bookworm-updates InRelease [52.1 kB]
-Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
-Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8906 kB]
-Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [4732 B]
-Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [48.0 kB]
-Fetched 9210 kB in 3s (3184 kB/s)
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-10 packages can be upgraded. Run 'apt list --upgradable' to see them.
-
-root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx neovim
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-The following additional packages will be installed:
-  apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
-  libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
-  libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
+root@0e82a6ed6aae:/# apt update
+Hit:1 http://deb.debian.org/debian trixie InRelease
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9671 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [5412 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [176 kB]
+Fetched 9944 kB in 1s (7832 kB/s)
+25 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@0e82a6ed6aae:/# apt install -y apache2 apache2-dev nginx telnet neovim
+Installing:
+  apache2  apache2-dev  neovim  nginx  telnet
 
 ~~~略~~~
 
-Setting up libapr1-dev (1.7.2-3) ...
-Setting up libaprutil1-dev (1.6.3-1) ...
-Setting up debhelper (13.11.4) ...
-Setting up apache2-dev (2.4.57-2) ...
-Processing triggers for libc-bin (2.36-9) ...
-Processing triggers for hicolor-icon-theme (0.17-2) ...
-root@a0da070e286f:/#
+Setting up libapr1-dev (1.7.5-1) ...
+Setting up libaprutil1-dev (1.6.3-3+b1) ...
+Setting up debhelper (13.24.2) ...
+Setting up apache2-dev (2.4.67-1~deb13u2) ...
+Processing triggers for libc-bin (2.41-12+deb13u3) ...
+Processing triggers for hicolor-icon-theme (0.18-2) ...
+root@0e82a6ed6aae:/# 
 ```
 
 以下のコマンドでバージョンが表示されれば成功です。
 
 ```shell-session
-root@a0da070e286f:/# nginx -v
-nginx version: nginx/1.22.1
+root@0e82a6ed6aae:/# nginx -v
+nginx version: nginx/1.26.3
 ```
 
 ### nginx の初期設定
@@ -81,7 +97,7 @@ nginxのサイトは88 portでリクエストを受け付けるようにしま�
 
 ```bash
 root@a0da070e286f:/# echo 'Hello Bootcamp!!' > /var/www/html/index.html
-root@a0da070e286f:/# nvim /etc/nginx/sites-enabled/default
+root@a0da070e286f:/# vim /etc/nginx/sites-enabled/default
 ```
 
 ```nginx
@@ -120,7 +136,7 @@ root@a0da070e286f:/# tail /var/log/nginx/access.log
 
 ここまでが事前作業となります。間に合わなければ、座学の間で準備してください。
 
-## SSL/TLS とは　
+## SSL/TLS とは(座学)
 
 例えば、HTTP は基本的に平文でデータをやりとりします。
 
@@ -137,7 +153,7 @@ SSL/TLSは通信路の暗号化として汎用性のあるものとなってお�
 
 プロトコルとまではなっていなくても、mysqlなどでもレプリケーションの経路を暗号化するために用いられていたりもします。
 
-では、そのSSL/TLS の概要と歴史について、はIPAの資料がよくまとまっているため、そちらの2章1節を読むのがよいでしょう。
+SSL/TLS の概要と歴史についてIPAの資料がよくまとまっているため、そちらの2章1節を読むのがよいでしょう。
 ざっくりというと、公開鍵暗号を用いて共通鍵を共有し、その共通鍵を用いて以後の経路の暗号化を行う、というものになります。
 
 [TLS 暗号設定ガイドライン](https://www.ipa.go.jp/security/crypto/guideline/ssl_crypt_config.html)
@@ -145,7 +161,7 @@ SSL/TLSは通信路の暗号化として汎用性のあるものとなってお�
 この講義では、主にHTTPSをメインに触っていこうと思います。
 また、以下ではSSL/TLSの総称としてTLSということにします。
 
-## 証明書 とは
+## 証明書 とは(座学)
 
 TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしました。
 この公開鍵暗号の部分を担う重要なパーツとして証明書があります。
@@ -173,17 +189,17 @@ TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしま�
   - この証明書を用いたサイトの管理組織
 - 有効期間
   - この証明書の有効期間
-  - 昔は5年などもありましたが、2024年現在では13か月が最長となっています。90日まで短縮する議論もあるようです。
+  - 昔は5年ものなどもありましたが、年々商用証明書の有効期限は短縮されています。詳しくは後述します。
 - 主体者代替名、サブジェクトの代替名、サブジェクトの別名、Subject Alternative Names(SANs)
-  - いくつか項目があるが、このうち重要なのはDNS名。この証明書が有効であるサイトを示しています。
+  - いくつか項目がありますが、このうち重要なのはDNS名。この証明書が有効であるサイトを示しています。
   - 複数存在しうる
   - 現在では、証明書が管理するサイトを示す唯一の項目となります。
 - 公開鍵
   - この証明書が提供する公開鍵。これを用いて共通鍵の共有を行います。
 
-ここまで見たところで、証明書に添付された公開鍵を用いて暗号化通信を始めてよいのでしょうか？
-まだ、単に私はこのサイトの管理者だぞ！と自称しているに過ぎません。
-信用して暗号化した経路でクレジットカードの情報を送ったのに、送った相手は偽サイトを運用する悪人だった、
+ここまで確認したところで、証明書に添付された公開鍵を用いて暗号化通信を始めてよいのでしょうか？
+ここまでで確認したことは、単に私はこのサイトの管理者だぞ！と自称しているに過ぎません。
+信用して暗号化した経路でクレジットカードの情報を送ったのに、実は送った相手は偽サイトを運用する悪人だった、
 となったら目も当てられません。
 確かにこのサイトの管理者だと信じるには、信頼できる第三者の担保が欲しいですね。
 
@@ -204,11 +220,16 @@ TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしま�
 
 このような証明書のチェインを通じて公開鍵の正当性を担保するための枠組みを公開鍵基盤(Public Key Infrastrcture:PKI)と呼びます。
 
-余談ですが、政府がRootとして正当性を担保する、政府認証基盤(Government PKI:GPKI)というものもあります。
+::: tip
+政府がRootとして正当性を担保する、政府認証基盤(Government PKI:GPKI)というものもあります。
 例えばマイナンバーカードの証明書は公的個人認証サービス(JPKI)というものが発行していますが、JPKIの正当性はGPKIと相互認証する形で担保していたりします。
+:::
 
 
 ## 実際に手を動かしてみる
+
+まずは、証明書を作ってみて、nginxでhttpsの通信が出来るようにしてみましょう。
+
 ### 証明書と秘密鍵を作ってみる (check1)
 
 通常、証明書は以下の手順で入手します。
@@ -216,6 +237,11 @@ TLSは公開鍵暗号と共通鍵暗号の組み合わせという話をしま�
 1. 秘密鍵を生成する
 2. 秘密鍵からCSR (Certificate Signing Request) を生成する
 3. CSR を証明局に提出し、審査を受け、証明局の持つ秘密鍵で署名された証明書を発行してもらう
+
+秘密鍵を用いると、暗号化した通信を復号することが出来ます。
+そのため、絶対に外部に漏らしてはいけません。例え証明局であっても例外ではありません。
+証明書の発行には公開鍵があれば十分なため、秘密鍵から生成した公開鍵と、
+その他発行に必要な情報を盛り込んだCSRを用いて証明書を発行します。
 
 ここでは、３を簡略化して1 で生成した鍵で署名する、自己署名証明書(いわゆるオレオレ証明書)を作ります。
 このdocker image に既にインストールされている、openssl ツールで一通りの操作を行うことができます。
@@ -261,7 +287,7 @@ Country Name (2 letter code) [AU]:JP
 State or Province Name (full name) [Some-State]:Tokyo
 Locality Name (eg, city) []:Chiyoda
 Organization Name (eg, company) [Internet Widgits Pty Ltd]:IIJ
-Organizational Unit Name (eg, section) []:TU
+Organizational Unit Name (eg, section) []: Test
 Common Name (e.g. server FQDN or YOUR name) []:localhost
 Email Address []:
 
@@ -284,7 +310,7 @@ An optional company name []:
 ```sh
 root@a0da070e286f:/# openssl x509 -req -in /etc/nginx/ssl/server.csr -out /etc/nginx/ssl/server.crt -signkey /etc/nginx/ssl/private.key -days 365
 Certificate request self-signature ok
-subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
 ```
 
 出来上がったら、証明書の中を覗いてみましょう。text オプションでテキスト出力をすることができます。
@@ -297,11 +323,11 @@ Certificate:
         Serial Number:
             45:ef:45:48:8c:89:e0:e5:38:74:f7:fc:21:32:35:eb:2b:bc:10:6b
         Signature Algorithm: sha256WithRSAEncryption
-        Issuer: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+        Issuer: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
         Validity
             Not Before: Aug  1 16:29:36 2022 GMT
             Not After : Aug  1 16:29:36 2023 GMT
-        Subject: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = TU, CN = localhost
+        Subject: C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
         Subject Public Key Info:
 (...省略...)
 ```
@@ -322,15 +348,14 @@ Modulus=FB1908BE2B1567D1B8B7EE99DF3480CE2EDF57EC73ADD08AE2FA37A833321C84CF49D6D3
 
 事前作業で作ったhttp で受けていたサイトをhttps でも受けられるようにしてみます。
 
-`/etc/nginx/sites-enabled/default` の一番下に以下を追記していきます。
+`/etc/nginx/sites-enabled/default` の一番下に以下を丸ごと追記していきます。
 
 
 ```sh
 server {
-        listen 443 default_server;
-        listen [::]:443 default_server;
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
 
-        ssl on;
         ssl_certificate /etc/nginx/ssl/server.crt;
         ssl_certificate_key /etc/nginx/ssl/private.key;
 
@@ -353,8 +378,95 @@ root@dea1ac0e1edb:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
-https での通信となるため、URL の先頭がhttp ではなくhttps となっています。
+確認をしてみましょう。
+今回は、https での通信となるため、URLの先頭がhttpではなくhttpsとなっています。
+https のデフォルトは443ポートのため、ポート指定の部分は省略可能です。
+
+```sh
+root@dea1ac0e1edb:/# curl https://localhost:443/
+curl: (60) SSL certificate problem: self-signed certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+```
+
+今回は自己署名証明書であるため、curl は正規の証明書ではないとして検証エラーとなります。
+無視してコンテンツを取得するには、--insecure(-k) オプションを使います。
+
+```sh
+root@dea1ac0e1edb:/# curl -k https://localhost:443/
+Hello Bootcamp!!
+```
+
+渡される証明書を見てみたい場合は、openssl のs\_client サブコマンドを用いるとよいでしょう。
+ここでは、繋がったらCtrl+C で抜けます。
+
+```sh
+root@dea1ac0e1edb:/# openssl s_client -connect localhost:443
+CONNECTED(00000003)
+Can't use SSL_get_servername
+depth=0 C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+verify error:num=18:self-signed certificate
+verify return:1
+depth=0 C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+verify return:1
+---
+Certificate chain
+ 0 s:C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+   i:C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Aug  3 16:41:31 2025 GMT; NotAfter: Aug  3 16:41:31 2026 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIDQzCCAisCFCeXemGW/mzBWsHN4rmA9eHstX27MA0GCSqGSIb3DQEBCwUAMF4x
+
+(中略)
+
+G9hAF0OGhQagV6jcIgjGYk0iIITzss6fujD+eSAwDfp685F84jsayUVdkBnCqVMy
+1c1kiqV+wv2XaWHvm2pl/zX94ReoGv4=
+-----END CERTIFICATE-----
+subject=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+issuer=C = JP, ST = Tokyo, L = Chiyoda, O = IIJ, OU = Test, CN = localhost
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 1395 bytes and written 377 bytes
+Verification error: self-signed certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 18 (self-signed certificate)
+---
+
+(中略)
+
+    Start Time: 1754239905
+    Timeout   : 7200 (sec)
+    Verify return code: 18 (self-signed certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+
+(Ctrl+C を入力して抜ける)
+```
+
+openssl s\_client は、TLSのhandshakeを行って暗号化した経路を用いるtelnetのようなものです。
+ここではCtrl+Cで抜けましたが、続けてHTTPのリクエストを送るとHTTPSの通信となります。
+
+
+ブラウザで確認する場合は、443 は8443 にポートフォワードの設定が入っているため、8443 ポートにアクセスしてみましょう。
 
 [https://localhost:8443/](https://localhost:8443/)
 
@@ -363,22 +475,53 @@ https での通信となるため、URL の先頭がhttp ではなくhttps と�
 
 また、ブラウザ上で暗号化に使っている証明書の内容が確認できるので、確認もしてみましょう。
 
+### 証明書 の有効期限(座学)
+
+証明書に関する業界標準については主に[CA/Bフォーラム](https://cabforum.org/)で議論されます。
+証明書を発行する証明局(CA)はもちろん、利用者側として暗号化通信の信頼性に責任を持つブラウザベンダ(B)などが
+[メンバー](https://cabforum.org/about/membership/members/)となっています。
+昨今は、Web以外でも証明書は活用されているため、それらのアプリやOSのベンダもConsumerとして参加しています。
+
+CA/Bフォーラムで長らく話題になっていたのが、証明書の最長有効期限の短縮です。
+秘密鍵の漏えい対策、仕様変更のサイクルの高速化、などが理由とされています。
+最初は特に制限なしだったところから、5年、39か月、825日と段々と縮んでいき、
+2020/9より397日まで短縮されていました。
+そして、2025/4/11、新たな短縮スケジュールがCA/Bフォーラムで可決されました。
+
+
+当面の有効期限は以下の通りです。
+
+- 2026/3/14 までは、これまで通り397日
+- 2027/3/14 までは、200日
+  - 6か月 + 1か月の半分 + 1日
+- 2029/3/14 までは、100日
+  - 3か月 + 1か月の1/4 + 1日
+- 2029/3/15 以降は、47日
+  - 1か月 + 1か月の半分 + 1日
+
+ここまで短くなると、手動で更新し続けることは困難となります。
+
+そこで、証明書更新について[ACMEプロトコル](https://tools.ietf.org/html/rfc8555)を利用して自動化することができます。
+動作の概要は[Let's Encryptのページ](https://letsencrypt.org/ja/how-it-works/)がわかりやすいです。
+
+- **[ACMEクライアント](https://letsencrypt.org/ja/docs/client-options/)**
+   - 証明書を自動取得する際にクライアントサーバー側で動作するソフトウェアです。  
+     Certbot や Lego 、cert-manager など多数のクライアントがあります。
+- **[チャレンジ](https://letsencrypt.org/ja/docs/challenge-types/)**
+   - 証明書が証明しようとしているドメイン名が自身のものであることを自動的に確認するために「チャレンジ」を行います。
+     HTTP プロトコルを利用する HTTP-01 や、 DNS プロトコルを利用する DNS-01, DNS-PERSIST-01 がありあます。
+
 ### 詳細な暗号設定 
 
 TLSの設定としては、主に、プロトコルのバージョン、暗号スイート、証明書、に何を使うかが大事になります。
 
 #### protocol を設定してみる(check3)
 
-プロトコルについては、既に1.1 までは2021に禁止扱いになっていたりします。
+プロトコルについては、既にTLSv1.1 までは主要なブラウザやOSで禁止扱いになっていたりします。
 
-nginx だと、`ssl_protocols`で設定します。
+サーバー側で受け入れる TLS バージョンは、nginx だと`ssl_protocols`で設定します。
 
 まずは、デフォルトの状態で接続を確認してみましょう。TLSv1.2で接続できています。
-
-::: tip
-nginx上ではデフォルトで後述設定の通りTLSv1, 1.1 が有効に見えますが、接続できないようです。
-そのため、ここでは差異が見えるようわざとTLSv1.2 で試してみています。
-:::
 
 ```sh
 root@34cfcf7b6f05:/# curl -vvv -k --tls-max 1.2 https://localhost:443
@@ -408,18 +551,18 @@ Hello Bootcamp!!
 ```
 
 
-では、/etc/nginx/nginx.conf に設定があるので、書き換えてみましょう。
+では、/etc/nginx/nginx.conf に設定があるので、TLSv1.2 は受け入れないように書き換えてみましょう。
 書き換えたら再起動して反映させます。
 
 
 ```sh
-root@34cfcf7b6f05:/# nvim /etc/nginx/nginx.conf
+root@34cfcf7b6f05:/# vim /etc/nginx/nginx.conf
 (前後省略)
         ##
         # SSL Settings
         ##
 
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE  <= ここからTLSv1 TLSv1.1 TLSv1.2 を消してみる
+        ssl_protocols TLSv1.3; # Dropping SSLv3 (POODLE), TLS 1.0, 1.1  <= ここから TLSv1.2 を消してみる
         ssl_prefer_server_ciphers on;
 
         ##
@@ -453,7 +596,8 @@ curl: (35) OpenSSL/3.0.9: error:0A00042E:SSL routines::tlsv1 alert protocol vers
 - 暗号化方式
 - ハッシュ関数
 
-の組で構成されます。TLS1.3からは、ここから鍵交換方式、署名方式が外されて暗号化方式、ハッシュ関数で構成されます。(鍵交換や署名の部分がプロトコルに最初から組み込まれるようになったため、指定する必要がなくなりました)
+の組で構成されます。TLS1.3からは、ここから鍵交換方式、署名方式が外されて暗号化方式、ハッシュ関数で構成されます。
+(鍵交換や署名の部分がプロトコルに最初から組み込まれるようになったため、指定する必要がなくなりました)
 
 openssl コマンドで、扱える暗号スイートの一覧を見ることが出来るので、見てみましょう。
 
@@ -482,7 +626,7 @@ DHE-RSA-AES256-GCM-SHA384      TLSv1.2 Kx=DH       Au=RSA   Enc=AESGCM(256)     
 nginxでは、`ssl_ciphers`を用いて設定します。
 
 ```sh
-root@34cfcf7b6f05:/# nvim /etc/nginx/nginx.conf
+root@34cfcf7b6f05:/# vim /etc/nginx/nginx.conf
 (前後省略)
         ##
         # SSL Settings
@@ -501,9 +645,12 @@ root@34cfcf7b6f05:/# service nginx restart
 ```
 
 ::: tip
-ssl\_ciphers の設定部分は、openssl ciphers の引数に食わせることで、この設定で使えるcipher の一覧を表示させることができます。
-今回は列挙した形ですが、!EXP のようにブラックリストな書き方もできるため、よくわからなくなったらこれで実際に設定されるものを確認するとよいでしょう。
+ssl\_ciphers の設定部分は、openssl ciphers の引数に渡すことで、この設定で使えるcipher の一覧を表示させることができます。
+今回は列挙した形ですが、!EXP のようにブラックリスト的な書き方もできるため、よくわからなくなったらこのように実際に設定されるものを確認するとよいでしょう。
+
+```
 openssl ciphers -v "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305"
+```
 :::
 
 `openssl ciphers`の一覧から適当なものを選んで接続してみて、nginx.confで設定したものは接続でき、設定しなかったものは接続できないことを確認してください。
@@ -540,6 +687,7 @@ curl: (35) OpenSSL/3.0.9: error:0A000410:SSL routines::sslv3 alert handshake fai
 
 ECDSAは暗号の特性上、短い鍵長でも高いセキュリティ強度を保つことができます。
 RSAであれば2048bit、ECDSAであれば256bit のものを使うのがよいでしょう。
+（量子コンピューターが実用化した場合はプロトコルや鍵長を見直す必要があります。詳しくは後述します。）
 
 ここでは、試しにECDSAの秘密鍵を用いて証明書を作って使用してみます。
 openssl コマンドで、ECDSAの秘密鍵も生成可能です。
@@ -577,14 +725,13 @@ Signature Algorithm: ecdsa-with-SHA256
 後は、nginx の参照を変更し、この証明書を使ってhttpsを提供してみましょう。
 
 ```sh
-root@34cfcf7b6f05:/# nvim /etc/nginx/sites-enabled/default
+root@34cfcf7b6f05:/# vim /etc/nginx/sites-enabled/default
 (中略)
 
 server {
-        listen 443 default_server;
-        listen [::]:443 default_server;
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
 
-        ssl on;
         ssl_certificate /etc/nginx/ssl/ecdsa.crt;           # <= ここを書き換え
         ssl_certificate_key /etc/nginx/ssl/ecdsa.key;       # <= ここを書き換え
 
@@ -599,10 +746,10 @@ ECDSAの鍵を用いたものでも問題なく接続できるかと思います
 パフォーマンスの観点からはECDSAの方が有利ですが、中にはECDSAに対応していないサービスもあります。
 利用してみたい場合も証明書を使用するサービスで使えるかどうか確認してから発行するようにしましょう。
 
-#### 安全とされている設定
+#### 安全とされている設定(座学)
 
 日本における暗号設定のセキュリティ上の最低ラインは先の暗号設定ガイドラインの3.1に記載されています。
-
+
 [TLS 暗号設定ガイドライン](https://www.ipa.go.jp/security/crypto/guideline/ssl_crypt_config.html)
 
 表14がわかりやすいでしょう。ビットセキュリティについては、2.6の表11がわかりやすいです。
@@ -614,3 +761,11 @@ mozilla の推奨暗号スイートも参考になります。
 今回のcipher設定についてはmozilla のintermediate のものを利用しています。
 [こちら](https://ssl-config.mozilla.org/)で対応する設定を出力してくれるのも便利です。
 
+安全とされる設定は技術進化や技術革新によって変化していきます。
+最新の推奨設定を把握し、必要に応じて暗号スイートをより強固なものにすることが大切です。
+
+特に、量子コンピューターが実用化した時は 2048bit RSA や 256bit ECDSA ですら短時間で突破されてしまう可能性があります。
+
+量子コンピューターによる暗号解読に対して安全だと考えられる暗号アルゴリズムを「耐量子暗号」 (PQC: Post-Quantum Cryptography) と呼びます。
+現在のところ、量子コンピューターは公開鍵暗号アルゴリズムへの脅威となっている一方で、多くの共通鍵暗号やハッシュ関数は量子コンピュータからの攻撃に対して比較的安全と考えられています。
+耐量子暗号アルゴリズムについても研究・議論が続いており、こちらも定期的に確認するとよいでしょう。

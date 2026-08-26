@@ -1,81 +1,89 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2023, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2025, Internet Initiative Japan Inc.
 ---
-
 
 ## 2. インベントリ の作成
 
-### インベントリとは何か？
+この章では、Ansibleインベントリの基本概念と、インベントリファイルの作成・管理方法について学びます。
 
-Ansibleを実行する為にはまずインベントリを作成しなければなりません。
-では、Ansibleインベントリとはなんでしょうか。
+---
 
-Ansibleのインベントリは、管理対象のノード（ホスト）のリストまたはリストのグループです。
-インベントリを使用することで、複数のホストに対して同時にタスクを実行できます。
-インベントリは、静的ファイルとして定義することも、動的に生成することも可能です。
+### インベントリとは？
 
-インベントリでは管理ホストをグループに割り当てることが可能なほか
-グループは子グループを含むことも可能で、ホストは複数のグループのメンバーになることができます。
-また、インベントリでは、それが定義するホストとグループに適用される、変数の設定も行います。
+Ansibleインベントリは、管理対象ノード（ホスト）のリストやグループを定義するファイルです。
+インベントリを使うことで、複数のホストに対して一括でタスクを実行できます。
+インベントリは静的ファイル（INI形式またはYAML形式）として定義するほか、動的に生成することも可能です。
 
-### インベントリを作成する
+- ホストはグループ化でき、グループは子グループを持つこともできます。
+- ホストは複数グループに所属可能です。
+- インベントリにはホストやグループに適用する変数も記述できます。
 
-では、実際に Inventory ファイルと呼ばれる物を作成します。
+---
+
+### インベントリファイルの作成方法
+
+Ansibleのインベントリファイルは、INI形式またはYAML形式で記述します。
 Ansible において、Inventory ファイルは対象を示していて実行に欠かせない要素です。
 
-[教材](https://github.com/iij/ansible-exercise)のフォルダには ansible フォルダの配下にインベントリファイルを置くためのフォルダ（inventories）があります。
-試しに開いてみましょう。
+[教材](https://github.com/iij/ansible-exercise)には ansible ディレクトリの配下にインベントリファイルを置くためのディレクトリ（inventories）があります。
+inventories/hosts を試しに開いてみましょう。
+以下のような記載がなされているはずです。
 
-Ansible の Inventory ファイルは INI 形式に近い記述によって作成されます。
-インベントリファイルの括弧内の見出し(`[app]`など)はグループ名を表し、
-ホストをグルーピングすることができます。
-なお、[]に属さないホストはデフォルトである`all`グループに属することになります。
+```text
+[web]
+web00
+app00
+```
 
-## [演習]インベントリの作成
+このようにAnsible の Inventory ファイルは INI 形式に近い記述によって作成されます。
+インベントリファイルの括弧内の見出し(`[app]`など)はグループ名を表し、任意のホストをグルーピングすることができます。
+
+なお、グルーピングでは暗黙のallグループが存在しており、[]に属さないホストはデフォルトである`all`グループに属することになります。
+
+## [演習.2] インベントリの作成
+
+### インベントリファイルの作成
 
 では、実際にインベントリファイルを作成してみましょう。
-`hosts` というファイルを作成し `host00`, `host01` を追加します。
-グループ名は`exercise`として下さい。
+ここでは `host00`, `host01` を追加します。
+また、ホストにログインする時に使用するユーザ名を定義しておきます。
 
-- inventoryファイルを作成する
+- `ansible/inventories/hosts` を編集します。
   ```bash
-  vi hosts
+  [root@ansibleconsole ansible]# cd ansible
+  [root@ansibleconsole ansible]# vim inventories/hosts
   ```
-- 記載内容
-  ```bash
+
+- 追記する内容
+
+  ```ini
+  ...
   [exercise]
   host00
   host01
   ```
-- インベントリの動作確認
-  - 先ほど作成したインベントリが正しいことを確かめるために、`ansible`コマンドで ping モジュールを実行してみます。 コマンドと実行結果は下記のようになるはずです。
-    ```bash
-    ansible -i hosts exercise -m ping -k
-    ```
-  - パスワードを聞かれるため事前準備で設定したパスワード(ansible)を入力します
-- 出力結果
-  ```bash
-  host01 | SUCCESS => {
-      "ansible_facts": {
-          "discovered_interpreter_python": "/usr/bin/python"
-      },
-      "changed": false,
-      "ping": "pong"
-  }
-  host00 | SUCCESS => {
-      "ansible_facts": {
-          "discovered_interpreter_python": "/usr/bin/python"
-      },
-      "changed": false,
-      "ping": "pong"
-  }
-  ```
 
-正しく実行されれば *SUCCESS* と出力されます。
+### インベントリファイルの書式チェック
 
-## [発展演習] 不要エントリのコメントアウト
+作成したインベントリファイルが正しい書式かどうかを確認するには、`ansible-inventory`コマンドを利用します。
 
-### 想定シナリオ
+```bash
+[root@ansibleconsole ansible]# ansible-inventory -i inventories/hosts --list
+```
+
+このコマンドを実行すると、インベントリの内容がJSON形式で表示され、構造やグループ分けが正しく認識されているか確認できます。
+
+### インベントリ構造の表示（YAML形式）
+
+さらに、`-y` オプションを付けることでYAML形式でインベントリの構造を表示できます。
+
+```bash
+[root@ansibleconsole ansible]# ansible-inventory -i inventories/hosts --list -y
+```
+
+これにより、グループやホストの階層構造がより分かりやすく表示されます。
+
+## [発展演習.1] 不要エントリのコメントアウトと動作確認
 
 先ほど作ったインベントリファイルですが、こんなケースは考えられないでしょうか。
 あるプロジェクトで、インベントリファイルに不要なホストエントリが含まれていることが判明しました。
@@ -85,45 +93,62 @@ Ansible の Inventory ファイルは INI 形式に近い記述によって作�
 一時的な除外のためにエントリを削除してしまったのでは、元に戻すときに苦労してします。
 従って、そのような時のためにコメントアウトによる除外を試してみましょう。
 
-- インベントリファイルの確認:
-  - 現在のインベントリファイルを確認し、不要なホストエントリを特定します。
-    ```bash
-    [exercise]
-    host00
-    host01
-    ```
-- 不要なホストエントリをコメントアウトします。
-  ```bash
+### コメントアウト作業
+
+- `ansible/inventories/hosts` ファイルを編集し、不要なホストエントリをコメントアウトしてください。
+
+  ```ini
+  [web]
+  web00
+  app00
+
   [exercise]
   host00
-  # host01
+  #host01
   ```
-- コメントアウトしたホストが正しく実行対象から外れていることを確認します。
-  - 以下のコマンドを使用して、インベントリの内容を確認します。
-    ```bash
-    ansible-inventory --list -i hosts
-    ```
-- 出力結果に host01 が**含まれていないこと**を確認します。
 
-## [発展演習] インベントリを YAML で書く
+### 動作確認
 
-Ansible のターゲットホストの情報を定義するインベントリファイルは、INI 形式の他にも YAML 形式でも定義できす。
+- コメントアウトしたホストが実行対象から外れていることを確認します。
 
-先ほど利用した INI 形式の Inventory ファイルを YAML 形式で記述すると以下の通りになります。
-YAML 形式で記述すると全てのグループが`all`グループの配下にあることが分かります。
+  ```bash
+  [root@ansibleconsole ansible]# ansible-inventory --list -i inventories/hosts
+  ```
 
-```yaml
-all:
-  children:
-    exercise:
-      hosts:
-        host00:
-        host01:
-```
+- 出力結果に `host01` が含まれていないことを確認してください。
+- 確認したら戻しておきましょう。
 
-なお、YAML書式についてはiniファイルのインベントリファイルがあれば以下のようなコマンドで作成することが可能です
+## [発展演習.2] Ansibleインベントリを活用したアドホック操作
 
-```bash
-ansible-inventory -i inventories/hosts --list -y
-```
+先ほど作成したインベントリの動作確認はあくまで作成したファイルの書式チェックのみとなっており、実際に登録したホストに対して疎通がある、操作可能、といった事は担保されていません。
+従って、登録したインベントリが実際に有効であるかどうかを確かめるために、`ansible`コマンドで ping モジュールを実行してみます。
 
+- ansibleコマンドの実行
+
+  ```bash
+  [root@ansibleconsole ansible]# ansible -i inventories/hosts web -m ping -k
+  ## -k は、ターゲットノードへの SSH 接続にパスワードを使うオプション
+  ## 以下のように ssh パスワードを効かれるので、 `ansible` と入力して Enter
+  SSH password:
+  ```
+- 正しく実行されれば以下のように、対象のインベントリに対して**SUCCESS**として返ってきます
+
+  ```bash
+  app00 | SUCCESS => {
+      "ansible_facts": {
+          "discovered_interpreter_python": "/usr/bin/python3.12"
+      },
+      "changed": false,
+      "ping": "pong"
+  }
+  web00 | SUCCESS => {
+      "ansible_facts": {
+          "discovered_interpreter_python": "/usr/bin/python3.12"
+      },
+      "changed": false,
+      "ping": "pong"
+  }
+  ```
+
+---
+<credit-footer/>

@@ -10,15 +10,20 @@ prior_knowledge:
 
 # {{$page.frontmatter.title}}
 
+::: tip はじめる前に
+こちらのハンズオンは「サーバーのリクエスト」と「サーバーの応答」の2つを見ながら進めていきます。
+あらかじめクライアント用とサーバー用でターミナルを2つ開いておくとスムーズにハンズオンを進められます。
+:::
+
 ## 環境準備
 
 以下のdockerコマンドでコンソールを取得してください。
 
 ```terminal
-$ docker pull iijrfujimoto/bootcamp_concurrent
+$ docker pull ktakaji139/bootcamp_concurrent
 $ mkdir bootcamp_work  # 作業用のディレクトリ。名前はなんでもいい
 $ cd bootcamp_work
-$ docker run --name bootcamp_concurrent -p 8000:8000 -v $PWD:/work --rm -it iijrfujimoto/bootcamp_concurrent /bin/bash
+$ docker run --name bootcamp_concurrent -p 8000:8000 -v $PWD:/work --rm -it ktakaji139/bootcamp_concurrent /bin/bash
 ```
 
 ## この資料の約束
@@ -50,13 +55,27 @@ root@0dd4d9fad678:/work# python3 main.py
 
 ::: tip 並行処理と並列処理
 
-並行処理(concurrent processing)と並列処理(parallel processing)は似た言葉ですが異なる動作を指す言葉です。
+並行処理(concurrent processing)と並列処理(parallel processing)は似た言葉ですが、着目する点が異なります。
 
-- 並行処理: ある時間内に複数のタスクを処理すること
-- 並列処理: 複数のタスクを「同時に」処理すること
+- 並行処理: 複数のタスクが同じ期間に進行できるように扱うこと
+- 並列処理: 複数のタスクを実際に同じ時刻に実行すること
 
-「並行処理」と言う場合はある時間内に複数タスクを実行できればいいので、実行するタスクを小まめに切り替えながら処理する動作も含みます。
-一方で「並列処理」の場合は複数のCPUコアによって全く同時に複数タスクを処理することを指します。
+たとえば、次のような違いです。横軸は時間を表しています。
+
+```text
+並行処理（1つのCPUで切り替えて進める）
+時間      ─────────────────────────────▶
+CPU       [ タスクA ][ タスクB ][ タスクA ][ タスクB ]
+
+並列処理（複数の実行単位で同時に進める）
+時間      ─────────────────────────────▶
+CPU 1     [       タスクA       ][       タスクA       ]
+CPU 2     [       タスクB       ][       タスクB       ]
+```
+
+「並行処理」は、複数のタスクが重なって進行している状態を表します。1つのCPUコアしか使えない場合でも、実行中のタスクが入出力待ちになったら別のタスクへ切り替えるなど、タスクを小まめに切り替えることで並行に進められます。この場合、ある瞬間にCPUで実行されているタスクは通常1つですが、全体としては複数のタスクが進行しています。
+一方、「並列処理」は、複数の実行単位（たとえば複数のCPUコア）があることで、複数のタスクを同じ時刻に実行することです。つまり、並行処理はタスクをどのように進行させるかという構造の話で、並列処理は実際に同時実行されているかという話です。並行処理は並列に実行されることもありますが、必ずしも並列処理になるとは限りません。
+並列処理は、並行処理を実現する方法の一つです。
 
 （参考: [Concurrency is not parallelism](https://go.dev/blog/waza-talk)）
 
@@ -160,7 +179,7 @@ with ThreadingHTTPServer(("", PORT), SimpleHelloHandler) as httpd:
 ```terminal
 $ curl localhost:8000 &
 $ curl localhost:8000 &
-$ curl localhost:8000 &
+$ curl localhost:8000
 ```
 
 さて結果はどうでしょうか。3回コマンドを実行しましたが、サーバのログは以下のようになったのではないでしょうか。
@@ -457,20 +476,22 @@ Pythonで書かれたコードは最終的にバイトコードにコンパイ�
 `dis`を利用して実際に実行されるバイトコードを見てみましょう。
 
 ```terminal
-root@40e566b8e23e:/work# python3
-Python 3.9.2 (default, Feb 28 2021, 17:03:44)
-[GCC 10.2.1 20210110] on linux
+root@460dc8ad3cd9:/work# python3
+Python 3.14.7 (main, Aug  5 2026, 16:34:40) [GCC 14.2.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import dis
 >>> a = 0
 >>> dis.dis("a += 1")
-  1           0 LOAD_NAME                0 (a)
-              2 LOAD_CONST               0 (1)
-              4 INPLACE_ADD
-              6 STORE_NAME               0 (a)
-              8 LOAD_CONST               1 (None)
-             10 RETURN_VALUE
->>>
+  0           RESUME                   0
+
+  1           LOAD_NAME                0 (a)
+              LOAD_SMALL_INT           1
+              BINARY_OP               13 (+=)
+              STORE_NAME               0 (a)
+              LOAD_CONST               1 (None)
+              RETURN_VALUE
+>>> exit
+root@460dc8ad3cd9:/work#
 ```
 
 `a += 1`というコードは上記の通り6行のバイトコードに変換されます。内容を見てみると以下のように動作することが分かります。
@@ -565,5 +586,80 @@ Webフレームワークはこの並行・並列処理の複雑性を隠蔽す�
 しかし自分が今どのような仕組みの上で実装しているのかを意識していないと、思わぬ事故を起こす可能性があります。
 
 フレームワークが提供するレールに乗りながらも、自分がスレッドプログラミングをしていることを常に意識することが大切です。
+
+## おまけ
+
+::: warning 注意
+この節はハンズオン本編には含まれない、おまけです。
+複数コアの環境を前提としており、1コアの環境では実施できない場合があります。
+VM のスペックをいじってやってみよう、ローカルPC上でコンテナを動かしてみよう、という人はやってみてください。
+:::
+
+### C/OpenMPで`+= 1`のレースコンディションを確認する
+
+Pythonでは、`+= 1`が複数の処理に分かれていても、通常のCPython 3.14では複数のスレッドがPythonコードを同時に実行しないようにする仕組みがあります。そのため、単純な加算で競合を再現するのは困難です。ただし、処理が複雑になったり、Pythonコードの実行を一時的に止めて別の処理を実行するライブラリを使用したりする場合には、競合が起きる可能性があります。
+
+ここでは、複数のCPUコアで簡単に並列実行できるCとスレッド並列化ライブラリ(OpenMP)を使い、同じような読み込み・加算・書き込みで起きるレースコンディションを参考として確認します。
+
+以下を`increment.c`として保存してください。
+
+```c
+#include <stdio.h>
+#include <omp.h>
+
+int main(void)
+{
+    int counter = 0;
+
+#pragma omp parallel for num_threads(5)
+    for (int i = 0; i < 10000; i++) {
+        counter += 1;
+    }
+
+    printf("expected: 10000\n");
+    printf("actual: %d\n", counter);
+}
+```
+
+コンパイルして実行します。
+
+```terminal
+root@40e566b8e23e:/work# gcc -fopenmp increment.c -o increment.out
+root@40e566b8e23e:/work# ./increment.out
+expected: 10000
+actual: 8734
+```
+
+`counter`を5つのスレッドで共有し、全体で10000回`counter += 1`を実行しています。`#pragma omp parallel for num_threads(5)`がループ処理を5つのスレッドに分けます。ロックや`atomic`を使っていないため、複数のCPUコアで同じ値を読み込んだスレッドがそれぞれ書き戻すと、加算結果の一部が失われます。`actual`は実行環境やタイミングによって異なり、期待値と一致する場合もあります。
+
+共有変数への加算を正しく行うには、`atomic`を指定します。
+
+```c
+#include <stdio.h>
+#include <omp.h>
+
+int main(void)
+{
+    int counter = 0;
+
+#pragma omp parallel for num_threads(5)
+    for (int i = 0; i < 10000; i++) {
+#pragma omp atomic
+        counter += 1;
+    }
+
+    printf("expected: 10000\n");
+    printf("actual: %d\n", counter);
+}
+```
+
+```terminal
+root@40e566b8e23e:/work# gcc -fopenmp increment.c -o increment.out
+root@40e566b8e23e:/work# ./increment.out
+expected: 10000
+actual: 10000
+```
+
+`#pragma omp atomic`により、`counter += 1`の読み込み・加算・書き込みが他のスレッドに割り込まれないように保護されます。
 
 <credit-footer/>

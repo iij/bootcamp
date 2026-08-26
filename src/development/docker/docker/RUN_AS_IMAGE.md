@@ -1,104 +1,225 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
-title: Dockerを触ってみよう
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
+title: Docker を触ってみよう
 description: Docker イメージを作り、コンテナ化する
 time: 1h
 prior_knowledge: 仮想化、CUI 操作
+updated: 2026-07
 ---
 
 <header-table/>
 
+# Docker コンテナイメージを作成して起動する
+
 ## おさらい
 
-前回ではコンテナの起動に作成済みのイメージを使ってコンテナを起動していました。
-今回は作成済みのコンテナイメージを使ってコンテナを起動するのではなく、コンテナイメージの作成から行ってみましょう。
+前項では、作成済みのイメージを使ってコンテナを起動しました。  
+本項は、Docker イメージの作成からコンテナの起動までを一連の流れとして体験します。
 
-### 演習2 Dockerコンテナイメージを作成する
+## 概要
 
-Dockerコンテナイメージの作成には予め作成済みである`DockerFile`を使用します
+前回の項では、作成済みのイメージを用いましたが、Docker では、「**Dockerfile**」というファイルを用いて、Docker イメージの作成を行うことができます。
+Dockerfile は専用言語で記述します。  
+このようにコンテナを初めとするサーバ環境やミドルウェアなどをコード(プログラム、設定ファイルなど)で構成管理することを「**Infrastructure as Code(IaC)**」と呼びます。  
+Dockerfile のように環境をコード化して管理することにより、以下のようなメリットが挙げられます。
 
-- DockerFileの取得
-  ```bash
-  git clone https://github.com/docker/getting-started.git
-  ```
-- イメージのビルド
-  ```bash
-  cd getting-started
-  docker build -t iijbootcamp_docker01 .
-  ```
-- コンテナの起動
-  ```bash
-  docker run --rm -p 80:80 --name iijbootcamp_docker01-tutorial iijbootcamp_docker01
-  ```
-<details><summary>実行中のログ</summary>
+- 新規メンバーの開発環境が、Dockerfile を共有するだけで構築可能
+- 複雑なインフラ環境がテキストベースで管理でき、git 等での管理が容易に
+- 構築手順などがコード化されるため、漏れや間違いが発見しやすくなる
+
+今回は、ubuntu というDocker イメージを元にカスタマイズしながら、nginx によるWeb サーバのDocker イメージを作成します。また、作成したDocker イメージを使ってDocker コンテナを立ち上げ、HTML ファイルがレスポンスされることを確認します。
+
+### 演習2. Dockerfile を記述し、コンテナを作る
+
+では、実際にDockerfile を作成し、Docker イメージを作成していきましょう。
+
+#### 2-1. Dockerfile 作成
+
+以下の内容をファイル名「Dockerfile」として作成してください。
+
+```Dockerfile
+FROM ubuntu
+LABEL maintainer="<your e-mail>"
+
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    rm /var/www/html/index.nginx-debian.html
+
+COPY index.html /var/www/html/
+
+EXPOSE 80
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
+```
+
+#### 2-2. index.html 作成
+
+また、`COPY` コマンドで利用する「index.html」を以下のように作成してください(あくまで一例です、好きに作成して良いです)。
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello world</title>
+  </head>
+  <body>
+    <h1>IIJ Boot Camp</h1>
+    <p>Hello World from docker container!!</p>
+  </body>
+</html>
+```
+
+では作成したDockerfile の内容を先頭から読み解いていきましょう。
+
+- `FROM`
+  - ベースとなるDocker イメージを設定する命令です。
+  - 今回は、ubuntu を利用しています。
+  - Dockerfile は必ず`FROM` 命令から始まっていなければなりません。
+- `LABEL`
+  - Docker イメージにメタデータを付加するときに利用します。
+  - 今回は、maintainer つまり管理者を追加しています。
+  - 昔のDockerfile においては、`MAINTAINER` 命令を使って設定していましたが、現在は非推奨となっています。
+- `RUN`
+  - Dockerfile の中でもとても重要な命令で、Docker イメージ作成時に実行する命令を記述します。
+  - 今回はパッケージのアップデートとnginx のインストール、nginx のデフォルトウェブページであるHTML ファイルの削除を行っています。
+  - この行で重要なのは、**&&** で繋いで実行している点です。
+  - Dockerfile からDocker イメージを作成する際、`RUN` 命令などの実行した状態をキャッシュとして保存します。
+  - そのため、`apt-get update` と`apt-get install -y nginx` が異なる行で書かれていると、新しくパッケージを追加するために、`apt-get install -y nginx` の行を更新して、再度Docker イメージを作成しようとした際に、`apt-get update` で作成されたキャッシュを利用してしまい、**最新版ではないnginx やパッケージがインストールされてしまう**可能性があります。
+- `COPY`
+  - ローカルにあるファイルなどをコンテナの内部へコピーする際に利用します。
+- `EXPOSE`
+  - コンテナ実行時にポートで待ち受けることをdocker に伝えます。
+  - 注意点として、この命令を書いただけでは、ホスト環境からアクセスはできません。
+  - 実際にアクセスするためには、後述する`docker run` コマンドのオプションでポートを設定する必要があります。
+- `ENTRYPOINT`
+  - `RUN` と異なり、Docker イメージから実際のコンテナを作成する際に実行されます。
+
+その他詳しい機能について知りたい方は、[公式リファレンス](https://docs.docker.com/engine/reference/builder/)をご参照ください。
+
+#### 2-3. イメージのビルド
+
+先ほど作成したDockerfile の仕様に基づき、イメージを作成します。
+
+カレントディレクトリに先程作成したDockerfile とindex.html の2ファイルがあることを確認してください。
+
+```bash
+$ ls
+Dockerfile  index.html
+```
+
+ビルドに必要なファイルがあることを確認したのち、以下のコマンドを実行してください。
+
+```bash
+$ docker build -t bootcamp_docker .
+```
+
+このコマンドによって、Dockerfile からDocker イメージが作成されます。
+`-t` オプションでイメージ名を決めることができます。
+また、最後の`.` は、Dockerfile が存在するディレクトリ(カレントディレクトリ)を意味しています。
+
+実際にDockerイメージが作成されているかコマンドで確認してみてください。
+
+#### 2-4. 作成済みイメージの確認
+
+```bash
+$ docker image ls
+```
+
+<details><summary>実行例</summary>
 
 ```
-/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh
-10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf
-10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
-/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
-/docker-entrypoint.sh: Configuration complete; ready for start up
-2022/06/17 04:10:18 [notice] 1#1: using the "epoll" event method
-2022/06/17 04:10:18 [notice] 1#1: nginx/1.21.6
-2022/06/17 04:10:18 [notice] 1#1: built by gcc 10.3.1 20211027 (Alpine 10.3.1_git20211027)
-2022/06/17 04:10:18 [notice] 1#1: OS: Linux 4.18.0-348.2.1.el8_5.x86_64
-2022/06/17 04:10:18 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
-2022/06/17 04:10:18 [notice] 1#1: start worker processes
-2022/06/17 04:10:18 [notice] 1#1: start worker process 32
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
+bootcamp_docker:latest          1d9aa4c413b3        232MB         72.1MB
+ubuntu:latest                   3131b4cc82a7        161MB         45.3MB
 ```
 
 </details>
 
-- ここまでできたらDockerコンテナによる仮想環境プラットフォームの構築は完了です。
-  - とりあえずここでは **Ctrl+C** で停止してください。
+「IMAGE」列を見ると、ubuntu とbootcamp_docker の２つのイメージが新たに作られていると思います。  
+ubuntu は`FROM` で指定したDocker イメージです。bootcamp_docker は、ubuntu のDocker イメージを元にnginx やHTML ファイルを追加して今回作成したDocker イメージです。
 
-### 発展課題2
+#### 2-5. コンテナの起動
 
-前回同様、演習. 2の通り実施するとターミナルが占有されていまいます。
-従って、今回もバックグラウンドで起動し、ターミナルが占有されないように実行してみましょう
+では、実際にこのコンテナを起動してアクセスしてみましょう。次のコマンドを実行してください。
 
-- コンテナのデーモン起動
-  ```bash
-  docker run --rm -p 80:80 -d --name iijbootcamp_docker01-tutorial iijbootcamp_docker01
-  ```
-- コンテナの起動確認
-  ```bash
-  CONTAINER ID   IMAGE                    COMMAND                   CREATED         STATUS         PORTS                               NAMES
-  38ebcf110f45   docker/getting-started   "/docker-entrypoint.…"   3 seconds ago   Up 2 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   fervent_shaw
-  ```
-  - ここで**NAMES**に表示されている値を記憶、若しくは記録しておいてください
-- 起動の確認
-  - ブラウザを開き、以下のURLを入力します
-    ```
-    http://localhost:80
-    ```
-  - 以下のような画面が表示されれば成功です
-    ![getting-started](./images/getting-started.png)
-- コンテナの終了
-  - **docker stop**コマンドを用いてdockerコンテナを停止します
-  ```
-  docker stop <NAME>
-  ```
-- コンテナが停止したことの確認
-  - ブラウザにて **http://localhost**にアクセスし、アクセスできないことを確認する
-  - **docker ps**コマンドを用いて、何も表示されないことを確認する
-    ```
-    docker ps
-    CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
-    ```
+```bash
+$ docker run -d -p 8080:80 bootcamp_docker
+```
 
-## 参考
+`-d` オプションはコンテナをデタッチドモードで起動することを意味しています。  
+nginx はデフォルトでデーモンとして起動してしまうため、Dockerfile ではnginx をデーモンとして起動しないオプションで起動しています。
+また、`-p` オプションでは、ホスト側とコンテナ側のポートを対応付けています。  
+「:」の左側がホスト環境、右側がコンテナ環境のポートを示しており、**ホスト環境の8080ポートへアクセスすると、コンテナの80ポートにつながる**ようになっています。
 
-### Docker イメージのビルド
+#### 2-6. コンテナの動作確認
 
-Dockerコンテナを使って仮想環境プラットフォームを作成するためには、Dockerイメージが必要となります。
+コンテナが起動していることを確認してください。
+正しく実行されていると以下のような画面が表示されます。
 
-通常であれば、`Dockerfile`を使用して自分のアプリケーションのDockerイメージを作成します。
-`Dockerfile`は、アプリケーションの依存関係や設定、実行コマンドなどを指定するためのテキストファイルです。
-`DockerFile`が作成できたらDockerイメージをビルドして作成します。その際に使うコマンドは`docker build`になります。
+```bash
+$ docker ps
+```
 
-通常であればテキストエディタを開いて`DockerFile`を作成しますが、完全にゼロの状態から`DockerFile`を作成するのは難しい為、先ずはチュートリアル用に公開されている物を使用すると良いでしょう
+<details><summary>実行例</summary>
+
+```bash
+CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+4e3f2161c850   bootcamp_docker   "nginx -g 'daemon of…"   12 minutes ago   Up 12 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   happy_zhukovsky
+```
+
+</details>
+
+#### 2-7. コンテナへのアクセス
+
+> 💡 ブラウザを利用する場合は。シークレットウィンドウ(Google Chrome) やInPrivate ブラウズ(Microsoft Edge) などキャッシュの影響を受けない状態で開くことを推奨します。
+
+では、実際にコンテナに対してアクセスしてみましょう。お好きな方法（Web ブラウザでも`curl` コマンド等でも)で「 http://localhost:8080 」にアクセスしてみましょう。  
+以下にcurl コマンドを用いた例を示します。
+
+```bash
+$ curl http://localhost:8080
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello world</title>
+  </head>
+  <body>
+    <h1>IIJ Boot Camp</h1>
+    <p>Hello World from docker container!!</p>
+  </body>
+</html>
+```
+
+上記のように実際に作成したHTMLが表示されていれば成功です。  
+プロキシを設定している場合は下記のように`--noproxy`オプションを指定する必要があります。
+
+```bash
+$ curl --noproxy localhost http://localhost:8080
+```
+
+## 参考情報
+
+### Docker イメージの共有方法
+
+皆さんが作成したDocker イメージなどを他の人に共有したい場合、Dockerfile をファイルサーバやGitHub 等で共有する以外に、[Docker Hub](https://hub.docker.com/) を始めとする「**Docker イメージレジストリ**」で公開し、それを利用してもらうことが可能です。  
+例えば、本講義で利用した「docker/getting-started」や「ubuntu」のDocker イメージは、Docker Hub で公開されているものを利用しています。
+
+Docker イメージレジストリに自分のDocker イメージを公開する際には、`docker push` コマンドを利用します。  
+逆に、Docker イメージをダウンロードしたい場合は、`docker pull` コマンドを利用します。  
+また、Docker イメージを`docker save` コマンドでtar ファイルとして保存し、`docker load` コマンドでtar からロードするといったことも行うことができます。
+
+## まとめ
+
+今回は、仮想環境プラットフォームであるDocker を実際に触っていただきました。  
+Docker の基礎知識をインプットしつつ、Docker コンテナの起動、およびDockerfile を作成し自身でコンテナを作っていただきました。
+
+コンテナは仮想マシンに比べ軽く高速で作成することが可能なため使いどころは多いでしょう。  
+しかしながら、実際のサービスでは、単一のアプリケーションのみで1つのコンテナで完成することはありえません。  
+Web サーバやWeb アプリケーション、データベースなど様々なものが１つに組み合わさって初めてサービスとして完成します。  
+Docker コンテナでは、「1コンテナ1プロセス」や「1コンテナ1ロール」が基本となっています。
+そのため複数のコンテナを組み合わせて構築する必要があります。
+
+「開発環境をdocker-compose で構築」にて、複数のコンテナを組み合わせて管理する手法について学びます。
 
 <credit-footer/>

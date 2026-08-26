@@ -1,144 +1,214 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2022, Internet Initiative Japan Inc.
-title: Dockerを触ってみよう
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
+title: Docker を触ってみよう
 description: Docker の概要を学び、コンテナ操作を体験します
 time: 1h
 prior_knowledge: 仮想化、CUI 操作
+updated: 2026-07
 ---
 
 <header-table/>
 
+# Docker コンテナの管理
 
-## Dockerコンテナの管理
+## おさらい
 
-前回は、Dockerコンテナのイメージの取得からコンテナの構築までを行いました。
+ここまででDocker コンテナのイメージの取得からコンテナの構築に加え、実際に自分でイメージを作成する所までを行いました。  
 しかし、先ほどの講義では以下の項目についての確認には言及していません。
 
 - 取得したイメージがきちんと取得できているのか？
 - 起動したコンテナが間違いなく起動しているのか？
 - 作業完了後に後片付け・余計なリソースやプロセスが残っていないか？
 
-実際のコンテナの活用にはこういったDockerコンテナの管理が必要不可欠になります。
-従って本講では、Dockerコンテナを管理する為のコマンドを学習します。
+実際のコンテナの活用にはこういったDocker コンテナの管理が必要不可欠です。
+特に運用現場では、不要なリソースの整理や状態確認が重要です。  
+従って本項では、Docker コンテナを管理する為のコマンドを学習します。
 
-### 演習3 docker images
+## 演習3. Docker コマンド各種を実行してみる
 
-`docker images` コマンドは、ローカル環境に存在するDocker イメージの一覧を表示するコマンドです。
-これを用いることでコンテナの元となるイメージファイルの有無を確認することができます。
+ここで紹介するコマンドは日常的な管理作業で使う代表的なものを挙げています。
+それぞれ実行してみましょう。
 
-なお、Dockerイメージには、名前の他に「TAG」を付けることができます。
-TAGとして使われる文字列にはバージョンを記載することが一般的です。
-今回表示されている「latest」は最新版であることを意味しています。
+### 3-1. イメージの一覧表示
 
-コマンドを実行し、手元にどんなイメージがあるか確認してみてください
+`docker image` コマンドは、ローカルに存在するDocker イメージを管理するためのコマンドです。  
+`docker image ls`　でローカルに存在するDockerイメージの一覧を表示します。 イメージ名やタグ、サイズなどを確認できます。
 
 ```bash
-$ docker images
+$ docker image ls
 ```
 
 <details><summary>実行例</summary>
 
+```bash
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
+alpine:latest                   28bd5fe8b56d         13MB         3.93MB
+bootcamp_docker:latest          1d9aa4c413b3        232MB         72.1MB
+docker/getting-started:latest   d79336f4812b       73.9MB         21.4MB
+hello-world:latest              96498ffd522e       25.9kB         9.49kB
+ubuntu:latest                   3131b4cc82a7        161MB         45.3MB
 ```
-REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
-docker/getting-started                                                    latest       cb90f98fd791   2 months ago    28.8MB
-```
+
 </details>
 
+### 3-2. コンテナの一覧表示
 
-### 演習4 docker ps
-
-`docker ps` コマンドは、ローカル環境に存在するDockerコンテナに関する情報を表示してくれます。
-現在起動しているコンテナは`docker ps` と入力すると表示されます。
-こちらもコマンドを実行してみましょう。
-
-`docker ps`コマンドのデフォルトの動作で表示されるのは永続的に稼働しているコンテナのみ表示されるため、
-本講義に従って実行した場合は何も表示されないと思います。
-既に終了してしまったり、エラーで起動できていないコンテナを確認するためには、
-オプションで`-a` を付けることで表示可能です。
+`docker ps` コマンドは、現在起動中のコンテナを表示します。  
+停止したコンテナも含めて確認したい場合は `-a` オプションを付けます。
 
 ```bash
+$ docker ps
 $ docker ps -a
 ```
 
 <details><summary>実行例</summary>
 
+```bash
+$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED         STATUS         PORTS                                     NAMES
+ee4fc314d694   bootcamp_docker   "nginx -g 'daemon of…"   9 minutes ago   Up 9 minutes   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   stoic_lewin
 ```
-CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS    PORTS     NAMES
-f908c593f036   docker/getting-started   "/docker-entrypoint.…"   2 seconds ago   Created             getting-started
+
+```bash
+$ docker ps -a
+CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS                     PORTS                                     NAMES
+47cec83d9286   hello-world       "/hello"                 5 minutes ago    Exited (0) 5 minutes ago                                             inspiring_elgamal
+ee4fc314d694   bootcamp_docker   "nginx -g 'daemon of…"   10 minutes ago   Up 10 minutes              0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   stoic_lewin
 ```
+
 </details>
 
-### 演習5 docker start、stop
+### 3-3. コンテナの起動・停止・再開
 
-`docker start` は、コンテナの起動を行うコマンドで、`docker stop` は、コンテナを停止するコマンドです。
-これらのコマンドでは、起動・停止対象のコンテナを選択する必要があるため、引数として`docker ps` の表示結果にあった「CONTAINER ID」を設定します。
+- **起動(初回)**  
+  イメージから新しくコンテナを作成して起動します。
 
-先ほどの項では`docker/getting-started`コンテナの起動に`docker run`を使用していましたが、`docker run`と`docker start`には大きな違いがあります。
+  ```bash
+  $ docker run --name iij-bootcamp -d -p 8888:80 docker/getting-started
+  ```
 
-`docker run`は、`docker start`だけでなく、`docker create`を兼ねるコマンドとなっており、実行対象のコンテナが存在しない場合はイメージからコンテナ化を試みるようになっています。
+  `docker ps` を実行するとコンテナが起動しているはずです。
 
-このように大変便利なコマンドですが、既にコンテナ化されており停止しているだけの物を起動したいと思った時に`docker run`を使用すると、既にコンテナ化されていものがあるにも関わらず新たにイメージからコンテナを作り出そうとするなど、思わぬ動作を引き起こすことがあります。
+- **停止**  
+  起動中のコンテナを停止します。「CONTAINER ID」 は`docker ps` で確認できます。
 
-従って、`docker run`は初回起動時に使う物として考え、
-`docker stop`で停止しただけのコンテナを再び起動させたい場合は`docker start`を用いましょう。
+  ```bash
+  $ docker stop <CONTAINER ID>
+  ```
+  
+  コンテナを停止すると`docker ps` の一覧からは見れなくなっているはずです。  
+  その場合は演習3-2. にて説明したように `-a` オプションを付けることで停止したコンテナも確認できるという訳です。  
+  また、コマンドで確認してみると「STATUS」列の表示が直近の時間で停止した旨の表示になっています。
 
-では、実際に`docker stop`と`docker start`を使う演習をしてみましょう。
+  <details><summary>出力例</summary>
 
-#### 5-1. コンテナの起動
+  ```bash
+  $ docker ps -a
+  CONTAINER ID   IMAGE                    COMMAND                  CREATED          STATUS                     PORTS                                     NAMES
+  4e37d78daa1f   docker/getting-started   "/docker-entrypoint.…"   32 minutes ago   Exited (0) 2 seconds ago                                             iij-bootcamp
+  ```
 
-```bash
- $ docker run --name iij-bootcamp_docker01 -d -p 8080:80 docker/getting-started
-```
+- **再開**  
+  停止したコンテナを再度起動します。
 
-<details><summary>実行例</summary>
+  ```bash
+  $ docker start <CONTAINER ID>
+  ```
 
-```bash
- $ docker ps
-CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS         PORTS                                   NAMES
-6d868b858fd7   docker/getting-started   "/docker-entrypoint.…"   4 seconds ago   Up 3 seconds   0.0.0.0:8080->80/tcp, :::8080->80/tcp   interesting_darwin
-```
-</details>
+  `docker ps` コマンドで確認してみると「STATUS」列が直近の時間で起動した旨の表示になっています。
 
+  <details><summary>出力例</summary>
 
-#### 5-2. コンテナの停止
+  ```bash
+  $ docker ps
+  CONTAINER ID   IMAGE                    COMMAND                  CREATED              STATUS          PORTS                                     NAMES
+  7437957e85b6   docker/getting-started   "/docker-entrypoint.…"   About a minute ago   Up 2 seconds    0.0.0.0:8888->80/tcp, [::]:8888->80/tcp   iij-bootcamp
+  ```
 
-先ほど実行したコンテナを停止します。 **<CONTAINER ID>**については先ほどの演習で行った`docker ps`等を用いて確認してください
+  </details>
 
-```bash
- $ docker stop <CONTAINER ID>
-```
+### 3-4. コンテナ・イメージの削除
 
-#### 5-3. コンテナの開始(再開)
+不要なコンテナやイメージは削除してディスク容量を確保しましょう。
 
-```bash
- $ docker start <CONTAINER ID>
-```
+- **コンテナの削除**  
+  基本的にコンテナを削除する場合、対象となるコンテナは停止しておく必要があります。  
+  3-3. で再開させたコンテナを今一度停止させましょう。
 
-### 演習6 docker rm、rmi
+  ```bash
+  $ docker stop iij-bootcamp
+  ```
 
-`docker rm` と`docker rmi` は、それぞれDocker コンテナ、Docker イメージの削除を行うコマンドです。
-軽量であるとは言え、コンテナイメージも一定の容量を持つため作成するだけで削除を行わないといずれディスクを圧迫し、溢れてしまいます。
-従って、不要なコンテナやイメージは削除するよう心がけましょう。
-ただし、削除したいDocker イメージを元に作成したDocker コンテナが存在する場合削除できません。
-その際は、事前にDocker コンテナを削除した後に、Docker イメージを削除してください。
+  ここで何かに気づいた人はいますか?
 
-なお、削除には`docker stop`等と同様に引数に「CONTAINER ID」や「IMAGE ID」を設定する必要があります。
+  今までコンテナに対して操作する為に「CONTAINER ID」を確認して貰っていましたがここでは「iij-bootcamp」という文字列を指定しています。  
+  これは演習3-3. 起動時にオプションとして`--name` を使いユーザが識別しやすいユニークな名前を指定していたためです。  
+  この様に適切な名前を付与しておくことで、ユーザがより効率的にコンテナを管理することができます。  
+  `--name` を付与しなくともdocker 側で任意の名前を付与してくれるため必ずしも`--name` オプションが必要な訳ではありません。
+  
+  ではコンテナが停止しているはずなので、コンテナを削除しましょう。
 
-```bash
-$ docker rm  iij-bootcamp_docker01
-iij-bootcamp_docker01
-```
+  ```bash
+  $ docker rm iij-bootcamp
+  ```
 
-```bash
-$ docker rmi docker/getting-started
-docker/getting-started
-```
+  前項の[Docker コンテナイメージを作成して起動する](./RUN_AS_IMAGE.md)(演習2-5.) から続けてハンズオンを受講している方は恐らくコンテナが1つ起動していると思いますので、先程と同様にコンテナの停止・削除をしておきましょう。  
+  「CONTAINER ID」の値を用いて停止・削除を行っても良いですし、 「NAMES」の値を用いても構いません。
+
+  > 💡 コンテナを停止せずに直接削除しようとすると...
+  > <details><summary>エラー例</summary>
+  >
+  > ```bash
+  > Error response from daemon: cannot remove container "4e37d78daa1f": container is running: stop the container before removing or force remove
+  > ```
+  >
+  > </details>
+
+- **イメージの削除**  
+  イメージを削除する前に改めてイメージの一覧表示をしておきましょう。  
+  コマンドが分からない場合は演習3-1. を確認しましょう。
+
+  一覧を確認したのち、実際にイメージを削除します。
+
+  ```bash
+  $ docker image rm docker/getting-started
+  ```
+
+  イメージ削除後、改めてイメージ一覧を確認すると「docker/getting-started」が一覧から削除されていることが確認できます。
+
+  ※ イメージを削除する前に、そのイメージを使ったコンテナが全て削除されている必要があります。
+
+### 3-5. その他の管理コマンドの一例
+
+- **ログの確認**  
+  コンテナの標準出力ログを確認できます。
+
+  ```bash
+  $ docker logs <CONTAINER ID>
+  ```
+
+- **リソース使用状況の確認**  
+  コンテナのCPUやメモリ使用量をリアルタイムで確認できます。
+
+  ```bash
+  $ docker stats
+  ```
+
+- **不要なリソースの一括削除**  
+  停止中のコンテナや未使用イメージをまとめて削除できます。
+
+  ```bash
+  $ docker system prune
+  ```
+
+  > ⚠️ **注意:**  
+  > このコマンドを実行すると、停止中のコンテナ・未使用のイメージ・未使用のネットワーク・ビルドキャッシュなどがすべて削除されます。  
+  > 必要なデータやイメージまで消してしまう可能性があるため、実行前に内容をよく確認してください。  
+  > さらに、`-a` オプションを付けると未使用のすべてのイメージも削除されるので、特に注意が必要です。
 
 ## まとめ
 
-ここまで実施することでDockerコンテナの取得から後片付けまでの一通りの作業ができるようになりました。
-しかし、実際に自分好みのDockerイメージを作るにはどうすれば良いでしょうか。
-次項ではDockerイメージの作り方について学びたいと思います。
-
+この章では、Docker コンテナやイメージの状態確認・起動・停止・削除など、運用に必要な基本操作を学びました。  
+これらのコマンドを活用することで、効率的にDocker 環境を管理できます。  
 
 <credit-footer/>

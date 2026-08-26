@@ -45,72 +45,46 @@ $ git clone git@github.com:iij/bootcamp.git
 
 #### 手順
 
-1. ハンズオン用の Docker イメージを pull してくる
+1. リポジトリをcloneする
 
-   ```bash
-   # やや重たいので注意してください
-   $ docker pull tamago0224/bootcamp-springboot:2024
-   ```
+  他の講義で実施済みの場合は必要ありません
 
-2. ハンズオン用の作業ディレクトを作成する
+  ```bash
+  $ git clone https://github.com/iij/bootcamp.git
+  ```
 
-   ```bash
-   # 適当な場所に作業用ディレクトリを作成し、その中に work ディレクトリを作成してください。
-   $ mkdir bootcamp-java-2024 # このディレクトリ名は何でも良い
-   $ cd bootcamp-java-2024
-   $ mkdir work
-   ```
+2. ハンズオン環境を作成する
+  
+  ```bash
+  # 1でcloneしたディレクトリをカレントディレクトリとする
+  $ cd bootcamp/src/server-app/java/server-app
+  $ docker build -t bootcamp-java .
+  ```
 
-3. ハンズオン用の docker-compose.yml を用意する
+3. コンテナを起動する
 
-   ```bash
-   $ curl -o docker-compose.yml https://raw.githubusercontent.com/iij/bootcamp/master/src/server-app/java/server-app/docker-compose.yml
-   ```
+  ```bash
+  # コンテナを起動する
+  $ docker compose up -d
+  # コンテナに入る
+  $ docker compose exec java /bin/bash
+  > pwd
+  /app
+  ```
 
-   ```yaml
-   services:
-     java:
-       image: tamago0224/bootcamp-springboot:2024
-       volumes:
-         - ./work:/work
-       working_dir: /work
-       tty: true
-       ports:
-        - "8080:8080"
-   ```
+4. アプリケーションの起動チェック
 
-4. コンテナを起動する
+  ```bash
+  # Spring Bootを起動する
+  ❯ ./gradlew bootrun
+  # ...
+  # いろんなログが流れる
+  ```
 
-   ```bash
-   # コンテナを起動する
-   $ docker compose up -d
-   # コンテナに入る
-   $ docker compose exec java /bin/bash
-   > pwd
-   /work
-   ```
-
-5. 必要なプロジェクトファイルの用意。別画面のターミナルで以下のコマンドを実行
-
-   ```bash
-   $ cd bootcamp-java-2024
-   $ docker compose cp java:/app/. ./work
-   $ ls ./work # 以下のファイル群が確認できる
-   build  build.gradle  gradle  gradlew  settings.gradle  src
-   ```
-
-6. アプリケーションの起動チェック
-
-   ```bash
-   # Spring Bootを起動する
-   ❯ ./gradlew bootrun
-   # ...
-   # いろんなログが流れる
-   ```
-
-7. 動作チェック
+5. 動作チェック
 
 ホストマシンの適当なブラウザから[localhost:8080](http://localhost:8080)にアクセスし、下記のようなエラーページが表示されることを確認してください。
+確認できたら、Ctrl+Cでプロセスを終了させてください。
 
 ![初回起動 - WhitelabelErrorPage](./images/white-label-error.png)
 
@@ -281,7 +255,7 @@ Spring Boot アプリケーションの main 関数は`com.github.iij.bootcamp.s
 
 :computer: ServerAppApplication.java を修正してください。
 
-```java{10-13}
+```java{11-14}
 // src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
 package com.github.iij.bootcamp.serverapp;
 
@@ -307,7 +281,7 @@ public class ServerAppApplication {
 ❯ ./gradlew bootRun
 ```
 
-再起動時にログに"name: アリス,id: alice"と表示されていれば OK です。
+再起動時にgradleの実行ログに"name: アリス,id: alice"と表示されていれば OK です。
 
 #### チェックポイント その 1
 
@@ -327,7 +301,7 @@ Java には Lombok などのボイラープレートを解消するツールな�
 
 :computer: ServerAppApplication.java を修正し、サーバを再起動してみてください。
 
-```java{5-8,19-27}
+```java{6-9,20-28}
 // src/main/java/com/github/iij/bootcamp/serverapp/ServerAppApplication.java
 package com.github.iij.bootcamp.serverapp;
 
@@ -499,7 +473,7 @@ public class UserService {
 
 ```
 
-```java{6-8,13-21}
+```java{7-9,14-22}
 // src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
 package com.github.iij.bootcamp.serverapp;
 
@@ -556,7 +530,7 @@ $ curl 'localhost:8080/user?id=bob'
 
 :computer: UserService.java と UserController.java を修正し、サーバを再起動してください。
 
-```java{27-35}
+```java{28-36}
 // src/main/java/com/github/iij/bootcamp/serverapp/UserService.java
 package com.github.iij.bootcamp.serverapp;
 
@@ -596,14 +570,14 @@ public class UserService {
 }
 ```
 
-```java{7-10,23-52}
+```java{8-11,24-53}
 // src/main/java/com/github/iij/bootcamp/serverapp/UserController.java
 package com.github.iij.bootcamp.serverapp;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
 // 追記BEGIN
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -650,8 +624,6 @@ public class UserController {
     return this.userService.save(newUser);
   }
   // 追記END
-
-}
 ```
 
 ```bash

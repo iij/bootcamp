@@ -1,5 +1,5 @@
 ---
-footer: CC BY-SA Licensed | Copyright (c) 2020, Internet Initiative Japan Inc.
+footer: CC BY-SA Licensed | Copyright (c) 2026, Internet Initiative Japan Inc.
 title: Prometheusでアプリケーションを監視してみよう
 description: 監視の基礎を学び、簡単な監視システム構築を体験する
 time: 2h
@@ -24,17 +24,24 @@ prior_knowledge: 監視
 - Dockerのインストール
   - `docker image ls`で"hello-world"が存在しない状態で、`docker run hello-world`が実行できていればOK
 - Docker Composeのインストール
-  - `docker-compose --version`でバージョン情報が出ていればOK
+  - `docker compose version`でバージョン情報が出ていればOK
   - バージョンに指定はありませんが新しい方がいいです
 
 ### 0-4. 注意事項
-本講義は「監視概論」と「Prometheusを触ってみよう」の二部構成になっています。Promethusのハンズオンのみを受講したい方は、時間を指定しますのでその時間になったら合流してください。「監視概論」では監視そのものの基礎を座学中心に学んでいきます。「Promethusを触ってみよう」ではPrometheusを使った監視をハンズオンを中心に学んでいきます。
+本講義は「監視概論」と「Prometheusを触ってみよう」の二部構成になっています。Prometheusのハンズオンのみを受講したい方は、時間を指定しますのでその時間になったら合流してください。
+「監視概論」では監視そのものの基礎を座学中心に学んでいきます。「Prometheusを触ってみよう」ではPrometheusを使った監視をハンズオンを中心に学んでいきます。
 
 ## 1. 監視概論
 ### 1-1. 監視とは
-システムに置ける「監視」は主に**monitoring**としての意味で使われます。**monitoring**の直訳的な意味は「(時間経過として)見張り、状態変化を検知すること」で、システムにおけるmonitoringとは「(主に)時間経過と共に変化したものを検知する」ことを指します。身近な例でいうと、自分の担当するサーバが意図せずダウンしたとき、何かしらの方法で皆さんの下に通知が来ると思います。この例でいうと「サーバダウンを検知→管理者へ通知」の流れがmonitoringになります。
+システムにおける「監視」は主に**monitoring**としての意味で使われます。
+**monitoring**の直訳的な意味は「(時間経過として)見張り、状態変化を検知すること」で、システムにおけるmonitoringとは「(主に)時間経過と共に変化したものを検知する」ことを指します。
+身近な例でいうと、自分の担当するサーバが意図せずダウンしたとき、何かしらの方法で皆さんの下に通知が来ると思います。
+この例でいうと「サーバダウンを検知→管理者へ通知」の流れがmonitoringになります。
 
-最近ではmonitoringをする上で**observability**というキーワードが重要視されるようになりました。**observability**の直訳的な意味は「可観測性」です。システムにおけるobservabilityとは「システム全体の中のコンポーネント同士がどのように動いているかを観測できる能力」ことです。システムにobservabilityがない場合、十分にシステムの状態を把握することができず、monitoringが機能しなくなります。
+最近ではmonitoringをする上で**observability**というキーワードが重要視されるようになりました。
+**observability**の直訳的な意味は「可観測性」です。
+システムにおけるobservabilityとは「システム全体の中のコンポーネント同士がどのように動いているかを観測できる能力」ことです。
+システムにobservabilityがない場合、十分にシステムの状態を把握することができず、monitoringが機能しなくなります。
 
 > 【解説】
 > 
@@ -45,7 +52,8 @@ prior_knowledge: 監視
 
 そもそも、監視の目的は「サービスを通してユーザに価値を提供し続ける」ことにあるとされています。もし監視を行わなかった場合、高頻度でサービス停止を招き**ユーザに価値を提供しつづける**ことができなくなります。例えば仮にシステムが落ちていたとしても、監視をしていないがために、**ユーザから問い合わせがあって初めて気が付く**なんてこともあります。また、一度は障害直せても対策を練るのに十分な情報がなく、**同じ障害を頻繁**に引き起こします。どれだけ素晴らしく画期的なサービスでも、システムが停止している時間が長ければ長いほど顧客を手離し、利益を損なうことになります。
 
-監視を行っている身近な例にソーシャルゲームがあります。サーバ負荷を測定しておくことで、毎年どの時期に負荷がかから傾向を掴み、みんなが問題なくガチャを回せるように前もってサーバをスケーリングさせています。もしサーバ負荷に耐え切れず、アクセス障害でも起こしたら、せっかくユーザが諭吉を片手にゲームを開いたのにガチャを回せず、正気に戻って課金をしなくなってしまいます。
+監視を行っている身近な例にソーシャルゲームがあります。サーバ負荷を測定しておくことで、毎年どの時期に負荷がかかるか傾向を掴み、みんなが問題なくガチャを回せるように前もってサーバをスケーリングさせています。
+もしサーバ負荷に耐え切れず、アクセス障害でも起こしたら、せっかくユーザが諭吉を片手にゲームを開いたのにガチャを回せず、正気に戻って課金をしなくなってしまいます。
 
 監視の重要性がわかっていただけましたでしょうか？次の節では先ほど挙げた監視の目的を踏まえ、目標達成に必要な4つの要素について触れていきたいと思います。
 
@@ -61,43 +69,74 @@ prior_knowledge: 監視
 
 1. 可視性
 
-システムのアクセス率やサーバ負荷などといったリソース状況を誰でも見れるようにすることで、システム全体状況を把握できる人が増え、監視属人化を防ぐことができます。注意して欲しいのは「複雑な手順を踏まないとリソースが見れない/把握できない」ような監視システムは**可視性が悪い**と言えます。可視性向上にはいくつかの方法がありますが、基本的にGUIを使ってグラフィカルに見れるWebUIなんかがあると可視性が格段に向上します。
+システムのアクセス率やサーバ負荷などといったリソース状況を誰でも見れるようにすることで、システム全体状況を把握できる人が増え、監視の属人化を防ぐことができます。
+注意して欲しいのは「複雑な手順を踏まないとリソースが見れない/把握できない」ような監視システムは**可視性が悪い**と言えます。
+可視性を向上させる方法はいくつかありますが、WebUIなどのGUIを用いることが例として挙げられます。
 
 2. 通知性
 
-アラートを発し、即座に対応できるようにすることでサービス提供機会の損失を低くすることができます。ただし、何でもかんでもとにかく電話をかけるだけがアラートではありません。障害の度合により適切な通知手段(電話、SMS、チャット)を取らないと、誰も通知を信用しない狼少年状態になることがあります。CPU利用率が50%超えたからと言って夜中に叩き起こされたらたまったものではありません。いわゆる、燃え尽き症候群(burn-out)と言われるもので、結局人が働いているので人の性質を無視して業務は回せないのです。
+アラートを発し、即座に対応できるようにすることでサービス提供機会の損失を低くすることができます。ただし、無闇やたらに電話をかけるだけがアラートではありません。
+障害の度合により適切な通知手段(電話、SMS、チャット)を取らないと、誰も通知を信用しない狼少年状態になることがあります。
+例として、CPU利用率が一時的に50%超えたからと言って夜中に叩き起こされたらたまったものではありません。
+いわゆる、燃え尽き症候群(burn-out)と言われるもので、結局人が働いているので人の性質を無視して業務は回せないのです。
 
 3. 特定性
 
-常日頃からログやメトリクスを収集し、一定期間保存することで、万が一障害が起きても直前の挙動を把握することができ、障害の原因特定を迅速に進めることができます。また、障害となる原因を特定することで再発防止策も打ち立てやすく、同じような障害を起こしづらいシステムに昇華させることができます。
+常日頃からログやメトリクスを収集し、一定期間保存することで、万が一障害が起きても直前の挙動を把握することができ、障害の原因特定を迅速に進めることができます。
+また、障害となる原因を特定することで再発防止策も打ち立てやすく、同じような障害を起こしづらいシステムに昇華させることができます。
 
 4. 分析性
 
-障害の事後対応だけが監視の役割ではありません。過去のデータを基にシステム全体の傾向を分析し、対策を打ち立てることで**障害を未然に防ぐ**ことができます。さらにもっと広い意味で「そのビジネスがうまくいっているのか」といった分析も監視を通して行うことで、さらなる収益増加につなげることもできます。
+障害の事後対応だけが監視の役割ではありません。過去のデータを基にシステム全体の傾向を分析し、対策を打ち立てることで**障害を未然に防ぐ**ことができます。
+さらにもっと広い意味で「そのビジネスがうまくいっているのか」といった分析も監視を通して行うことで、さらなる収益増加につなげることもできます。
 
-監視により主にこれら4つの性質を実現することができますが、この性質の中の何を最重視するかという問いに対しては、そのプロジェクトごとに異なるため正解がなく、プロジェクトメンバーの中で念入りに話し合う必要があります。また、それに沿う形で監視システムを構築する必要があります。
+監視により主にこれら4つの性質を実現することができますが、この性質の中の何を最重視するかという問いに対しては、そのプロジェクトごとに異なるため正解がなく、プロジェクトメンバーの中で念入りに話し合う必要があります。
+また、それに沿う形で監視システムを構築する必要があります。
 
 
 ### 1-3. 簡単な監視ハンズオン
 座学は以上になります。ここからはサーバを実際に立て、Linux上でサーバを監視してみましょう。ハンズオンの流れは以下になります。
 1. dockerを使って簡単なWordPressサーバをローカルに建てる
-2. vmstatでパフォーマンス監視を行う
-3. curlを使って外部からサービス監視を行う
+2. `vmstat`でパフォーマンス監視を行う
+3. `curl`を使って外部からサービス監視を行う
+
+💻️ はホスト側で実行する項目です。 📦️ はコンテナ内部側で実行する項目です。
 
 #### STEP1:dockerを使って簡単なWordPressサーバをローカルに建てる
-まず、公式のWordPressサーバ(コンテナ)をdocker hubからpullします。pull出来ているか心配な場合は適宜`docker image ls`で存在を確認してください。
+まず、[公式のWordPressサーバ(コンテナ)](https://hub.docker.com/_/wordpress)をdocker hubからpullします。
+
+💻️ ホストで実行
+```sh
+docker pull wordpress:php8.5-apache
 ```
-# docker pull wordpress:php8.0-apache
+
+pull出来ているか心配な場合は適宜`docker image ls`で存在を確認してください。
+pull出来ている場合の出力例は以下の通りです。
+```sh
+ $ docker image ls wordpress:php8.5-apache
+IMAGE                     ID             DISK USAGE   CONTENT SIZE   EXTRA
+wordpress:php8.5-apache   80be1f0a8e4f       1.12GB          283MB
 ```
-次にコンテナを立ち上げます。ポートはlocalhostの8080をコンテナの80にフォワードさせていますが、すでに他のコンテナで使用中の場合は適宜空いているポートを割り当ててください。
+
+
+次にコンテナを立ち上げます。ポートはlocalhostの`8080`をコンテナの`80`にフォワードさせていますが、すでに他のコンテナで使用中の場合は適宜空いているポートを割り当ててください。
+
+💻️ ホストで実行
+```sh
+docker run -d --name monitoring_bootcamp -p 8080:80 wordpress:php8.5-apache 
 ```
-# docker run -d --name monitoring_bootcamp -p 8080:80 wordpress:php8.0-apache 
+最後に`docker ps`でWordPressが立ち上がって、Webページにアクセス出来ていればSTEP1は完了です。
+
+💻️ ホストで実行
+```sh
+docker ps
 ```
-最後に`docker ps`でwordpressが立ち上がって、Webページにアクセス出来ていればSTEP1は完了です。
-```
-# docker ps
-CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS          PORTS                  NAMES
-3d7494717550   wordpress   "docker-entrypoint.s…"   47 minutes ago   Up 11 minutes   0.0.0.0:8080->80/tcp   monitoring_bootcamp
+
+出力例
+```sh
+ $ docker ps
+CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS          PORTS                                     NAMES
+f9ec0a6e63ec   wordpress:php8.5-apache   "docker-entrypoint.s…"   17 seconds ago   Up 17 seconds   0.0.0.0:8080->80/tcp, [::]:8080->80/tcp   monitoring_bootcamp
 ```
 適当なブラウザでdockerを立ち上げたサーバ宛にアクセスできればOKです。
 
@@ -106,20 +145,28 @@ CONTAINER ID   IMAGE       COMMAND                  CREATED          STATUS     
 
 #### STEP2:vmstatでパフォーマンス監視を行う
 STEP2ではサーバパフォーマンスを目視で確認します。(これをパフォーマンス監視といいます)立ち上げたコンテナの中に入り`vmstat`コマンドを入力します。
+
+💻️ ホストで実行
+```sh
+docker exec -it -- monitoring_bootcamp /bin/bash
 ```
-# docker exec -it monitoring_bootcamp /bin/bash
-container~# vmstat -tw 1
+
+コンテナの中に入ったら、`vmstat`コマンドを入力します
+
+📦️️ コンテナ内部で実行
+```sh
+vmstat -tw 1
 ```
 `-t`はタイムスタンプ表示、`-w`はワイド表示です。引数の数字は1秒おきに実行するという意味です。vmstatコマンドを叩くとサーバパフォーマンスのメトリクス情報が出てきます。
 ```
-procs -----------------------memory---------------------- ---swap-- -----io---- -system-- --------cpu-------- -----timestamp-----
- r  b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st                 UTC
- 3  0            0      9249760       122220      3209688    0    0     0     0   41  237   0   0 100   0   0 2021-05-28 10:10:46
- 0  0            0      9246812       122220      3209688    0    0     0     0   84  371   0   0 100   0   0 2021-05-28 10:10:47
- 0  0            0      9246004       122220      3209688    0    0     0     0   34  227   0   0 100   0   0 2021-05-28 10:10:48
- 0  0            0      9246116       122220      3209696    0    0     0     0   34  112   0   0 100   0   0 2021-05-28 10:10:49
- 0  0            0      9246116       122220      3209696    0    0     0     0   33  241   0   0 100   0   0 2021-05-28 10:10:50
- 0  0            0      9246116       122220      3209696    0    0     0     0   32  112   0   0 100   0   0 2021-05-28 10:10:51
+--procs-- -----------------------memory---------------------- ---swap-- -----io---- -system-- ----------cpu---------- -----timestamp-----
+   r    b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st  gu                 UTC
+   1    0            0       766612       101212      2795940    0    0     0     0  327  201  59  41   0   0   0   0 2026-06-01 01:40:55
+   1    0            0       766612       101212      2795940    0    0     0     0  327  198  62  38   0   0   0   0 2026-06-01 01:40:56
+   1    0            0       766612       101212      2795940    0    0     0     0  325  193  63  37   0   0   0   0 2026-06-01 01:40:57
+   1    0            0       766612       101212      2795940    0    0     0     0  328  195  66  34   0   0   0   0 2026-06-01 01:40:58
+   1    0            0       766612       101212      2795940    0    0     0     0  337  244  63  37   0   0   0   0 2026-06-01 01:40:59
+   1    0            0       766612       101212      2795940    0    0     0     0  337  220  63  37   0   0   0   0 2026-06-01 01:41:00
 ```
 `man`コマンドでも確認できますが、各数字の意味は以下になります。
 - proc
@@ -146,31 +193,40 @@ procs -----------------------memory---------------------- ---swap-- -----io---- 
   - wa：IO待ち時間
 - timestamp：タイムスタンプ
 
-次に、実際に負荷をかけて変化の様子を見ていきます。今回はHTTPリクエストを大量に投げるスクリプトを実行して、CPUに負荷をかけてみましょう。端末をもう一つ開き、そこからHTTPリクエストを自身に1万個投げます。(端末が一つしか開けない方は`screen`や`tmux`を駆使しください)
-```
-# docker exec -it monitoring_bootcamp /bin/bash
-container~# seq 1 10000 | xargs -I % -P 20 curl "http://localhost" -o /dev/null -s
+次に、実際に負荷をかけて変化の様子を見ていきます。今回はHTTPリクエストを大量に投げるスクリプトを実行して、CPUに負荷をかけてみましょう。端末をもう一つ開き、そこからHTTPリクエストを自身に1万個投げます。(端末が一つしか開けない方は`screen`や`tmux`を駆使してください)
+
+📦️️ コンテナ内部で実行
+```sh
+seq 1 10000 | xargs -I % -P 20 curl "http://localhost" -o /dev/null -s
 ```
 リクエストを投げると`vmstat`の画面ではどこの負荷がかかっているかが確認できます。
 ```
 負荷かける前
-procs -----------------------memory---------------------- ---swap-- -----io---- -system-- --------cpu-------- -----timestamp-----
- r  b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st                 JST
- 0  0            0      9171992       127648      3322200    0    0     0     0   48  218   0   0 100   0   0 2021-05-28 13:30:57
- 0  0            0      9171992       127648      3322200    0    0     0     0   30  100   0   0 100   0   0 2021-05-28 13:30:58
- 0  0            0      9171992       127648      3322200    0    0     0     0   34  204   0   0 100   0   0 2021-05-28 13:30:59
- 0  0            0      9171992       127648      3322200    0    0     0     4   41  128   0   0 100   0   0 2021-05-28 13:31:00
- 0  0            0      9171992       127648      3322200    0    0     0     0   34  220   0   0 100   0   0 2021-05-28 13:31:01
+--procs-- -----------------------memory---------------------- ---swap-- -----io---- -system-- ----------cpu---------- -----timestamp-----
+   r    b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st  gu                 UTC
+   1    0            0       766612       101212      2795940    0    0     0     0  327  201  59  41   0   0   0   0 2026-06-01 01:40:55
+   1    0            0       766612       101212      2795940    0    0     0     0  327  198  62  38   0   0   0   0 2026-06-01 01:40:56
+   1    0            0       766612       101212      2795940    0    0     0     0  325  193  63  37   0   0   0   0 2026-06-01 01:40:57
+   1    0            0       766612       101212      2795940    0    0     0     0  328  195  66  34   0   0   0   0 2026-06-01 01:40:58
+   1    0            0       766612       101212      2795940    0    0     0     0  337  244  63  37   0   0   0   0 2026-06-01 01:40:59
+   1    0            0       766612       101212      2795940    0    0     0     0  337  220  63  37   0   0   0   0 2026-06-01 01:41:00
 ```
+
 ```
 負荷かけた後
-procs -----------------------memory---------------------- ---swap-- -----io---- -system-- --------cpu-------- -----timestamp-----
-r  b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st                 JST
- 9  0            0      9156508       127648      3322200    0    0     0     0 5351 29472  47  34  19   0   0 2021-05-28 13:31:04
- 9  0            0      9157360       127656      3322392    0    0     0    12 5559 31376  48  36  15   0   0 2021-05-28 13:31:05
- 2  0            0      9160176       127656      3322508    0    0     0     0 6056 31527  46  37  17   0   0 2021-05-28 13:31:06
- 9  0            0      9154440       127656      3322628    0    0     0     0 5915 31500  46  38  15   0   0 2021-05-28 13:31:07
- 7  0            0      9151888       127656      3322772    0    0     0     0 5906 31615  49  36  15   0   0 2021-05-28 13:31:08
+--procs-- -----------------------memory---------------------- ---swap-- -----io---- -system-- ----------cpu---------- -----timestamp-----
+   r    b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st  gu                 UTC
+   1    0            0       757092       101212      2796044    0    0     0     0  342    2  61  38   0   0   0   0 2026-06-01 01:43:00
+   1    0            0       757092       101212      2796044    0    0     0     0  399  353  56  44   0   0   0   0 2026-06-01 01:43:01
+   1    0            0       757092       101212      2796044    0    0     0     0  331  200  62  38   0   0   0   0 2026-06-01 01:43:02
+   9    0            0       748536       101212      2796044    0    0     0     0  629 2019  63  37   0   0   0   0 2026-06-01 01:43:03
+   9    0            0       748788       101212      2796072    0    0     0     0  811 3153  64  36   0   0   0   0 2026-06-01 01:43:04
+   8    0            0       748536       101212      2796084    0    0     0     0  818 3327  60  40   0   0   0   0 2026-06-01 01:43:05
+   9    0            0       748284       101212      2796096    0    0     0     0  796 3306  71  29   0   0   0   0 2026-06-01 01:43:06
+   9    0            0       748504       101212      2796108    0    0     0     0  769 3268  65  35   0   0   0   0 2026-06-01 01:43:07
+   8    0            0       749040       101216      2796116    0    0     0     0  814 3345  62  38   0   0   0   0 2026-06-01 01:43:08
+  11    0            0       748032       101216      2796136    0    0     0     0  799 3155  61  39   0   0   0   0 2026-06-01 01:43:09
+   8    0            0       749760       101216      2796148    0    0     0     0  833 3388  61  39   0   0   0   0 2026-06-01 01:43:10
  ```
  ここで`procs`の`r`、`system`の`in`、`cs`、`cpu`の`us`と`sy`に注目してください。これらの挙動から以下のことが考察できます。
  - `procs`の`r`が異様に高いためプロセスの処理が追いついてない
@@ -184,27 +240,65 @@ r  b         swpd         free         buff        cache   si   so    bi    bo  
 
 といった感じで、もしこのシステムが障害起こした時は「プロセス過多によるCPUへの高負荷が原因である！」と判断が出来るわけです。余力のある方は、`yes > /tmp/yes.txt`を実行し、ディスクIOの負荷も確認してみてください。
 
+<details>
+<summary>`yes > /tmp/yes.txt` を実行したときのvmstatの例</summary>
+
+📦️️ コンテナ内部で実行
+```sh
+yes > /tmp/yes.txt
+```
+
+実行例
+```
+--procs-- -----------------------memory---------------------- ---swap-- -----io---- -system-- ----------cpu---------- -----timestamp-----
+   r    b         swpd         free         buff        cache   si   so    bi    bo   in   cs  us  sy  id  wa  st  gu                 UTC
+   1    0            0       751560       101248      2797684    0    0     0     0  382  322  69  31   0   0   0   0 2026-06-01 01:46:38
+   1    0            0       751560       101248      2797684    0    0     0     0  327  192  56  44   0   0   0   0 2026-06-01 01:46:39
+   2    0            0       684544       101248      2868712    0    0     0     0  401  425  58  42   0   0   0   0 2026-06-01 01:46:40
+   2    1            0       394792       101248      3157916    0    0     0     0  499  720  26  74   0   0   0   0 2026-06-01 01:46:41
+   2    0            0       149632       101256      3402284    0    0     0     0 2312 4009  29  70   0   0   1   0 2026-06-01 01:46:42
+   2    1            0        23360       100752      3530916    0    0     0     0 2819 5229  31  68   0   0   1   0 2026-06-01 01:46:43
+   3    1            0        22956       100752      3531888    0    0     0     0 4021 7637  24  74   0   0   2   0 2026-06-01 01:46:44
+   2    0            0        20264       100752      3534068    0    0     0     0 4044 7898  22  76   0   0   2   0 2026-06-01 01:46:45
+   2    1            0        19940       100752      3534332    0    0     0     0 4026 7760  23  75   0   0   2   0 2026-06-01 01:46:46
+   2    1            0        22168       100752      3532416    0    0     0     0 4275 8508  20  79   0   0   1   0 2026-06-01 01:46:47
+```
+
+</details>
+
+
 
 ### STEP3:curlを使って外部からサービスの動作を監視する
 最後のSTEPではサービスがちゃんと動いているかを確認します。「サービスがちゃんと動いている」とは何かについては、サービスごとに定義する必要がありますが、ここでは「WebページにアクセスしてHTTPステータスコード200が返ってくること」とします。まずは、端末をもう一つ開き、そこから`curl`コマンドを使ってHTTPステータスコードを取得します。(端末が一つしか開けない方は`screen`や`tmux`を駆使しください)
+
+💻️ ホストで実行
+```sh
+while true; do date && curl -LI localhost:8080 -o /dev/null -w '%{http_code}\n' -s; sleep 1; done
 ```
-# while true; do date && curl -LI localhost:8080 -o /dev/null -w '%{http_code}\n' -s; sleep 1; done
 もしくは
-# watch -n 1 -d curl -LI localhost:8080 -o /dev/null -w '%{http_code}' -s
+
+💻️ ホストで実行
+```sh
+watch -n 1 -d curl -LI localhost:8080 -o /dev/null -w '%{http_code}' -s
 ```
 端末に「200」と表示されればOKです。このように、HTTPステータスコードを監視することを「HTTP(S)監視」といいます。この状態でWebサーバ内の情報を書き換えて、エラーを吐かせてみます。別の端末を開き、コンテナ内部の情報を書き換えます。
-```
-# docker exec -it monitoring_bootcamp mv /var/www/html/wp-admin /var/www/html/wp-admins
+
+💻️ ホストで実行
+```sh
+docker exec -it monitoring_bootcamp mv /var/www/html/wp-admin /var/www/html/wp-admins
 ```
 すると外部からHTTP監視していた端末に「500」と表示されます。つまり「サービスがちゃんと動いていない」と機械的に判断することができます。
 
 かなり地味な監視ではありますが、HTTPステータスコードといったデータを記録することでいつ、どこで、どれぐらいの頻度で、なんのエラーを吐いているかを**ユーザに一番近いところ**で監視することができるため、サービス全体の方針決めに大きなキッカケを作ることができます。そのため地味とは言え軽視はできません。
-```
-# docker exec -it monitoring_bootcamp mv /var/www/html/wp-admins /var/www/html/wp-admin
+
+💻️ ホストで実行
+```sh
+docker exec -it monitoring_bootcamp mv /var/www/html/wp-admins /var/www/html/wp-admin
 ```
 忘れずに戻しておきましょう。
 
-今回目視で監視を行いましたが、目視での監視を人が常に張り付いて確認するのはイケていないですし、必要なデータの収集も行うとなると大変な作業になります。次章ではこの監視を「Prometheus」というナウでヤングな監視ツールを使って楽に監視する方法を紹介します。
+今回はターミナルを目視することによって監視を行いましたが、目視での監視を人が常に張り付いて確認するのはイケていないですし、必要なデータの収集も行うとなると大変な作業になります。
+次章ではこの監視を「Prometheus」というナウでヤングな監視ツールを使って楽に監視する方法を紹介します。
 
 ### 1-4. 監視のアンチパターン(読みたい人は読んでください)
 監視はそれを実装するシステム時々で正解が異なります。すべてのパターンを紹介するのは現実的ではないため、監視における代表的なアンチパターンを4つほど紹介します。(「入門 監視」より抜粋)
@@ -255,11 +349,15 @@ Prometheusについて説明する前に、他の監視ツールについて簡�
   - 例
     - Prometheus、Zabbix、Nagios
 
-どちらもメリットデメリットがあり優越がつけがたいため、要件にあわせて選ぶ必要があります。
+どちらもメリット・デメリットがあり優劣がつけがたいため、要件にあわせて選ぶ必要があります。
 
-ここからはPrometheusの説明になります。Prometheusはsoundcloud社が作ったPull型の監視ツールです。CNCF管理下でのツールになっていて、ランクはGraduatedで成熟したCNCFプロジェクトとなります。先ほどPull型の監視ツールのデメリットで「サーバを追加する度に監視サーバの設定を変更する必要がある」という項目がありましたが、Prometheusではサービスディスカバリという機能でこの欠点を補っています。
+ここからはPrometheusの説明になります。[Prometheus](https://prometheus.io/)は[SoundCloud](https://soundcloud.com/company/home)社が作ったPull型の監視ツールです。[CNCF(Cloud Native Computing Foundation)](https://www.cncf.io/)管理下でのツールになっていて、ランクはGraduatedで成熟したCNCFプロジェクトとなります。
+先ほどPull型の監視ツールのデメリットで「サーバを追加する度に監視サーバの設定を変更する必要がある」という項目がありましたが、Prometheusではサービスディスカバリという機能でこの欠点を補っています。
 
-近年、クラウド化が進みAWSやGCP、Azureなどでユーザが自由にサーバを建てたり壊したりすることができるようになりました。まや、Kubernetesのようにコンテナの破壊と創造を頻繁に繰り返すようなツールが普及したことで、監視対象が頻繁に切り替わることが多くあります。そのような中で、それらのサーバをサービスディスカバリで楽に監視することが出来るのが「Prometheus」であり、そういった背景で現在話題に上がっています。また、GO言語でかかれていて実行が早く、exporterやalertmanagerといった監視するためのパッケージが揃っていたことも人気の理由となっています。
+近年、クラウド化が進みAWSやGCP、Azureなどでユーザが自由にサーバを建てたり壊したりすることができるようになりました。
+また、Kubernetesのようにコンテナの破壊と創造を頻繁に繰り返すようなツールが普及したことで、監視対象が頻繁に切り替わることが多くあります。
+そのような中で、それらのサーバをサービスディスカバリで楽に監視することが出来るのが「Prometheus」であり、そういった背景で現在話題に上がっています。
+また、PrometheusはGo言語で実装されているため実行が早く、ExporterやAlertmanagerといった監視するためのパッケージが揃っていたことも人気の理由となっています。
 
 サービスディスカバリとは一言でいうと「ある特徴の属性を持つサーバを自動で調べてくれる」機能で、たとえばAWSでは起動しているEC2を一覧化するAPIがあり、サービスディスカバリはそれを使ってホスト情報を取得し、自動で監視対象に追加することができます。
 
@@ -318,31 +416,38 @@ PrometheusWebUIならびにGrafanaはPrometheusに格納された時系列情報
 2. Grafanaを使ってパフォーマンス監視を可視化する
 3. blackbox exporterを使って外部監視を行い、Grafanaで可視化する
 
+#### STEP0: ハンズオンコンテナ構築
+
 始める前に、ハンズオンで使ったコンテナを`docker stop`で止めておいてください。また、`docker ps`で余計なコンテナがないかを確認してください。(理由があって何かしらのコンテナを立てている場合はポートが被らないように適宜読み替えてください)
 
-構成は以下になります。`docker-compose.yml`という名前でymlファイルを作り以下を書き込んでください。
-```
-version: '3'
+構成は以下になります。`compose.yaml`という名前でyamlファイルを作り以下を書き込んでください。
+
+`./compose.yaml`
+```yaml
 services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus:/etc/prometheus
+      - type: bind
+        source: "./prometheus"
+        target: "/etc/prometheus"
+        bind:
+          create_host_path: false
     command: "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
     restart: always
 
   grafana:
-    image: grafana/grafana:7.5.7
+    image: grafana/grafana:13.0-distroless-slim
     container_name: grafana
     ports:
       - 3000:3000
     restart: always
 
   wordpress_1:
-    image: wordpress:php8.0-apache
+    image: wordpress:php8.5-apache
     container_name: wordpress_1
     ports:
       - 8080:80
@@ -352,16 +457,19 @@ services:
 
 ![default](./images/handson_default.png)
 
-次にPrometheusの設定ファイルを作ります。`docker-compose.yml`と同じディレクトリ内にファイルを格納するディレクトリを作り、中に設定ファイルを入れます。
-```
-# mkdir prometheus
-# cd prometheus
-# vim prometheus.yml
+次にPrometheusの設定ファイルを作ります。`compose.yaml`と同じディレクトリ内にファイルを格納するディレクトリを作り、中に設定ファイルを入れます。
+
+💻️ ホストで実行
+```sh
+mkdir ./prometheus
+vim ./prometheus/prometheus.yml
 ```
 設定ファイルは以下の内容になります。
 - global：全体の設定
 - scrape_config：監視ターゲットに関する設定
-```
+
+`./prometheus/prometheus.yml`
+```yaml
 global:
   scrape_interval: 15s
 
@@ -371,39 +479,56 @@ scrape_configs:
     static_configs:
       - targets:
         - 'wordpress_1:9100'
+
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+         - 'localhost:9090'
 ```
-次に監視対象のサーバに入れるエージェント(exporter)を入れます。まずはパフォーマンス監視を行いたいので、公式が出しているexporter「Node exporter」を`docker-compose.yml`が入っているディレクトリと同じ階層に用意します。
+次に監視対象のサーバに入れるエージェント(exporter)を入れます。まずはパフォーマンス監視を行いたいので、公式が出しているexporter[「Node exporter」](https://github.com/prometheus/node_exporter)を`compose.yaml`が入っているディレクトリと同じ階層に用意します。
+
+💻️ ホストで実行
+```sh
+curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.11.1/node_exporter-1.11.1.linux-amd64.tar.gz
 ```
-# cd ..
-# wget https://github.com/prometheus/node_exporter/releases/download/v1.1.2/node_exporter-1.1.2.linux-amd64.tar.gz
-```
-次に`docker-compose.override.yml`を作り、wordpressサーバの上でNode exporterを起動させるようにします。
-> 今回はwordpress_1コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
-> 今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
-```
-version: '3'
+次に`compose.override.yaml`を作り、WordPressサーバの上でNode exporterを起動させるようにします。
+
+::: tip
+今回は`wordpress_1`コンテナの上で**無理やり**Node exporterを起動させていますが、コンテナのみを監視する際は「container exporter」を使うのが定石です。
+今回は後に出てくる外部監視を理解しやすくするため、コンテナ一つ一つをサーバ(node)として見立てて扱っているので、このような形式を取っています。
+:::
+
+`./compose.override.yaml`
+```yaml
 services:
   wordpress_1:
     ports:
       - 9100:9100
     volumes:
-      - ./node_exporter-1.1.2.linux-amd64.tar.gz:/root/node_exporter-1.1.2.linux-amd64.tar.gz
+      - type: bind
+        source: "./node_exporter-1.11.1.linux-amd64.tar.gz"
+        target: "/root/node_exporter-1.11.1.linux-amd64.tar.gz"
+        bind:
+          create_host_path: false
     working_dir: /root
     command: >
       bash -c "service apache2 start &&
-      tar xvfz node_exporter-1.1.2.linux-amd64.tar.gz &&
-      cd node_exporter-1.1.2.linux-amd64 &&
+      tar xvfz node_exporter-1.11.1.linux-amd64.tar.gz &&
+      cd node_exporter-1.11.1.linux-amd64 &&
       ./node_exporter"
 ```
-これで一通りの準備は完了しました。`docker-compose -f docker-compose.yml up -d`で`docker-compose.yml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
+これで一通りの準備は完了しました。`docker compose -f compose.yaml up -d`で`compose.yaml`を実行してコンテナを立ち上げてください。(うまく立ち上がらない方は`docker ps`や`docker logs`を使って確認してください)
 
-コンテナの立ち上げが完了したら、ブラウザから`http://<dockerホストのIP:8080>`でwordpressのサイトが表示させることを確認してください。(DBに接続していないので先に進めないのは仕様です)
+コンテナの立ち上げが完了したら、ブラウザから`http://<dockerホストのIP:8080>`でWordPressのサイトが表示させることを確認してください。(WordPressがDBに接続していないので先に進めないのは仕様です)
 
 ![wordpress](./images/wordpress.png)
 
-次にnode exporterの起動させます。`docker-compose up -d`を実行して`docker-compose.override.yml`を上書き実行させます。prometheusはnode exporterに対してhttpでメトリクスを取りに行きますが、ブラウザからも`http://<dockerホストのIP:9100>`から`Metrics`にアクセスすることでメトリクスを見ることができます。
+次にnode exporterの起動させます。`docker compose up -d`を実行して`docker compose.override.yml`を上書き実行させます。prometheusはnode exporterに対してhttpでメトリクスを取りに行きますが、ブラウザからも`http://<dockerホストのIP:9100>`から`Metrics`にアクセスすることでメトリクスを見ることができます。
 
 ![node_exporter](./images/node_exporter.png)
+
+#### STEP1: PrometheusでNode Exporterを監視
 
 次にPrometheusでメトリクスを持ってこれていることを確認します。Prometheusサーバにブラウザから`http://<dockerホストのIP:9090>`に入り、`Status`から`Target`を選択し、wordpressのサーバがあればOKです。これ以外にも式ブラウザに「up」を入力するだけでも確認できます。
 
@@ -411,8 +536,8 @@ services:
 
 ホーム画面からは好きなメトリックスを表示することが出来ます。試しに`node_memory_Active_bytes`を選択すれば、メモリの使用量が表示されます。時間がある方はプルダウンからどんな情報がとれるか見てみましょう。
 - 例
-  - up：監視ターゲット一覧
-  - go_memstats_alloc_requests_total：Prometheusが利用しているメモリ使用量
+  - `up`: 監視ターゲット一覧
+  - `go_memstats_alloc_bytes`: Prometheusが利用しているメモリ使用量
 
 
 ![mem_metrics](./images/mem_metrics.png)
@@ -421,37 +546,70 @@ services:
 
 ![mem_per](./images/mem_per.png)
 
-最後にGrafanaを使って、ナウでヤングな可視化を行います。`http://localhost:3000`にアクセスします。ID/PASSはadmin/adminです。
+#### STEP2: Grafanaを用いたダッシュボードの作成
+
+次に Grafanaを使って、ナウでヤングな可視化を行います。
+`http://<dockerホストのIP:3000>`にアクセスします。
+ID/Passwordは`admin`/`admin`を入力してください。
 
 ![grafana](./images/grafana.png)
 
-次にPrometheusサーバの場所を設定し、Grafanaにデータを読み込ませます。`Configuration`(左の歯車マーク)から`data source`を選択し、`add data sorce`からPrometheusを選択。
+次にPrometheusサーバの場所を設定し、Grafanaにデータを読み込ませます。`Connections`(左のリンクっぽいマーク)から`Data sources`を選択し、`add data sorce`からPrometheusを選択します。
 
 ![datasource](./images/datasource.png)
 
-URLにPrometheusサーバである`http://prometheus:9090`を入力し、Accessを`Server(default)`にます。AccessはPrometheusへの接続元を選択します。ここではGrafanaサーバである`Server(default)`を選択していますが、セキュリティの都合で各端末のブラウザからしかPrometheusにアクセスできないような状況では、Accessを`Browser`にブラウザから見たPrometheusサーバを選択してください。docker network上でGrafanaサーバからPrometheusサーバは`http://prometheus:9090`でアクセスできるため、今回は表記になっています。最後に一番下の`save & test`でエラーが出なければOKです。
+URLにPrometheusサーバである`http://prometheus:9090`を入力します。
+GrafanaサーバとPrometheusサーバはdocker network上で接続しており、GrafanaサーバからPrometheusサーバへは`http://prometheus:9090`でアクセスできます。
+最後に一番下の`save & test`でエラーが出なければOKです。
 
-![access](./images/access.svg)
+次にダッシュボードを作っていきます。
+例として、ロードアベレージ(実行待ちタスクの平均)を1分間、5分間、15分間のグラフを表示させるダッシュボードを作ります。
 
-次にダッシュボードを作っていきます。`Create`タブから`NewDashboard`を選択、`Add Panel`から知りたいメトリックスを選択します。とりあえずロードアベレージ(実行待ちタスクの平均)を1分間、5分間、15分間ので表示させます。`Metrics`から`node_load1`を選択。`+Query`をでクエリを追加し`node_load5`を選択。同様に`+ Query`でクエリを追加し`node_load15`を選択。右側の`Panel`から`Panel title`を編集し、最後に右上のApplyを押すことで、パネルに追加できます。
+まずは、右上の`Create`ボタンから`New dashboard`を選択、`Add Panel`でパネルを作成します。
+パネルのTitleを `Load Average` とし、Title上部の`Edit visualization`ボタンをクリックします。
+
+![add_panel](./images/grafana_add_panel.png)
+
+次に表示させたいメトリックスを選択します。
+
+`Metric`の`Select metric`から`node_load1`を選択。`+ Add query`をでクエリを追加し`node_load5`を選択。同様に`+ Add query`でクエリを追加し`node_load15`を選択します。
+`Run queries`ボタンを押すとメトリックスの描画が行われます。
+
+メトリックスが表示されたら、最後に右上のSaveボタンを押してダッシュボードを保存します。
+ダッシュボードの`Title`を`Load Average Dashboard`とし、Saveボタンを押して保存を確定します。
 
 ![load_average](./images/load_ave.png)
 
 これの繰り返しで自分だけのダッシュボードを作り上げていく形になります。
 
-最後に、Grafanaの公式では、有志の手によってダッシュボードのテンプレートがいくつか用意されているので、今度はお手軽にいい感じのダッシュボードを作ります。まず[Grafana lab](https://grafana.com/grafana/dashboards)にアクセスして、[Node Exporter Quickstart and Dashboard](https://grafana.com/grafana/dashboards/13978?pg=dashboards&plcmt=featured-sub1)を選びます。ここにあるDashboardIDまたは生JSONファイルをメモし、Grafanaにインポートすることで、有志の作ったダッシュボードと同じ形式のダッシュボードを手元で開くことが出来ます。
+最後に、Grafanaの公式では、有志の手によってダッシュボードのテンプレートがいくつか用意されているので、今度はお手軽にいい感じのダッシュボードを作ります。
+まず[Grafana lab](https://grafana.com/grafana/dashboards)にアクセスして、[Node Exporter Quickstart and Dashboard](https://grafana.com/grafana/dashboards/13978?pg=dashboards&plcmt=featured-sub1)を選びます。
+ここにあるDashboardIDまたは生JSONファイルをクリップボードにコピーし、Grafanaにインポートすることで、有志の作ったダッシュボードと同じ形式のダッシュボードを手元で開くことが出来ます。
 
-![template](./images/node-exporter_temp.png)
+![import_dashboard](./images/grafana_dashboard_import.png)
 
-次のSTEPではHTTPでのアクセスを監視する、サービス監視を行います。パフォーマンス監視では監視対象のサーバにexporterを導入して、Prometheusサーバからメトリクスをpullしていましたが、ICMPやHTTPを使った監視はその手段が使えません。そのため、システム内部から監視を行うのではなく、外部から監視を行う「外部監視(External Monitoring)」という手段で監視します。
+![template](./images/node_exporter_quicstart.png)
 
-外部監視には「blackbox exporter」というexporterを使います。まずblackbox_exporterのコンフィグファイル`blackbox.yml`を作ります。`docker-compose.yml`があるディレクトリ配下で`blackbox.yml`を格納するディレクトリを作成します。
+#### STEP3: blackbox_exporterを用いた外部監視
+
+次のSTEPではHTTPでのアクセスを監視する、サービス監視を行います。
+パフォーマンス監視では監視対象のサーバにexporterを導入して、Prometheusサーバからメトリクスをpullしていましたが、ICMPやHTTPを使った監視はその手段が使えません。
+そのため、システム内部から監視を行うのではなく、外部から監視を行う「外部監視(External Monitoring)」という手段で監視します。
+
+外部監視には「blackbox exporter」というexporterを使います。
+まずblackbox_exporterのコンフィグファイル`blackbox.yml`を作ります。`compose.yaml`があるディレクトリ配下で`blackbox.yml`を格納するディレクトリを作成します。
+
+💻️ ホストで実行
+```sh
+mkdir ./blackbox_exporter
+vim ./blackbox_exporter/blackbox.yml
 ```
-# mkdir blackbox_exporter
-# vim blackbox_exporter/blackbox.yml
-```
-設定ファイルは以下の内容にします。ここでは監視先のターゲットを指定しません。Prometheusのサービスディスカバリを使うため、ターゲットはPrometheus側で設定するためです。(ICMPなどの他監視方法も知りたい人は[公式サイト](https://github.com/prometheus/blackbox_exporter)を参照)。
-```
+設定ファイルは以下の内容にします。ここでは監視先のターゲットを指定しません。
+Prometheusのサービスディスカバリを使うため、ターゲットはPrometheus側で設定するためです。
+(ICMPなどの他監視方法も知りたい人は[公式サイト](https://github.com/prometheus/blackbox_exporter)を参照してください)。
+
+`./blackbox_exporter/blackbox.yml`
+```yaml
 modules:
   http_2xx:
     prober: http
@@ -461,29 +619,34 @@ modules:
       method: GET
       preferred_ip_protocol: "ip4"
 ```
-次にblackbox_exporterのdocker imageを`docker-compose.yml`に追加します。ボリュームのマウントには先ほど追加したコンフィグファイルを指定します。
-```
-version: '3'
+次にblackbox_exporterのdocker imageを`compose.yaml`に追加します。ボリュームのマウントには先ほど追加したコンフィグファイルを指定します。
+
+`./compose.yaml`
+```yaml
 services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus:/etc/prometheus
+      - type: bind
+        source: "./prometheus"
+        target: "/etc/prometheus"
+        bind:
+          create_host_path: false
     command: "--config.file=/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
     restart: always
 
   grafana:
-    image: grafana/grafana:7.5.7
+    image: grafana/grafana:13.0-distroless-slim
     container_name: grafana
     ports:
       - 3000:3000
     restart: always
 
   wordpress_1:
-    image: wordpress:php8.0-apache
+    image: wordpress:php8.5-apache
     container_name: wordpress_1
     ports:
       - 8080:80
@@ -495,10 +658,17 @@ services:
     ports:
       - 9115:9115
     volumes:
-      - ./blackbox_exporter/blackbox.yml:/etc/blackbox_exporter/config.yml
+      - type: bind
+        source: "./blackbox_exporter/blackbox.yml"
+        target: "/etc/blackbox_exporter/config.yml"
+        bind:
+          create_host_path: false
 ```
+
 最後にPrometheusのコンフィグファイル`prometheus.yml`に監視対象を追加します。
-```
+
+`./prometheus/prometheus.yml`
+```yaml
 global:
   scrape_interval: 15s 
 
@@ -532,9 +702,23 @@ scrape_configs:
       - target_label: __address__
         replacement: blackbox_exporter:9115
 ```
-`relabel_configs`の箇所ではblackbox_exporter自身のラベルを監視対象のラベルに置き換えてます。これをしないとPrometheusに収集されるデータがwordpressに関するものではなく、blackbox_exporterのものだと判断されてしまいます。
+`relabel_configs`の箇所ではblackbox_exporter自身のラベルを監視対象のラベルに置き換えてます。これをしないとPrometheusに収集されるデータがWordPressに関するものではなく、blackbox_exporterのものだと判断されてしまいます。
 
-これで準備は完了です。`docker-compose up -d`でblackbox_exporterを起動させたのち、`docker-compose restart prometheus`でprometheusのコンフィグファイルを再読み込みしてください。`localhost:9090`でPrometheusサーバにアクセスし、StatusからTartgetを表示し、blackboxが存在すれば成功です。
+これで準備は完了です。blackbox_exporterを起動します。
+
+💻️ ホストで実行
+```sh
+docker compose up -d
+```
+
+次にprometheusのコンフィグファイルを再読み込みするためprometheusコンテナを再起動させます。
+
+💻️ ホストで実行
+```sh
+docker compose restart prometheus
+```
+
+`http://<dockerホストのIP:9090>`でPrometheusサーバにアクセスし、StatusからTargetを表示し、blackboxが存在すれば成功です。
 
 ![blackbox_exporter](./images/blackbox_exporter.png)
 
@@ -550,16 +734,16 @@ scrape_configs:
 
 ![probe_status](./images/probe_status.png)
 
-最後にGrafanaでHTTPステータスコードを表示して終わりにします。Grafanaを`localhost:3000`で開き、追加したいダッシュボードを選択します。
+最後にGrafanaでHTTPステータスコードを表示して終わりにします。Grafanaを`http://<dockerホストのIP:3000>`で開き、追加したいダッシュボードを選択します。
 次に`Add Panel`からパネル追加画面を開き、`Metrics`に`probe_http_status_code`と入力します。
 
 ![grafana_status_graph](./images/grafana_status_graph.png)
 
-このままだとステータスコードの数字をグラフにしてるだけで味気ないので、`Instant`をONにし、右のカラムの`Visualization`を`Stat`に変更します。
+このままだとステータスコードの数字をグラフにしてるだけで味気ないので、メトリックの Options内のTypeを`Instant`にし、右のカラムの`Time series`を`Stat`に変更します。
 
 ![grafana_status](./images/grafana_status.png)
 
-最後にステータスコードごとに色を変えます。右のカラムのタブを`Field`にし、`Thresholds`を開きます。
+最後にステータスコードごとに色を変えます。右のカラムを下にスクロールし、`Thresholds`を開きます。
 
 ![thresholds](./images/thresholds.png)
 
@@ -567,11 +751,14 @@ scrape_configs:
 
 ![http_status](./images/http_status.png)
 
-試しにwordpressの中身を書き換えてみましょう。
+試しにWordPressの中身を書き換えてみましょう。
+
+💻️ ホストで実行
+```sh
+docker exec -it -- wordpress_1 mv /var/www/html/wp-admin /var/www/html/wp-admins
 ```
-# docker exec -it wordpress_1 mv /var/www/html/wp-admin /var/www/html/wp-admins
-```
-を実行すればWebサーバの中身が書き換えられ、HTTPステータスコードが500になり、赤くなるはずです。
+
+Webサーバの中身が書き換えられ、`probe_http_status_code`の値が`500`になり、表示が赤くなるはずです。
 
 ![http_status](./images/http_status_error.png)
 

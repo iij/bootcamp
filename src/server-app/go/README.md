@@ -156,10 +156,11 @@ Go の [Gopher](https://golang.org/doc/gopher/gopherbw.png) がかわいいで�
 :# TERMINAL 0
 
 :# vim,emacs,nano派の人はこちら
-$ docker run --name go-tutor-vscode -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2024 /bin/bash
+$ docker run --name go-tutor -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2025
+$ docker exec -it go-tutor /bin/bash
 
 :# VSCode派の人はこちら
-$ docker run --name go-tutor-vscode -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2024
+$ docker run --name go-tutor -p 5009:8888 -d --rm jo7oem/go-tutor-vscode:2025
 ```
 
 ハンズオンでは、こちらから指示したpathに、ディレクトリやファイルを作成してもらい、Go言語に触れてもらいます。  
@@ -313,7 +314,7 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
 * ユーザー定義型
 
 	組み込み型やコンポジット型を元にユーザーが定義した型です
-* `Interface型` 
+* `interface型`
 
 	:rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
 	この`interface型`は方がどう振る舞うか(型にどんなメソッドが実装されているか)という観点で区別され、0個以上のメソッドから構成されます。
@@ -353,7 +354,7 @@ Go言語では、書き方を間違えているととても丁寧に教えてく
 エラーが多いと、数個のエラーの後に`too many error....`と続き、全てのエラーを教えてくれないことがあります。  
 しょうがないので、教えてもらっているエラーから対処していきましょう。  
 
-### :computer: 3.3.1. 以下のコマンドを実行して、修正箇所を認識てみよう。  
+### :computer: 3.3.1. 以下のコマンドを実行して、修正箇所を認識してみよう。
 ```shell
 :# TERMINAL 0
 :# WORKPATH /root/go-tutor/go_tutorial/3_var/plzfixme/
@@ -402,7 +403,7 @@ $ <お好きなエディタ> main.go
 $ go run main.go
 GYUDON
 ```
-### :rocket: :computer: 3.4.2. 変数定義方法が3種類を全て試してみよう。
+### :rocket: :computer: 3.4.2. 変数定義方法の3種類を全て試してみよう。
 
 # 4. 関数 ( 10 min )
 本章では、関数の定義方法と、Goっぽい関数の扱われ方について、確認してもらいます。  
@@ -475,7 +476,7 @@ func myFunc[T any,N Number](hoge []T, fuga N) []T {
 * 空白以外の文字列を全て牛丼名とみなす
 * 食べる行為は、標準出力とする
 	* 本章では、`fmt.Println` を用いて、文字列を出力します
-* 食べた場合は、`true`, 食べたい無い場合は、`false`を返す  
+* 食べた場合は、`true`, 食べていない場合は、`false`を返す
 
 ## 4.2.0. if構文
 本章のハンズオンでは、上述した定義を表すために、条件分岐が必要となります。  
@@ -498,7 +499,7 @@ func main() {
 	}
 }
 ```
-この例では、`val1 == val2` が条件式となり、bool値（`True` or `False`) を返却。それを元にifで条件分岐する流れを表しています。  
+この例では、`val1 == val2` が条件式となり、bool値（`true` or `false`) を返却。それを元にifで条件分岐する流れを表しています。
 
 この他に、Go言語では、ifの中で関数の戻り値を変数に代入し、変数を条件の要素とする書き方もあります。  
 構文は以下のようになります。  
@@ -518,7 +519,7 @@ func main() {
 	}
 }
 ```
-`myTest()`が、bool値(`True` or `False`) を返却し、resへ代入します。そして、`;`の後に続く条件式(`!res`)の結果に応じて条件分岐します。  
+`myTest()`が、bool値(`true` or `false`) を返却し、resへ代入します。そして、`;`の後に続く条件式(`!res`)の結果に応じて条件分岐します。
 
 ## 4.2.1. :computer: 関数のコーディングを行う
 ```shell
@@ -766,7 +767,7 @@ $ go run eaters.go > /dev/null
 		}
 	}
 	```
-:recycle: 5.1.1 結果
+:recycle: 5.1.1. 結果
 ```shell
 :# TERMINAL 0
 :# WORKPATH /root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/

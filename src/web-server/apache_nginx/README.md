@@ -10,78 +10,95 @@ footer: CC BY-SA Licensed | Copyright, Internet Initiative Japan Inc.
 
 以下のように`docker pull`をしたあと、ハンズオン用のコンテナを立ち上げてログインしてください。
 
+
 ```shell-session
-$ docker pull python:3.8.17-bookworm
-3.8.17-bookworm: Pulling from library/python
-d52e4f012db1: Pull complete
-7dd206bea61f: Pull complete
-2320f9be4a9c: Pull complete
-6e5565e0ba8d: Pull complete
-d3797e13cc41: Pull complete
-9d8ab9ac5a7d: Pull complete
-43ed38f1d568: Pull complete
-164b4060be55: Pull complete
-Digest: sha256:2ee706fa11ec6907a27f1c5116e9749ad1267336b3b0d53fc35cfba936fae32e
-Status: Downloaded newer image for python:3.8.17-bookworm
-docker.io/library/python:3.8.17-bookworm
-$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:3.8.17-bookworm /bin/bash
+$ docker pull python:latest
+latest: Pulling from library/python
+f32f49ce655a: Pull complete 
+8a7504cd2818: Pull complete 
+b53089dca505: Pull complete 
+8d6d44b254da: Pull complete 
+0a4465cc9f09: Pull complete 
+c965dce520b3: Pull complete 
+61719a06ef52: Pull complete 
+Digest: sha256:250e5c97be05e1eb2272fbdbd810dfd638f9012e1e6f65c99390ad3239943a08
+Status: Downloaded newer image for python:latest
+docker.io/library/python:latest
+
+$ docker run --rm -itd --name test-debian -p 8080:80 -p 8082:82 -p 8088:88 -p 8089:89 -p 8443:443 -p 8444:444 python:latest /bin/bash
 a0da070e286fd52ebb323e5faff9c960014bfcd8eb1e509cb5a12daa9fb9a85e
 $ docker exec -it test-debian /bin/bash
 root@a0da070e286f:/#
 ```
 
+<details>
+
+<summary>動作確認済みバージョン</summary>
+
+```shell-session
+root@eacb8fc335e0:/# uname -a
+Linux eacb8fc335e0 6.8.0-90-generic #91~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 15:20:45 UTC 2 x86_64 GNU/Linux
+root@eacb8fc335e0:/# cat /etc/os-release 
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.5
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+root@eacb8fc335e0:/# python --version
+Python 3.14.5
+root@eacb8fc335e0:/# 
+```
+
+</details>
+
 Apacheとnginxをインストールします。
 
 ```shell-session
-root@a0da070e286f:/# apt update
-Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
-Get:2 http://deb.debian.org/debian bookworm-updates InRelease [52.1 kB]
-Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
-Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8906 kB]
-Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [4732 B]
-Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [48.0 kB]
-Fetched 9210 kB in 3s (3184 kB/s)
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-10 packages can be upgraded. Run 'apt list --upgradable' to see them.
-
-root@a0da070e286f:/# apt install -y apache2 apache2-dev nginx neovim
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-The following additional packages will be installed:
-  apache2-bin apache2-data apache2-utils autopoint bsdextrautils debhelper dh-autoreconf dh-strip-nondeterminism dwz gettext gettext-base groff-base intltool-debian iproute2
-  libapr1-dev libaprutil1-dbd-sqlite3 libaprutil1-dev libaprutil1-ldap libarchive-cpio-perl libarchive-zip-perl libatm1 libbpf1 libcap2-bin libdebhelper-perl
-  libfile-stripnondeterminism-perl libgpm2 libldap-dev libldap2-dev liblua5.3-0 libmail-sendmail-perl libmnl0 libpam-cap libpipeline1 libsctp-dev libsctp1 libsodium23
+root@0e82a6ed6aae:/# apt update
+Hit:1 http://deb.debian.org/debian trixie InRelease
+Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9671 kB]
+Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [5412 B]
+Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [176 kB]
+Fetched 9944 kB in 1s (7832 kB/s)
+25 packages can be upgraded. Run 'apt list --upgradable' to see them.
+root@0e82a6ed6aae:/# apt install -y apache2 apache2-dev nginx telnet neovim
+Installing:
+  apache2  apache2-dev  neovim  nginx  telnet
 
 ~~~略~~~
 
-Setting up libapr1-dev (1.7.2-3) ...
-Setting up libaprutil1-dev (1.6.3-1) ...
-Setting up debhelper (13.11.4) ...
-Setting up apache2-dev (2.4.57-2) ...
-Processing triggers for libc-bin (2.36-9) ...
-Processing triggers for hicolor-icon-theme (0.17-2) ...
-root@a0da070e286f:/#
+Setting up libapr1-dev (1.7.5-1) ...
+Setting up libaprutil1-dev (1.6.3-3+b1) ...
+Setting up debhelper (13.24.2) ...
+Setting up apache2-dev (2.4.67-1~deb13u2) ...
+Processing triggers for libc-bin (2.41-12+deb13u3) ...
+Processing triggers for hicolor-icon-theme (0.18-2) ...
+root@0e82a6ed6aae:/# 
 ```
 
 以下のコマンドでバージョンが表示されれば成功です。
 
 ```shell-session
-root@a0da070e286f:/# apache2 -v
-Server version: Apache/2.4.61 (Debian)
-Server built:   2024-07-07T12:08:26
-root@a0da070e286f:/# nginx -v
-nginx version: nginx/1.22.1
+root@0e82a6ed6aae:/# apache2 -v
+Server version: Apache/2.4.67 (Debian)
+Server built:   2026-05-06T09:07:41
+root@0e82a6ed6aae:/# nginx -v
+nginx version: nginx/1.26.3
 ```
 
 ## Webサーバー
 
 いわゆる「Webサーバー」とは、HTTP(Hypertext Transfer Protocol)でリクエストを受け、HTTPでレスポンスを返すソフトウェアの通称です。
-僕らがブラウザなどにURLを入力したりリンクをクリックした時、Webページが表示されるのはWebサーバーが要求したURLに対するレスポンスを返しているからです。またスマホアプリの裏で行われるサーバーとのやりとりには多くの場合HTTPが使われており、ここでもWebサーバーがゲームのデータなどをレスポンスとして返しています。
+僕らがブラウザなどにURLを入力したりリンクをクリックした時、Webページが表示されるのはWebサーバーが要求したURLに対するレスポンスを返しているからです。またスマホアプリの裏で行われるサーバーーとのやりとりには多くの場合HTTPが使われており、ここでもWebサーバーーがゲームのデータなどをレスポンスとして返しています。
 
-Webサーバのシンプルな機能は前述の通りですが、実際にはユースケースに合わせてさまざまな役割を持ちます。
+Webサーバーのシンプルな機能は前述の通りですが、実際にはユースケースに合わせてさまざまな役割を持ちます。
 
 - HTMLやテキストファイルの配信
 - 動的アプリケーションのホスティング
@@ -101,6 +118,7 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 - nginx
 
 あたりでしょうか。Linuxサーバー上で動かすのであればほぼApacheとnginxの2択になると思います。
+(参考: [June 2026 Web Server Survey](https://www.netcraft.com/blog/july-2026-web-server-survey/))
 
 また最近ではenvoyやtraefikなど、クラウドやKubernetesという文脈ではプロキシ機能に特化したソフトウェアが使われることも多くなりました。
 
@@ -108,14 +126,13 @@ Webサーバのシンプルな機能は前述の通りですが、実際には�
 
 ### Apache HTTP Server
 
-「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
+「Apache HTTP Server」はnginxと並んで2大勢力を誇っているWebサーバーソフトウェアのひとつです。 CentOSではhttpdという名前になっていたり、単にApacheと呼ばれます。
 
-「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、20年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバで、LAMP（Linux, Apache, MySQL, PHP）環境のひとつにも挙げられ、nginxと並んで2大勢力を誇ります。
-(参考: [June 2024 Web Server Survey](https://www.netcraft.com/blog/june-2024-web-server-survey/))
+「Apache HTTP Server」は「Apacheソフトウェア財団」によって管理されるOSSで、30年以上の歴史を持ちます。 世界的にもっとも普及したWebサーバーで、Webサイトの定番OSS構成としてLAMP（Linux, Apache, MySQL, PHP）があげられる時期もあり、nginxと並んで2大勢力を誇っていました。
 
 正式名称は「Apache HTTP Server」ですが、歴史的経緯などからCentOSではhttpdという名前になっていたり、単にApacheと呼ばれたりします。
 
-以前は大量のリクエストを受けた際にプロセスをforkできず、リクエストを捌き切れなくなる（いわゆるC10K問題）ことが問題視されました。 その際nginxをはじめとして新しいWebサーバーソフトウェアが登場しましたが、Apache自体もworkerやevent MPMといった新しい仕組みを導入し、動作も安定していることからいまだに高いシェアを占めています。
+以前は大量のリクエストを受けた際にプロセスをforkできず、リクエストを捌き切れなくなる（いわゆるC10K問題）ことが問題視されました。 その際nginxをはじめとして新しいWebサーバーソフトウェアが登場しましたが、Apache自体もworkerやevent MPMといった新しい仕組みを導入し、多機能で動作も安定していることからいまだに高いシェアを占めています。
 
 ### nginx
 
@@ -132,13 +149,33 @@ nginxは2004年頃、当時のWebサーバーが抱えていたパフォーマ�
 
 ### HTMLファイルの配信(check1)
 
-まずはApacheを起動しましょう。
+まずはApacheを起動してデフォルトのページを見てみましょう。
+ページの確認には、CLIでの定番であるcurlコマンドを使ってみるのがよいでしょう
 
 ```shell-session
 root@a0da070e286f:/# service apache2 start
+root@a0da070e286f:/# curl http://localhost
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Apache2 Debian Default Page: It works</title>
+    <style type="text/css" media="screen">
+
+(中略)
+
+      </div>
+    </div>
+    <div class="validator">
+    </div>
+  </body>
+</html>
 ```
 
-ブラウザを開いて[localhost:8080](http://localhost:8080)にアクセスしてみてください。以下のような画面が表示されれば成功です。
+docker を手元で動かしている環境の場合は、ブラウザで開いて[localhost:8080](http://localhost:8080)にアクセスしてみることでも確認可能です。
+コンテナの中からは80番ポート、外からは8080番ポートからアクセスできるように設定されています。
+以下のような画面が表示されれば成功です。
 
 ![apache-start](./image/apache-start.png)
 
@@ -153,23 +190,27 @@ Document RootはApacheが静的ファイルを配信するためのroot director
 ```shell-session
 root@a0da070e286f:/# mv /var/www/html/index.html /var/www/html/_index.html
 root@a0da070e286f:/# echo 'Hello Bootcamp!!' > /var/www/html/index.html
+root@a0da070e286f:/# curl http://localhost
+Hello Bootcamp!!
 ```
 
-再び`http://localhost:8080/`を開くと`Hello Bootcamp!!`が表示されるのを確認してください。
+`Hello Bootcamp!!`が帰ってくるのを確認してください。
 
 ::: tip
-`http://localhost:8080/` のようにファイル名を指定せずディレクトリ（この場合はルートディレクトリ）を指定した場合、Apacheは`index.html`を返すようにデフォルトで設定されています。
+`http://localhost/` のようにファイル名を指定せずディレクトリ（この場合はルートディレクトリ）を指定した場合、Apacheは`index.html`を返すようにデフォルトで設定されています。
 この設定は変更できます。
 :::
 
-Document Root配下にディレクトリを作成するとブラウザからも同様にアクセスできます。
+Document Root配下にディレクトリを作成すると対応するパスを指定することで同様にアクセスできます。
 
 ```shell-session
 root@a0da070e286f:/# mkdir /var/www/html/hoge
-root@a0da070e286f:/# echo 'Hello HUGA!!' > /var/www/html/hoge/huga.txt
+root@a0da070e286f:/# echo 'Hello FUGA!!' > /var/www/html/hoge/fuga.txt
+root@a0da070e286f:/# curl http://localhost/hoge/fuga.txt
+Hello FUGA!!
 ```
 
-`http://localhost:8080/hoge/huga.txt` にアクセスすると追加したファイルが表示されます。
+ブラウザからの場合は、`http://localhost:8080/hoge/fuga.txt` にアクセスすると追加したファイルが表示されます。
 
 アクセスログも確認してみましょう。
 
@@ -258,7 +299,16 @@ CentOSなど他のディストリビューションでは、これらのコマ�
 root@a0da070e286f:/# service apache2 reload
 ```
 
-`localhost:8080`と`localhost:8082`にアクセスしてみてください。意図通りの挙動になっているでしょうか。
+それでは、アクセスしてみましょう。意図通りの挙動になっているでしょうか。
+
+```sh
+root@a0da070e286f:/# curl http://localhost:80
+This is site 80!
+root@a0da070e286f:/# curl http://localhost:82
+This is site 82!
+```
+
+ブラウザからの場合は、`localhost:8080`と`localhost:8082`にアクセスしてみてください。
 
 | ![site-80](./image/site-80.png) |
 | ------------------------------- |
@@ -302,7 +352,14 @@ root@a0da070e286f:/# service nginx start
 [ ok ] Starting nginx: nginx.
 ```
 
-[localhost:8088](http://localhost:8088) にアクセスしてみてください。さっき作った`Hello Bootcamp!!`のHTMLが見えていれば成功です。
+それではアクセスしてみましょう。さっき作った`Hello Bootcamp!!`のHTMLが見えていれば成功です。
+
+```sh
+root@a0da070e286f:/# curl http://localhost:88
+Hello Bootcamp!!
+```
+
+ブラウザからの場合は、[localhost:8088](http://localhost:8088) にアクセスしてみてください。
 
 ![nginx_html](./image/nginx_html.png)
 
@@ -318,7 +375,7 @@ nginxのプロキシ・ロードバランス機能を使ってみましょう。
 
 ![nginx_proxy](./image/nginx-proxy.drawio.png)
 
-`localhost:8089`にアクセスすると、先ほどApacheで作ったsite-80とsite-89のどちらかにランダムでリクエストをプロキシするようにします。
+`localhost:8089`にアクセスすると、先ほどApacheで作ったsite-80とsite-82のどちらかにランダムでリクエストをプロキシするようにします。
 
 そのための設定を`/etc/nginx/sites-enabled/proxy`に書いていきます。
 
@@ -349,13 +406,22 @@ root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
+それでは、確認です。
 site-80とsite-82がランダムで表示されたでしょうか。
+
+```sh
+root@a0da070e286f:/# curl http://localhost:89
+This is site 80!
+root@a0da070e286f:/# curl http://localhost:89
+This is site 82!
+```
+
+ブラウザからの場合は、[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
 
 ### コンテンツをキャッシュしてみる(check5)
 
-Webサーバを多段で使う目的の一つとして、キャッシュを行う、というのもあります。
-前段のWebサーバでキャッシュすることにより、後段への問い合わせ回数が減り、
+Webサーバーを多段で使う目的の一つとして、キャッシュを行う、というのもあります。
+前段のWebサーバーでキャッシュすることにより、後段への問い合わせ回数が減り、
 レスポンスの高速化を図れます。
 
 参考: [エンジニアブログのキャッシュについての連載記事](https://eng-blog.iij.ad.jp/archives/18584)
@@ -406,21 +472,92 @@ root@a0da070e286f:/# service nginx restart
 [ ok ] Restarting nginx: nginx.
 ```
 
-[http://localhost:8089/](http://localhost:8089/) にアクセスしてみてください。
-ブラウザの開発者モードなどでヘッダを覗いてみると、X-Nginx-CacheにMISS、あるいはHITが入っています。
+それでは、確認です。
+キャッシュの状態については、デフォルトではレスポンスヘッダにX-Nginx-Cacheの形で付与されます。
+curl に-vオプションをつけてみて、ヘッダを確認してみましょう
+
+ブラウザの場合は、開発者モードなどでヘッダを覗くことができます(通常、F12で開発者モードを起動できます)。
+
+```sh
+root@a0da070e286f:/# curl -v http://localhost:89
+*   Trying 127.0.0.1:89...
+* Connected to localhost (127.0.0.1) port 89 (#0)
+> GET / HTTP/1.1
+> Host: localhost:89
+> User-Agent: curl/7.88.1
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Server: nginx/1.22.1
+< Date: Tue, 29 Jul 2025 11:29:33 GMT
+< Content-Type: text/html
+< Content-Length: 17
+< Connection: keep-alive
+< Last-Modified: Tue, 29 Jul 2025 11:27:56 GMT
+< ETag: "11-63b0fb32120e5"
+< X-Nginx-Cache: HIT
+< Accept-Ranges: bytes
+<
+This is site 80!
+```
+
+X-Nginx-CacheにMISS、あるいはHITが入っていることが確認できましたでしょうか。
 今回、わざとキャッシュの保持期間を1分と短くしていますが、2分ほど待った後で改めてアクセスしてみると、MISSが入っているものが観測できるかと思います。
 
 キャッシュが利用できた場合、裏のapacheへのアクセスも省略されたことをログから確認できるはずです。
 
 キャッシュの実体はこの設定だと/var/cache/nginx 下に置かれます。
-catしてみてどういうものがキャッシュされているのかも見てみましょう。
+catしてみてどういうものがキャッシュされているのかも見てみるとよいでしょう。
 
 ## 追加課題（時間の余った人用）
-### サーバ側でキャッシュを制御してみる
+### HTTP を直接喋ってみる
+HTTPは割とシンプルなテキストプロトコルなので、比較的簡単に直接やり取りを行えます。
+直接やり取りをするには、telnetを使うのがよいでしょう。
+
+```shell-session
+root@a0da070e286f:/# telnet 127.0.0.1 80
+Trying 127.0.0.1...
+Connected to 127.0.0.1.
+Escape character is '^]'.
+=== ここから入力 ===
+GET / HTTP/1.0
+User-Agent: hogehoge
+(Enterを2回)
+=== ここまで入力 ===
+HTTP/1.1 200 OK
+Date: Tue, 29 Jul 2025 10:45:22 GMT
+Server: Apache/2.4.62 (Debian)
+Last-Modified: Tue, 29 Jul 2025 10:31:40 GMT
+ETag: "11-63b0ee9e7ab92"
+Accept-Ranges: bytes
+Content-Length: 17
+Connection: close
+Content-Type: text/html
+
+Hello Bootcamp!!
+Connection closed by foreign host.
+```
+
+入力したのは、リクエスト行とヘッダ。ヘッダフィールドには複数行入れられますが、その終了は空行をもって宣言するため、2回改行を入れました。
+今回は、HTTP1.0のGETのため、リクエストボディは省略されすぐさまレスポンスが返ってきます。
+
+アクセスログを見てみると、User-Agent が確かに渡されたことも確認できます。
+
+```sh
+root@a0da070e286f:/# tail /var/log/apache2/access.log
+127.0.0.1 - - [29/Jul/2025:10:45:22 +0000] "GET / HTTP/1.0" 200 263 "-" "hogehoge"
+```
+
+User-Agentの値を変えてみるとログの記録も変わります。
+リクエストヘッダは簡単に捏造できるものであることは覚えておきましょう。
+Webサーバー任せで静的なファイルを配信する分には、捏造されたヘッダで悪影響を及ぼすことはWebサーバー側で対策されているのでまずないですが、
+CGIやアプリサーバーなどでヘッダ情報を利用する場合は十分に気を付ける必要があります。
+
+### サーバー側でキャッシュを制御してみる
 
 本編では、nginxに施した設定に従ってキャッシュを行っていました。
-保持期間などの設定は、コンテンツサーバであるapacheからこのnginxに返したレスポンスにつけたヘッダによっても制御できます。
-URLや条件に従って細かく制御したい場合は、コンテンツサーバ側での制御を行うのがよいでしょう。
+保持期間などの設定は、コンテンツサーバーであるapacheからこのnginxに返したレスポンスにつけたヘッダによっても制御できます。
+URLや条件に従って細かく制御したい場合は、コンテンツサーバー側での制御を行うのがよいでしょう。
 
 この用途として、主にCache-Controlヘッダが用いられます。
 no-cacheでこのレスポンスをキャッシュとして使わせない、max-ageで保持期間を指定、などが行えます。
@@ -443,7 +580,7 @@ Pythonで書かれたWebアプリをApache経由で動かす設定を作って�
 
 ```sh
 python --version
-#Python 3.8.17
+#Python 3.14.7
 ```
 
 Pythonで作成したWebアプリをApacheなどから実行する場合、[WSGI](https://ja.wikipedia.org/wiki/Web_Server_Gateway_Interface)というインタフェース定義に従ってWebアプリを作成します。
@@ -487,13 +624,13 @@ Successfully installed mod-wsgi-4.9.4
 インストールすると以下のディレクトリにsoファイルが生成されています。Apacheに読み込ませる必要があるため確認しておきましょう。
 
 ```sh
-ls /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+ls /usr/local/lib/python3.14/site-packages/mod_wsgi/server/mod_wsgi-py314.cpython-314-x86_64-linux-gnu.so
 ```
 
 このファイルを読み込むように、`nvim /etc/apache2/mods-available/wsgi.load`を以下のように作成します。
 
 ```xml
-LoadModule wsgi_module /usr/local/lib/python3.8/site-packages/mod_wsgi/server/mod_wsgi-py38.cpython-38-x86_64-linux-gnu.so
+LoadModule wsgi_module /usr/local/lib/python3.14/site-packages/mod_wsgi/server/mod_wsgi-py314.cpython-314-x86_64-linux-gnu.so
 ```
 
 moduleを有効化しておきます。
