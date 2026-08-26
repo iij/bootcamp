@@ -588,7 +588,7 @@ spec:
     spec:
       serviceAccountName: prometheus
       containers:
-      - image: prom/prometheus:v2.33.3
+      - image: prom/prometheus:v3.14.0-distroless
         imagePullPolicy: IfNotPresent
         name: prometheus
         args:
