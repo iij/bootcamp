@@ -295,6 +295,18 @@ bootcamp-6bcddb7cf8-tq2fs   1/1     Running             0          84s
 
 `Running`となっていれば無事にアプリケーションが起動しました。今回は`replicas`に`2`を指定したのでpodが2個起動しています。`replicas`の値を変えて再度`kubectl apply`して遊んでみましょう。
 
+### 演習1 Deploymentを作成してみましょう。
+
+app.ymlを作成し、 `kubectl apply -f app.yml` を実行してください。
+
+`kubectl get pods` でpodが2つ起動していることを確認してください。
+
+### 演習2 replicasを変更してみましょう。
+
+app.ymlのreplicasの値を3に変更し、再度 `kubectl apply -f app.yml` を実行してください。
+
+`kubectl get pods` でpodが3つ起動していることを確認してください。
+
 ### 3-3. Service
 
 Podの起動ができましたので、次はPodへのアクセスを試みます。KubernetesクラスターではPod群へのサービスディスカバリーの方法としてServiceオブジェクトが用いられます。Serviceを利用することでPod群に共通のIPアドレスを割り当て、まるで一つの「サービス」であるかのようにアクセスできるようになります。
@@ -382,6 +394,14 @@ Forwarding from 0.0.0.0:35715 -> 8080
 > Ingressを利用するとSSLの設定やVirtualHostの設定などを行えるようになります。
 > 興味のある方は[公式ページ](https://kubernetes.io/ja/docs/concepts/services-networking/ingress/)を参考に触ってみて下さい。
 
+### 演習3 Serviceを作成してみましょう。
+
+service.ymlを作成し、 `kubectl apply -f service.yml` を実行してください。
+
+kubectl proxyをしたあと、別ターミナルを開いて `curl http://127.0.0.1:8001/api/v1/namespaces/<your namespace>/services/bootcamp-svc/proxy/` を実行してみてください。
+
+CLIENT VALUES:からはじまるレスポンスが返ってきたら成功です。
+
 ### 3-4. Podを削除してみる
 
 試しに手動で無理やりpodを削除してみましょう。`kubectl get pods -w`で確認しながら、以下のコマンドでpodを削除してみます。
@@ -411,6 +431,10 @@ bootcamp-6bcddb7cf8-jpzg5   0/1     Terminating         0          23m
 それだけではなく、前段の`Service`がpodの状態を監視しながら通信を流す先を決めてくれるため、一部のpodが停止している間も自動的に生きているpodに通信を流してくれます。
 
 そのためユーザーに一切影響なくpodの停止と復旧が全て自動で可能になっています。このようなインフラをKubernetesとコンテナなしで構築するのはかなり困難です。
+
+### 演習4 Podを削除してみましょう。
+
+`kubectl get pods -w`で確認しながら、別ターミナルで`kubectl delete pods <pod-name>`を実行してみてください。
 
 ## 4. 応用(Kubernetesの監視)
 ここからは本格的なアプリケーションのデプロイを体験してもらいます。katacodeでやっている方はうまくいかないことがあるため本項目は飛ばしてください。
