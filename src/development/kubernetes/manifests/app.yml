@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bootcamp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bootcamp
+  template:
+    metadata:
+      labels:
+        app: bootcamp
+    spec:
+      containers:
+      - name: bootcamp-app
+        image: registry.k8s.io/echoserver:1.4
+        ports:
+          - containerPort: 8080
+      restartPolicy: Always

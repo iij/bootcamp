@@ -240,14 +240,14 @@ spec:
 > 【Deploymentにおける必須フィールド】
 > 
 > Kubernetesオブジェクトをマニフェストファイルに記載する際、必ず以下のフィールドに値をセットする必要があります
-> - apiVersion：オブジェクトのAPIVersionを指定
-> - kind：どのオブジェクトを作るかを指定
-> - metadata：オブジェクトを特定するための情報を指定
-> - spec：オブジェクトの状態を指定
+> - `apiVersion`：オブジェクトのAPIVersionを指定
+> - `kind`：どのオブジェクトを作るかを指定
+> - `metadata`：オブジェクトを特定するための情報を指定
+> - `spec`：オブジェクトの状態を指定
 
 
-`apiVersion`にはオブジェクトのAPIVersionを書きます。
-オブジェクトAPIがどのAPIGROUPに属しているかでapiVersionの書き方が変わってきます。
+`apiVersion`にはオブジェクトのAPIVERSIONを書きます。
+オブジェクトAPIがどのAPIGROUPに属しているかで`apiVersion`の書き方が変わってきます。
 今回はDeploymentのオブジェクトなのでそのAPIグループを調べます。
 
 ```
@@ -297,13 +297,13 @@ bootcamp-6bcddb7cf8-tq2fs   1/1     Running             0          84s
 
 ### 演習1 Deploymentを作成してみましょう。
 
-app.ymlを作成し、 `kubectl apply -f app.yml` を実行してください。
+`app.yml`を作成し、 `kubectl apply -f app.yml` を実行してください。
 
 `kubectl get pods` でpodが2つ起動していることを確認してください。
 
 ### 演習2 replicasを変更してみましょう。
 
-app.ymlのreplicasの値を3に変更し、再度 `kubectl apply -f app.yml` を実行してください。
+`app.yml`のreplicasの値を3に変更し、再度 `kubectl apply -f app.yml` を実行してください。
 
 `kubectl get pods` でpodが3つ起動していることを確認してください。
 
@@ -372,7 +372,7 @@ Starting to serve on 127.0.0.1:8001
 このプロキシ機能はServiceへのアクセスをRESTとして`/api/v1/namespaces/<namespace>/services/<scheme>:<service>:<port>/proxy/`と表現しているため、今回は`http://127.0.0.1:8001/api/v1/namespaces/<your namespace>/services/bootcamp-svc/proxy/`へアクセスすることでコンテンツを取得することができます。
 
 > `<your namespace>`にはデプロイ先のnamespaceを入力します。
-> namespaceがわからない場合は`kubectl config get-contexts`から探してください。`CURRENT`に米印が付いているものがいま作業しているコンテキストになります。もし`NAMESPACE`の欄に何もなければ`namespace: default`ということになります。  
+> namespaceがわからない場合は`kubectl config get-contexts`から探してください。`CURRENT`に`*` (アスタリスク) が付いているものがいま作業しているコンテキストになります。もし`NAMESPACE`の欄に何もなければ`namespace: default`ということになります。  
 > ```
 > $ kubectl config get-contexts
 > CURRENT   NAME                CLUSTER    AUTHINFO   NAMESPACE
@@ -439,7 +439,7 @@ bootcamp-6bcddb7cf8-jpzg5   0/1     Terminating         0          23m
 ## 4. 応用(Kubernetesの監視)
 ここからは本格的なアプリケーションのデプロイを体験してもらいます。katacodeでやっている方はうまくいかないことがあるため本項目は飛ばしてください。
 
-IKEクラスタで本項目を進める場合は下記に記載している [IKEクラスタで実行する場合] を参照してください。
+IKEクラスタで本項目を進める場合は下記に記載している [IKEクラスタで実行する場合](#4-5-ikeクラスタで実行する場合) を参照してください。
 
 今回Kubernetes上に構築するアプリケーションは監視ツールのPrometheusで、以下の順序でデプロイします。(マニフェストファイルは[Prometheus実践ガイド](https://www.hanmoto.com/bd/isbn/9784910313009)の内容を一部改変したものを利用しています)
 1. node exporterのデプロイ
@@ -467,7 +467,7 @@ spec:
     spec:
       containers:
         - name: node-exporter
-          image: 'prom/node-exporter:v1.3.1'
+          image: 'prom/node-exporter:v1.12.1-distroless'
           ports:
             - name: http
               containerPort: 9100
@@ -495,7 +495,7 @@ spec:
   selector:
     app: node-exporter
 ```
-各ノードに対して`prom/node-exporter:v1.3.1`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`ClusterIP`を指定しています。
+各ノードに対して`prom/node-exporter:v1.12.1-distroless`というコンテナを1つずつデプロイさせています。`hostNetwork`と`hostPID`を`true`にすることでノードとコンテナのネットワーク/プロセスIDを共有させます。これは通常、コンテナはホストの環境とプロセス等が分離された状態になっているため、共有させないとPodからノードの情報を取得することができためです。`node-exporter`は外部から接続させる必要がないため、`Service`は`ClusterIP`を指定しています。
 
 準備が出来たら`kubectl apply -f node-exporter.yml`でデプロイします。
 ```bash
@@ -588,7 +588,7 @@ spec:
     spec:
       serviceAccountName: prometheus
       containers:
-      - image: prom/prometheus:v2.33.3
+      - image: prom/prometheus:v3.14.0-distroless
         imagePullPolicy: IfNotPresent
         name: prometheus
         args:
@@ -673,11 +673,11 @@ Prometheusの設定の詳細については割愛しますが、4-2にて発行�
 > 
 > Prometheusの講義内で「Prometheusの特徴の1つにサービスディスカバリがあり、監視対象を動的に取得することができる」と話しました。
 > そのサービスディスカバリは`kubernetes_sd_configs`の部分で設定しています。`role`という概念を利用してKubernetes内の各種リソースを動的に取得します。`role`で取得できるリソースは以下の5つです。
-> - Node
-> - Service
-> - Endpoints
-> - Pod
-> - Ingress
+> - `Node`
+> - `Service`
+> - `Endpoints`
+> - `Pod`
+> - `Ingress`
 
 `kubectl apply -f prometheus.yml`でPrometheusをデプロイし、確認を行います。
 ```bash
@@ -728,14 +728,14 @@ replicaset.apps/prometheus-76b579c56c   1         1         1       115m
 
 まず、`node-exporter.yml`および`prometheus.yml`からすべての`namespace: default`を削除します。これにより、kubectlの現在のコンテキストで選択されているnamespaceにリソースが作成されます。さらに`node-exporter.yml`から次の2行を削除します。
 
-```yaml
-      hostNetwork: true
-      hostPID: true
+```diff
+-      hostNetwork: true
+-      hostPID: true
 ```
 
 この構成のnode-exporterはホストOS全体ではなく、Podから参照できる範囲のメトリクスを公開します。
 
-次に、`role-based-access-control.yml`は以下の内容に置き換えます。`RoleBinding`とServiceAccountは同じnamespaceに作られるため、namespaceの指定は不要です。
+次に、`role-based-access-control.yml`は以下の内容に置き換えます。`RoleBinding`と`ServiceAccount`は同じnamespaceに作られるため、namespaceの指定は不要です。
 
 ```yaml
 ---
@@ -746,7 +746,14 @@ metadata:
 rules:
 - apiGroups: [""]
   resources:
-  - endpoints
+  - services
+  - pods
+  - endpoints # v1 Endpoints is deprecated in v1.33+
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+    - discovery.k8s.io
+  resources:
+    - endpointslices
   verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
