@@ -387,8 +387,38 @@ Forwarding from 0.0.0.0:35715 -> 8080
 ```
 あとはTerminal横の「＋」ボタンから「select port to view on Host 1」を選択し、表示されているポートへアクセスすればコンテンツを取得することができます。
 
+curlして以下のようにレスポンスが返ってきたら成功です。
 
-`Hello Kubernetes!` が表示されたでしょうか。無事にpodにアクセスすることができました。
+```
+Hostname: bootcamp-55c4d5549f-r968v
+
+Pod Information:
+        -no pod information available-
+
+Server values:
+        server_version=nginx: 1.13.3 - lua: 10008
+
+Request Information:
+        client_address=10.244.0.1
+        method=GET
+        real path=/
+        query=
+        request_version=1.1
+        request_scheme=http
+        request_uri=http://127.0.0.1:8080/
+
+Request Headers:
+        accept=*/*
+        accept-encoding=gzip
+        host=127.0.0.1:41785
+        user-agent=curl/7.76.1
+        x-forwarded-for=127.0.0.1, 172.18.0.1
+        x-forwarded-uri=/api/v1/namespaces/default/services/bootcamp-svc/proxy/
+
+Request Body:
+        -no body in request-
+
+```
 
 > 今回はServiceでアプリケーションを公開しましたが、本来はServiceの上にIngressを作って公開することが推奨されています。
 > Ingressを利用するとSSLの設定やVirtualHostの設定などを行えるようになります。
