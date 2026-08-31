@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: bootcamp-app
-        image: registry.k8s.io/echoserver:1.4
+        image: gcr.io/google-containers/echoserver:1.10
         ports:
           - containerPort: 8080
       restartPolicy: Always
