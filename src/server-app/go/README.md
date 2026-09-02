@@ -13,7 +13,7 @@ prior_knowledge: golang
 # 0. この講義について ( 5 min )
 ## 0.1. 目的
 * あなたがプログラミングを行う際の選択肢として、Goを挙げられる為の第一歩となること
-	* より、知らない人に知ってもらうことを重要視しています
+    * より、知らない人に知ってもらうことを重要視しています
 
 ## 0.2. 対象者
 想定レベルは以下の通りです。  
@@ -38,36 +38,36 @@ Goを知らない方かつ、プログラミング技術をこれから身につ
 
 ## 0.4. 本資料の表現
 * :computer:
-	* 受講者が操作する箇所を示します
+    * 受講者が操作する箇所を示します
 * :recycle:
-	* 受講者が操作した結果の想定を示します
+    * 受講者が操作した結果の想定を示します
 * :rocket:
-	* もっと知ってみようのコーナーです。コーディング知識がある方や、今の講義では物足りないと思った方向けの内容です
+    * もっと知ってみようのコーナーです。コーディング知識がある方や、今の講義では物足りないと思った方向けの内容です
 * `<ほげほげ>`
-	* 任意の値を示します
-	* 入力値に本表現が用いられる場合は、任意の値(適切な値)に書き換えてください
+    * 任意の値を示します
+    * 入力値に本表現が用いられる場合は、任意の値(適切な値)に書き換えてください
 * `$ <コマンド>`
-	* 上記 `$` は、プロンプトを意味します。実際に入力は行いません
+    * 上記 `$` は、プロンプトを意味します。実際に入力は行いません
 * `[<要素>]`
-	* 必須では無い要素を`[`と`]`で囲みます
+    * 必須では無い要素を`[`と`]`で囲みます
 * `#...省略`
-	* 途中要素を省略しています。本来ソースコードなどが存在する予定の場所です
+    * 途中要素を省略しています。本来ソースコードなどが存在する予定の場所です
 * `...`
-	* 直前の要素をn回繰り返します
+    * 直前の要素をn回繰り返します
 * Go言語ソースコード上の、`// <任意のコメント>`
-	* コメントです。存在する状態でもソースコードが動作します
+    * コメントです。存在する状態でもソースコードが動作します
 * :computer: の、`:# <任意の表現>`
-	* ハンズオンに対するコメントです。執筆者の任意のコメントもしくは、決まった表現をします
-	* 決まった表現は、以下です
-		* `:# WORKPATH <ファイルパス>`
-			* 動作させるカレントディレクトリを示します。`cd <ファイルパス>` すると、快適にハンズオンを楽しめます
-			* 省略されている場合、pathの指定はありません。どのようなディレクトリから実行しても出力が同一となる想定です
-		* `:# COPY <srcファイルパス> <dstファイルパス>`
-			* 1つ以上前の演習で作成したソースコードを引き継げる演習の場合、コピーするパスを表示しています
-				* 記載のファイルパスは、フルパスとしているため、どのようなディレクトリからであっても実行可能です
-			* `cp <srcファイルパス> <dstファイルパス>` とすることで、引き継ぎができます
-		* `:# TERMINAL <識別番号>`
-			* ハンズオンで利用するターミナルを識別します
+    * ハンズオンに対するコメントです。執筆者の任意のコメントもしくは、決まった表現をします
+    * 決まった表現は、以下です
+        * `:# WORKPATH <ファイルパス>`
+            * 動作させるカレントディレクトリを示します。`cd <ファイルパス>` すると、快適にハンズオンを楽しめます
+            * 省略されている場合、pathの指定はありません。どのようなディレクトリから実行しても出力が同一となる想定です
+        * `:# COPY <srcファイルパス> <dstファイルパス>`
+            * 1つ以上前の演習で作成したソースコードを引き継げる演習の場合、コピーするパスを表示しています
+                * 記載のファイルパスは、フルパスとしているため、どのようなディレクトリからであっても実行可能です
+            * `cp <srcファイルパス> <dstファイルパス>` とすることで、引き継ぎができます
+        * `:# TERMINAL <識別番号>`
+            * ハンズオンで利用するターミナルを識別します
 ### 解釈例
 
 ```shell
@@ -193,15 +193,15 @@ $ <お好きなエディタ> main.go
 $ go run main.go
 ```
 * /root/go-tutor/go_tutorial/2_helloworld/hello/main.go
-	```go
-	package main
+    ```go
+    package main
 
-	import "fmt"
+    import "fmt"
 
-	func main() {
-		fmt.Println("Hello, W0rld!!")
-	}
-	```
+    func main() {
+        fmt.Println("Hello, W0rld!!")
+    }
+    ```
 :recycle: 2.1.1.1. 結果
 ```shell
 :# TERMINAL 0
@@ -288,8 +288,8 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
     * `uintptr`
     * `byte`
       * :rocket: uint8 のエイリアス(別名)です
-	* `rune`
-		* :rocket: int32 のエイリアス(別名)です
+    * `rune`
+        * :rocket: int32 のエイリアス(別名)です
   * 浮動小数点
     * `float32`,`float64`
   * 複素数
@@ -297,14 +297,14 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
   * 文字列
     * `string`
   
-		:rocket: `string`を構成する文字は`rune`で構成されます
+        :rocket: `string`を構成する文字は`rune`で構成されます
   * 真偽値
     * `bool`
   * エラー
     * `error`
 * コンポジット型
-	
-	0個以上の変数をひとまとまりの集合として表した型です
+    
+    0個以上の変数をひとまとまりの集合として表した型です
   * 構造体 (`struct`)
   * 配列 (`array`) 
   * スライス (`slice`)
@@ -312,26 +312,26 @@ Go言語は、静的型付け言語であるためコンパイル時に変数に
   * チャンネル (`channel`)
 * ユーザー定義型
 
-	組み込み型やコンポジット型を元にユーザーが定義した型です
+    組み込み型やコンポジット型を元にユーザーが定義した型です
 * `interface型`
 
-	:rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
-	この`interface型`は方がどう振る舞うか(型にどんなメソッドが実装されているか)という観点で区別され、0個以上のメソッドから構成されます。
-	また、[Go1.18からGenericsが追加](https://tip.golang.org/doc/go1.18#generics)されました。これにより、`interface`に型の情報を組み込むことができるようになりました。
-	
+    :rocket: これまで説明した型はデータがメモリ上にどのように表現されているかという観点から区別されていました。
+    この`interface型`は方がどう振る舞うか(型にどんなメソッドが実装されているか)という観点で区別され、0個以上のメソッドから構成されます。
+    また、[Go1.18からGenericsが追加](https://tip.golang.org/doc/go1.18#generics)されました。これにより、`interface`に型の情報を組み込むことができるようになりました。
+    
 
 ## 3.2. 変数定義方法
 Go言語では、変数の定義方法が3つあります。
 
 1. `var <変数名> <型>`
-	* 例: `var Hensu string`
-	* 型指定有り。変数初期値の指定無し(stringなので、`""`になります。)
+    * 例: `var Hensu string`
+    * 型指定有り。変数初期値の指定無し(stringなので、`""`になります。)
 2. `<変数名> := <初期値>`
-	* 例: `Hensu := "myValue"`
-	* 型指定無し。代入元の型を引き継ぐ
+    * 例: `Hensu := "myValue"`
+    * 型指定無し。代入元の型を引き継ぐ
 3. `var <変数名> <型> = <初期値>`
-	* 例: `var Hensu string = "myValue"`
-	* 型指定有り。変数初期値の指定有り
+    * 例: `var Hensu string = "myValue"`
+    * 型指定有り。変数初期値の指定有り
 
 予期せぬ型が変数に定義されないよう、最初のうち (書いている型をイメージできるまで) は、1か3の書き方をお勧めします。  
 予期せぬ型が変数に定義されうる例として、`interface型` があります。  
@@ -383,16 +383,16 @@ $ <お好きなエディタ> main.go
 $ go run main.go
 ```
 * `/root/go-tutor/go_tutorial/3_var/plzfixme/main.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import "fmt"
+    import "fmt"
 
-	func main() {
-		Watashi_no_Hensu = "GYUDON"       //./main.go:6:2: undefined: Watashi_no_Hensu
-		fmt.Println(Watashi_no_Hensu)     //./main.go:7:14: undefined: Watashi_no_Hensu
-	}
-	```
+    func main() {
+        Watashi_no_Hensu = "GYUDON"       //./main.go:6:2: undefined: Watashi_no_Hensu
+        fmt.Println(Watashi_no_Hensu)     //./main.go:7:14: undefined: Watashi_no_Hensu
+    }
+    ```
 :recycle: 3.4.1. 結果
 ```shell
 :# TERMINAL 0
@@ -413,7 +413,7 @@ Go言語では、`func`から始まる形で、関数を定義できます。フ
 :rocket: 
 ```go
 func <関数名>[[<型パラメータ1>,<型パラメータ2> ...]]([<引数1>, <引数2>...]) [(<戻り値1>, <戻り値2>...)] {
-	<処理>
+    <処理>
 }
 ```
 このフォーマットをみてわかる通り、Go言語では、複数の戻り値を指定できます。  
@@ -421,24 +421,24 @@ func <関数名>[[<型パラメータ1>,<型パラメータ2> ...]]([<引数1>, 
 なお、引数、戻り値がない場合は、省略可能なため、最も短い関数の定義は、以下のようになります。  
 ```go
 func myFunc() {
-	<処理>
+    <処理>
 }
 ```
 引数がいくつか存在し、戻り値が1つだけの場合は、以下のようになります。  
 ```go
 func myFunc(name string, age uint) bool {
-	var find bool
-	<処理>
-	return find
+    var find bool
+    <処理>
+    return find
 }
 ```
 また、戻り値が複数になると、戻り値の型をかっこで囲む必要があります。  
 ```go
 func myFunc(name string, age uint) (bool, error) {
-	var find bool
-	var result error
-	<処理>
-	return find, result
+    var find bool
+    var result error
+    <処理>
+    return find, result
 }
 ```
 関数の基本的な定義方法は以上です。
@@ -448,8 +448,8 @@ func myFunc(name string, age uint) (bool, error) {
 変数の名前スコープが、関数内全体のスコープになり、認識すべき範囲が広がるため、執筆者は、あまり扱いません。  
 ```go
 func myFunc(name string, age uint) (find bool, result error) {
-	<処理>
-	return find, result
+    <処理>
+    return find, result
 }
 ```
 
@@ -460,11 +460,11 @@ Go1.18でGenericsが導入されコンパイル時に型を解決することが
 興味のあるひとは[Genericsのチュートリアル](https://go.dev/doc/tutorial/generics)をやってみてください。
 ```go
 type Number interface {
-	int64 | float64
+    int64 | float64
 }
 func myFunc[T any,N Number](hoge []T, fuga N) []T {
-	<処理>
-	return res
+    <処理>
+    return res
 }
 ```
 
@@ -474,7 +474,7 @@ func myFunc[T any,N Number](hoge []T, fuga N) []T {
 本講義で行えることは限られるので、行為を以下のように定義します。  
 * 空白以外の文字列を全て牛丼名とみなす
 * 食べる行為は、標準出力とする
-	* 本章では、`fmt.Println` を用いて、文字列を出力します
+    * 本章では、`fmt.Println` を用いて、文字列を出力します
 * 食べた場合は、`true`, 食べていない場合は、`false`を返す
 
 ## 4.2.0. if構文
@@ -485,17 +485,17 @@ func myFunc[T any,N Number](hoge []T, fuga N) []T {
 本講義では割愛しますが、`else if`や、`else`を続ける表現もあります。  
 ```go
 if <条件> {
-	<true処理>...
+    <true処理>...
 }
 ```
 具体例は、以下のような表現となります。  
 ```go
 func main() {
-	var val1 string = "a"
-	var val2 string = "a"
-	if val1 == val2 {
-		fmt.Println("True!")
-	}
+    var val1 string = "a"
+    var val2 string = "a"
+    if val1 == val2 {
+        fmt.Println("True!")
+    }
 }
 ```
 この例では、`val1 == val2` が条件式となり、bool値 (`true` or `false`) を返却。それを元にifで条件分岐する流れを表しています。
@@ -504,7 +504,7 @@ func main() {
 構文は以下のようになります。  
 ```go
 if <判定要変数>... := <関数>(); <条件> {
-	<判定式 true処理>...
+    <判定式 true処理>...
 }
 ```
 具体例は、以下のような表現となります。  
@@ -513,9 +513,9 @@ func myTest() bool {
 #...省略
 
 func main() {
-	if res := myTest(); !res {
-		fmt.Println("False")
-	}
+    if res := myTest(); !res {
+        fmt.Println("False")
+    }
 }
 ```
 `myTest()`が、bool値(`true` or `false`) を返却し、resへ代入します。そして、`;`の後に続く条件式(`!res`)の結果に応じて条件分岐します。
@@ -530,31 +530,31 @@ $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
 * `/root/go-tutor/go_tutorial/4_funcy/monkey/eaters.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import "fmt"
+    import "fmt"
 
-	func Eat(name string) bool {
-		<nameが空白か比較する>
-		<nameが空白ならば> {
- 			<`return false`を行う>
-		 }
-		<nameが空白以外ならば、`fmt.Println(name)`を実行し、`return true`を行う>
-	}
+    func Eat(name string) bool {
+        <nameが空白か比較する>
+        <nameが空白ならば> {
+             <`return false`を行う>
+         }
+        <nameが空白以外ならば、`fmt.Println(name)`を実行し、`return true`を行う>
+    }
 
-	func main() {
-		var name1 string = "GYUDON"
-		if ok := Eat(name1); !ok {
-			fmt.Println("cannt eat: ", name1)
-		}
+    func main() {
+        var name1 string = "GYUDON"
+        if ok := Eat(name1); !ok {
+            fmt.Println("cannt eat: ", name1)
+        }
 
-		var name2 string = ""
-		if ok := Eat(name2); !ok {
-			fmt.Println("cannt eat: ", name2)
-		}
-	}
-	```
+        var name2 string = ""
+        if ok := Eat(name2); !ok {
+            fmt.Println("cannt eat: ", name2)
+        }
+    }
+    ```
 :recycle: 4.2.1. 結果
 ```shell
 :# TERMINAL 0
@@ -589,7 +589,7 @@ func Writer() (int, bool) {
 第一戻り値を捨て、第二戻り値だけを変数へ代入するというような記法が必要となります。  
 ```go
 if _, ok := Writer(); !ok {
-	fmt.Println("cannot write")
+    fmt.Println("cannot write")
 }
 ```
  (任意の戻り値を捨てるには、`_`へ代入します。全て捨てる場合は、代入自体が不要です。)   
@@ -603,7 +603,7 @@ Go言語では、エラー状態を格納できるerror型を用いることが�
 func Writer() (string, error) {
 #...省略
 if _, err := Writer(); err != nil {
-	fmt.Println("cannot write")
+    fmt.Println("cannot write")
 }
 ```
 
@@ -619,31 +619,31 @@ $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
 * `/root/go-tutor/go_tutorial/4_funcy/likego/eaters.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import "fmt"
+    import "fmt"
 
-	func Eat(name string) (bool, error) {
-		if name == "" {
-			return false, fmt.Errorf("name is empty.")
-		}
-		fmt.Println(name)
-		return true, nil
-	}
+    func Eat(name string) (bool, error) {
+        if name == "" {
+            return false, fmt.Errorf("name is empty.")
+        }
+        fmt.Println(name)
+        return true, nil
+    }
 
-	func main() {
-		var name1 string = "GYUDON"
-		if _, err := Eat(name1); err != nil {
-			fmt.Println("cannot eat: ", err)
-		}
+    func main() {
+        var name1 string = "GYUDON"
+        if _, err := Eat(name1); err != nil {
+            fmt.Println("cannot eat: ", err)
+        }
 
-		var name2 string = ""
-		if _, err := Eat(name2); err != nil {
-			fmt.Println("cannot eat: ", err)
-		}
-	}
-	```
+        var name2 string = ""
+        if _, err := Eat(name2); err != nil {
+            fmt.Println("cannot eat: ", err)
+        }
+    }
+    ```
 :recycle: 4.2.2.1. 結果
 ```shell
 :# TERMINAL 0
@@ -660,31 +660,31 @@ cannot eat: name is empty.
 例1では、第一戻り値が、ifのスコープ内となり、後続処理で活用できません。  
 例2のように、ifの手前で一度変数を定義する必要があります。  
 * 例1
-	```go
-	func FileReader(file_path string) (string, error) {
-	#...省略
+    ```go
+    func FileReader(file_path string) (string, error) {
+    #...省略
 
-	func main() {
-		var fpath string = "c:\mydata\data.txt"
-		if body, err := FileReader(fpath); err != nil {
-			panic(err)
-		}
-		// ここでは body がスコープ外
-	}
-	```
+    func main() {
+        var fpath string = "c:\mydata\data.txt"
+        if body, err := FileReader(fpath); err != nil {
+            panic(err)
+        }
+        // ここでは body がスコープ外
+    }
+    ```
 * 例2
-	```go
-	func FileReader(file_path string) (string, error) {
-	#...省略
+    ```go
+    func FileReader(file_path string) (string, error) {
+    #...省略
 
-	func main() {
-		var fpath string = "c:\mydata\data.txt"
-		body, err := FileReader(fpath)
-		if err != nil {
-			panic(err)
-		}
-		// body がスコープ内 (で、扱える) 
-	```
+    func main() {
+        var fpath string = "c:\mydata\data.txt"
+        body, err := FileReader(fpath)
+        if err != nil {
+            panic(err)
+        }
+        // body がスコープ内 (で、扱える) 
+    ```
 
 ## 4.3. 関数の実行される順番
 Go言語では、`func main(){}` が、実行されます。  
@@ -695,8 +695,8 @@ package main
 import "fmt"
 
 func MySuperFunction() {
-	var value string = "GYUDON"
-	fmt.Println(value)
+    var value string = "GYUDON"
+    fmt.Println(value)
 }
 ```
 
@@ -713,8 +713,8 @@ func MySuperFunction() {
 複数のパッケージのimportでは、以下のように`()`でまとめることで、より文字数の少ない書き方もできます。  
 ```go
 import (
-	"fmt"
-	"os"
+    "fmt"
+    "os"
 )
 ```
 
@@ -738,34 +738,34 @@ $ go run eaters.go
 $ go run eaters.go > /dev/null
 ```
 * `/root/go-tutor/go_tutorial/5_package/fixFunckyMonkey/eaters.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import (
-		"fmt"
-		"os" //追加
-	)
+    import (
+        "fmt"
+        "os" //追加
+    )
 
-	func Eat(name string) (bool, error) {
-		if name == "" {
-			return false, fmt.Errorf("name is empty.")
-		}
-		fmt.Println(name)
-		return true, nil
-	}
+    func Eat(name string) (bool, error) {
+        if name == "" {
+            return false, fmt.Errorf("name is empty.")
+        }
+        fmt.Println(name)
+        return true, nil
+    }
 
-	func main() {
-		var name1 string = "GYUDON"
-		if _, err := Eat(name1); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
-		}
+    func main() {
+        var name1 string = "GYUDON"
+        if _, err := Eat(name1); err != nil {
+            fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+        }
 
-		var name2 string = ""
-		if _, err := Eat(name2); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
-		}
-	}
-	```
+        var name2 string = ""
+        if _, err := Eat(name2); err != nil {
+            fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+        }
+    }
+    ```
 :recycle: 5.1.1. 結果
 ```shell
 :# TERMINAL 0
@@ -798,43 +798,43 @@ $ <お好きなエディタ> eaters.go
 $ go run eaters.go
 ```
 * `/root/go-tutor/go_tutorial/5_package/notKinkyuJi/shop/shop.go`
-	```go
-	package shop
+    ```go
+    package shop
 
-	import (
-		"fmt"
-	)
+    import (
+        "fmt"
+    )
 
-	func Eat(name string) (bool, error) {
-		if name == "" {
-			return false, fmt.Errorf("name is empty.")
-		}
-		fmt.Println(name)
-		return true, nil
-	}
-	```
+    func Eat(name string) (bool, error) {
+        if name == "" {
+            return false, fmt.Errorf("name is empty.")
+        }
+        fmt.Println(name)
+        return true, nil
+    }
+    ```
 * `/root/go-tutor/go_tutorial/5_package/notKinkyuJi/eaters.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import (
-		"os"
-		"fmt"
-		"./shop"
-	)
+    import (
+        "os"
+        "fmt"
+        "./shop"
+    )
 
-	func main() {
-		var name1 string = "GYUDON"
-		if _, err := shop.Eat(name1); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
-		}
+    func main() {
+        var name1 string = "GYUDON"
+        if _, err := shop.Eat(name1); err != nil {
+            fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+        }
 
-		var name2 string = ""
-		if _, err := shop.Eat(name2); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
-		}
-	}
-	```
+        var name2 string = ""
+        if _, err := shop.Eat(name2); err != nil {
+            fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err) //更新
+        }
+    }
+    ```
 :recycle: 5.2.1. 結果
 ```shell
 :# TERMINAL 0
@@ -871,27 +871,27 @@ type <名称> <型>
 (変数に直接代入する構造体の定義方法もありますが、本講義ではふれません。)  
 ```go
 type <名称> struct {
-	[<名前> <型>] //要素1
-	[<名前> <型>] //要素2
-	#...省略
+    [<名前> <型>] //要素1
+    [<名前> <型>] //要素2
+    #...省略
 }
 ```
 例えば、[6.1.0 構造体とは](#610-構造体とは) で例に挙げたint64では桁数が不足する際の構造体をGo言語で記述すると、以下のようになります。  
 ```go
 type FantasticInt struct {
-	ichi_no_keta int64
-	gai_no_keta int64
-	#...省略
+    ichi_no_keta int64
+    gai_no_keta int64
+    #...省略
 ```
 
 構造体を変数として定義する場合は、intなどの標準型と同様、以下のように定義できます。  
 要素にアクセスする際は、`<変数>.<要素の名前>` と指定します。  
 ```go
 func main() {
-	var MyInt FantasticInt
+    var MyInt FantasticInt
 
-	fmt.Println(MyInt.ichi_no_keta)
-	fmt.Println(MyInt.gai_no_keta)
+    fmt.Println(MyInt.ichi_no_keta)
+    fmt.Println(MyInt.gai_no_keta)
 }
 ```
 
@@ -903,16 +903,16 @@ package main
 import "fmt"
 
 type FantasticInt struct {
-	ichi_no_keta int64
-	gai_no_keta int64
-	#...省略
+    ichi_no_keta int64
+    gai_no_keta int64
+    #...省略
 }
 
 func main() {
-	var num1 FantasticInt = FantasticInt{ichi_no_keta: 0, gai_no_keta: 1 #...省略 }
-	var num2 FantasticInt = FantasticInt{ichi_no_keta: 1, gai_no_keta: 1 #...省略 }
+    var num1 FantasticInt = FantasticInt{ichi_no_keta: 0, gai_no_keta: 1 #...省略 }
+    var num2 FantasticInt = FantasticInt{ichi_no_keta: 1, gai_no_keta: 1 #...省略 }
 
-	fmt.Println(num1 + num2)
+    fmt.Println(num1 + num2)
 }
 ```
 これは、コーダが独自に定義した型をどのように計算するかGo言語に定義されていない為におきます。  
@@ -921,37 +921,37 @@ func main() {
 ### 6.2.1. 型を利用するスコープ上に、そのまま処理を書く
 ```go
 func main() {
-	var num1 FantasticInt
-	var num2 FantasticInt
+    var num1 FantasticInt
+    var num2 FantasticInt
 
-	var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
-	var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
-	#...省略
+    var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
+    var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
+    #...省略
 
-	fmt.Println(ichi_no_keta)
-	fmt.Println(gai_no_keta)
-	#...省略
+    fmt.Println(ichi_no_keta)
+    fmt.Println(gai_no_keta)
+    #...省略
 }
 ```
 ### 6.2.2. 型を引数として利用できる関数を定義する
 ```go
 func Add(num1 FantasticInt, num2 FantasticInt) FantasticInt {
-	var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
-	var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
-	#...省略
+    var ichi_no_keta int64 = num1.ichi_no_keta + num2.ichi_no_keta
+    var gai_no_keta int64 = num1.gai_no_keta + num2.gai_no_keta
+    #...省略
 
-	return FantasticInt{
-		ichi_no_keta: ichi_no_keta,
-		gai_no_keta: gai_no_keta,
-		#...省略
-	}
+    return FantasticInt{
+        ichi_no_keta: ichi_no_keta,
+        gai_no_keta: gai_no_keta,
+        #...省略
+    }
 }
 
 func main() {
-	var num1 FantasticInt
-	var num2 FantasticInt
-	num3 := Add(num1, num2)
-	#...省略
+    var num1 FantasticInt
+    var num2 FantasticInt
+    num3 := Add(num1, num2)
+    #...省略
 ```
 ### 6.2.3. 型をレシーバ引数として関数と関連付けする
 型に関数を紐付け、`変数.関数()`の形で呼び出す方法です。レシーバ引数で紐付けを行っている関数を、メソッドとも呼びます。  
@@ -961,16 +961,16 @@ func (<レシーバ引数変数名 レシーバ引数型>) <関数名> ([<引数
 `FantasticInt`へ、数字を追加する、足し算メソッドを用意する場合は、以下のようになります。  
 ```go
 func (self *FantasticInt) Add(num FantasticInt) {
-	self.ichi_no_keta = self.ichi_no_keta + num.ichi_no_keta
-	self.gai_no_keta = self.gai_no_keta + num.gai_no_keta
-	#...省略
+    self.ichi_no_keta = self.ichi_no_keta + num.ichi_no_keta
+    self.gai_no_keta = self.gai_no_keta + num.gai_no_keta
+    #...省略
 
 func main() {
-	var num1 FantasticInt
-	var num2 FantasticInt
+    var num1 FantasticInt
+    var num2 FantasticInt
 
-	num1.Add(num2)
-	fmt.Println(num1)
+    num1.Add(num2)
+    fmt.Println(num1)
 }
 ```
 先程紹介した2つでは、**AとBを足し、Cという新しい領域を作成**しています。  
@@ -990,19 +990,19 @@ Go言語標準パッケージに、int64よりも大きいサイズを扱える�
 牛丼屋で考えてみます。  
 ```go
 type GYUDONYA struct {
-	reji_1  TypeOfCashRegister
-	reji_2  TypeOfCashRegister
+    reji_1  TypeOfCashRegister
+    reji_2  TypeOfCashRegister
 
-	seki_1  TypeOfChair
-	seki_2  TypeOfChair
-	seki_3  TypeOfChair
+    seki_1  TypeOfChair
+    seki_2  TypeOfChair
+    seki_3  TypeOfChair
 
-	chubo_1 TypeOfKitchen
+    chubo_1 TypeOfKitchen
 
-	menu    string
+    menu    string
 
-	ZipCode int64
-	#...省略
+    ZipCode int64
+    #...省略
 ```
 レジや席がいくつか存在し、厨房やメニューがあることでしょう。あとは、所在の郵便番号(ZipCode)。他にも、電話番号や社員の一覧など、構成要素はまだまだありそうです。  
 牛丼屋を完璧にシミュレーションするコードを作成したければ、もっと沢山の構成要素を意識する必要がありますが、牛丼屋を考える講義でも無く、執筆者が牛丼屋で働いたこともないので、もう少しシンプルな実習コードとします。  
@@ -1023,51 +1023,51 @@ $ go run eaters.go
 :# 10秒程度待機する
 ```
 * `/root/go-tutor/go_tutorial/6_struct/weakShop/shop/shop.go`
-	```go
-	package shop
+    ```go
+    package shop
 
-	import (
-		"fmt"
-		"time"
-	)
+    import (
+        "fmt"
+        "time"
+    )
 
-	type Gyudon struct {
-		menu string
-	}
+    type Gyudon struct {
+        menu string
+    }
 
-	func NewGyudon() Gyudon { //変数定義用の関数
-		return Gyudon{
-			menu: "NegitamaGyudon",
-		}
-	}
+    func NewGyudon() Gyudon { //変数定義用の関数
+        return Gyudon{
+            menu: "NegitamaGyudon",
+        }
+    }
 
-	func (self *Gyudon) Eat() (bool, error) {
-		if self.menu == "" {
-			return false, fmt.Errorf("name is empty.")
-		}
+    func (self *Gyudon) Eat() (bool, error) {
+        if self.menu == "" {
+            return false, fmt.Errorf("name is empty.")
+        }
 
-		time.Sleep(time.Second * 10) //擬似食べてる時間
-		fmt.Println(self.menu)
-		return true, nil
-	}
-	```
+        time.Sleep(time.Second * 10) //擬似食べてる時間
+        fmt.Println(self.menu)
+        return true, nil
+    }
+    ```
 * `/root/go-tutor/go_tutorial/6_struct/weakShop/eaters.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import (
-		"os"
-		"fmt"
-		"./shop"
-	)
+    import (
+        "os"
+        "fmt"
+        "./shop"
+    )
 
-	func main() {
-		myshop := shop.NewGyudon()
-		if _, err := myshop.Eat(); err != nil {
-			fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err)
-		}
-	}
-	```
+    func main() {
+        myshop := shop.NewGyudon()
+        if _, err := myshop.Eat(); err != nil {
+            fmt.Fprintf(os.Stderr, "cannot eat: '%s'\n" , err)
+        }
+    }
+    ```
 :recycle: 6.3.1. 結果
 ```shell
 :# TERMINAL 0
@@ -1102,15 +1102,15 @@ Go言語の標準パッケージ [net/http](https://golang.org/pkg/net/http/) �
 特に細かい処理に拘らず、デフォルト動作でWebアプリケーションサーバをコーディングするのであれば、呼び出す側は以下の2行だけですみます。  
 ```go
 func httphandler(w http.ResponseWriter, r *http.Request) {
-	#...省略
+    #...省略
 }
 
 func main() {
-	http.HandleFunc("/", httphandler)   //どこのPathで、どんな処理をするか
-	http.ListenAndServe("localhost:8080", nil) //どの接続元(ホスト名:ポート)で、サーバを起動するか
-	if err != nil {
-		panic(err)
-	}
+    http.HandleFunc("/", httphandler)   //どこのPathで、どんな処理をするか
+    http.ListenAndServe("localhost:8080", nil) //どの接続元(ホスト名:ポート)で、サーバを起動するか
+    if err != nil {
+        panic(err)
+    }
 }
 ```
 
@@ -1137,53 +1137,53 @@ $ curl http://localhost:8080/
 :# 10秒程度待機する
 ```
 * `/root/go-tutor/go_tutorial/7_webapp/weakShop/shop/shop.go`
-	```go
-	package shop
+    ```go
+    package shop
 
-	import (
-		"fmt"
-		"time"
-		"../http"
-	)
+    import (
+        "fmt"
+        "time"
+        "../http"
+    )
 
-	type Gyudon struct {
-		menu string
-	}
+    type Gyudon struct {
+        menu string
+    }
 
-	func NewGyudon() Gyudon {
-		return Gyudon{
-			menu: "NegitamaGyudon",
-		}
-	}
+    func NewGyudon() Gyudon {
+        return Gyudon{
+            menu: "NegitamaGyudon",
+        }
+    }
 
-	func (self *Gyudon) Eat(w http.ResponseWriter, r *http.Request) { //引数をhttpdのセッション状態を受け取れるように追加
-		if self.menu == "" {
-			return
-		}
+    func (self *Gyudon) Eat(w http.ResponseWriter, r *http.Request) { //引数をhttpdのセッション状態を受け取れるように追加
+        if self.menu == "" {
+            return
+        }
 
-		time.Sleep(time.Second * 10) //擬似食べてる時間
-		fmt.Fprintf(w, "'%s'\n", self.menu) //食べた事を報告
-		return
-	}
-	```
+        time.Sleep(time.Second * 10) //擬似食べてる時間
+        fmt.Fprintf(w, "'%s'\n", self.menu) //食べた事を報告
+        return
+    }
+    ```
 * `/root/go-tutor/go_tutorial/7_webapp/weakShop/gyudon-httpd.go`
-	```go
-	package main
+    ```go
+    package main
 
-	import (
-		"./shop"
-		"./http"
-	)
+    import (
+        "./shop"
+        "./http"
+    )
 
-	func main() {
-		myshop := shop.NewGyudon()
-		http.HandleFunc("/", myshop.Eat)
-		err := http.ListenAndServe("localhost:8080", nil)
-		if err != nil {
-			panic(err)
-		}
-	}
-	```
+    func main() {
+        myshop := shop.NewGyudon()
+        http.HandleFunc("/", myshop.Eat)
+        err := http.ListenAndServe("localhost:8080", nil)
+        if err != nil {
+            panic(err)
+        }
+    }
+    ```
 :recycle: 7.2. 結果
 ```shell
 :# TERMINAL 0
@@ -1313,10 +1313,10 @@ $ time curl http://localhost:8080/
 :# 10秒程度待機する
 ```
 * /root/go-tutor/go_tutorial/7_webapp/weakShop/http/zakohttp.go
-	```go
-	c.serve(self.ctx)    //Line56 もともとの書かれ方
-	go c.serve(self.ctx) //Line56 変更後。go と、加筆する
-	```
+    ```go
+    c.serve(self.ctx)    //Line56 もともとの書かれ方
+    go c.serve(self.ctx) //Line56 変更後。go と、加筆する
+    ```
 :recycle: 7.3.3. 結果
 ```shell
 :# TERMINAL 0
@@ -1395,15 +1395,15 @@ func Test<テスト名>(*testing.T)
 
 ```go
 func IsTopping(food string)bool{
-	switch food {
-	    case "BeniShoga":
-		    return true
-		
-	    case "Egg":
-			retuen true
-			
+    switch food {
+        case "BeniShoga":
+            return true
+        
+        case "Egg":
+            retuen true
+            
     }
-	return false
+    return false
 }
 ```
 
@@ -1412,10 +1412,10 @@ panicしたり、Errorに書き込まれなければテストは成功です。
 
 ```go
 func TestIsTopping(t *testing){
-	food := "BeniShoga"
-	
-	if got:=IsTopping(food); !got{
-		t.Errorf("food = %s , want",got)
+    food := "BeniShoga"
+    
+    if got:=IsTopping(food); !got{
+        t.Errorf("food = %s , want",got)
     }
 }
 ```
@@ -1447,13 +1447,13 @@ $ go test ./...
     w := bytes.Buffer{}
     r := http.Request{}
 
-	gd := NewGyudon()
-	gd.menu="<入れたい文字列>"
-	gd.Eat(&w, &r)
-	/// 関数の結果を格納
-	got := w.String()
+    gd := NewGyudon()
+    gd.menu="<入れたい文字列>"
+    gd.Eat(&w, &r)
+    /// 関数の結果を格納
+    got := w.String()
 
-	/// 判定処理を書く
+    /// 判定処理を書く
     }
   ```
   
@@ -1494,7 +1494,7 @@ $ go test ./...
 
 また、Go言語の構造から迫るアプローチ以外として、その他外部のコミュニティから情報を得るのも良いでしょう。
 * Gophers Slackの`#japan`チャンネル
-	* 世界中のGopherが集うSlack、その中の`#japan`に日本人Gopherが住んでいます
+    * 世界中のGopherが集うSlack、その中の`#japan`に日本人Gopherが住んでいます
 * [vim-jp slackの#lang-goチャンネル](https://vim-jp.org/docs/chat.html)
   * Vimコミュニティのslackですが、何故かGopher Slackの`#japan`より活発
   * 普通にEmacs使いの人もいるので、お使いのエディタに依らずどうぞ
